@@ -7,7 +7,7 @@ export function useNarrow() {
 }
 
 // The one home. Q at the centre; a moment rises only when a human is needed.
-export default function Stage({ q, user, focus, working, onAsk, suggestions, bloom, onFocus, onWorking, children }) {
+export default function Stage({ q, user, focus, working, onAsk, suggestions, bloom, onFocus, onWorking, onBack, workspace, children }) {
   const narrow = useNarrow()
   const hasMoment = !!q.moment
   const orb = narrow ? 150 : 230
@@ -15,9 +15,10 @@ export default function Stage({ q, user, focus, working, onAsk, suggestions, blo
     <div className="stage">
       <div className="atmos" />
       <header className="topbar">
-        <div className="wordmark">Talent <b>Q</b></div>
+        {onBack ? <button className="btn btn-quiet btn-sm" onClick={onBack} data-q="to-workspace">← Workspace</button> : <div className="wordmark">Talent <b>Q</b></div>}
         {focus && (onFocus ? <button className="pill hide-sm" onClick={onFocus} data-q="focus" aria-label={`${focus}. Open roles and people`}>{focus}<span className="t3">▾</span></button> : <div className="pill hide-sm">{focus}</div>)}
         <div className="row" style={{ gap: 12 }}>
+          {workspace && <a href={`#${workspace}`} className="btn btn-quiet btn-sm hide-sm" data-q="open-workspace">Workspace</a>}
           {working ? <button className="pill" data-q="working" onClick={onWorking} aria-label={`Q is busy: ${working}. See what Q is doing`}><span className="dot" />{working}</button> : null}
           <Avatar name={user} size={34} />
         </div>

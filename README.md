@@ -26,6 +26,8 @@ npm run dev
 | Ada's home (recruiter) | `#/hire`. Jump ahead with `?at=morning`, `?at=yes` or `?at=decide` |
 | Femi's home (candidate, best at phone width) | `#/work`, or `#/work?at=after` for the offer |
 | Q-led interview | `#/work/interview` |
+| **Recruiter workspace** (chat and everything in one view) | `#/app/today`: Today, Roles, People, Interviews, What Q did, chats |
+| **Candidate workspace** | `#/you/today`: Today, Jobs, Applications, Evidence, Privacy, chats |
 | Both sides at once | Open `#/hire?at=morning` and `#/work` in two tabs. They sync live. |
 
 The mic button simulates speech: it transcribes what Q expects you to say. Typing works everywhere too.

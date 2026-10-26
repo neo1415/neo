@@ -330,7 +330,7 @@ function DoingLens({ log, working }) {
 
 /* ---------------- the flow ---------------- */
 
-export default function Hire() {
+export default function Hire({ at: forcedAt, onBack }) {
   const q = useQ()
   const [lens, setLens] = useState(null)
   const [working, setWorking] = useState(null)
@@ -343,7 +343,7 @@ export default function Hire() {
   useEffect(() => {
     if (started.current) return
     started.current = true
-    const at = param('at') || 'brief'
+    const at = forcedAt || param('at') || 'brief'
     const M = (key, node) => q.show({ key, node })
 
     const briefFlow = async () => {
@@ -469,7 +469,7 @@ export default function Hire() {
 
   return (
     <>
-      <Stage q={q} user="Ada Nwosu" focus="Paystride · Backend Engineer" working={working} onAsk={ask} suggestions={suggest} bloom={bloom} onFocus={() => setLens('roles')} onWorking={() => setLens('doing')} />
+      <Stage onBack={onBack} workspace={onBack ? null : '/app/today'} q={q} user="Ada Nwosu" focus="Paystride · Backend Engineer" working={working} onAsk={ask} suggestions={suggest} bloom={bloom} onFocus={() => setLens('roles')} onWorking={() => setLens('doing')} />
       <Lens open={lens === 'roles'} onClose={() => setLens(null)} title="Roles & people"><RolesLens /></Lens>
       <Lens open={lens === 'doing'} onClose={() => setLens(null)} title="What Q is doing" width={700}><DoingLens log={q.log} working={working || 'Nothing running'} /></Lens>
       <Lens open={lens === 'person'} onClose={() => { setLens(null); q.fire('lensClosed') }} title="Femi Okafor · why Q picked him"><PersonLens p={femi} /></Lens>

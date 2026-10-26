@@ -137,7 +137,7 @@ export default function Work() {
 
   return (
     <>
-      <Stage q={q} user="Femi Okafor" focus="Confidential mode" bloom={bloom} />
+      <Stage workspace="/you/today" q={q} user="Femi Okafor" focus="Confidential mode" bloom={bloom} />
       <Lens open={lens} onClose={() => { setLens(false); q.fire('lensClosed') }} title="What Paystride will see" width={640}><DisclosureLens /></Lens>
     </>
   )

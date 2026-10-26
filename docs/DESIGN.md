@@ -24,7 +24,26 @@
 | **Thread** | Bottom-left, a quiet log of what Q did. | Shows the background work without stealing focus. |
 | **Pills** | The focus pill opens *Roles & people*; the working pill opens *What Q is doing*. | Keeps "where is everything?" one tap away (critique finding H6/H7). |
 
-Routes: `#/` landing · `#/start` meet Q and onboard · `#/hire` Ada's home · `#/work` Femi's home · `#/work/interview` Q-led interview · `#/film` film stage.
+### Two modes, one product
+
+| Mode | For | What it looks like |
+|---|---|---|
+| **Voice / ambient** (`#/hire`, `#/work`, `#/app/voice`) | "Q, handle this." Onboarding, quick decisions, hands-free. | Q at the centre. One moment at a time. |
+| **Workspace** (`#/app/*`, `#/you/*`) | Seeing everything at once and working through it. | A ChatGPT-style rail (new chat, chat history, search) plus overview pages. |
+
+You can switch with one tap either way: **Talk to Q** in the rail, or **Workspace** in the ambient header.
+
+**Recruiter workspace:**
+- **Today:** every decision across roles, approvable in place
+- **Roles:** each role's pipeline, people, versioned brief and activity
+- **People:** every candidate in one table, each with a profile, timeline, evidence and transcript
+- **Interviews**
+- **What Q did:** the background log, limits and spend
+- **Chats:** Q's replies carry the same cards (needs, pipeline, person, shortlist, brief, offer) and can be acted on inline. The composer carries a role **context** chip and a mic that switches to voice.
+
+**Candidate workspace:** Today (the offer, what's coming up), Jobs for you, Applications (live status), My evidence, Privacy, and Chats (offer advice, interview prep, what employers see).
+
+Routes: `#/` landing · `#/start` meet Q and onboard · `#/hire` Ada's home · `#/work` Femi's home · `#/work/interview` Q-led interview · `#/film` film stage · `#/app/today` recruiter workspace · `#/you/today` candidate workspace.
 
 ## 2. Tokens
 

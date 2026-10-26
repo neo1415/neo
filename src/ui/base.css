@@ -182,3 +182,52 @@ p, h1, h2, h3 { margin: 0; }
 }
 
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- Workspace (chat + everything views) ---------- */
+.ws { position: relative; display: grid; grid-template-columns: 272px 1fr; height: 100vh; overflow: hidden; }
+.ws-rail { position: relative; z-index: 2; height: 100vh; background: rgba(18, 17, 14, 0.92); border-right: 1px solid var(--line); }
+.ws-rail.mobile { position: fixed; left: 0; top: 0; width: 288px; z-index: 51; }
+.rail { display: flex; flex-direction: column; height: 100%; padding: 16px 12px; }
+.rail-cta { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 12px; border-radius: var(--r-control); color: var(--text); font-size: 14px; border: 1px solid var(--line); margin-bottom: 6px; transition: background var(--d-micro), border-color var(--d-micro); }
+.rail-cta:hover { background: var(--ink-2); border-color: var(--line-2); }
+.rail-cta.talk { color: var(--gold); border-color: var(--gold-line); background: rgba(217, 181, 107, 0.05); }
+.rail-search { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; margin-top: 6px; border-radius: var(--r-control); color: var(--text-3); font-size: 13px; background: var(--ink-2); }
+.rail-search span { flex: 1; }
+.rail-search kbd { font-family: var(--mono); font-size: 10.5px; color: var(--text-3); border: 1px solid var(--line-2); border-radius: 5px; padding: 0 5px; }
+.rail-item { position: relative; display: flex; align-items: center; gap: 10px; height: 36px; padding: 0 10px; border-radius: 10px; color: var(--text-2); font-size: 14px; transition: color var(--d-micro); }
+.rail-item:hover { color: var(--text); }
+.rail-item.on { color: var(--text); }
+.rail-item > * { position: relative; z-index: 1; }
+.rail-on { position: absolute !important; inset: 0; z-index: 0 !important; border-radius: 10px; background: var(--ink-3); }
+.rail-item.chat { font-size: 13.5px; height: 34px; }
+.rail-count { font-family: var(--mono); font-size: 11px; color: #1a1408; background: var(--gold); border-radius: 99px; padding: 0 7px; line-height: 18px; }
+.ws-main { position: relative; z-index: 1; height: 100vh; overflow-y: auto; }
+.ws-mobilebar { display: none; }
+.page { max-width: 1080px; margin: 0 auto; padding: 48px 40px 80px; }
+
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th { text-align: left; font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-3); font-weight: 450; padding: 0 12px 12px 0; }
+.tbl td { padding: 14px 12px 14px 0; border-top: 1px solid var(--line); font-size: 14.5px; vertical-align: middle; }
+.tbl tbody tr { cursor: pointer; transition: background var(--d-micro); }
+.tbl tbody tr:hover { background: rgba(236, 230, 218, 0.025); }
+
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 24px; }
+.tab { position: relative; height: 40px; padding: 0 14px; color: var(--text-2); font-size: 14px; }
+.tab.on { color: var(--text); }
+.tab .bar { position: absolute; left: 10px; right: 10px; bottom: -1px; height: 2px; background: var(--gold); border-radius: 2px; }
+
+@media (max-width: 860px) {
+  .ws { grid-template-columns: 1fr; grid-template-rows: 56px 1fr; }
+  .ws > .ws-rail:not(.mobile) { display: none; }
+  .today-row { flex-wrap: wrap; }
+  .today-row .today-actions { width: 100%; padding-left: 56px; }
+  .ws-mobilebar { display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-bottom: 1px solid var(--line); position: relative; z-index: 3; background: var(--void); }
+  .ws-main { height: calc(100vh - 56px); }
+  .page { padding: 28px 18px 60px; }
+  .hide-md { display: none !important; }
+}
+
+@keyframes qpulse { 50% { transform: scale(1.15); } }
+.role-card { transition: border-color var(--d-micro), background var(--d-micro); }
+.role-card:hover { border-color: var(--line-2) !important; background: var(--ink-2) !important; }
+.ws-rail.mobile .rail-org { display: none; }
