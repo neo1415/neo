@@ -16,7 +16,10 @@ export function on(type, fn) {
   return () => { ch && ch.removeEventListener('message', h); local.delete(h) }
 }
 
-export const isFilm = () => new URLSearchParams(window.location.hash.split('?')[1] || '').get('film') === '1'
+export const isFilm = () => {
+  try { if (window.top !== window && window.top.location.hash.startsWith('#/film')) return true } catch {}
+  return new URLSearchParams(window.location.hash.split('?')[1] || '').get('film') === '1'
+}
 
 // Wait for the other side. Standalone demos fall back to a simulated reply so they never dead-end.
 export function waitFor(type, { fallbackMs = 6000, signal } = {}) {

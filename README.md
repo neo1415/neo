@@ -1,40 +1,44 @@
-# Talent Q — UI/UX prototype
+# Talent Q: hire by talking
 
-A clickable, animated prototype of **Talent Q**, the AI-native recruitment platform described in the *Complete Investor & Product Brief* and *Global Market Research & Commercial Strategy v1*. It covers every journey from the landing page through sign-up, onboarding and the full recruiter and candidate workflows, plus a recorded walkthrough video.
+An interactive prototype of **Talent Q**: an AI recruiter you speak to. Think Jarvis meets LinkedIn.
 
-- **Walkthrough video:** [`video/talentq-user-journeys.mp4`](video/talentq-user-journeys.mp4) (1080p; chapter times in `video/chapters.json`)
-- **UX spec:** [`docs/UX.md`](docs/UX.md): journey maps, screen inventory, micro-interaction catalogue, accessibility and tokens
+There are no dashboards and no sidebar. Each person has one home:
+- **Q** sits at the centre.
+- You **talk or type** to it.
+- Q works in the background.
+- Cards called **moments** rise only when a person needs to decide something.
+- Detailed views open as temporary **lenses** and close back to Q.
+
+- **Film:** [`video/talentq-film.mp4`](video/talentq-film.mp4). A story-paced walkthrough of Ada (a founder hiring) and Femi (a candidate), with a laptop and a phone synced live.
+- **Design language:** [`docs/DESIGN.md`](docs/DESIGN.md). Theme, tokens, Q's states and voice, journeys, critique and accessibility results.
 
 ## Run it
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
+npm run dev
 ```
 
-All data is mocked, so there's no backend. State such as names entered at sign-up is kept in `localStorage`.
-
-### Routes
-
-| Area | Routes |
+| Try | URL |
 |---|---|
-| Public | `#/` landing · `#/signup` · `#/login` · `#/forgot` · `#/verify` · `#/onboarding/employer` · `#/onboarding/candidate` |
-| Recruiter workspace | `#/app` · `/intake` · `/shortlist` · `/pipeline` · `/assess` · `/decision` · `/agents` · `/agency` · `/analytics` · `/governance` |
-| Candidate hub | `#/me` · `/invite` · `/interview` · `/rehearsal` · `/evidence` · `/applications` · `/growth` · `/offer` · `/privacy` |
+| Landing | `#/` |
+| Meet Q and onboard | `#/start` |
+| Ada's home (recruiter) | `#/hire`. Jump ahead with `?at=morning`, `?at=yes` or `?at=decide` |
+| Femi's home (candidate, best at phone width) | `#/work`, or `#/work?at=after` for the offer |
+| Q-led interview | `#/work/interview` |
+| Both sides at once | Open `#/hire?at=morning` and `#/work` in two tabs. They sync live. |
 
-## Re-record the video
+The mic button simulates speech: it transcribes what Q expects you to say. Typing works everywhere too.
+
+## Re-record the film
 
 ```bash
-npm run build
-npx vite preview --port 4173 &
-node video/record.mjs                 # all chapters
-ONLY=intake,shortlist node video/record.mjs   # selected chapters
+npm run build && npx vite preview --port 4173 &
+node video/record.mjs
 ```
 
-The recorder drives the real app with Playwright. It adds an on-screen cursor, click ripples and captions, captures 1920×1080 frames through the Chrome DevTools screencast, and encodes them with ffmpeg at true playback speed.
+`video/record.mjs` directs `#/film`, a stage holding a laptop and a phone that run the real app. It plays both users, moves the camera, and adds titles. Frames are captured at 1920×1080 through the DevTools screencast and encoded with ffmpeg.
 
 ## Stack
 
-React 18 · React Router · Framer Motion · Lucide icons · Vite. Fonts: Plus Jakarta Sans, Inter and Instrument Serif, all self-hosted with `@fontsource`.
-
-The people, companies and figures in the prototype are fictional or come from the briefs. Talent Q is presented as a concept: no feature here claims to be live.
+React 18 · Framer Motion · Vite · canvas for Q. Fonts: Newsreader, Geist and Geist Mono (OFL, self-hosted). All people, companies and figures are fictional or come from the strategy briefs.

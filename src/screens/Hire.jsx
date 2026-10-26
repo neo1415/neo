@@ -4,7 +4,7 @@ import { Check, EyeOff, Radio } from 'lucide-react'
 import Stage from '../ui/Stage'
 import { Avatar, Fact, Lens, MomentHead, ease } from '../ui/kit'
 import { useQ } from '../q/useQ'
-import { emit, on, waitFor } from '../q/bus'
+import { emit, isFilm, on, waitFor } from '../q/bus'
 import { brief, interview, mutual, people } from '../data'
 
 const param = (k) => new URLSearchParams(window.location.hash.split('?')[1] || '').get(k)
@@ -443,7 +443,7 @@ export default function Hire() {
     }
 
     // In standalone demos, simulate the interview on Ada's side so the live view isn't empty.
-    if (!new URLSearchParams(window.location.hash.split('?')[1] || '').get('film')) {
+    if (!isFilm()) {
       on('interview_invited', async () => {
         await new Promise((r) => setTimeout(r, 1500))
         emit('interview_started')
