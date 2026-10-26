@@ -12,7 +12,7 @@ const layouts = {
   deskDim: { desk: { x: 240, y: 72, s: 1, o: 0.18 }, phone: { x: 1960, y: 106, s: 1, o: 0 } },
   phone: { desk: { x: -1500, y: 72, s: 1, o: 0 }, phone: { x: 753, y: 106, s: 1, o: 1 } },
   split: { desk: { x: 96, y: 236, s: 0.66, o: 1 }, phone: { x: 1290, y: 106, s: 1, o: 1 } },
-  splitDesk: { desk: { x: 96, y: 150, s: 0.84, o: 1 }, phone: { x: 1390, y: 150, s: 0.86, o: 0.55 } },
+  splitDesk: { desk: { x: 60, y: 150, s: 0.84, o: 1 }, phone: { x: 1420, y: 150, s: 0.86, o: 1 } },
 }
 
 function Device({ kind, src, pose, label }) {
