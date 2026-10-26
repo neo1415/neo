@@ -1,0 +1,5 @@
+node_modules
+dist
+video/raw
+video/*.webm
+.DS_Store
