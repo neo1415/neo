@@ -1,0 +1,50 @@
+[
+  {
+    "id": "open",
+    "at": 0
+  },
+  {
+    "id": "ada-landing",
+    "at": 15.5
+  },
+  {
+    "id": "ada-onboarding",
+    "at": 26.7
+  },
+  {
+    "id": "ada-brief",
+    "at": 48.7
+  },
+  {
+    "id": "night",
+    "at": 83
+  },
+  {
+    "id": "femi-onboarding",
+    "at": 92
+  },
+  {
+    "id": "morning",
+    "at": 119
+  },
+  {
+    "id": "invite",
+    "at": 142.8
+  },
+  {
+    "id": "interview",
+    "at": 172.3
+  },
+  {
+    "id": "decide",
+    "at": 241.4
+  },
+  {
+    "id": "offer",
+    "at": 252.6
+  },
+  {
+    "id": "close",
+    "at": 264
+  }
+]
