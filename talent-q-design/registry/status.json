@@ -1,0 +1,38 @@
+{
+  "_readme": "Single source of progress. States: NOT STARTED, RESEARCHED (atlas row read and assigned a surface), DESIGNED (a design comp exists), PROTOTYPED (works in the TS prototype with mocked state), INTEGRATED (connected to other screens through shared typed state and events), VERIFIED (captured at desktop and mobile, axe-clean, reviewed; evidence path required). Run scripts/build-registers.mjs after editing.",
+  "defaults": { "screens": "RESEARCHED", "motions": "RESEARCHED", "vision": "RESEARCHED" },
+  "surfaces": {
+    "Foundation / public": "Public site and entry",
+    "Employer onboarding & governance": "Organisation setup and policy",
+    "Hiring mandates and discovery": "Recruiter: roles, talent, comparison",
+    "Outreach, pipeline and offer": "Recruiter: approvals, pipeline, offers",
+    "Candidate onboarding and evidence": "Candidate: Evidence Passport",
+    "Candidate jobs and career": "Candidate: jobs and applications",
+    "Interviews and assessments": "Interview and assessment rooms",
+    "Q brain, artifacts, tools": "Q home, runs and artifact canvas",
+    "Agency, organization and admin": "Agency, admin and audit",
+    "Scheduling & correspondence": "Calendar and conversations",
+    "J7 Career Intelligence": "J7 Career",
+    "Q context and memory": "What Q remembers"
+  },
+  "priority": {
+    "SC-117": 1, "SC-118": 1,
+    "SC-014": 2, "SC-018": 2,
+    "SC-027": 3, "SC-028": 3,
+    "SC-036": 4, "SC-045": 4,
+    "SC-041": 5, "SC-039": 5,
+    "SC-049": 6, "SC-158": 6,
+    "SC-149": 7, "SC-147": 7,
+    "SC-153": 8,
+    "SC-067": 9,
+    "SC-162": 10, "SC-164": 10,
+    "SC-099": 11, "SC-100": 11, "SC-101": 11,
+    "SC-133": 12, "SC-177": 12, "SC-178": 12
+  },
+  "screens": {
+    "SC-117": { "status": "DESIGNED", "evidence": "Design canvas https://claude.ai/artifact/MmkpWffDt1d8FhAR9kTFZc (directions A, B, C)", "note": "Three directions; A selected with C's artifact split" },
+    "SC-162": { "status": "DESIGNED", "evidence": "Design canvas https://claude.ai/artifact/MmkpWffDt1d8FhAR9kTFZc (mobile artboards)", "note": "Measures shown separately, no global score" }
+  },
+  "motions": {},
+  "vision": {}
+}

@@ -2,7 +2,7 @@
 
 Founder documents, saved as they arrive. Originals are kept as uploaded; `text/` holds extracted plain-text/markdown copies for quick reading and search.
 
-**Status:** collecting batches. Do not act on the directive until the founder says all batches are in.
+**Status:** complete (4 batches, received 27 Oct 2026). `00_CLAUDE_START_HERE_v2.md` is the controlling instruction; files without `_v2` are historical where a `_v2` exists.
 
 ## Batch 1
 | File | What it is |
@@ -31,5 +31,13 @@ Founder documents, saved as they arrive. Originals are kept as uploaded; `text/`
 | `batch-3/06_DESIGN_SCOPE_AND_NEXT_RESEARCH.md` | Design scope and next research |
 | `batch-3/07_VIDEO_STORYBOARD_AND_VISUAL_REFERENCE.md` | Video storyboard and visual reference |
 
-## Still expected (named in the directive)
-`08_ADDENDUM_SCHEDULING_J7_MEMORY_AND_TOOLING.md`, and access to the `neo1415/q` repo.
+## Batch 4
+| File | What it is |
+|---|---|
+| `batch-4/08_ADDENDUM_SCHEDULING_J7_MEMORY_AND_TOOLING.md` | Addendum: scheduling and correspondence, J7 career intelligence, Q memory and context, tooling |
+| `batch-4/Talent_Q_Vision_Addendum_v2.pdf` | Readable PDF copy of the addendum · text: `batch-4/text/Talent_Q_Vision_Addendum_v2.txt` |
+| `batch-4/README_SEND_TO_CLAUDE.md` | Packaging notes and the six priority acceptance samples |
+
+## Other inputs
+- `neo1415/q` (public), inspected read-only at `build/int-rc` `91a8acb`. Nothing in it is changed.
+- The founder's original 4m33s film is analysed in `07_VIDEO_STORYBOARD_AND_VISUAL_REFERENCE.md`; the film file itself was not uploaded.
