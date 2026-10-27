@@ -46,8 +46,8 @@ export function QHome() {
         reply('I’ve started a mandate from what you said. I have two questions; answer them there or here.', { label: 'Open the mandate', to: '/r/mandate' }, [{ kind: 'CURRENT_PROMPT', label: 'your message' }]);
         navigate('/r/mandate');
       } else if (/compar|shortlist|who/.test(t)) reply('Here’s the shortlist side by side, with each claim linked to its evidence.', { label: 'Open the comparison', to: '/r/compare' });
-      else if (/schedul|interview|time|calendar|book/.test(t)) reply('I’ll find times using your remembered hours: after 10:00, mornings first, Tuesday review kept clear.', { label: 'Go to scheduling', to: '/r/calendar' }, [{ kind: 'MEMORY', label: 'Your meeting hours (20 Oct)' }]);
       else if (/remember|memory|forget|know about/.test(t)) reply('This is everything I remember for you, where each item came from, and how to change it.', { label: 'What Q remembers', to: '/r/memory' });
+      else if (/schedul|interview|time|calendar|book/.test(t)) reply('I’ll find times using your remembered hours: after 10:00, mornings first, Tuesday review kept clear.', { label: 'Go to scheduling', to: '/r/calendar' }, [{ kind: 'MEMORY', label: 'Your meeting hours (20 Oct)' }]);
       else if (/message|outreach|email|send/.test(t)) reply('Drafts wait for your approval. Nothing is sent without it.', { label: 'Open approvals', to: '/r/outreach' });
       else reply('I can shape a role, find and compare people, draft outreach for your approval, and schedule interviews. What would you like to start with?');
     }, 450);

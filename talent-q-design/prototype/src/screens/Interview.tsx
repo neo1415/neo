@@ -9,12 +9,12 @@ import { IPause, IPlay } from '../ui/icons';
 import { Link, useRoute } from '../ui/router';
 
 type Mode = 'TEXT' | 'FORM' | 'VOICE';
-interface Q { id: string; text: string; locked?: boolean; followUp: string; cue: RegExp }
+interface Q { id: string; text: string; locked?: boolean; followUp: string; cue: RegExp; sample?: string }
 
 const INTERVIEW: Q[] = [
-  { id: 'q1', text: 'Walk me through how your reconciliation service catches a mismatch, step by step.', followUp: 'What happens in the first minute after a mismatch is found? Who or what is told, and how?', cue: /\b(first|then|alert|page|queue|job|minute|seconds?)\b/i },
-  { id: 'q2', text: 'How do you make a payment request safe to retry?', locked: true, followUp: 'Where is the idempotency key stored, and for how long?', cue: /\b(key|store|redis|table|ttl|hours?|days?)\b/i },
-  { id: 'q3', text: 'Tell me about an incident you led. What did you do in the first ten minutes?', followUp: 'What did you change afterwards so it wouldn’t happen again?', cue: /\b(after|changed|post-?mortem|fix|added|prevent)\b/i },
+  { id: 'q1', text: 'Walk me through how your reconciliation service catches a mismatch, step by step.', followUp: 'What happens in the first minute after a mismatch is found? Who or what is told, and how?', cue: /\b(first|then|alert|page|queue|job|minute|seconds?)\b/i, sample: 'First the nightly job compares every settlement to the ledger, then any mismatch is queued and the on-call engineer is paged within a minute with the batch and amount' },
+  { id: 'q2', text: 'How do you make a payment request safe to retry?', locked: true, followUp: 'Where is the idempotency key stored, and for how long?', cue: /\b(key|store|redis|table|ttl|hours?|days?)\b/i, sample: 'The client sends an idempotency key with each request and we store the key with the response in a Postgres table for 24 hours, so a retry returns the first result instead of charging twice' },
+  { id: 'q3', text: 'Tell me about an incident you led. What did you do in the first ten minutes?', followUp: 'What did you change afterwards so it wouldn’t happen again?', cue: /\b(after|changed|post-?mortem|fix|added|prevent)\b/i, sample: 'In the first ten minutes I declared the incident, paused payouts and opened a channel; afterwards we added a circuit breaker and wrote a blameless post-mortem so it would not happen again' },
 ];
 const PRACTICE: Record<string, Q> = {
   c_sql_window: { id: 'p1', text: 'You have a table of app sessions (user_id, started_at). How would you find, for each user, how many days passed between their first and second session?', followUp: 'Which window function would you use, and how would you partition it?', cue: /\b(lag|lead|row_number|partition|over)\b/i },
@@ -102,7 +102,7 @@ export function Interview() {
             </form>
           ) : (
             <Composer onSend={answer} label="Your answer" placeholder={mode === 'VOICE' ? 'Press the microphone and speak, or type' : 'Type your answer'}
-              suggestion={mode === 'VOICE' ? 'First the nightly job compares settlements to the ledger, then it alerts the on-call engineer within a minute' : undefined} />
+              suggestion={mode === 'VOICE' ? q.sample : undefined} />
           )}
           <div className="row gap-3 wrap">
             <Button variant="quiet" compact onClick={() => setPaused(true)}><IPause width={16} />Pause</Button>

@@ -25,27 +25,17 @@ Updated 27 Oct 2026. Measured counts are in `COVERAGE-SUMMARY.md`; this file say
 
 ## Not done yet
 
-- **Videos:** 0 of 8 journey films recorded with the new prototype. The old `video/talentq-film.mp4` predates this directive and is not counted.
+- **Videos:** 6 of 8 journey films recorded from the prototype (`captures/video/`, report in `qa/VIDEO-CAPTURE-REPORT.md`). Films 2 (onboarding) and 6 (multi-agent) are blocked by unbuilt screens. The old `video/talentq-film.mp4` predates this directive and is not counted.
 - **Motion clips:** 28 of 57 motions are wired to real state; none is captured as an individual clip.
 - **Screens:** 128 of 183 are only RESEARCHED.
 - **Q contracts:** not yet diffed against `speed/q-oct20` (source conflict C6).
 
 ## Next tasks, in order
 
-1. Record 8 captioned journey films from the prototype with Playwright and ffmpeg. Reuse `qa/scripts/flow.mjs` steps. Write the report to `qa/VIDEO-CAPTURE-REPORT.md`. The films:
-   - (1) recruiter discovery and compare
-   - (2) candidate onboarding
-   - (3) scheduling
-   - (4) J7
-   - (5) adaptive interview
-   - (6) multi-agent work and artifacts
-   - (7) memory correction
-   - (8) evidence portfolios
-
-   Film (2) needs SC-061–066 (welcome, CV ingestion, conversational onboarding) built first. Film (6) needs SC-119 planner and SC-131 multi-agent view.
+1. Build candidate onboarding (SC-061–066), then record film 2. Build the planner and multi-agent view (SC-119, SC-131, SC-132), then record film 6. Both use `qa/scripts/films.mjs`.
 2. Do a manual keyboard and screen-reader pass on the 12 screens. Promote them to VERIFIED with evidence.
-3. Build candidate onboarding: SC-061 to SC-066, SC-068 and SC-072.
-4. Build the Q planner and multi-agent view: SC-119, SC-131 and SC-132. Add a cost-approval event (`q.cost.approval.required`).
+3. Add a cost-approval event (`q.cost.approval.required`) to the planner, plus SC-068 uploader and SC-072 credential verification.
+4. Record per-motion clips (8–20 s) and their reduced-motion versions for the 28 wired motions.
 5. Complete J7 depth:
    - the three persona paths end to end (graduate, switcher, specialist)
    - a comparable-progress chart using the `dataviz` skill

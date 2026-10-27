@@ -170,8 +170,12 @@ export function startScheduling(personId: string): RunId {
     const w = getWorld();
     const slots = calculateSlots({ weekStartUtc: '2026-11-02T00:00:00Z', prefs: w.prefs, earliestLocal: earliest, busy: [BUSY.p_ada, BUSY.p_seyi], candidateTz: p.timezone, durationMin: w.prefs.defaultDurationMinutes, nowUtc: '2026-10-28T09:00:00Z' });
     update((d) => { d.scheduling!.slots = slots; setSchedulingState(d, 'SLOTS_CALCULATED', `${slots.length} options, earliest ${earliest} (from your remembered preference)`); });
-    await ctx.say(`I found ${slots.length} times that suit you and Seyi. They start no earlier than ${earliest}, keep your Tuesday review clear, and come mornings first, as you asked on 20 Oct. Seyi’s calendar is Outlook; I only read when he’s busy.`,
-      [memUse('mem_ada_hours', 'Your meeting hours (20 Oct)'), pol('pol_kora_hours'), { kind: 'KNOWLEDGE_SOURCE', label: 'Busy times: Google + Outlook' }]);
+    const hours = getWorld().memories.find((x) => x.memory_key === 'recruiter.meeting.window' && x.lifecycle_status === 'active');
+    const src = hours?.source_refs[0];
+    const when = src ? new Date(src.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) : '';
+    const said = hours?.supersedes_id ? `as you corrected on ${when}` : `as you asked on ${when}`;
+    await ctx.say(`I found ${slots.length} times that suit you and Seyi. They start no earlier than ${earliest}, keep your Tuesday review clear, and come mornings first, ${said}. Seyi’s calendar is Outlook; I only read when he’s busy.`,
+      [memUse(hours?.memory_id ?? 'mem_ada_hours', `Your meeting hours (${hours?.supersedes_id ? 'corrected ' : ''}${when})`), pol('pol_kora_hours'), { kind: 'KNOWLEDGE_SOURCE', label: 'Busy times: Google + Outlook' }]);
     update((d) => setSchedulingState(d, 'RECRUITER_CONFIRMATION'));
     const decision = await ctx.approval('prop_send_slots', await sha256(JSON.stringify(slots)));
     if (decision !== 'APPROVED') { update((d) => setSchedulingState(d, 'CANCELLED', 'You chose not to send')); return; }

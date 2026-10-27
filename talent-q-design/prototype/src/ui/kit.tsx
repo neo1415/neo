@@ -188,14 +188,17 @@ export function Composer({ onSend, placeholder = 'Ask Q, or tell it what to do',
 export function Sheet({ open, onClose, title, children, side = 'bottom' }: { open: boolean; onClose: () => void; title: string; children: ReactNode; side?: 'bottom' | 'center' }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
+  // Keep the latest onClose without re-running the focus effect on every render (that would steal focus from inputs).
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
   useEffect(() => {
     if (!open) return;
     const prev = document.activeElement as HTMLElement | null;
     ref.current?.focus();
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeRef.current(); };
     document.addEventListener('keydown', onKey);
     return () => { document.removeEventListener('keydown', onKey); prev?.focus(); };
-  }, [open, onClose]);
+  }, [open]);
   return (
     <AnimatePresence>
       {open && (

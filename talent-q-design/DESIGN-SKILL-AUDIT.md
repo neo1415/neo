@@ -17,6 +17,7 @@ This file records what was actually installed in this session (cloud container, 
 | Claude Design canvas (Artifact type) | Phase 1 | Three-direction board at https://claude.ai/artifact/MmkpWffDt1d8FhAR9kTFZc, with six artboards (A Nocturne, B Ledger, C Atelier; desktop and mobile each) |
 | Playwright + Chromium (pre-installed) | v2, continuing | Screenshots, flow tests, axe runs, screencast capture for video |
 | ffmpeg | v2, continuing | MP4 encoding of captured frames |
+| `design-skills:design-systems` | Phase 2 | Token tiers, naming, the variant cap, and the component spec fields (`tokens/`, `components/COMPONENTS.md`) |
 | Subagent (general-purpose) | Phase 1 | `research/Q-REUSE-AUDIT.md`: a read-only audit of `neo1415/q` |
 
 Skills that Phase 2 onward invokes are appended in the log at the end of this file as they are used.
@@ -25,7 +26,7 @@ Skills that Phase 2 onward invokes are appended in the log at the end of this fi
 
 | Skill | Plan |
 |---|---|
-| `design-skills:design-systems`, `design-superpowers:ds-make` | Phase 2 tokens and component specs |
+| `design-superpowers:ds-make` | Versioning and deprecation once the system has consumers beyond this prototype |
 | `design:design-handoff` | Per-screen contracts (directive §Engineering-ready) once screens exist |
 | `design:accessibility-review`, `design-superpowers:design-review` | Phase 6 audit of the TS prototype |
 | `dataviz` | J7 progress and comparison charts |
@@ -54,3 +55,5 @@ Skills that Phase 2 onward invokes are appended in the log at the end of this fi
 ## Log
 
 - 27 Oct: Phase 1. Design canvas created with three directions. Registers generated. Q reuse audit received.
+- 27 Oct: Phase 2. `design-skills:design-systems` invoked. It shaped the three-tier tokens (`tokens/tokens.json`), structure-based names, the five-variant cap, and the spec fields in `components/COMPONENTS.md`.
+- 27 Oct: Phases 3 and 6. Playwright, axe-core and ffmpeg (pre-installed tools, not skills) were used for the golden path, the WCAG scan and six recorded films.
