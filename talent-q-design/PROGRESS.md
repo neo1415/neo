@@ -2,6 +2,21 @@
 
 Updated 27 Oct 2026. Measured counts are in `COVERAGE-SUMMARY.md`; this file says what is done and what to do next, in order.
 
+## Current gate: design direction (27 Oct, founder feedback)
+
+The founder rejected Nocturne as too dashboard-like. Three working directions were built on the same three experiences. **No further screens are designed until the founder chooses one.**
+- Prototypes: `#/x` in the app; published privately at https://claude.ai/artifact/G8kYmDwwdE4b3jUeTTC9Dd
+- Critique and scores: `decisions/DIRECTION-REVIEW.md`. Process: `qa/DESIGN-REVIEW-PROCESS.md`
+- Evidence: `captures/directions/` (41 screenshots, 6 motion previews with captions in a band below the UI)
+- Audits: `qa/RECORDING-ISSUES-AUDIT.md`, `DESIGN-SKILL-AUDIT.md` (rebuilt from transcript evidence)
+
+**After the choice, in order:**
+1. Rebuild the tokens and components in the chosen direction (`design-elevation` and `design-review` skills).
+2. Apply the new system to the 12 working screens, keeping their state, scheduling, memory and evidence logic.
+3. Re-record F1, F3, F4, F5, F7 and F8 with the band-caption pipeline.
+4. Build onboarding (SC-061–066) and the planner and multi-agent view (SC-119, SC-131, SC-132), then record F2 and F6.
+5. Continue the remaining 126 unrepresented screen concepts in journey batches, each going through both review gates.
+
 ## Done
 
 **Phase 1 (complete)**

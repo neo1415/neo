@@ -1,0 +1,119 @@
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/inter-tight';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+/* Direction A · Atelier — lucid, annotated, atelier. Paper ground, ink type, gold as Q's hand. */
+.da {
+  --paper: #f6f1e7; --paper-2: #efe8da; --sheet: #fffdf8; --ink: #17150f; --ink-2: #3f3a30; --ink-3: #5d5648;
+  --rule: #d9cfbd; --rule-2: #c4b9a4; --gold: #a37a24; --gold-ink: #7a5a17; --gold-soft: #ead9b0;
+  --serif: 'Fraunces Variable', Georgia, serif; --sans: 'Inter Tight Variable', system-ui, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  background: var(--paper); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.55; min-height: 100vh;
+  font-feature-settings: 'ss01', 'cv11';
+}
+.da *:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 3px; border-radius: 3px; }
+.da button { font: inherit; color: inherit; cursor: pointer; }
+.da a { color: var(--gold-ink); }
+.da .mono { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.da .serif { font-family: var(--serif); }
+.da .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Index navigation: a magazine contents line, not a toolbar */
+.da-top { display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: 32px; padding: 22px clamp(16px, 4vw, 56px) 16px; border-bottom: 1px solid var(--ink); }
+.da-mark { display: flex; align-items: baseline; gap: 10px; font-family: var(--serif); font-size: 26px; font-weight: 500; letter-spacing: -.01em; color: var(--ink); text-decoration: none; }
+.da-mark em { font-style: italic; color: var(--gold-ink); font-weight: 400; }
+.da-index { display: flex; gap: 28px; justify-self: center; }
+.da-index a { display: flex; align-items: baseline; gap: 8px; text-decoration: none; color: var(--ink-3); padding: 8px 0; border-bottom: 2px solid transparent; min-height: 44px; }
+.da-index a b { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--gold-ink); }
+.da-index a[aria-current='page'] { color: var(--ink); border-bottom-color: var(--gold); }
+.da-who { font-size: 14px; color: var(--ink-3); text-align: right; }
+@media (max-width: 760px) {
+  .da-top { grid-template-columns: 1fr auto; gap: 8px; padding-top: 14px; padding-bottom: 0; }
+  .da-who { display: none; }
+  .da-index { grid-column: 1 / -1; justify-self: stretch; justify-content: space-between; gap: 4px; }
+  .da-index a { font-size: 14px; }
+}
+
+.da-page { max-width: 1320px; margin: 0 auto; padding: clamp(24px, 4vw, 48px) clamp(16px, 4vw, 56px) 96px; }
+.da-spread { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 64px); align-items: start; }
+@media (max-width: 960px) { .da-spread { grid-template-columns: 1fr; } }
+
+.da-kicker { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-ink); }
+.da-hero { font-family: var(--serif); font-weight: 380; font-size: clamp(40px, 6vw, 76px); line-height: 1.02; letter-spacing: -.025em; margin: 12px 0 0; font-variation-settings: 'opsz' 144, 'SOFT' 50; }
+.da-hero i { font-style: italic; font-weight: 300; color: var(--gold-ink); }
+.da-h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1; letter-spacing: -.015em; margin: 0; font-variation-settings: 'opsz' 96; }
+.da-h3 { font-family: var(--serif); font-weight: 500; font-size: 21px; line-height: 1.25; margin: 0; }
+.da-deck { font-family: var(--serif); font-size: 20px; line-height: 1.5; color: var(--ink-2); font-weight: 350; margin: 0; }
+.da-q { font-family: var(--serif); font-style: italic; font-size: 21px; line-height: 1.5; color: var(--ink); margin: 0; font-weight: 350; }
+.da-body { color: var(--ink-2); margin: 0; }
+.da-cap { font-size: 14px; color: var(--ink-3); margin: 0; }
+
+/* Conversation: numbered exchanges in the margin */
+.da-thread { display: flex; flex-direction: column; gap: 22px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--rule); }
+.da-ex { display: grid; grid-template-columns: 28px 1fr; gap: 12px; }
+.da-ex .n { font-family: var(--mono); font-size: 12px; color: var(--ink-3); padding-top: 4px; }
+.da-me { font-weight: 500; }
+.da-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.da-chip { border: 1px solid var(--rule-2); background: transparent; border-radius: 999px; padding: 8px 14px; font-size: 14px; min-height: 40px; color: var(--ink-2); }
+.da-chip:hover { border-color: var(--ink); color: var(--ink); }
+
+.da-compose { display: flex; align-items: center; gap: 10px; border-bottom: 1.5px solid var(--ink); padding: 6px 0; margin-top: 24px; }
+.da-compose input { flex: 1; min-width: 0; border: 0; background: transparent; font-family: var(--serif); font-size: 20px; padding: 10px 0; color: var(--ink); }
+.da-compose input::placeholder { color: var(--ink-3); font-style: italic; }
+.da-compose input:focus-visible { outline: none; }
+.da-icon { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--rule-2); background: transparent; display: grid; place-items: center; flex: none; }
+.da-icon:hover { border-color: var(--ink); }
+.da .da-send { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.da .da-send:disabled { opacity: .35; }
+
+.da-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--ink); background: transparent; font-weight: 500; font-size: 15px; text-decoration: none; color: var(--ink); }
+.da .da-btn-ink { background: var(--ink); color: var(--paper); }
+.da .da-btn-ink:hover { background: var(--ink-2); }
+.da a.da-btn { color: var(--ink); }
+.da-btn:hover:not(.da-btn-ink) { background: var(--paper-2); }
+
+/* The sheet: where Q's artifacts are set like a feature page */
+.da-sheet { background: var(--sheet); border: 1px solid var(--rule); box-shadow: 0 1px 0 var(--rule), 0 24px 60px -32px rgb(60 45 15 / .25); padding: clamp(20px, 3vw, 40px); position: relative; }
+.da-sheet-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--ink); margin-bottom: 22px; flex-wrap: wrap; }
+
+.da-foot { display: grid; grid-template-columns: 20px 1fr auto; gap: 10px; align-items: baseline; font-size: 15px; padding: 6px 0; }
+.da-foot sup { font-family: var(--mono); font-size: 12px; color: var(--gold-ink); }
+.da-foot .c { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+
+/* Evidence marks (Harvey balls): shape carries strength */
+.da-ball { display: inline-block; flex: none; }
+
+/* Ledger */
+.da-ledger { width: 100%; border-collapse: collapse; }
+.da-ledger th, .da-ledger td { border-bottom: 1px solid var(--rule); padding: 16px 12px; text-align: left; vertical-align: middle; }
+.da-ledger thead th { border-bottom: 1.5px solid var(--ink); vertical-align: bottom; }
+.da-cellbtn { all: unset; display: flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; border-radius: 6px; padding: 2px 6px; margin: -2px -6px; }
+.da-cellbtn:hover { background: var(--paper-2); }
+.da-cellbtn[aria-pressed='true'] { background: var(--gold-soft); }
+.da-mono-face { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--ink); display: grid; place-items: center; font-family: var(--serif); font-size: 17px; font-style: italic; background: var(--sheet); }
+.da-note { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--gold-ink); line-height: 1.4; }
+
+.da-specimen { border-top: 1.5px solid var(--ink); padding-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+.da-quote { font-family: var(--serif); font-size: 19px; line-height: 1.5; border-left: 2px solid var(--gold); padding-left: 14px; margin: 0; }
+.da-stamp { justify-self: start; display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--gold-ink); color: var(--gold-ink); border-radius: 3px; padding: 2px 8px; transform: rotate(-2deg); }
+
+.da-seg { display: inline-flex; border: 1px solid var(--ink); border-radius: 999px; padding: 3px; gap: 2px; }
+.da-seg button { border: 0; background: transparent; border-radius: 999px; padding: 6px 14px; min-height: 36px; font-size: 14px; color: var(--ink-2); }
+.da-seg button[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+
+.da-grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 0; border-top: 1px solid var(--ink); }
+.da-grid3 > * { padding: 18px 20px 18px 0; border-bottom: 1px solid var(--rule); }
+
+.da-sim { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); border: 1px dashed var(--rule-2); padding: 2px 8px; border-radius: 3px; }
+
+.da-opt { display: flex; gap: 12px; align-items: flex-start; text-align: left; border: 1px solid var(--rule-2); background: var(--sheet); border-radius: 10px; padding: 12px 14px; min-height: 44px; width: 100%; }
+.da-opt:hover { border-color: var(--ink); }
+.da-opt[aria-pressed='true'] { border-color: var(--gold-ink); background: var(--gold-soft); }
+.da-opt code { font-family: var(--mono); font-size: 14px; }
+
+.da-sheetbar { position: fixed; inset: auto 0 0 0; background: var(--sheet); border-top: 1.5px solid var(--ink); padding: 18px 16px 28px; z-index: 30; max-height: 70vh; overflow: auto; box-shadow: 0 -20px 50px -20px rgb(0 0 0 / .25); }
+
+/* Route line draws in once (CSS so it is robust; reduced motion shows it complete) */
+.da-route { stroke-dasharray: 1; stroke-dashoffset: 1; animation: da-draw 1.1s cubic-bezier(.2,0,0,1) .1s forwards; }
+@keyframes da-draw { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .da-route { animation: none; stroke-dashoffset: 0; } }

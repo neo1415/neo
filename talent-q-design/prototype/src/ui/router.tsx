@@ -2,7 +2,7 @@
 import { useSyncExternalStore, type AnchorHTMLAttributes } from 'react';
 
 const read = () => {
-  const h = location.hash.replace(/^#/, '') || '/';
+  const h = location.hash.replace(/^#/, '') || ((import.meta.env.VITE_START as string | undefined) ?? '/');
   const [path, query = ''] = h.split('?');
   return { path, query: new URLSearchParams(query) };
 };

@@ -21,6 +21,7 @@ export function Entry() {
           <span className="muted">Amaka, Chidi or Tobi (fictional)</span>
         </Link>
       </div>
+      <p><Link to="/x">Design direction review: three directions, the same three experiences →</Link></p>
       <p className="t-caption">Tip: open the hiring side and the candidate side in two tabs. They share one record and update each other live.</p>
     </main>
   );

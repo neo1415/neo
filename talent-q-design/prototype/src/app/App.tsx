@@ -19,6 +19,7 @@ import { Career } from '../screens/Career';
 import { Interview } from '../screens/Interview';
 import { Memory } from '../screens/Memory';
 import { Gallery } from '../screens/Gallery';
+import { Directions } from '../directions';
 
 const RECRUITER = [
   { to: '/r/home', label: 'Q' },
@@ -58,13 +59,15 @@ const ROUTES: Record<string, () => ReactNode> = {
 export function App() {
   const { path } = useRoute();
   const network = useWorld((w) => w.network);
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => (localStorage.getItem('tq.theme') as 'dark' | 'light') || 'dark');
-  useEffect(() => { document.documentElement.dataset.theme = theme; localStorage.setItem('tq.theme', theme); }, [theme]);
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => { try { return (localStorage.getItem('tq.theme') as 'dark' | 'light') || 'dark'; } catch { return 'dark'; } });
+  useEffect(() => { document.documentElement.dataset.theme = theme; try { localStorage.setItem('tq.theme', theme); } catch { /* storage unavailable */ } }, [theme]);
 
   const side = path.startsWith('/c/') ? 'candidate' : path.startsWith('/r/') ? 'recruiter' : null;
   const nav = side === 'candidate' ? CANDIDATE : side === 'recruiter' ? RECRUITER : [];
   const screen = ROUTES[path] ?? (() => <NotFound />);
   const navMatch = (to: string) => path === to || (to === '/r/mandate' && path === '/r/sourcing');
+
+  if (path === '/x' || path.startsWith('/x/')) return <MotionConfig reducedMotion="user"><Directions path={path} /></MotionConfig>;
 
   return (
     <MotionConfig reducedMotion="user">

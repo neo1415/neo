@@ -1,5 +1,5 @@
 {
-  "_readme": "Single source of progress. States: NOT STARTED, RESEARCHED (atlas row read and assigned a surface), DESIGNED (a design comp exists), PROTOTYPED (works in the TS prototype with mocked state), INTEGRATED (connected to other screens through shared typed state and events), VERIFIED (captured at desktop and mobile, axe-clean, reviewed; evidence path required). Run scripts/build-registers.mjs after editing.",
+  "_readme": "Single source of progress. States: NOT STARTED, RESEARCHED (atlas row read and assigned a surface), DESIGNED (a design comp exists), PROTOTYPED (works in the TS prototype with mocked state), INTEGRATED (connected to other screens through shared typed state and events), VERIFIED (captured at desktop and mobile, axe-clean, reviewed; evidence path required). Run scripts/build-registers.mjs after editing. routes: the one primary screen concept per prototype route; other concepts on that route are reported as a state or section of it, never as a standalone screen. design_refs: design-exploration references.",
   "defaults": {
     "screens": "RESEARCHED",
     "motions": "RESEARCHED",
@@ -638,5 +638,35 @@
       "evidence": "design canvas + talent-q-design/prototype (TypeScript, builds clean)",
       "note": "No paid Figma used."
     }
+  },
+  "routes": {
+    "/r/home": "SC-117",
+    "/r/setup": "SC-014",
+    "/r/mandate": "SC-027",
+    "/r/sourcing": "SC-036",
+    "/r/compare": "SC-041",
+    "/r/outreach": "SC-049",
+    "/r/calendar": "SC-149",
+    "/c/slots": "SC-153",
+    "/c/passport": "SC-067",
+    "/c/career": "SC-162",
+    "/c/interview": "SC-099",
+    "/r/memory": "SC-133",
+    "/c/memory": "SC-183"
+  },
+  "design_refs": {
+    "SC-117": "Direction review: /x/{a,b,c}/home + captures/directions",
+    "SC-118": "Direction review: /x/{a,b,c}/home (composer)",
+    "SC-122": "Direction review: generated artifact on /x/{a,b,c}/home",
+    "SC-041": "Direction review: /x/{a,b,c}/compare",
+    "SC-039": "Direction review: /x/{a,b,c}/compare (evidence detail)",
+    "SC-040": "Direction review: /x/{a,b,c}/compare (role-fit explanation)",
+    "SC-162": "Direction review: /x/{a,b,c}/career",
+    "SC-164": "Direction review: /x/{a,b,c}/career (route / skill map)",
+    "SC-165": "Direction review: /x/{a,b,c}/career (gap explainer)",
+    "SC-167": "Direction review: /x/{a,b,c}/career (practice)",
+    "SC-170": "Direction review: /x/{a,b,c}/career (feedback)",
+    "SC-171": "Direction review: /x/{a,b,c}/career (progress)",
+    "SC-173": "Direction review: /x/{a,b,c}/career (practice → passport)"
   }
 }
