@@ -22,5 +22,14 @@ Founder documents, saved as they arrive. Originals are kept as uploaded; `text/`
 | `batch-2/03_MOTION_AND_VIDEO_ATLAS.csv` | Motion atlas v1 (41 motions) |
 | `batch-2/03_MOTION_AND_VIDEO_ATLAS_v2.csv` | Motion atlas v2 |
 
+## Batch 3
+| File | What it is |
+|---|---|
+| `batch-3/04_FOUNDER_VISION_TRACEABILITY.csv` | Founder vision traceability v1 |
+| `batch-3/04_FOUNDER_VISION_TRACEABILITY_v2.csv` | Founder vision traceability v2 (original + added requirements) |
+| `batch-3/05_CLAUDE_DESIGN_FIRST_MASTER_DIRECTIVE.md` | Original directive (superseded by v2 where revised; old requirements still stand) |
+| `batch-3/06_DESIGN_SCOPE_AND_NEXT_RESEARCH.md` | Design scope and next research |
+| `batch-3/07_VIDEO_STORYBOARD_AND_VISUAL_REFERENCE.md` | Video storyboard and visual reference |
+
 ## Still expected (named in the directive)
-`04_FOUNDER_VISION_TRACEABILITY_v2.csv`, `06_DESIGN_SCOPE_AND_NEXT_RESEARCH.md`, `07_VIDEO_STORYBOARD_AND_VISUAL_REFERENCE.md`, `08_ADDENDUM_SCHEDULING_J7_MEMORY_AND_TOOLING.md`, and access to the `neo1415/q` repo.
+`08_ADDENDUM_SCHEDULING_J7_MEMORY_AND_TOOLING.md`, and access to the `neo1415/q` repo.

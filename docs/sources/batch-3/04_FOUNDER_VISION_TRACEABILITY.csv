@@ -1,0 +1,33 @@
+vision_id,founder_requirement,design_features,indicative_screen_ids,status
+V01,Cross-profession hiring,Employer intake + taxonomy + role-specific assessment,SC-027; SC-096; SC-110,Foundation
+V02,One reusable Q brain,Q home/run/agent tools,SC-117; SC-119; SC-118,Foundation
+V03,"Low-latency, cheap provider orchestration","Streaming run events, cache, backend no redundant call",SC-120; SC-035; SC-080,Foundation
+V04,"Real progress states, transparent work","Q run explorer, task receipts and failure",SC-120; SC-121; SC-135,Foundation
+V05,Multi-agent parallel delegation,Planner and parallel tasks with budget,SC-119; SC-131; SC-045,Research
+V06,"Web search, safe scraping/fetch, links","Discovery source manager, Q safe browse",SC-033; SC-128; SC-136,Design+permissions
+V07,Safe internet file downloads,Download scan and parse,SC-130; SC-068,Design+permissions
+V08,"Emails, SMS, WhatsApp outbound","Compose, approve, receipt, campaign",SC-048; SC-049; SC-050,Design+providers
+V09,WhatsApp and conventional calling,Eligibility before call + consent,SC-023; SC-053; SC-047,Partner-dependent
+V10,Expensive video/voice optional,Interview mode chooser + Tavus room,SC-098; SC-102; SC-101,Design+providers
+V11,"Text chat, forms, voice parity",Text/form/video interview,SC-099; SC-100; SC-101,Foundation
+V12,Upload org/personal instructions,"Policy studio, guidance and source review",SC-018; SC-020; SC-097,Foundation
+V13,Q auto-drafts questions and adapts,Question plan and follow-ups,SC-096; SC-097; SC-099,Foundation
+V14,User-uploaded locked interview questions,Question bank and plan editor,SC-095; SC-096; SC-019,Foundation
+V15,Portfolio and evidence vault,"Candidate vault, share, revoke",SC-067; SC-068; SC-073,Foundation
+V16,Credential and permit verification,Credential vault + verification workflow,SC-070; SC-071; SC-072,Design+providers
+V17,Q browses projects and critiques,Safe preview + candidate critique,SC-069; SC-076; SC-129,Research
+V18,Nontechnical recruiter insight,Evidence explain + interview suggestions,SC-039; SC-040; SC-108,Foundation
+V19,Live human interview Q copilot,Live consented notes and suggestions,SC-104; SC-103; SC-106,Research
+V20,Interviewer quality coaching,Recruiter post-call coaching,SC-109; SC-057,Research
+V21,Candidate practice and feedback,Practice dashboard and feedback,SC-089; SC-107; SC-093,Design
+V22,Skill learning and teaching,Skills bridge and learning player,SC-090; SC-091; SC-092,Design
+V23,CV and cover letter creation,Editable CV/letter with confirmed facts,SC-086; SC-087; SC-125,Design
+V24,Custom ranking by job category,Job-specific evidence rubric and review,SC-040; SC-108; SC-144,Research+validation
+V25,Job and talent Explore pages,Explore Jobs/Talent,SC-034; SC-079; SC-084,Foundation
+V26,"Agent-generated art, chart and video",Typed artifact canvas and motion library,SC-122; SC-124; SC-127,Design
+V27,Warm gold animated Q across device,Q orb and synced cross-device reference,SC-117; SC-101; SC-011,Design
+V28,Candidate remains in control of portfolio,"Privacy center, sharing, revoke, expiry",SC-073; SC-075; SC-078,Foundation
+V29,Q improves with users and results,Versioned memory/correction and evaluation,SC-133; SC-144; SC-145,Research+validation
+V30,International and accessible design,"Locale, accessibility and low bandwidth",SC-007; SC-100; SC-064,Foundation
+V31,Agencies and teams,Agency separate mandates and submissions,SC-137; SC-138; SC-016,Design
+V32,Avoid infrastructure hell,One complete hiring loop first; scoped screens in design,SC-028; SC-035; SC-099,Foundation
