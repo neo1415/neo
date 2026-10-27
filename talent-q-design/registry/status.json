@@ -1,6 +1,10 @@
 {
   "_readme": "Single source of progress. States: NOT STARTED, RESEARCHED (atlas row read and assigned a surface), DESIGNED (a design comp exists), PROTOTYPED (works in the TS prototype with mocked state), INTEGRATED (connected to other screens through shared typed state and events), VERIFIED (captured at desktop and mobile, axe-clean, reviewed; evidence path required). Run scripts/build-registers.mjs after editing.",
-  "defaults": { "screens": "RESEARCHED", "motions": "RESEARCHED", "vision": "RESEARCHED" },
+  "defaults": {
+    "screens": "RESEARCHED",
+    "motions": "RESEARCHED",
+    "vision": "RESEARCHED"
+  },
   "surfaces": {
     "Foundation / public": "Public site and entry",
     "Employer onboarding & governance": "Organisation setup and policy",
@@ -16,23 +20,623 @@
     "Q context and memory": "What Q remembers"
   },
   "priority": {
-    "SC-117": 1, "SC-118": 1,
-    "SC-014": 2, "SC-018": 2,
-    "SC-027": 3, "SC-028": 3,
-    "SC-036": 4, "SC-045": 4,
-    "SC-041": 5, "SC-039": 5,
-    "SC-049": 6, "SC-158": 6,
-    "SC-149": 7, "SC-147": 7,
+    "SC-117": 1,
+    "SC-118": 1,
+    "SC-014": 2,
+    "SC-018": 2,
+    "SC-027": 3,
+    "SC-028": 3,
+    "SC-036": 4,
+    "SC-045": 4,
+    "SC-041": 5,
+    "SC-039": 5,
+    "SC-049": 6,
+    "SC-158": 6,
+    "SC-149": 7,
+    "SC-147": 7,
     "SC-153": 8,
     "SC-067": 9,
-    "SC-162": 10, "SC-164": 10,
-    "SC-099": 11, "SC-100": 11, "SC-101": 11,
-    "SC-133": 12, "SC-177": 12, "SC-178": 12
+    "SC-162": 10,
+    "SC-164": 10,
+    "SC-099": 11,
+    "SC-100": 11,
+    "SC-101": 11,
+    "SC-133": 12,
+    "SC-177": 12,
+    "SC-178": 12
   },
   "screens": {
-    "SC-117": { "status": "DESIGNED", "evidence": "Design canvas https://claude.ai/artifact/MmkpWffDt1d8FhAR9kTFZc (directions A, B, C)", "note": "Three directions; A selected with C's artifact split" },
-    "SC-162": { "status": "DESIGNED", "evidence": "Design canvas https://claude.ai/artifact/MmkpWffDt1d8FhAR9kTFZc (mobile artboards)", "note": "Measures shown separately, no global score" }
+    "SC-117": {
+      "status": "INTEGRATED",
+      "route": "/r/home",
+      "evidence": "captures/screens/p01-home-after-search, m-p01-home",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-162": {
+      "status": "INTEGRATED",
+      "route": "/c/career",
+      "evidence": "captures/screens/p10-career-amaka, p10-career-chidi, m-p10-career",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-118": {
+      "status": "INTEGRATED",
+      "route": "/r/home",
+      "evidence": "captures/screens/p01-home-empty (composer: text + simulated voice)",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-014": {
+      "status": "INTEGRATED",
+      "route": "/r/setup",
+      "evidence": "captures/screens/p02-setup-1, m-p02-setup",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-018": {
+      "status": "INTEGRATED",
+      "route": "/r/setup",
+      "evidence": "captures/screens/p02-setup-2-policies",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-027": {
+      "status": "INTEGRATED",
+      "route": "/r/mandate",
+      "evidence": "captures/screens/p03-intake-q1, m-p03-mandate",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-028": {
+      "status": "INTEGRATED",
+      "route": "/r/mandate",
+      "evidence": "captures/screens/p03-intake-ready",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-036": {
+      "status": "INTEGRATED",
+      "route": "/r/sourcing",
+      "evidence": "captures/screens/p04-sourcing-running, -offline, -reconnected, -done",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-045": {
+      "status": "INTEGRATED",
+      "route": "/r/sourcing",
+      "evidence": "captures/screens/p04-sourcing-running",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-041": {
+      "status": "INTEGRATED",
+      "route": "/r/compare",
+      "evidence": "captures/screens/p05-compare, m-p05-compare",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-039": {
+      "status": "INTEGRATED",
+      "route": "/r/compare",
+      "evidence": "captures/screens/p05-evidence-sheet, p05-evidence-after-revoke",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-049": {
+      "status": "INTEGRATED",
+      "route": "/r/outreach",
+      "evidence": "captures/screens/p06-outreach, p06-outreach-sent",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-158": {
+      "status": "INTEGRATED",
+      "route": "/r/outreach",
+      "evidence": "captures/screens/p06-outreach (delegation modes)",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-149": {
+      "status": "INTEGRATED",
+      "route": "/r/calendar",
+      "evidence": "captures/screens/p07-consent, p07-calendar-disconnected",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-147": {
+      "status": "INTEGRATED",
+      "route": "/r/calendar",
+      "evidence": "captures/screens/p07-slots (preferences from memory)",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-153": {
+      "status": "INTEGRATED",
+      "route": "/c/slots",
+      "evidence": "captures/screens/p08-slots, p08-booking-progress, p08-booked, m-p08-slots",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-067": {
+      "status": "INTEGRATED",
+      "route": "/c/passport",
+      "evidence": "captures/screens/p09-passport, p09-passport-kora-view, m-p09-passport",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-164": {
+      "status": "INTEGRATED",
+      "route": "/c/career",
+      "evidence": "captures/screens/p10-career-amaka (route strip)",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-099": {
+      "status": "INTEGRATED",
+      "route": "/c/interview",
+      "evidence": "captures/screens/p11-interview-start, p11-interview-followup",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-100": {
+      "status": "INTEGRATED",
+      "route": "/c/interview",
+      "evidence": "captures/screens/p11-interview-form",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-101": {
+      "status": "INTEGRATED",
+      "route": "/c/interview",
+      "evidence": "captures/screens/p11-interview-voice",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-133": {
+      "status": "INTEGRATED",
+      "route": "/r/memory",
+      "evidence": "captures/screens/p12-memory, p12-corrected",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-177": {
+      "status": "INTEGRATED",
+      "route": "/r/memory",
+      "evidence": "captures/screens/p12-memory (why + source)",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-178": {
+      "status": "INTEGRATED",
+      "route": "/r/memory",
+      "evidence": "captures/screens/p12-corrected, p12-context-pack-outreach",
+      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+    },
+    "SC-029": {
+      "status": "PROTOTYPED",
+      "route": "/r/mandate",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-040": {
+      "status": "PROTOTYPED",
+      "route": "/r/compare",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-019": {
+      "status": "PROTOTYPED",
+      "route": "/r/setup",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-180": {
+      "status": "PROTOTYPED",
+      "route": "/r/setup",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-047": {
+      "status": "PROTOTYPED",
+      "route": "/r/outreach",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-048": {
+      "status": "PROTOTYPED",
+      "route": "/r/outreach",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-150": {
+      "status": "PROTOTYPED",
+      "route": "/r/calendar",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-151": {
+      "status": "PROTOTYPED",
+      "route": "/r/calendar",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-154": {
+      "status": "PROTOTYPED",
+      "route": "/r/calendar",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-155": {
+      "status": "PROTOTYPED",
+      "route": "/r/calendar",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-161": {
+      "status": "PROTOTYPED",
+      "route": "/r/calendar",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-152": {
+      "status": "PROTOTYPED",
+      "route": "/c/slots",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-160": {
+      "status": "PROTOTYPED",
+      "route": "/c/slots",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-073": {
+      "status": "PROTOTYPED",
+      "route": "/c/passport",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-074": {
+      "status": "PROTOTYPED",
+      "route": "/c/passport",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-078": {
+      "status": "PROTOTYPED",
+      "route": "/c/passport",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-098": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-105": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-168": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-170": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-173": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-165": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-176": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-179": {
+      "status": "PROTOTYPED",
+      "route": "/r/memory",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-183": {
+      "status": "PROTOTYPED",
+      "route": "/c/memory",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-120": {
+      "status": "PROTOTYPED",
+      "route": "/r/sourcing",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-135": {
+      "status": "PROTOTYPED",
+      "route": "/r/sourcing",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-181": {
+      "status": "PROTOTYPED",
+      "route": "/r/sourcing",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-121": {
+      "status": "PROTOTYPED",
+      "route": "/r/home",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-122": {
+      "status": "PROTOTYPED",
+      "route": "/r/compare",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-123": {
+      "status": "PROTOTYPED",
+      "route": "/r/compare",
+      "evidence": "",
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    }
   },
-  "motions": {},
-  "vision": {}
+  "motions": {
+    "MO-001": {
+      "status": "PROTOTYPED",
+      "route": "/r/home",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-002": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-003": {
+      "status": "PROTOTYPED",
+      "route": "/r/mandate",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-006": {
+      "status": "PROTOTYPED",
+      "route": "/r/sourcing",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-007": {
+      "status": "PROTOTYPED",
+      "route": "/r/sourcing",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-009": {
+      "status": "PROTOTYPED",
+      "route": "/r/sourcing",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-010": {
+      "status": "PROTOTYPED",
+      "route": "/r/sourcing",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-011": {
+      "status": "PROTOTYPED",
+      "route": "/r/sourcing",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-015": {
+      "status": "PROTOTYPED",
+      "route": "/r/mandate",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-019": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-020": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-024": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-025": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-027": {
+      "status": "PROTOTYPED",
+      "route": "/r/home",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-028": {
+      "status": "PROTOTYPED",
+      "route": "/r/outreach",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-029": {
+      "status": "PROTOTYPED",
+      "route": "/c/passport",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-036": {
+      "status": "PROTOTYPED",
+      "route": "/r/calendar",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-039": {
+      "status": "PROTOTYPED",
+      "route": "/r/setup",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-042": {
+      "status": "PROTOTYPED",
+      "route": "/r/calendar",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-043": {
+      "status": "PROTOTYPED",
+      "route": "/c/slots",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-044": {
+      "status": "PROTOTYPED",
+      "route": "/c/slots",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-045": {
+      "status": "PROTOTYPED",
+      "route": "/c/slots",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-047": {
+      "status": "PROTOTYPED",
+      "route": "/c/slots",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-050": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-052": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-054": {
+      "status": "PROTOTYPED",
+      "route": "/r/memory",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-055": {
+      "status": "PROTOTYPED",
+      "route": "/r/sourcing",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-057": {
+      "status": "PROTOTYPED",
+      "route": "/r/outreach",
+      "evidence": "",
+      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    }
+  },
+  "vision": {
+    "V02": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V04": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V11": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V12": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V15": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V18": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V28": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V33": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V34": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V35": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V36": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V37": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V38": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V39": {
+      "status": "PROTOTYPED",
+      "route": "see screens",
+      "evidence": "",
+      "note": "At least one working prototype path; not all listed screens done."
+    },
+    "V41": {
+      "status": "VERIFIED",
+      "route": "/",
+      "evidence": "design canvas + talent-q-design/prototype (TypeScript, builds clean)",
+      "note": "No paid Figma used."
+    }
+  }
 }

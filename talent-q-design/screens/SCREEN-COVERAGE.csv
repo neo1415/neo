@@ -12,12 +12,12 @@ SC-010,Foundation / public,Email verification,All,,Public site and entry,RESEARC
 SC-011,Foundation / public,Choose work mode,All,,Public site and entry,RESEARCHED,,,
 SC-012,Foundation / public,Q personalisation,All,,Public site and entry,RESEARCHED,,,
 SC-013,Foundation / public,Public sample Q interaction,All,,Public site and entry,RESEARCHED,,,
-SC-014,Employer onboarding & governance,Organization onboarding,Employer,P2,Organisation setup and policy,RESEARCHED,,,
+SC-014,Employer onboarding & governance,Organization onboarding,Employer,P2,Organisation setup and policy,INTEGRATED,/r/setup,"captures/screens/p02-setup-1, m-p02-setup","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
 SC-015,Employer onboarding & governance,Organization dashboard,Employer,,Organisation setup and policy,RESEARCHED,,,
 SC-016,Employer onboarding & governance,Team management,Employer,,Organisation setup and policy,RESEARCHED,,,
 SC-017,Employer onboarding & governance,Role and permission editor,Employer,,Organisation setup and policy,RESEARCHED,,,
-SC-018,Employer onboarding & governance,Organization policy studio,Employer,P2,Organisation setup and policy,RESEARCHED,,,
-SC-019,Employer onboarding & governance,Policy upload and parsing review,Employer,,Organisation setup and policy,RESEARCHED,,,
+SC-018,Employer onboarding & governance,Organization policy studio,Employer,P2,Organisation setup and policy,INTEGRATED,/r/setup,captures/screens/p02-setup-2-policies,"Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+SC-019,Employer onboarding & governance,Policy upload and parsing review,Employer,,Organisation setup and policy,PROTOTYPED,/r/setup,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-020,Employer onboarding & governance,Recruiter personal instructions,Employer,,Organisation setup and policy,RESEARCHED,,,
 SC-021,Employer onboarding & governance,Organization approved templates,Employer,,Organisation setup and policy,RESEARCHED,,,
 SC-022,Employer onboarding & governance,Calendar and integrations,Employer,,Organisation setup and policy,RESEARCHED,,,
@@ -25,29 +25,29 @@ SC-023,Employer onboarding & governance,Channel verification,Employer,,Organisat
 SC-024,Employer onboarding & governance,Employer billing and usage,Employer,,Organisation setup and policy,RESEARCHED,,,
 SC-025,Employer onboarding & governance,Compliance and retention settings,Employer,,Organisation setup and policy,RESEARCHED,,,
 SC-026,Employer onboarding & governance,Employer notification center,Employer,,Organisation setup and policy,RESEARCHED,,,
-SC-027,Hiring mandates and discovery,Create hiring mandate,Employer,P3,"Recruiter: roles, talent, comparison",RESEARCHED,,,
-SC-028,Hiring mandates and discovery,Hiring intake interview,Employer,P3,"Recruiter: roles, talent, comparison",RESEARCHED,,,
-SC-029,Hiring mandates and discovery,Mandate structured editor,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
+SC-027,Hiring mandates and discovery,Create hiring mandate,Employer,P3,"Recruiter: roles, talent, comparison",INTEGRATED,/r/mandate,"captures/screens/p03-intake-q1, m-p03-mandate","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+SC-028,Hiring mandates and discovery,Hiring intake interview,Employer,P3,"Recruiter: roles, talent, comparison",INTEGRATED,/r/mandate,captures/screens/p03-intake-ready,"Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+SC-029,Hiring mandates and discovery,Mandate structured editor,Employer,,"Recruiter: roles, talent, comparison",PROTOTYPED,/r/mandate,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-030,Hiring mandates and discovery,Role feasibility review,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
 SC-031,Hiring mandates and discovery,Mandate approval/version history,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
 SC-032,Hiring mandates and discovery,Mandate detail overview,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
 SC-033,Hiring mandates and discovery,Search scope & data source selector,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
 SC-034,Hiring mandates and discovery,Explore Talent landing,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
 SC-035,Hiring mandates and discovery,Talent search results,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
-SC-036,Hiring mandates and discovery,Search progress explorer,Employer,P4,"Recruiter: roles, talent, comparison",RESEARCHED,,,
+SC-036,Hiring mandates and discovery,Search progress explorer,Employer,P4,"Recruiter: roles, talent, comparison",INTEGRATED,/r/sourcing,"captures/screens/p04-sourcing-running, -offline, -reconnected, -done","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
 SC-037,Hiring mandates and discovery,Candidate card quickview,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
 SC-038,Hiring mandates and discovery,Candidate deep profile,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
-SC-039,Hiring mandates and discovery,Candidate evidence inspector,Employer,P5,"Recruiter: roles, talent, comparison",RESEARCHED,,,
-SC-040,Hiring mandates and discovery,Role-fit explanation,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
-SC-041,Hiring mandates and discovery,Compare candidates,Employer,P5,"Recruiter: roles, talent, comparison",RESEARCHED,,,
+SC-039,Hiring mandates and discovery,Candidate evidence inspector,Employer,P5,"Recruiter: roles, talent, comparison",INTEGRATED,/r/compare,"captures/screens/p05-evidence-sheet, p05-evidence-after-revoke","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+SC-040,Hiring mandates and discovery,Role-fit explanation,Employer,,"Recruiter: roles, talent, comparison",PROTOTYPED,/r/compare,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-041,Hiring mandates and discovery,Compare candidates,Employer,P5,"Recruiter: roles, talent, comparison",INTEGRATED,/r/compare,"captures/screens/p05-compare, m-p05-compare","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
 SC-042,Hiring mandates and discovery,Shortlist editor,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
 SC-043,Hiring mandates and discovery,Saved candidate searches,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
 SC-044,Hiring mandates and discovery,Recruitment agent mandate,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
-SC-045,Hiring mandates and discovery,Recruitment agent execution,Employer,P4,"Recruiter: roles, talent, comparison",RESEARCHED,,,
+SC-045,Hiring mandates and discovery,Recruitment agent execution,Employer,P4,"Recruiter: roles, talent, comparison",INTEGRATED,/r/sourcing,captures/screens/p04-sourcing-running,"Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
 SC-046,Hiring mandates and discovery,Search empty state,Employer,,"Recruiter: roles, talent, comparison",RESEARCHED,,,
-SC-047,"Outreach, pipeline and offer",Candidate contact permission,Employer,,"Recruiter: approvals, pipeline, offers",RESEARCHED,,,
-SC-048,"Outreach, pipeline and offer",Outreach composer,Employer,,"Recruiter: approvals, pipeline, offers",RESEARCHED,,,
-SC-049,"Outreach, pipeline and offer",Approve outgoing message,Employer,P6,"Recruiter: approvals, pipeline, offers",RESEARCHED,,,
+SC-047,"Outreach, pipeline and offer",Candidate contact permission,Employer,,"Recruiter: approvals, pipeline, offers",PROTOTYPED,/r/outreach,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-048,"Outreach, pipeline and offer",Outreach composer,Employer,,"Recruiter: approvals, pipeline, offers",PROTOTYPED,/r/outreach,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-049,"Outreach, pipeline and offer",Approve outgoing message,Employer,P6,"Recruiter: approvals, pipeline, offers",INTEGRATED,/r/outreach,"captures/screens/p06-outreach, p06-outreach-sent","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
 SC-050,"Outreach, pipeline and offer",Outreach campaign timeline,Employer,,"Recruiter: approvals, pipeline, offers",RESEARCHED,,,
 SC-051,"Outreach, pipeline and offer",Recruiter inbox,Employer,,"Recruiter: approvals, pipeline, offers",RESEARCHED,,,
 SC-052,"Outreach, pipeline and offer",Talent invite acceptance,Employer,,"Recruiter: approvals, pipeline, offers",RESEARCHED,,,
@@ -65,18 +65,18 @@ SC-063,Candidate onboarding and evidence,Candidate conversational onboarding,Can
 SC-064,Candidate onboarding and evidence,Candidate structured profile form,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
 SC-065,Candidate onboarding and evidence,Experience claims editor,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
 SC-066,Candidate onboarding and evidence,Skills and competencies editor,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
-SC-067,Candidate onboarding and evidence,Evidence Passport overview,Candidate,P9,Candidate: Evidence Passport,RESEARCHED,,,
+SC-067,Candidate onboarding and evidence,Evidence Passport overview,Candidate,P9,Candidate: Evidence Passport,INTEGRATED,/c/passport,"captures/screens/p09-passport, p09-passport-kora-view, m-p09-passport","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
 SC-068,Candidate onboarding and evidence,Portfolio project uploader,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
 SC-069,Candidate onboarding and evidence,Project live preview,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
 SC-070,Candidate onboarding and evidence,Certificate and credential vault,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
 SC-071,Candidate onboarding and evidence,Work authorization and permits,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
 SC-072,Candidate onboarding and evidence,Credential verification request,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
-SC-073,Candidate onboarding and evidence,Document sharing manager,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
-SC-074,Candidate onboarding and evidence,Candidate public profile preview,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
+SC-073,Candidate onboarding and evidence,Document sharing manager,Candidate,,Candidate: Evidence Passport,PROTOTYPED,/c/passport,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-074,Candidate onboarding and evidence,Candidate public profile preview,Candidate,,Candidate: Evidence Passport,PROTOTYPED,/c/passport,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-075,Candidate onboarding and evidence,Candidate visibility preferences,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
 SC-076,Candidate onboarding and evidence,Candidate work critique,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
 SC-077,Candidate onboarding and evidence,Candidate revision history,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
-SC-078,Candidate onboarding and evidence,Candidate export & delete,Candidate,,Candidate: Evidence Passport,RESEARCHED,,,
+SC-078,Candidate onboarding and evidence,Candidate export & delete,Candidate,,Candidate: Evidence Passport,PROTOTYPED,/c/passport,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-079,Candidate jobs and career,Candidate Explore Jobs,Candidate,,Candidate: jobs and applications,RESEARCHED,,,
 SC-080,Candidate jobs and career,Job search and filters,Candidate,,Candidate: jobs and applications,RESEARCHED,,,
 SC-081,Candidate jobs and career,Job detailed view,Candidate,,Candidate: jobs and applications,RESEARCHED,,,
@@ -96,14 +96,14 @@ SC-094,Candidate jobs and career,Candidate notification inbox,Candidate,,Candida
 SC-095,Interviews and assessments,Question bank studio,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
 SC-096,Interviews and assessments,Interview plan builder,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
 SC-097,Interviews and assessments,Interview guidelines inspector,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
-SC-098,Interviews and assessments,Interview mode selector,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
-SC-099,Interviews and assessments,Text Q interview,Employer+Candidate,P11,Interview and assessment rooms,RESEARCHED,,,
-SC-100,Interviews and assessments,Structured form interview,Employer+Candidate,P11,Interview and assessment rooms,RESEARCHED,,,
-SC-101,Interviews and assessments,Voice interview room,Employer+Candidate,P11,Interview and assessment rooms,RESEARCHED,,,
+SC-098,Interviews and assessments,Interview mode selector,Employer+Candidate,,Interview and assessment rooms,PROTOTYPED,/c/interview,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-099,Interviews and assessments,Text Q interview,Employer+Candidate,P11,Interview and assessment rooms,INTEGRATED,/c/interview,"captures/screens/p11-interview-start, p11-interview-followup","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+SC-100,Interviews and assessments,Structured form interview,Employer+Candidate,P11,Interview and assessment rooms,INTEGRATED,/c/interview,captures/screens/p11-interview-form,"Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+SC-101,Interviews and assessments,Voice interview room,Employer+Candidate,P11,Interview and assessment rooms,INTEGRATED,/c/interview,captures/screens/p11-interview-voice,"Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
 SC-102,Interviews and assessments,Avatar video interview room,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
 SC-103,Interviews and assessments,Human live interview room,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
 SC-104,Interviews and assessments,Q live interview copilot,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
-SC-105,Interviews and assessments,Interview interruption/reconnect,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
+SC-105,Interviews and assessments,Interview interruption/reconnect,Employer+Candidate,,Interview and assessment rooms,PROTOTYPED,/c/interview,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-106,Interviews and assessments,Interview transcript and evidence,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
 SC-107,Interviews and assessments,Candidate interview feedback,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
 SC-108,Interviews and assessments,Recruiter candidate assessment,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
@@ -115,13 +115,13 @@ SC-113,Interviews and assessments,Sales/customer service simulation,Employer+Can
 SC-114,Interviews and assessments,Work sample submission review,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
 SC-115,Interviews and assessments,Assessment accommodation controls,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
 SC-116,Interviews and assessments,Assessment appeal/human review,Employer+Candidate,,Interview and assessment rooms,RESEARCHED,,,
-SC-117,"Q brain, artifacts, tools",Q home workspace,All,P1,"Q home, runs and artifact canvas",DESIGNED,,"Design canvas https://claude.ai/artifact/MmkpWffDt1d8FhAR9kTFZc (directions A, B, C)",Three directions; A selected with C's artifact split
-SC-118,"Q brain, artifacts, tools",Q multimodal composer,All,P1,"Q home, runs and artifact canvas",RESEARCHED,,,
+SC-117,"Q brain, artifacts, tools",Q home workspace,All,P1,"Q home, runs and artifact canvas",INTEGRATED,/r/home,"captures/screens/p01-home-after-search, m-p01-home","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+SC-118,"Q brain, artifacts, tools",Q multimodal composer,All,P1,"Q home, runs and artifact canvas",INTEGRATED,/r/home,captures/screens/p01-home-empty (composer: text + simulated voice),"Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
 SC-119,"Q brain, artifacts, tools",Q task planner,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
-SC-120,"Q brain, artifacts, tools",Q active run states,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
-SC-121,"Q brain, artifacts, tools",Q activity & receipts,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
-SC-122,"Q brain, artifacts, tools",Q artifact canvas,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
-SC-123,"Q brain, artifacts, tools",Q interactive data table,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
+SC-120,"Q brain, artifacts, tools",Q active run states,All,,"Q home, runs and artifact canvas",PROTOTYPED,/r/sourcing,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-121,"Q brain, artifacts, tools",Q activity & receipts,All,,"Q home, runs and artifact canvas",PROTOTYPED,/r/home,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-122,"Q brain, artifacts, tools",Q artifact canvas,All,,"Q home, runs and artifact canvas",PROTOTYPED,/r/compare,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-123,"Q brain, artifacts, tools",Q interactive data table,All,,"Q home, runs and artifact canvas",PROTOTYPED,/r/compare,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-124,"Q brain, artifacts, tools",Q chart and map result,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
 SC-125,"Q brain, artifacts, tools",Q document and CV editor,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
 SC-126,"Q brain, artifacts, tools",Q diagram/graphics viewer,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
@@ -131,9 +131,9 @@ SC-129,"Q brain, artifacts, tools",Q link/project viewer,All,,"Q home, runs and 
 SC-130,"Q brain, artifacts, tools",Q download/extraction view,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
 SC-131,"Q brain, artifacts, tools",Q multi-agent activity,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
 SC-132,"Q brain, artifacts, tools",Q handoff approval center,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
-SC-133,"Q brain, artifacts, tools",Q memory viewer and correction,All,P12,"Q home, runs and artifact canvas",RESEARCHED,,,
+SC-133,"Q brain, artifacts, tools",Q memory viewer and correction,All,P12,"Q home, runs and artifact canvas",INTEGRATED,/r/memory,"captures/screens/p12-memory, p12-corrected","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
 SC-134,"Q brain, artifacts, tools",Q notification preference editor,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
-SC-135,"Q brain, artifacts, tools",Q failure/reconnect center,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
+SC-135,"Q brain, artifacts, tools",Q failure/reconnect center,All,,"Q home, runs and artifact canvas",PROTOTYPED,/r/sourcing,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-136,"Q brain, artifacts, tools",Q research and source manager,All,,"Q home, runs and artifact canvas",RESEARCHED,,,
 SC-137,"Agency, organization and admin",Agency organization home,Admin/Agency,,"Agency, admin and audit",RESEARCHED,,,
 SC-138,"Agency, organization and admin",Agency client mandate manager,Admin/Agency,,"Agency, admin and audit",RESEARCHED,,,
@@ -145,40 +145,40 @@ SC-143,"Agency, organization and admin",Audit trace viewer,Admin/Agency,,"Agency
 SC-144,"Agency, organization and admin",Model and scoring version inspector,Admin/Agency,,"Agency, admin and audit",RESEARCHED,,,
 SC-145,"Agency, organization and admin",Bias and assessment quality dashboard,Admin/Agency,,"Agency, admin and audit",RESEARCHED,,,
 SC-146,"Agency, organization and admin",Source license and connectivity manager,Admin/Agency,,"Agency, admin and audit",RESEARCHED,,,
-SC-147,Scheduling & correspondence,Recruiter meeting preference setup,Employer,P7,Calendar and conversations,RESEARCHED,,,
+SC-147,Scheduling & correspondence,Recruiter meeting preference setup,Employer,P7,Calendar and conversations,INTEGRATED,/r/calendar,captures/screens/p07-slots (preferences from memory),"Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
 SC-148,Scheduling & correspondence,Interview panel selection and conflicts,Employer,,Calendar and conversations,RESEARCHED,,,
-SC-149,Scheduling & correspondence,Google / Outlook OAuth permission details,Employer,P7,Calendar and conversations,RESEARCHED,,,
-SC-150,Scheduling & correspondence,Q scheduling plan and candidate selection,Employer,,Calendar and conversations,RESEARCHED,,,
-SC-151,Scheduling & correspondence,Calendar slot recommendations and scoring,Employer,,Calendar and conversations,RESEARCHED,,,
-SC-152,Scheduling & correspondence,Candidate invitation and channel preference,Candidate,,Calendar and conversations,RESEARCHED,,,
-SC-153,Scheduling & correspondence,Candidate time selection and counterproposal,Candidate,P8,Calendar and conversations,RESEARCHED,,,
-SC-154,Scheduling & correspondence,Interview confirmation and provider receipts,Both,,Calendar and conversations,RESEARCHED,,,
-SC-155,Scheduling & correspondence,Calendar collision recheck resolution,Both,,Calendar and conversations,RESEARCHED,,,
+SC-149,Scheduling & correspondence,Google / Outlook OAuth permission details,Employer,P7,Calendar and conversations,INTEGRATED,/r/calendar,"captures/screens/p07-consent, p07-calendar-disconnected","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+SC-150,Scheduling & correspondence,Q scheduling plan and candidate selection,Employer,,Calendar and conversations,PROTOTYPED,/r/calendar,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-151,Scheduling & correspondence,Calendar slot recommendations and scoring,Employer,,Calendar and conversations,PROTOTYPED,/r/calendar,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-152,Scheduling & correspondence,Candidate invitation and channel preference,Candidate,,Calendar and conversations,PROTOTYPED,/c/slots,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-153,Scheduling & correspondence,Candidate time selection and counterproposal,Candidate,P8,Calendar and conversations,INTEGRATED,/c/slots,"captures/screens/p08-slots, p08-booking-progress, p08-booked, m-p08-slots","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+SC-154,Scheduling & correspondence,Interview confirmation and provider receipts,Both,,Calendar and conversations,PROTOTYPED,/r/calendar,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-155,Scheduling & correspondence,Calendar collision recheck resolution,Both,,Calendar and conversations,PROTOTYPED,/r/calendar,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-156,Scheduling & correspondence,Recruiter-candidate conversation inbox,Both,,Calendar and conversations,RESEARCHED,,,
 SC-157,Scheduling & correspondence,Organization correspondence policy and templates,Employer,,Calendar and conversations,RESEARCHED,,,
-SC-158,Scheduling & correspondence,Approval and bounded outreach delegation,Employer,P6,Calendar and conversations,RESEARCHED,,,
+SC-158,Scheduling & correspondence,Approval and bounded outreach delegation,Employer,P6,Calendar and conversations,INTEGRATED,/r/outreach,captures/screens/p06-outreach (delegation modes),"Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
 SC-159,Scheduling & correspondence,Interview reminder and follow-up queue,Employer,,Calendar and conversations,RESEARCHED,,,
-SC-160,Scheduling & correspondence,Reschedule cancel and fallback interface,Both,,Calendar and conversations,RESEARCHED,,,
-SC-161,Scheduling & correspondence,Recruiter scheduling activity and audit,Employer,,Calendar and conversations,RESEARCHED,,,
-SC-162,J7 Career Intelligence,Career workspace main dashboard,Candidate,P10,J7 Career,DESIGNED,,Design canvas https://claude.ai/artifact/MmkpWffDt1d8FhAR9kTFZc (mobile artboards),"Measures shown separately, no global score"
+SC-160,Scheduling & correspondence,Reschedule cancel and fallback interface,Both,,Calendar and conversations,PROTOTYPED,/c/slots,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-161,Scheduling & correspondence,Recruiter scheduling activity and audit,Employer,,Calendar and conversations,PROTOTYPED,/r/calendar,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-162,J7 Career Intelligence,Career workspace main dashboard,Candidate,P10,J7 Career,INTEGRATED,/c/career,"captures/screens/p10-career-amaka, p10-career-chidi, m-p10-career","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
 SC-163,J7 Career Intelligence,Career goals and transitions planner,Candidate,,J7 Career,RESEARCHED,,,
-SC-164,J7 Career Intelligence,Career role pathway graph,Candidate,P10,J7 Career,RESEARCHED,,,
-SC-165,J7 Career Intelligence,Role skill evidence and gap explainer,Candidate,,J7 Career,RESEARCHED,,,
+SC-164,J7 Career Intelligence,Career role pathway graph,Candidate,P10,J7 Career,INTEGRATED,/c/career,captures/screens/p10-career-amaka (route strip),"Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+SC-165,J7 Career Intelligence,Role skill evidence and gap explainer,Candidate,,J7 Career,PROTOTYPED,/c/career,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-166,J7 Career Intelligence,Personal growth plan editor,Candidate,,J7 Career,RESEARCHED,,,
 SC-167,J7 Career Intelligence,Practice studio launch and mode chooser,Candidate,,J7 Career,RESEARCHED,,,
-SC-168,J7 Career Intelligence,Adaptive mock interview with live coaching,Candidate,,J7 Career,RESEARCHED,,,
+SC-168,J7 Career Intelligence,Adaptive mock interview with live coaching,Candidate,,J7 Career,PROTOTYPED,/c/interview,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-169,J7 Career Intelligence,Role-specific practical challenge player,Candidate,,J7 Career,RESEARCHED,,,
-SC-170,J7 Career Intelligence,Feedback and competency growth review,Candidate,,J7 Career,RESEARCHED,,,
+SC-170,J7 Career Intelligence,Feedback and competency growth review,Candidate,,J7 Career,PROTOTYPED,/c/interview,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-171,J7 Career Intelligence,Practice progress over time,Candidate,,J7 Career,RESEARCHED,,,
 SC-172,J7 Career Intelligence,Career work sample improvement wizard,Candidate,,J7 Career,RESEARCHED,,,
-SC-173,J7 Career Intelligence,From private practice to Evidence Passport,Candidate,,J7 Career,RESEARCHED,,,
+SC-173,J7 Career Intelligence,From private practice to Evidence Passport,Candidate,,J7 Career,PROTOTYPED,/c/interview,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-174,J7 Career Intelligence,Career changes and archived goals,Candidate,,J7 Career,RESEARCHED,,,
 SC-175,J7 Career Intelligence,Rejected application recovery coaching,Candidate,,J7 Career,RESEARCHED,,,
-SC-176,J7 Career Intelligence,Low bandwidth downloadable coaching plan,Candidate,,J7 Career,RESEARCHED,,,
-SC-177,Q context and memory,What Q remembers / why / sources,All,P12,What Q remembers,RESEARCHED,,,
-SC-178,Q context and memory,Correct challenge revoke remembered item,All,P12,What Q remembers,RESEARCHED,,,
-SC-179,Q context and memory,Q context pack for current task,All,,What Q remembers,RESEARCHED,,,
-SC-180,Q context and memory,Organization policy versions and overrides,Employer,,What Q remembers,RESEARCHED,,,
-SC-181,Q context and memory,Paused task resume with episodic memory,All,,What Q remembers,RESEARCHED,,,
+SC-176,J7 Career Intelligence,Low bandwidth downloadable coaching plan,Candidate,,J7 Career,PROTOTYPED,/c/career,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-177,Q context and memory,What Q remembers / why / sources,All,P12,What Q remembers,INTEGRATED,/r/memory,captures/screens/p12-memory (why + source),"Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+SC-178,Q context and memory,Correct challenge revoke remembered item,All,P12,What Q remembers,INTEGRATED,/r/memory,"captures/screens/p12-corrected, p12-context-pack-outreach","Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+SC-179,Q context and memory,Q context pack for current task,All,,What Q remembers,PROTOTYPED,/r/memory,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-180,Q context and memory,Organization policy versions and overrides,Employer,,What Q remembers,PROTOTYPED,/r/setup,,Implemented as a state or section of a priority screen; not separately captured yet.
+SC-181,Q context and memory,Paused task resume with episodic memory,All,,What Q remembers,PROTOTYPED,/r/sourcing,,Implemented as a state or section of a priority screen; not separately captured yet.
 SC-182,Q context and memory,Conflicting evidence reconciliation,All,,What Q remembers,RESEARCHED,,,
-SC-183,Q context and memory,Candidate privacy proof of non-sharing,Candidate,,What Q remembers,RESEARCHED,,,
+SC-183,Q context and memory,Candidate privacy proof of non-sharing,Candidate,,What Q remembers,PROTOTYPED,/c/memory,,Implemented as a state or section of a priority screen; not separately captured yet.

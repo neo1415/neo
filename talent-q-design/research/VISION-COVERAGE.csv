@@ -1,22 +1,22 @@
 vision_id,founder_requirement,indicative_screen_ids,source_status,status,route,evidence,note
 V01,Cross-profession hiring,SC-027; SC-096; SC-110,Foundation,RESEARCHED,,,
-V02,One reusable Q brain,SC-117; SC-119; SC-118,Foundation,RESEARCHED,,,
+V02,One reusable Q brain,SC-117; SC-119; SC-118,Foundation,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
 V03,"Low-latency, cheap provider orchestration",SC-120; SC-035; SC-080,Foundation,RESEARCHED,,,
-V04,"Real progress states, transparent work",SC-120; SC-121; SC-135,Foundation,RESEARCHED,,,
+V04,"Real progress states, transparent work",SC-120; SC-121; SC-135,Foundation,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
 V05,Multi-agent parallel delegation,SC-119; SC-131; SC-045,Research,RESEARCHED,,,
 V06,"Web search, safe scraping/fetch, links",SC-033; SC-128; SC-136,Design+permissions,RESEARCHED,,,
 V07,Safe internet file downloads,SC-130; SC-068,Design+permissions,RESEARCHED,,,
 V08,"Emails, SMS, WhatsApp outbound",SC-048; SC-049; SC-050,Design+providers,RESEARCHED,,,
 V09,WhatsApp and conventional calling,SC-023; SC-053; SC-047,Partner-dependent,RESEARCHED,,,
 V10,Expensive video/voice optional,SC-098; SC-102; SC-101,Design+providers,RESEARCHED,,,
-V11,"Text chat, forms, voice parity",SC-099; SC-100; SC-101,Foundation,RESEARCHED,,,
-V12,Upload org/personal instructions,SC-018; SC-020; SC-097,Foundation,RESEARCHED,,,
+V11,"Text chat, forms, voice parity",SC-099; SC-100; SC-101,Foundation,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
+V12,Upload org/personal instructions,SC-018; SC-020; SC-097,Foundation,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
 V13,Q auto-drafts questions and adapts,SC-096; SC-097; SC-099,Foundation,RESEARCHED,,,
 V14,User-uploaded locked interview questions,SC-095; SC-096; SC-019,Foundation,RESEARCHED,,,
-V15,Portfolio and evidence vault,SC-067; SC-068; SC-073,Foundation,RESEARCHED,,,
+V15,Portfolio and evidence vault,SC-067; SC-068; SC-073,Foundation,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
 V16,Credential and permit verification,SC-070; SC-071; SC-072,Design+providers,RESEARCHED,,,
 V17,Q browses projects and critiques,SC-069; SC-076; SC-129,Research,RESEARCHED,,,
-V18,Nontechnical recruiter insight,SC-039; SC-040; SC-108,Foundation,RESEARCHED,,,
+V18,Nontechnical recruiter insight,SC-039; SC-040; SC-108,Foundation,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
 V19,Live human interview Q copilot,SC-104; SC-103; SC-106,Research,RESEARCHED,,,
 V20,Interviewer quality coaching,SC-109; SC-057,Research,RESEARCHED,,,
 V21,Candidate practice and feedback,SC-089; SC-107; SC-093,Design,RESEARCHED,,,
@@ -26,17 +26,17 @@ V24,Custom ranking by job category,SC-040; SC-108; SC-144,Research+validation,RE
 V25,Job and talent Explore pages,SC-034; SC-079; SC-084,Foundation,RESEARCHED,,,
 V26,"Agent-generated art, chart and video",SC-122; SC-124; SC-127,Design,RESEARCHED,,,
 V27,Warm gold animated Q across device,SC-117; SC-101; SC-011,Design,RESEARCHED,,,
-V28,Candidate remains in control of portfolio,SC-073; SC-075; SC-078,Foundation,RESEARCHED,,,
+V28,Candidate remains in control of portfolio,SC-073; SC-075; SC-078,Foundation,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
 V29,Q improves with users and results,SC-133; SC-144; SC-145,Research+validation,RESEARCHED,,,
 V30,International and accessible design,SC-007; SC-100; SC-064,Foundation,RESEARCHED,,,
 V31,Agencies and teams,SC-137; SC-138; SC-016,Design,RESEARCHED,,,
 V32,Avoid infrastructure hell,SC-028; SC-035; SC-099,Foundation,RESEARCHED,,,
-V33,Q proactive scheduling,SC-147; SC-150; SC-153; SC-154,Addendum / required,RESEARCHED,,,
-V34,Multi-person panel and timezone feasibility,SC-148; SC-151; SC-155; SC-160,Addendum / required,RESEARCHED,,,
-V35,End-to-end correspondence,SC-156; SC-158; SC-159,Addendum / required,RESEARCHED,,,
-V36,J7 first-class career intelligence,SC-162; SC-163; SC-165; SC-167,Addendum / required,RESEARCHED,,,
-V37,J7 private practice and evidence promotion,SC-170; SC-173,Addendum / required,RESEARCHED,,,
-V38,Cross-session Q memory with provenance,SC-177; SC-179; SC-181,Addendum / required,RESEARCHED,,,
-V39,User-correctable memory and revocation,SC-178; SC-182; SC-183,Addendum / required,RESEARCHED,,,
+V33,Q proactive scheduling,SC-147; SC-150; SC-153; SC-154,Addendum / required,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
+V34,Multi-person panel and timezone feasibility,SC-148; SC-151; SC-155; SC-160,Addendum / required,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
+V35,End-to-end correspondence,SC-156; SC-158; SC-159,Addendum / required,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
+V36,J7 first-class career intelligence,SC-162; SC-163; SC-165; SC-167,Addendum / required,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
+V37,J7 private practice and evidence promotion,SC-170; SC-173,Addendum / required,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
+V38,Cross-session Q memory with provenance,SC-177; SC-179; SC-181,Addendum / required,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
+V39,User-correctable memory and revocation,SC-178; SC-182; SC-183,Addendum / required,PROTOTYPED,see screens,,At least one working prototype path; not all listed screens done.
 V40,Graphified code understanding,SC-179,Research only,RESEARCHED,,,
-V41,Free Figma independent design production,SC-001; SC-117,Design operational requirement,RESEARCHED,,,
+V41,Free Figma independent design production,SC-001; SC-117,Design operational requirement,VERIFIED,/,"design canvas + talent-q-design/prototype (TypeScript, builds clean)",No paid Figma used.
