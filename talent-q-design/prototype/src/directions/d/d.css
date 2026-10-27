@@ -1,0 +1,144 @@
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/inter-tight';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+
+/* Direction D · Living Intelligence Workspace
+   Two materials, one language: INK is where Q thinks and speaks; PAPER is where evidence is read.
+   One accent (gold = Q and Q's work). Type: Fraunces (voice, verdicts) · Inter Tight (UI, body) · Plex Mono (data, labels).
+   Scale (major third): 12 · 14 · 16 · 19 · 24 · 30 · 46. Space: 8px unit. Radius: 10 controls · 16 surfaces · pill chips.
+   Deliberately single-look (paper + ink); not theme-switched. */
+.dd {
+  --paper: #f5f1e8; --sheet: #fffdf8; --wash: #ece5d6; --rule: #dcd2bf; --rule-2: #c3b8a3;
+  --ink: #16140f; --ink-2: #3c372d; --ink-3: #5d5648;
+  --night: #121110; --night-2: #1c1a17; --night-3: #2a2723; --moon: #ece6da; --moon-2: #b9b1a3;
+  --gold: #b8892a; --gold-ink: #7a5a17; --gold-light: #e3c27d; --gold-wash: #f1e3bf;
+  --ok: #2f6b3a; --warn: #8a5a00;
+  --voice: 'Fraunces Variable', Georgia, serif; --ui: 'Inter Tight Variable', system-ui, sans-serif; --data: 'IBM Plex Mono', ui-monospace, monospace;
+  --shadow: 0 1px 0 rgb(80 60 20 / .06), 0 18px 40px -24px rgb(80 60 20 / .35);
+  background: var(--paper); color: var(--ink); font-family: var(--ui); font-size: 16px; line-height: 1.55; min-height: 100vh;
+}
+.dd *:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 3px; border-radius: 4px; }
+.dd .ink *:focus-visible { outline-color: var(--gold-light); }
+.dd button { font: inherit; color: inherit; cursor: pointer; }
+.dd .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.dd .lab { font-family: var(--data); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; }
+.dd .ink .lab { color: var(--moon-2); }
+.dd .num { font-variant-numeric: tabular-nums; }
+.dd .voice { font-family: var(--voice); font-weight: 380; letter-spacing: -.01em; font-variation-settings: 'opsz' 72; }
+.dd .t46 { font-size: clamp(32px, 4vw, 46px); line-height: 1.06; letter-spacing: -.022em; }
+.dd .t30 { font-size: clamp(24px, 2.6vw, 30px); line-height: 1.15; }
+.dd .t24 { font-size: 24px; line-height: 1.2; }
+.dd .t19 { font-size: 19px; line-height: 1.45; }
+.dd .t14 { font-size: 14px; line-height: 1.45; }
+.dd .muted { color: var(--ink-3); }
+.dd .ink .muted { color: var(--moon-2); }
+
+/* ---------- Workspace frame ---------- */
+.dd-frame { display: grid; grid-template-columns: minmax(340px, 400px) minmax(0, 1fr); min-height: 100vh; }
+.dd-thread { background: var(--night); color: var(--moon); display: flex; flex-direction: column; min-height: 100vh; max-height: 100vh; position: sticky; top: 0; }
+.dd-thread-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--night-3); }
+.dd-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--moon); font-family: var(--voice); font-size: 19px; min-height: 44px; }
+.dd-nav { display: flex; gap: 2px; }
+.dd-nav a { color: var(--moon-2); text-decoration: none; font-size: 14px; padding: 8px 12px; border-radius: 999px; min-height: 36px; display: inline-flex; align-items: center; }
+.dd-nav a[aria-current='page'] { background: var(--night-3); color: var(--moon); }
+.dd-log { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 18px; scroll-behavior: smooth; }
+.dd-me { align-self: flex-end; max-width: 88%; background: var(--night-3); border-radius: 16px 16px 4px 16px; padding: 10px 14px; font-size: 15px; }
+.dd-q { display: grid; gap: 8px; }
+.dd-q p { margin: 0; }
+.dd-q .say { font-family: var(--voice); font-size: 19px; line-height: 1.45; font-weight: 350; }
+.dd-why { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--moon-2); border: 1px dashed var(--night-3); border-radius: 999px; padding: 4px 10px; width: fit-content; }
+.dd-plan { display: grid; gap: 6px; padding: 12px 14px; border: 1px solid var(--night-3); border-radius: 12px; }
+.dd-agent { display: grid; grid-template-columns: 10px 1fr auto; gap: 10px; align-items: center; font-size: 14px; }
+.dd-agent i { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--moon-2); }
+.dd-agent[data-s='run'] i { background: var(--gold-light); border-color: var(--gold-light); }
+.dd-agent[data-s='done'] i { background: var(--moon-2); }
+.dd-agent .c { font-family: var(--data); font-size: 12px; color: var(--moon-2); }
+.dd-next { display: flex; flex-wrap: wrap; gap: 8px; }
+.dd-chip { border: 1px solid var(--night-3); background: transparent; color: var(--moon); border-radius: 999px; padding: 8px 14px; font-size: 14px; min-height: 40px; text-align: left; }
+.dd-chip:hover { border-color: var(--moon-2); }
+.dd-chip.go { background: var(--gold-light); color: var(--ink); border-color: var(--gold-light); font-weight: 600; }
+.dd-compose { display: flex; align-items: center; gap: 8px; margin: 12px 16px 16px; background: var(--night-2); border: 1px solid var(--night-3); border-radius: 16px; padding: 6px 6px 6px 16px; }
+.dd-compose:focus-within { border-color: var(--gold-light); }
+.dd-compose input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--moon); font: inherit; font-size: 16px; padding: 10px 0; }
+.dd-compose input::placeholder { color: var(--moon-2); }
+.dd-compose input:focus-visible { outline: none; }
+.dd-ib { width: 44px; height: 44px; border-radius: 12px; border: 0; background: var(--night-3); color: var(--moon); display: grid; place-items: center; flex: none; }
+.dd .dd-ib.go { background: var(--gold-light); color: var(--ink); }
+.dd .dd-ib:disabled { opacity: .4; }
+
+/* ---------- Canvas (paper) ---------- */
+.dd-canvas { min-width: 0; padding: 20px clamp(16px, 2.6vw, 36px) 48px; display: flex; flex-direction: column; gap: 16px; }
+.dd-canvas-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+.dd-versions { display: flex; gap: 4px; flex-wrap: wrap; }
+.dd-versions button { border: 0; background: transparent; font-family: var(--data); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); padding: 6px 8px; border-radius: 6px; min-height: 32px; }
+.dd-versions button[aria-pressed='true'] { background: var(--wash); color: var(--ink); }
+.dd-views { display: inline-flex; background: var(--wash); border-radius: 12px; padding: 4px; gap: 2px; flex-wrap: wrap; }
+.dd-views button { border: 0; background: transparent; border-radius: 9px; padding: 8px 14px; min-height: 40px; font-size: 14px; font-weight: 600; color: var(--ink-3); display: inline-flex; gap: 8px; align-items: center; }
+.dd-views button[aria-pressed='true'] { background: var(--sheet); color: var(--ink); box-shadow: 0 1px 2px rgb(80 60 20 / .15); }
+.dd-views button:disabled { opacity: .4; cursor: default; }
+.dd-sheet { background: var(--sheet); border-radius: 16px; box-shadow: var(--shadow); padding: clamp(16px, 2.2vw, 28px); min-width: 0; }
+.dd-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.dd-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--ink); background: transparent; font-weight: 600; font-size: 15px; color: var(--ink); text-decoration: none; }
+.dd .dd-btn.primary { background: var(--ink); color: var(--paper); }
+.dd .dd-btn.quiet { border-color: transparent; color: var(--ink-3); }
+.dd-btn:hover:not(.primary) { background: var(--wash); }
+.dd-sim { font-family: var(--data); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); border: 1px dashed var(--rule-2); border-radius: 4px; padding: 2px 8px; }
+.dd-note { font-family: var(--voice); font-style: italic; font-size: 15px; color: var(--gold-ink); line-height: 1.4; }
+.dd-quote { font-family: var(--voice); font-size: 17px; line-height: 1.5; margin: 0; padding-left: 12px; border-left: 2px solid var(--gold); }
+.dd-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; border-radius: 999px; padding: 3px 10px; border: 1px solid var(--rule-2); color: var(--ink-2); white-space: nowrap; }
+.dd-tag[data-k='verified'] { border-color: var(--ok); color: var(--ok); }
+.dd-tag[data-k='checking'] { border-color: var(--gold); color: var(--gold-ink); }
+
+/* Ledger */
+.dd-ledger-wrap { overflow-x: auto; }
+.dd-ledger { border-collapse: collapse; width: 100%; min-width: 560px; }
+.dd-ledger th, .dd-ledger td { border-bottom: 1px solid var(--rule); padding: 12px 10px; text-align: left; vertical-align: middle; }
+.dd-ledger thead th { border-bottom: 1.5px solid var(--ink); vertical-align: bottom; font-weight: 600; font-size: 14px; }
+.dd-ledger tbody th { font-weight: 500; position: sticky; left: 0; background: var(--sheet); z-index: 1; min-width: 150px; }
+.dd-cell { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 10px; cursor: pointer; }
+.dd-cell:hover { background: var(--wash); }
+.dd-cell[aria-pressed='true'] { background: var(--gold-wash); }
+
+/* Mobile */
+@media (max-width: 860px) {
+  .dd-frame { grid-template-columns: 1fr; }
+  .dd-thread { position: static; max-height: none; min-height: 100vh; }
+  .dd-canvas.as-sheet { position: fixed; inset: 0; z-index: 50; overflow-y: auto; background: var(--paper); padding-top: 12px; }
+  .dd-nav a { padding: 8px 10px; }
+}
+.dd-preview { all: unset; box-sizing: border-box; display: grid; gap: 8px; width: 100%; background: var(--paper); color: var(--ink); border-radius: 14px; padding: 14px; cursor: pointer; }
+.dd-preview:focus-visible { outline: 2px solid var(--gold-light); }
+
+/* Career atlas */
+.dd-atlas-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(320px, 5fr); gap: 16px; align-items: start; }
+@media (max-width: 1100px) { .dd-atlas-grid { grid-template-columns: 1fr; } }
+.dd-node { cursor: pointer; }
+.dd-node:focus-visible { outline: none; }
+.dd-node:focus-visible .ring { stroke: var(--gold-ink); stroke-width: 3; }
+.dd-filter { border: 1px solid var(--rule-2); background: transparent; border-radius: 999px; padding: 6px 12px; min-height: 36px; font-size: 14px; color: var(--ink-2); }
+.dd-filter[aria-pressed='true'] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.dd-record { list-style: none; padding: 0; margin: 0; display: grid; gap: 0; }
+.dd-record li { display: grid; grid-template-columns: 18px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid var(--rule); }
+.dd-opt { all: unset; box-sizing: border-box; display: flex; gap: 10px; align-items: flex-start; width: 100%; padding: 12px 14px; min-height: 44px; border: 1px solid var(--rule-2); border-radius: 12px; cursor: pointer; background: var(--sheet); }
+.dd-opt:hover:not([aria-disabled='true']):not([aria-pressed='true']) { border-color: var(--ink); }
+.dd-opt[aria-pressed='true'] { border-color: var(--gold-ink); background: var(--gold-wash); }
+.dd-opt[aria-disabled='true'] { opacity: .5; cursor: default; }
+.dd-opt code { font-family: var(--data); font-size: 14px; }
+@media (max-width: 860px) {
+  .dd .hide-narrow { display: none; }
+  .dd-ledger { min-width: 0; }
+  .dd-ledger tbody th { min-width: 108px; }
+  .dd-ledger th, .dd-ledger td { padding: 10px 4px; }
+}
+.dd .dd-node:focus { outline: none; }
+.dd .dd-node:focus-visible .ring { stroke: var(--gold-ink); stroke-width: 3; }
+
+/* Phone sheet: a slim ink bar keeps Q's latest line and the way back visible over the artifact. */
+.dd-sheetbar { position: sticky; top: -12px; z-index: 3; margin: -12px -16px 4px; padding: 10px 16px; display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: center; background: var(--night); color: var(--moon); }
+.dd-qline { margin: 0; font-family: var(--voice); font-size: 15px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+@media (max-width: 860px) {
+  .dd-views { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; scrollbar-width: none; }
+  .dd-views button { padding: 8px 12px; flex: none; }
+  .dd-ledger thead th:first-child { position: sticky; left: 0; background: var(--sheet); z-index: 1; }
+}

@@ -1,11 +1,14 @@
-# Direction review: three directions, the same three experiences
+# Direction review: four directions, the same three experiences
 
-Status: **awaiting the founder's choice.** Nocturne (D1) is withdrawn. Nothing will be built in a direction until one is chosen.
+Status: **awaiting the founder's final choice among A, B, C and D.** Nocturne (D1) is withdrawn. Nothing beyond these explorations will be built until one is chosen.
+
+The founder did not approve A, B or C unchanged and asked for a fourth direction, D, that unifies their strengths. D is reviewed in its own section at the end. The A, B and C sections below are unchanged.
 
 Live prototypes run in the same React app as the working product (`#/x`):
 - A: `#/x/a/home`, `#/x/a/compare`, `#/x/a/career`
 - B: `#/x/b/…`
 - C: `#/x/c/…`
+- D: `#/x/d/home`, `#/x/d/compare`, `#/x/d/career`
 
 All three run the same scenario (`src/directions/shared/scenario.ts`): the same people, the same evidence, the same run steps, the same coaching question. So the differences come from design, not content.
 
@@ -76,3 +79,98 @@ The method comes from the `design-skills:design-critique` skill:
 ## Hybrids are possible, but you choose
 
 Strong pairings exist, for example C's interaction model and phone ergonomics with B's Q (orbit) and agent motion. I am not choosing for you. Pick one direction, or name the pieces to combine. Once you choose, the chosen system is applied to the existing working prototype, keeping its state, scheduling, memory and evidence logic.
+
+
+---
+
+# Direction D · The Living Intelligence Workspace
+
+Code: `src/directions/d/` (`kit.tsx` shell, Q mark and evidence glyphs; `Recruit.tsx`; `Career.tsx`; `data.ts`; `d.css` tokens). It uses the same scenario data as A, B and C, extended with a 24-profile pool, six screened people, interview availability and a 14-occupation atlas (48 in the scale demo, of which 34 are marked illustrative).
+
+## One system, not a collage
+
+D is one material system with two surfaces. Each surface has one job.
+
+| Layer | Decision | Taken from | Changed to fit |
+|---|---|---|---|
+| Surfaces | **Ink thread** (left on desktop; the whole screen on phones) is where Q thinks, speaks and shows its agents. **Paper canvas** is where evidence is read. | B's dark field, A's paper | The dark field is narrowed to the conversation, so evidence is always read on paper at high contrast. |
+| Type | Fraunces for Q's voice, verdicts and headlines · Inter Tight for UI and body · IBM Plex Mono for data and labels. Major-third scale (12 to 46) with at least 1.5× between hierarchy levels. | A | A's long italic passages are cut: italic is kept only for Q's margin notes. |
+| Colour | Neutrals for 90%. **Gold means Q and Q's work only** (its mark, its proposals, the primary next step). Green appears once, for "verified at source". | One-accent rule (`design-elevation`) | B's luminous palette and C's warm surfaces are dropped. |
+| Q identity | An open bowl and tail, an abstract Q, with each live agent as a point on the bowl. A point advances only when its agent finishes a unit of work. Still when idle. A text status sits beside it ("Working · 3 agents", "Waiting for you"). | B's orbit | Shrunk to a mark in the thread header. No idle breathing or glow loop. One peak moment: the core settles when the invitations are sent or the work sample is assessed. |
+| Evidence vocabulary | One set of glyphs for hiring and careers: ring+disc verified, disc evidenced, half partial, ring not shown, dashed unclear, dotted practising. In the map view, strength is line style. | A's Harvey balls, B's line styles | Strength is never encoded by shade (dataviz validator: gold steps ≈ 9 ΔE). |
+| Interaction | Chips for the next step, free text that routes to the same steps, progressive disclosure (cells open their evidence in place), dark primary buttons for commits, simulated labels on every external effect. | C | C's bento tiles are not used: one artifact, one view at a time. |
+| Phones | The thread is home. An artifact opens as a full-height sheet with a slim ink bar holding Q's latest line and the way back. The calendar becomes an agenda. The atlas gets a "nearest five" list. | C | Q's line on the sheet keeps the conversation present while the artifact is open. |
+
+## What "Q builds the interface" means here
+
+Each step of the work picks the view that answers the question asked, and states why in the thread ("Shown as a ledger: requirements in rows, so gaps line up"):
+
+1. **Find** → a sieve (24 → 14 → 6 → 3). Dots move to their stage as profiles are actually screened. Every profile set aside has a reason. Above 60 profiles the sieve switches to counts ("What if the pool were 240?").
+2. **Examine evidence** → cards grouped by person, each resolving from "Checking…" to verified, self-reported or outdated, with what the evidence shows and its limits.
+3. **Compare** → a ledger (requirements fixed as rows, people as columns, Q's margin notes), plus Map (relationships) and Pair (two people, the difference named) over the same data. Adding three people grows the columns, and Q rewrites its notes for six.
+4. **Arrange interviews** → the recruiter's week with busy blocks, their remembered rules and Q's proposed times. Approve one or all. Sent is labelled simulated.
+
+The artifact is versioned (v1 Pool … v4 Interviews). Every earlier view stays one tap away and nothing resets. The conversation is one continuous thread.
+
+**Simulated:** in the prototype the view choice is a mapping from step to view. In production this needs a contract in which Q returns an artifact with typed views and a stated reason. That is a requirement on Q, not something already built.
+
+## J7: the atlas, and practice that is not proof
+
+- **Atlas:** occupations grouped by family into sectors, with distance from "you" equal to the number of competencies not yet shown. A "within 2 gaps" filter fades the rest. At 48 occupations, each family collapses to one point at its nearest role and opens on demand. Labels are placed by a collision-aware pass; names that don't fit appear on hover or focus, and the List view has every name.
+- **Role sheet:** each competency has its glyph, and its evidence opens to show "Proves" and "Does not prove". Demand ("7 of the 10 listings you saved") is labelled illustrative.
+- **Practice:** a right answer is logged as a *practice attempt*: private, and explicitly not proof. SQL changes to "Practising" and **the map does not move**.
+- **Work sample → rubric review (simulated reviewer):** 3 of 4 criteria met, level 2 of 4. Only then does SQL count as evidenced. Eight occupations move one ring closer, each leaving a trail from where it was.
+- **Development record:** a four-step ladder (practice attempt · work sample submitted · assessed by rubric and reviewer · verified credential). It says what each step counts for. Each entry shows its class, its justification and what it does not prove.
+
+## Review (design-critique method, as for A, B and C)
+
+Defects found by viewing the renders, and fixed before presenting:
+
+| # | Found | Fix |
+|---|---|---|
+| D1 | The atlas had overlapping labels (Supply Planner over Operations Analyst; an open family unreadable). | Collision-aware label placement with priorities (goal, selected, nearest); hidden names on hover or focus; a wider sector for an open family. |
+| D2 | The "moved" trails showed solid, not dashed: Motion's `pathLength` overrides the dash pattern. | Trails fade in instead and keep their dash; the old position is marked. |
+| D3 | The ledger notes were wrong for six people ("Only Ifeoma has shown on-call", but Dayo's is verified). | A separate note set for six people. |
+| D4 | The "why this view" chip had a square icon that read as an unchecked checkbox. | A gold diamond (Q's colour). |
+| D5 | The map's 3/3 labels overflowed their node circles. The map legend used glyphs while the map uses line styles. | Larger nodes; a line-style key. |
+| D6 | The calendar's "No calls before 10" label was hidden under Monday's stand-up. | A calendar key above the grid. |
+| D7 | Phone: the "Back to Q" button overlapped the kicker; view tabs wrapped; the four sieve columns were too narrow; family labels were clipped. | An ink sheet bar with Q's latest line; scrolling tabs; the sieve as rows; clamped labels; a "nearest five" list. |
+| D8 | Phone: the pair view's three columns squeezed the notes. | The requirement above, the two people below. |
+| D9 | axe: role=dialog on `main`; no main landmark or h1 on phones. | On phones the thread is `main` with an h1; the sheet is a `section` dialog. |
+
+### Scores (1–5)
+
+These are my scores of my own work, made with the same rubric as A, B and C. Treat them as a claim to check against the renders and films, not as an independent judgement.
+
+| Criterion | D | Evidence |
+|---|---|---|
+| Visual hierarchy | 5 | The serif finding headline leads each view. The ink/paper split separates "Q is talking" from "evidence to read" before any reading happens. |
+| Comprehension | 5 | Each view's title states its finding ("Only one heavy line reaches payments systems."). The default comparison is the ledger, not the map. |
+| Interaction quality | 5 | One continuous conversation; views switch without resetting; versions; evidence opens in place; one-tap approvals. |
+| Typography | 5 | A's system, trimmed of long italic passages. |
+| Creative quality | 4 | The bowl-and-agents mark and the two-material split are distinctive. They are less spectacular than B's full spatial field, on purpose. |
+| Mobile usability | 4 | Thread-first, a sheet with Q's line, agenda, list fallbacks. The atlas is small on a phone; labels are thinned and the nearest-five list carries it. |
+| Coherence | 5 | One glyph vocabulary and one shell across hiring and J7. |
+| Motion | 4 | Every motion is caused by an event: agents finishing, cards resolving, columns growing, roles moving. There are fewer signature moments than B or C. |
+| Accessibility | 4 | axe-core: 0 violations in 22 scans of D's key states, desktop and phone (`qa/scripts/axe-direction-d.mjs`). Shape and line-style encodings, table and list alternatives. The manual keyboard and screen-reader pass is still open. |
+| Product differentiation | 4 | Unlike HR dashboards; closer to a premium research tool than to B's observatory. |
+| **Total (50)** | **45** | Self-assessed; see the note above. |
+
+## What D improves over A, B and C
+
+- **Over A:** Q visibly works (agents on the mark, live counts, cards resolving), so A's "beautiful but quiet" risk is addressed. Interactions change the canvas meaningfully.
+- **Over B:** relationship views are an option over the same data, not the only view. The default is a ledger, so B's learnability and scale risks are handled. The map remains for "how do they connect".
+- **Over C:** one artifact with views replaces a grid of tiles, so there is no drift back towards cards. Coverage counts are small, so they cannot read as a single score.
+- **New in D:** a versioned artifact and a continuous conversation. View choice is stated by Q. Scale modes are built in (sieve to counts, 3 to 6 people, 14 to 48 occupations). J7 separates practice from proof and keeps a justified record.
+
+## Trade-offs that remain
+
+1. **The view choice is scripted.** Production needs Q to return typed artifact views with a reason; this is a contract to add to Q.
+2. **The ink column is heavy on desktop.** It is 400px of dark beside paper. That suits a long recruiting session; a collapsible thread may be needed for wide-artifact work.
+3. **Restraint costs spectacle.** The Q mark is small and still when idle. If the founder wants Q to feel more "Jarvis", the mark can grow, but the rule that it moves only for real work should stay.
+4. **Phones get the weakest atlas.** On a phone the atlas is a glance; the list does the work.
+5. **Scale has limits.** The ledger is designed for up to about 8 people before horizontal scroll dominates; beyond that it needs grouping (not built). The map is readable to about 6.
+6. **Not validated with people.** No usability test has been run. The manual keyboard and screen-reader pass is outstanding.
+7. **Two experiences share one shell.** Candidates and recruiters get the same ink/paper workspace. A lighter candidate home may still be wanted in the 183-screen rollout.
+
+Evidence: `captures/directions/screens/d-*` (desktop and phone), `captures/directions/d-{hiring,career}-{desktop,phone}.mp4`.

@@ -21,6 +21,8 @@ Correction to the previous version of this file: it credited `design-superpowers
 | 11 | this round | `dataviz` | evidence, progress, skill-graph encodings |
 | 12 | this round | `design-skills:interaction-design` | motion languages and Q state machines per direction |
 | 13 | this round | `design-skills:design-critique` | rubric critique of A, B and C |
+| 14 | Direction D (founder's unification request) | `design-skills:design-elevation` | unify A's type and evidence, B's Q and relationship views, C's interaction and mobile into one system |
+| 15 | earlier publish of the direction review page | `artifact-design` | single-file review page (logged now; it was invoked but missing from this table) |
 
 **Gap the founder identified, confirmed.** The 12 Nocturne screens were built with only #9 invoked during that phase. That is a likely contributor to their "internal dashboard" quality.
 
@@ -33,11 +35,11 @@ Correction to the previous version of this file: it credited `design-superpowers
 | `design-skills:interaction-design` | Yes, plus `references/motion-principles.md` | Yes (#4, #12) | Q state machines (ink, orbit, bloom); per-direction motion; Q→artifact morph in C | Motion tied to real counts (no fake progress); 500ms ceiling for functional motion; zero overshoot for data views in A and B, springs only in C; a designed peak moment per flow (verdict, coverage 6 → 7) | n/a |
 | `design-skills:design-critique` | Yes | Yes (#7, #13) | `decisions/DIRECTION-REVIEW.md`, `qa/DESIGN-REVIEW-PROCESS.md` | Scored rubric with heuristic severities; 12 defects found by viewing renders and fixed before presenting | n/a |
 | `design-skills:design-systems` | Yes | Yes (#9) | `tokens/tokens.json`, `components/COMPONENTS.md` | Three-tier tokens, a contrast gate in the build, a five-variant cap | It shaped structure, not visual quality; the founder judged the result too dashboard-like |
-| `design-skills:design-elevation` | Yes (v2 only) | Yes (#2), v2 only | v2 JavaScript prototype | Spacing rhythm and restraint rules | **Not used this round.** It would be appropriate to apply it to the chosen direction before rollout (next step) |
+| `design-skills:design-elevation` | Yes, plus `references/elevation-protocol.md` and `references/design-interrogation.md` | Yes (#2 for v2, #14 for D) | Direction D (`src/directions/d/`): `d.css` tokens, the thread and canvas shell, every D view | Functional and perceptual patterns separated (ink thread = where Q works, paper canvas = where evidence is read); one major-third type scale with ≥1.5× jumps between hierarchy levels; one accent (gold = Q and its work only); 8px spacing; chart titles state the finding ("Only one heavy line reaches payments systems."); tabular numbers; the interrogation checklist drove cutting the decorative idle animation from the Q mark | n/a |
 | `design-skills:accessibility-audit` | Yes (v2 only) | Yes (#8) | v2 fixes; axe pipeline carried forward | Contrast fix, landmarks | The current scans are automated axe runs, not a re-invocation; a manual keyboard and screen-reader pass is still open |
 | `design-skills:journey-mapping`, `design-skills:ux-writing` | Yes (v2 only) | Yes (#5, #6) | v2 film and Q's voice | Story arc; tone rules still used in copy | Not re-invoked this round |
 | `design-superpowers:design` | Yes (v2 only) | Yes (#3) | v2 one-home model | Moments and lenses carried into Nocturne | Not re-invoked this round |
-| `artifact-design` | Planned | Not yet | (publishing the live direction prototype) | n/a | Required before publishing a page; it is invoked at publish time |
+| `artifact-design` | Yes | Yes (#15) | The published direction review page (A, B, C, and now D) | Page contract: title, no external requests, self-contained build, phone width | n/a |
 | `design-superpowers:design-review`, `design:design-critique`, `design:accessibility-review` | No | No | n/a | n/a | They overlap with the critique and accessibility skills already used. Invoking them now would only pad this list. `design-review` covers design-system compliance and will be used after the system is rebuilt in the chosen direction. |
 | `design-skills:ux-research`, `design:user-research` | No | No | n/a | n/a | Needed for real usability testing of the chosen direction (the J7 reviewer sign-off). There are no participants in this session. |
 | `design:design-handoff`, `design-superpowers:ds-make`, `ds-manage`, `ds-producer`, `ds-consumer`, `map-design` | No | No | n/a | n/a | These apply once a direction is chosen and rebuilt as tokens and components |

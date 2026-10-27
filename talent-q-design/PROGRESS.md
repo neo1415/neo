@@ -4,14 +4,16 @@ Updated 27 Oct 2026. Measured counts are in `COVERAGE-SUMMARY.md`; this file say
 
 ## Current gate: design direction (27 Oct, founder feedback)
 
-The founder rejected Nocturne as too dashboard-like. Three working directions were built on the same three experiences. **No further screens are designed until the founder chooses one.**
+The founder rejected Nocturne as too dashboard-like. Three working directions (A, B, C) were built on the same three experiences. The founder approved none of them unchanged and asked for a fourth, **D · Living Intelligence Workspace**, unifying their strengths. D is built (`src/directions/d/`). **No further screens are designed until the founder chooses among A, B, C and D.**
+- D evidence: `captures/directions/screens/d-*` (desktop and phone, full interaction paths, via `qa/scripts/direction-d.mjs`); four films `captures/directions/d-{hiring,career}-{desktop,phone}.mp4`; axe-core 0 violations in 22 scans (`qa/scripts/axe-direction-d.mjs`).
+- D critique, improvements over A, B and C, and the trade-offs that remain: end of `decisions/DIRECTION-REVIEW.md`.
 - Prototypes: `#/x` in the app; published privately at https://claude.ai/artifact/G8kYmDwwdE4b3jUeTTC9Dd
 - Critique and scores: `decisions/DIRECTION-REVIEW.md`. Process: `qa/DESIGN-REVIEW-PROCESS.md`
-- Evidence: `captures/directions/` (41 screenshots, 6 motion previews with captions in a band below the UI)
+- Evidence: `captures/directions/` (A–C: 41 screenshots and 6 motion previews; D: see above). Captions sit in a band below the UI.
 - Audits: `qa/RECORDING-ISSUES-AUDIT.md`, `DESIGN-SKILL-AUDIT.md` (rebuilt from transcript evidence)
 
 **After the choice, in order:**
-1. Rebuild the tokens and components in the chosen direction (`design-elevation` and `design-review` skills).
+1. Rebuild the tokens and components in the chosen direction (if D: promote `src/directions/d/kit.tsx` and `d.css` to the app's design system) (`design-elevation` and `design-review` skills).
 2. Apply the new system to the 12 working screens, keeping their state, scheduling, memory and evidence logic.
 3. Re-record F1, F3, F4, F5, F7 and F8 with the band-caption pipeline.
 4. Build onboarding (SC-061–066) and the planner and multi-agent view (SC-119, SC-131, SC-132), then record F2 and F6.

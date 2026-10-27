@@ -1,4 +1,4 @@
-// Motion previews of the three design directions, recorded from the running prototype.
+// Motion previews of the four design directions, recorded from the running prototype.
 // Captions are typeset with libass in a band BELOW the interface, so they never cover UI (founder feedback).
 // The pointer is the only overlay on the UI itself. Usage: node direction-films.mjs <outDir> [a-d,a-m,...]
 import pw from '/opt/node-tools/node_modules/playwright/index.js';
@@ -123,3 +123,107 @@ for (const dir of ['a', 'b', 'c']) {
     await d.scroll(1400); await d.wait(1600);
   });
 }
+
+// ---------------- Direction D: one continuous conversation per film (no page reloads between steps) ----------------
+const NAME_D = 'Direction D · Living Intelligence Workspace';
+const chipD = (d, re) => d.page.locator('.dd-chip').filter({ hasText: re }).last();
+const backD = async (d) => { const b = d.page.getByRole('button', { name: 'Back to the conversation with Q' }); if (await b.count()) { await d.click(b); await d.wait(300); } };
+const sheetScroll = (d, y) => d.page.evaluate((v) => { const el = document.querySelector('.dd-canvas.as-sheet') || document.scrollingElement; el.scrollTo({ top: v, behavior: 'smooth' }); }, y).then(() => d.wait(900));
+
+await film('d-hiring-desktop', NAME_D, {}, async (d) => {
+  await d.go('/x/d/home');
+  await d.cap('Q home: an ink thread where Q works, a paper canvas where it builds. Q is still: nothing is running.', 2600);
+  await d.cap('Ada picks the suggested next step.');
+  await d.click(chipD(d, /Find backend engineers/));
+  await d.cap('Three agents start. Each point on the Q mark moves only when its agent finishes a unit of work.', 2400);
+  await d.cap('Q chose a sieve for “who is in the pool”. It fills as profiles are actually read and screened.', 3200);
+  await d.click(d.page.getByText('Why 18 were set aside'));
+  await d.cap('Every profile set aside has a reason you can check.', 2400);
+  await d.click(chipD(d, /Examine their technical evidence/));
+  await d.cap('Same conversation, new step. Q switches the canvas to evidence cards and checks each source.', 3600);
+  await d.cap('Each card says what it shows and its limits. Kunle’s 2024 case study is marked outdated, not weak.', 2600);
+  await d.click(chipD(d, /Compare the three/));
+  await d.cap('Version 3: a ledger. Requirements are rows, so gaps line up. Strength is shape, never shade.', 3600);
+  await d.click(d.page.getByRole('button', { name: /Kunle, Payments systems/ }));
+  await d.cap('Any mark opens its evidence, inline. The conversation is untouched.', 2600);
+  await d.click(chipD(d, /Add the other three/));
+  await d.cap('Six people: columns grow, rows stay fixed, and Q’s margin notes rewrite for six.', 3000);
+  await d.click(d.page.getByRole('button', { name: 'Map', exact: true }));
+  await d.cap('The same evidence as a relationship map. Line style carries strength; one heavy line reaches payments.', 3200);
+  await d.click(d.page.getByRole('button', { name: /^Tobi Adeyemi:/ }));
+  await d.cap('Focus a person to isolate their links.', 2200);
+  await d.click(chipD(d, /Arrange interviews/));
+  await d.cap('Version 4: your week. Q reads the calendar, applies your remembered rules, then proposes times.', 4800);
+  await d.click(chipD(d, /Approve all three/));
+  await d.cap('One approval sends all three (simulated). The only flourish in the flow: Q settles.', 2600);
+  await d.click(d.page.getByRole('button', { name: /^v1 Pool/ }));
+  await d.cap('Every earlier version is still one tap away. Nothing reset.', 2600);
+});
+
+await film('d-career-desktop', NAME_D, {}, async (d) => {
+  await d.go('/x/d/career');
+  await d.cap('J7 for Amaka. Distance from her is the number of competencies an occupation needs that she hasn’t shown.', 3400);
+  await d.click(chipD(d, /What’s within reach/));
+  await d.cap('Filter: within two gaps. The rest stay on the map, faded.', 2400);
+  await d.click(chipD(d, /Show every occupation/));
+  await d.click(chipD(d, /Show 48 occupations/));
+  await d.cap('At 48 occupations, families group into one point each. The atlas stays readable as data grows.', 3000);
+  await d.click(d.page.getByRole('button', { name: /^Data: / }));
+  await d.cap('Open one family. Names that don’t fit appear on hover; the List view has every one.', 3000);
+  await d.click(chipD(d, /Back to 14/));
+  await d.click(chipD(d, /Open Product Analyst/));
+  await d.cap('Product Analyst: five competencies, two shown. Each has a state you can read by shape.', 2800);
+  await d.click(chipD(d, /Review my evidence/));
+  await d.cap('Every piece of evidence says what it proves, and what it does not.', 2800);
+  await d.click(chipD(d, /Practise SQL/));
+  await d.cap('Practice is private.', 1400);
+  await d.click(d.btn(/LAG\(started_at\)/));
+  await d.cap('A right answer is logged as practice only. It is not proof, so the map does not move.', 3400);
+  await d.click(chipD(d, /Submit a work sample/));
+  await d.cap('A work sample is reviewed against a rubric (simulated reviewer).', 3600);
+  await d.cap('Assessed at level 2 of 4: now it counts. Eight occupations move one ring closer, each with a trail.', 3800);
+  await d.click(chipD(d, /Show my record/));
+  await d.cap('The development record: each change shows its class of evidence, the reason, and what it doesn’t prove.', 3800);
+});
+
+await film('d-hiring-phone', NAME_D, { phone: true }, async (d) => {
+  await d.go('/x/d/home');
+  await d.cap('On a phone the thread is home.', 1600);
+  await d.click(chipD(d, /Find backend engineers/));
+  await d.cap('The artifact opens as a sheet. Q’s latest line stays on top.', 4600);
+  await backD(d);
+  await d.cap('Back in the thread, each reply links to the version it made.', 2200);
+  await d.click(chipD(d, /Examine their technical evidence/));
+  await d.wait(4800);
+  await backD(d);
+  await d.click(chipD(d, /Compare the three/));
+  await d.cap('The ledger keeps names sticky, and opens evidence in place.', 3800);
+  await d.click(d.page.getByRole('button', { name: /Tobi, Payments systems/ }));
+  await sheetScroll(d, 600); await d.wait(1200);
+  await backD(d);
+  await d.click(chipD(d, /Arrange interviews/));
+  await d.cap('On a phone, the plan is an agenda, not a calendar grid.', 5200);
+  await sheetScroll(d, 500);
+  await d.click(d.btn(/Approve and send all three/));
+  await d.cap('Sent (simulated).', 1800);
+});
+
+await film('d-career-phone', NAME_D, { phone: true }, async (d) => {
+  await d.go('/x/d/career');
+  await d.click(chipD(d, /Open Product Analyst/));
+  await d.cap('Amaka’s goal on a phone: competencies, each with its evidence state.', 2600);
+  await backD(d);
+  await d.click(chipD(d, /Practise SQL/));
+  await sheetScroll(d, 200);
+  await d.click(d.btn(/LAG\(started_at\)/));
+  await d.cap('Practice: logged, private, not proof.', 2600);
+  await backD(d);
+  await d.click(chipD(d, /Submit a work sample/));
+  await d.cap('Reviewed against a rubric (simulated)…', 3800);
+  await d.cap('…then the atlas moves, because assessed evidence counts.', 2600);
+  await sheetScroll(d, 600); await d.wait(1400);
+  await backD(d);
+  await d.click(chipD(d, /Show my record/));
+  await d.cap('Every change, with its reason and its limits.', 2400);
+  await sheetScroll(d, 700); await d.wait(1600);
+});
