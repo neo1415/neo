@@ -1,0 +1,1338 @@
+Q      TALENTQ
+
+
+
+
+ TALENTQ / STRATEGY SERIES / DOCUMENT 02
+
+
+
+ Global Market
+ Research &
+ Commercial Strategy
+ A source-led investigation into the recruitment economy, global
+ competition, defensibility, pricing, market entry, and venture-scale
+ feasibility.
+
+
+ 25 OCTOBER 2026 | EVIDENCE-LED V1 | GLOBAL SCOPE
+
+
+
+
+    INVESTMENT POSTURE
+
+    This document contains verified desk research, explicit assumptions, and financial scenarios. It is not
+    a claim of market traction, validated willingness to pay, regulatory approval or guaranteed returns.
+
+
+
+
+STRATEGY SERIES 02 / VERIFIED SOURCES + LABELED SCENARIOS
+TALENTQ                                                                      MARKET RESEARCH / DOCUMENT 02
+
+
+
+ EXECUTIVE READING GUIDE
+
+
+ Decision summary
+ The central finding: AI sourcing and interview automation are no longer under-served categories. TalentQ
+ must win on measurable hiring outcomes, verifiable mutual fit, trusted candidate experiences and
+ distribution in a chosen customer segment, not on a claim that competitors lack agents. [S03,S04,S05]
+
+
+     WHAT WE CAN SAY TODAY
+
+     A real, growing recruitment technology market exists. Employers and candidates report persistent failures in
+     matching, speed, trust, feedback and candidate conversion. Strong incumbents already sell AI workflow
+     automation. TalentQ is an unvalidated entrant with a credible product thesis but no demonstrated proprietary
+     data advantage.
+
+
+
+
+ Six decisions this report supports
+ • Category: evidence-led hiring orchestration, not another job board and not a general HR super-app.
+
+ • Beachhead: test specialist agencies and mid-market employers hiring repeat professional roles; compare
+ buying cycles and retention.
+
+ • Product wedge: a qualified, interested, permissioned shortlist with full candidate-recruiter follow-through.
+
+ • Monetization: employer-funded subscription / mandate pricing, with metered high-cost assessment and
+ video services.
+
+ • Expansion: preserve global architecture, deploy regionally in deliberate phases after compliance and data
+ partnerships.
+
+ • Investability: raise against proof milestones, not broad market size or invented model accuracy.
+
+
+ Reliability statement
+ Sources are dated and cited as [Sxx]. Third-party market-research values are publisher estimates, not
+ independently auditable census measurements. Company feature claims are company statements; they are
+ not independent benchmark results. All financial outputs are assumption-driven scenarios. Interviews,
+ paid-user conversion, retention and actual candidate outcome measurement remain open fieldwork.
+
+
+ What is outside the scope of this document
+ A live financial audit of competitors, authenticated testing of paid ATS accounts, legal opinions for every
+ jurisdiction, primary employer interviews, signed data licensing terms, and a validated TalentQ algorithm. The
+ next investor deck must not imply these exist.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                              02 / 24
+TALENTQ                                                                   MARKET RESEARCH / DOCUMENT 02
+
+
+
+ REPORT NAVIGATION
+
+
+ Contents
+ 01 Research protocol and nested workplan
+
+ 02 Market demand and category boundaries
+
+ 03 Geographic opportunity assessment
+
+ 04 Buyer segmentation and willingness to pay
+
+ 05 Competitors and unclosed problem spaces
+
+ 06 TalentQ differentiation and defensibility
+
+ 07 Market sizing: top-down and bottom-up
+
+ 08 Business model and pricing design
+
+ 09 Delivery costs and unit economics
+
+ 10 Five-year scenarios and capital needs
+
+ 11 Go-to-market and experiment program
+
+ 12 Regulatory and operating risks
+
+ 13 Investor diligence and milestone gates
+
+ 14 Source register and unresolved evidence
+
+
+
+     HOW TO INTERPRET THE TAGS
+
+     [FACT] directly sourced; [VENDOR CLAIM] company-reported product/performance; [ESTIMATE] research
+     publisher projection; [HYPOTHESIS] our product or market interpretation; [SCENARIO] modeled assumption,
+     not observed TalentQ performance.
+
+
+
+
+ Scope
+ Global English-capable product design; initial commercial investigation spans the United States, United
+ Kingdom/EU, Nigeria/West Africa, India and Brazil/Latin America, with Asia-Pacific as an expansion
+ watchlist. The report deliberately separates where demand exists from where TalentQ can gain lawful data
+ access and distribution.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                          03 / 24
+TALENTQ                                                                            MARKET RESEARCH / DOCUMENT 02
+
+
+
+ CHAPTER 01
+
+
+ Research protocol & workplan
+ Research is structured as a repeatable diligence process. Each workstream has: questions, source path,
+ analysis method, deliverable and completion status. This version completes desk-based review of major
+ public sources. Primary fieldwork remains open.
+
+
+ Evidence grading and triangulation
+
+   Class              Acceptable evidence                                How it is used
+
+
+   A | official       Government / regulator datasets and                Macro, compliance facts; date-specific.
+                      primary legal text
+
+
+   B | first-party    Vendor product pages, published prices,            Capabilities and list prices; vendor bias disclosed.
+                      public releases
+
+
+   C | research       Survey methodology and industry market             Directional demand and estimates; sample
+                      reports                                            limitations noted.
+
+
+   D | qualitative    Public forums, app reviews, testimonials           Problem discovery only; not prevalence measures.
+
+
+   E | scenario       Internally modeled parameters and                  Decision sensitivity only, never market facts.
+                      forecasts
+
+
+
+ Workstream inventory
+ 01 | Category & TAM
+ Required substeps: Identify non-overlapping definitions of staffing, online recruitment technology, AI recruiting; pull
+ dated $ forecasts; reject addition of overlapping categories.
+ Evidence path: Fortune BI, Grand View, staffing trade bodies, employer spend reports | Status: Desk review: completed;
+ segmentation: modeled
+
+ 02 | Labour-market demand
+ Required substeps: Trace vacancies, hiring flows, applicant volumes, skills deficits and country-level direction;
+ distinguish stock from flow.
+ Evidence path: BLS JOLTS, UK ONS, ILOSTAT, WEF, national labour offices | Status: US/UK/world desk review:
+ completed; further regions: open
+
+ 03 | Competitor capabilities
+ Required substeps: Map sourcing, ATS, AI interviews, assessment, agent workflow, candidate portal and integration
+ constraints.
+ Evidence path: Vendor docs, release notes, demos, API and integration guides | Status: Public product review:
+ completed; authenticated tests: open
+
+ 04 | Competitive price & packaging
+ Required substeps: Capture publicly displayed list prices, billing bases, overage terms, trial limits, contractual minimums;
+ date-stamp all.
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                                       04 / 24
+TALENTQ                                                                          MARKET RESEARCH / DOCUMENT 02
+
+
+
+ Evidence path: Workable, Recruiterflow, Indeed, Nigerian providers, Tavus, model APIs | Status: Public pricing: sampled;
+ enterprise quotes: open
+
+ 05 | Voice of employers
+ Required substeps: Interview agency owners, TA leads, hiring managers about current workflow, spend, success criteria
+ and switching triggers.
+ Evidence path: 30+ structured buyer interviews, process shadowing, anonymized ATS metrics | Status: Open: primary
+ field research required
+
+ 06 | Voice of candidates
+ Required substeps: Investigate abandonment, salary transparency, trust, privacy, accessibility and willingness to share
+ competency evidence.
+ Evidence path: Greenhouse, CV-Library, anonymized interviews and usability studies | Status: Published research
+ reviewed; primary interviews open
+
+ 07 | Buyer & channel mapping
+ Required substeps: Classify agency, founder, mid-market TA, enterprise; find sales owner, budget cycle, procurement,
+ CAC and competition.
+ Evidence path: Customer interviews, agency associations, outbound channel tests | Status: Hypothesis only; acquisition
+ test open
+
+ 08 | Legal / licensing
+ Required substeps: Map GDPR/UK GDPR, EU AI Act, US state/local rules, Nigeria NDPA; validate rights for every
+ candidate source.
+ Evidence path: ICO, EU Commission, NYC DCWP, NDPC, provider terms, counsel | Status: Desk review: scoped;
+ jurisdiction opinions open
+
+ 09 | Supply and assessments
+ Required substeps: Evaluate candidate opt-in, credential partners, specialist coding/cyber providers and source
+ economics.
+ Evidence path: Platform contracts, partner APIs, candidate pilots | Status: Conceptual model; commercial deals open
+
+ 10 | Unit economics
+ Required substeps: Model per-tenant search, LLM tokens, data, storage, outreach, interview duration, support,
+ onboarding, refunds.
+ Evidence path: Vendor rate cards, trial invoices, instrumentation, sales records | Status: Modeled; production telemetry
+ open
+
+ 11 | Willingness to pay
+ Required substeps: Test three price menus and blind comparison with incumbent workflows; capture purchase signals,
+ not compliments.
+ Evidence path: Paid pilots, landing page tests, quote acceptance, invoicing | Status: Open; no observed TalentQ revenue
+
+ 12 | Distribution and scaling
+ Required substeps: Assess ATS partnerships, agencies, communities, referral incentives, compliance and regional GTM
+ sequencing.
+ Evidence path: Partner interviews, CRM funnel data, country pilot metrics | Status: Draft hypotheses; validation open
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                                    05 / 24
+TALENTQ                                                                      MARKET RESEARCH / DOCUMENT 02
+
+
+
+ CHAPTER 02
+
+
+ Market demand & category boundaries
+ Macro indicators: what the data actually say
+
+   Measure                     Published value                              Correct interpretation
+
+
+   Online recruitment          $17.48bn global 2026; $46.07bn               Commercial technology category, NOT all
+   technology                  publisher forecast for 2034. [S01]           recruitment activity.
+
+
+   AI recruitment technology   $5.1bn global 2026; $9.6bn forecast for      Overlapping sub-market, NOT an
+                               2035. [S02]                                  increment to the line above.
+
+
+   US job openings             7.079m in Aug 2026; hires 5.192m that        Openings stock versus monthly hires flow;
+                               month. [S09]                                 not TAM customers.
+
+
+   UK vacancies                691,000 July-Sep 2026 rolling period.        Signals a cooling market; not monthly
+                               [S10]                                        spending.
+
+
+   US HR hiring difficulties   68% of SHRM 2026 sampled HR                  US survey, not a globally representative
+                               professionals report difficulty recruiting   share.
+                               full-time workers. [S07]
+
+
+   Skills transformation       63% of WEF surveyed employers cite           Survey across 55 economies; not a
+                               skills gaps as major barrier to              conversion prediction.
+                               transformation. [S08]
+
+
+
+ Do not inflate market size
+ Recruiting agency fees, staffing placement revenues, job advertising, applicant-tracking software, video
+ interviews, AI sourcing and assessment subscriptions all sit at different layers of the value chain. A top-down
+ market estimate is only useful when the product can plausibly capture that spend. Many industry estimates
+ count overlapping buyers and spend categories. TalentQ cannot add them, and cannot assume all staffing
+ revenue is software-addressable.
+
+
+ Demand exists even when vacancies fall
+ The US and UK indicators show substantial ongoing hiring, but the UK vacancy count is falling compared
+ with earlier periods. This suggests that TalentQ should not assume a constantly accelerating hiring market.
+ Lower hiring volumes can reduce recruiting budgets while increasing pressure on employers to avoid poor
+ hires. It may reward efficiency software, or delay new procurement. Both outcomes need scenario testing.
+ [S09,S10]
+
+
+     MARKET THESIS
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                               06 / 24
+TALENTQ                                                                        MARKET RESEARCH / DOCUMENT 02
+
+
+
+
+     The defensible demand claim is persistent, costly coordination and decision-making in hiring, amplified by
+     AI-generated application volume and shifting competency needs. Demand for an additional vendor, and
+     TalentQ pricing power, are still unproven.
+
+
+
+
+ Candidate demand and frustration
+ Greenhouse reports that 81% of surveyed US job seekers were rejected from a job without speaking to
+ anyone at the company, and 45% of interviewees identified employer ghosting as a complaint. Its broader
+ survey covered over 2,800 job seekers in the US, UK, Ireland, Germany and Australia. These statistics
+ describe candidate experience, not proven willingness to pay for TalentQ. [S06]
+
+ SHRM reports persistent recruiting difficulties and more organizations training existing staff for hard-to-fill
+ roles. This creates a legitimate product connection between competency evidence, job matching and
+ targeted professional improvement. It does not justify adding an unrelated course marketplace at launch.
+ [S07]
+
+ CHAPTER 03
+
+
+ Geographic opportunity assessment
+ We evaluate regions along seven dimensions: buyer budget, urgency, density of frequent hiring, accessible
+ candidate supply, local competition, data/regulatory cost and distribution access. Geography selection is a
+ go-to-market choice, not a limit on long-term product architecture.
+
+   Region                Observable indicators                                  Commercial implication
+
+
+   US                    7.1m job openings Aug 2026; AI sourcing now            Large spend and enterprise budgets,
+                         widely offered. [S09,S03,S05]                          but high competition, procurement and
+                                                                                hiring-AI compliance risk.
+
+
+   UK / EU               UK vacancies 691k Jul-Sep 2026; regulator              Good agency ecosystem; localization,
+                         scrutiny of automated decisions; EU hiring AI          DPIA, transparency and auditability
+                         high-risk timetable. [S10,S23,S24]                     required.
+
+
+   Nigeria / West        Jobberman 3m+ profile reach and paid listings;         Potential distribution advantage for
+   Africa                MyJobMag low-cost matching; labour-market              locally tailored workflows, but price
+                         informality across parts of West Africa.               sensitivity and candidate data coverage
+                         [S11,S13,S37]                                          issues.
+
+
+   India                 foundit reports selective 2026 hiring, technology      Massive potential supply, but strongly
+                         and specialist demand; market data from a              competitive and likely price-sensitive;
+                         recruitment platform. [S33]                            local partner discovery needed.
+
+
+   Brazil / LATAM        Gupy already offers WhatsApp recruitment agents        Demand validation, but powerful local
+                         and wider HR stack; per-vacancy AI services            incumbents and language /
+                         advertised. [S17,S18]                                  employment-law requirements.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                                 07 / 24
+TALENTQ                                                                        MARKET RESEARCH / DOCUMENT 02
+
+
+
+
+   Region                 Observable indicators                                 Commercial implication
+
+
+   APAC and GCC           Signals need to be country-scoped; do not infer       Future watchlist; require country
+                          demand from global aggregate.                         interviews, labor stats, source rights and
+                                                                                procurement validation.
+
+
+
+ Entry-market options, not a false global ranking
+ • Nigerian specialist agencies: founder network access could aid pilots, but margins and spending power
+ need testing against low-price incumbents.
+
+ • UK recruitment boutiques: strong agency process fit, software budgets and possible bilingual reach;
+ GDPR/ICO obligations and sales cycle require diligence.
+
+ • US niche recruitment operators: highest potential contract value, crowded stack and tougher verification /
+ security requirements.
+
+ • Employer-led growth: mid-market HR teams may pay more but need ATS integrations and longer
+ procurement.
+
+
+ Global-by-design, focused-by-deployment
+ Build regional configuration for currencies, consent policies, candidate outreach, local data retention,
+ languages, tax and payment systems. Do not run unrestricted worldwide scraping or assume data source
+ rights transfer internationally. Country expansion should be gated on legal review, employer density,
+ profitable acquisition and enough opted-in candidate evidence.
+
+ CHAPTER 04
+
+
+ Buyer segmentation & purchasing behaviour
+ Who has the problem and who signs the contract?
+
+   Segment                       Buyer / budget owner            Value driver / objection
+
+
+   Agency (2-30 recruiters)      Founder, managing director      More concurrent mandates, faster delivery; fear
+                                 or head of operations           candidate leakage and tool overlap.
+
+
+   SME direct employer           Founder or HR generalist        Avoid full-time recruiter cost; often intermittent hiring
+                                                                 and low retention.
+
+
+   Mid-market TA team            Head of talent acquisition /    Existing ATS efficiency, quality and compliance; strong
+                                 HR director                     integration requirements.
+
+
+   Enterprise                    Procurement, HR, IT, legal      Governance and proof; long sales cycles and high cost
+                                 and security                    to serve.
+
+
+   Candidate                     Not initial core payer          Less repetitive work, quality opportunities, confidence
+                                                                 and fair feedback.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                                  08 / 24
+TALENTQ                                                                          MARKET RESEARCH / DOCUMENT 02
+
+
+
+
+ Interview guide: 15 diagnostic questions
+ 01. How many roles and placements did you handle in the last 90 days?
+ 02. What do you pay for listings, ATS, sourcing, assessments and recruiters?
+ 03. How many recruiter-hours from mandate to interview-worthy shortlist?
+ 04. What was your last failed hire or abandoned search? Why?
+ 05. How often are top-ranked prospects uncontactable or uninterested?
+ 06. What source can legally be exported or connected to a new tool?
+ 07. How are compensation, work arrangements and candidate interest checked?
+ 08. What is the cost of an unfilled role for you?
+ 09. Which two workflow steps would you pay to eliminate this quarter?
+ 10. What concerns would stop you authorizing Q to contact a candidate?
+ 11. Which human decisions must remain manual?
+ 12. What evidence would convince you Q improves decisions?
+ 13. Who approves purchase, and how long does approval take?
+ 14. Would you pay $129 per role, $349 per team/month, or $799 per agency/month?
+ 15. Will you pay for a limited pilot now, and provide anonymized baseline measurements?
+
+
+ Research threshold
+ Target at least 30 buyer interviews spanning three regions and 20 candidate interviews; conduct 8-12
+ observed competitor journey tests where legal access allows; require at least 5 paid pilots. These are
+ proposed research thresholds, not completed research. Include unsuccessful leads and negative feedback,
+ not only enthusiastic users.
+
+ CHAPTER 05
+
+
+ Competitors & remaining problem spaces
+ Capability claims below reflect the companies' public descriptions as of the research date. "Gap" means a
+ buyer-level outcome that may remain imperfect, not that no competitor has ever addressed it.
+
+   Category                     Representative operators                        Implication for TalentQ
+
+
+   Social network /             LinkedIn Recruiter + Hiring Assistant 2;        Massive discovery and distribution
+   sourcing                     Indeed Talent Scout                             advantages; agentic sourcing already
+                                                                                commoditizing. [S03,S35]
+
+
+   ATS and orchestration        Greenhouse, Workable, Ashby, Lever,             End-to-end workflow and candidate
+                                SmartRecruiters                                 portals rapidly expanding. [S04,S14]
+
+
+   Agency CRM and               Recruiterflow AIRA, Bullhorn, hireEZ,           Agent features are purchasable today;
+   agents                       Juicebox, Gem, SeekOut                          agency switching costs matter. [S15,S31]
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                                  09 / 24
+TALENTQ                                                              MARKET RESEARCH / DOCUMENT 02
+
+
+
+
+  Category                 Representative operators                 Implication for TalentQ
+
+
+  Nigeria                  Jobberman, MyJobMag                      Low cost, large reach and assisted shortlist
+  discovery/services                                                products established. [S11,S12,S13]
+
+
+  Brazil and regional      Gupy and Candidato Ja                    WhatsApp screening and per-mandate AI
+                                                                    service already real. [S17,S18]
+
+
+  Specialist proof         HackerRank, CodeSignal, CoderPad, Hack   Buy/partner with skill assessment leaders
+                           The Box                                  before replicating labs.
+
+
+
+ Published price anchors (not normalized equivalents)
+
+  Vendor / plan               Listed commercial anchor              Comparison caveat
+
+
+  Workable Standard           $299/month for 1-20 employee band.    Recruiting/HR bundle; different scope.
+                              [S14]
+
+
+  Recruiterflow Platform      $149 per recruiter / month. [S15]     Agency ATS/CRM; AIRA customized.
+
+
+  Jobberman Standard          NGN 100,000 per job. [S11]            Job posting and ATS reach; no
+                                                                    same-service guarantee.
+
+
+  MyJobMag                    NGN 7,500 / post; NGN 75,000/month    Different Nigerian model, includes CV AI
+                              unlimited plan. [S13]                 match.
+
+
+  Candidato Ja, Brazil        From BRL 149.90 per vacancy, no       Regional WhatsApp-led service.
+                              subscription. [S18]
+
+
+  Indeed sponsored            Dynamic budget / clicks or started    Do not assume one fixed universal
+                              applications. [S16,S38]               minimum.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                        10 / 24
+TALENTQ                                                                     MARKET RESEARCH / DOCUMENT 02
+
+
+
+
+ Where incumbents can still disappoint
+
+   Unmet outcome            Why it persists                           Testable TalentQ response
+
+
+   Weak role definition     A vague mandate yields irrelevant         Q requirement interviews and realism review;
+                            search even from a large database.        compare accepted shortlists.
+
+
+   Unverified, stale        Profile relevance does not guarantee      Source-linked evidence, contact validity and
+   profiles                 freshness, interest or permitted          consent checks.
+                            outreach.
+
+
+   Candidate response       Status dashboards do not make             Participating employer response commitments,
+   black hole               employers respond.                        escalations and candid status.
+
+
+   Lack of practical        CV similarity and generic interviews      Job-task-grounded exercises through a
+   evidence                 miss real-world competency.               common assessment orchestration layer.
+
+
+   Workflow                 Recruiters jump across sourcing, email,   Q manages state across permitted integrations
+   fragmentation            ATS, scheduling and specialist tools.     without forcing a full ATS replacement.
+
+
+   Candidate repetition     Multiple forms and assessments            Reusable candidate-controlled evidence,
+                            impose avoidable burden.                  subject to recruiter acceptance.
+
+
+ The strongest positioning candidate is trusted, mutual, evidence-led shortlist-to-hire orchestration. This is a
+ hypothesis, not a proven white space. Greenhouse and other incumbents are increasingly targeting exactly
+ this connected-workflow territory. [S04]
+
+ CHAPTER 06
+
+
+ Differentiation & moat construction
+ The standalone "why us"
+ TalentQ is a recruiting outcome company, not an existing assistant with a new wrapper. Its proposed
+ differentiation is the integrated method by which it converts a hiring need into an evidence-backed,
+ candidate-compatible, auditable recruitment process. Q is its conversational and agent interface; the
+ defensible asset, if earned, is the network, consented evidence, feedback quality, assessment calibration and
+ employer execution reliability.
+
+
+ What is not a moat
+ • Voice chat, video avatars, generic LLM candidate summaries, basic vector search, an ATS pipeline, a
+ mathematical score, scraped LinkedIn profiles, or a large set of flashy agents. Competitors already offer many
+ of these and can replicate the rest.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                               11 / 24
+TALENTQ                                                                       MARKET RESEARCH / DOCUMENT 02
+
+
+
+
+ Moat ladder: what accumulates with usage
+
+   Stage                  Asset that could compound                            Proof needed
+
+
+   1 | Workflow           Repeat mandate history and reliable execution        Recruiter retention / repeat mandates
+
+
+   2 | Evidence           Candidate-controlled and verified skill signals      Consent retention, verification and
+                                                                               profile reuse
+
+
+   3 | Calibration        Outcomes linked to job-specific assessment           Prospective validity and bias audit
+                          evidence
+
+
+   4 | Two-sided          Employer demand attracts candidates; candidate       Organic acquisition, liquidity and
+   network                proof attracts employers                             marketplace repeat use
+
+
+   5 | Distribution       Agency partnerships / enterprise integrations        Channel conversion and switching costs
+
+
+
+ Why now, with an important counterargument
+ The timing is favorable because AI-generated applications increase screening noise, skill requirements
+ change quickly and lower-cost voice/agent APIs enable new workflows. However, those same technologies
+ strengthen incumbents. Timing supports experimentation, not guaranteed disruption. [S03,S04,S08,S19]
+
+
+ A credible initial claim
+
+     CLAIM TO TEST
+
+     In a named job family, TalentQ can deliver a higher fraction of recruiter-approved, interested candidates per
+     hour of recruiter time than the customer's current sourcing and screening process. Measure against a baseline
+     before using this claim in marketing.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                                   12 / 24
+TALENTQ                                                                      MARKET RESEARCH / DOCUMENT 02
+
+
+
+ CHAPTER 07
+
+
+ Market sizing without false precision
+ Top-down reference numbers
+ Publisher estimates: online recruitment technology $17.48bn (2026); AI recruitment $5.1bn (2026). They
+ are not additive and do not represent automatically accessible TalentQ revenue. Both are sold through many
+ products, user bases and price models. These may change with publisher methodology. [S01,S02]
+
+
+ Bottom-up serviceable market equation
+ Annual potential = eligible organizations × reachable share × likely annual spend. For an initial
+ non-enterprise subscription market, organization counts must eventually come from company registries,
+ recruitment memberships and qualified buyer lists, not from global SME totals. All parameter values below
+ are deliberately hypothetical.
+
+   Scenario            Reachable qualifying orgs        Annual spend / org         Gross annual opportunity
+                       (illustrative)
+
+
+   Constrained         20,000                           $1,000                     $20m
+
+
+   Planning            60,000                           $3,000                     $180m
+
+
+   Expansive           150,000                          $6,000                     $900m
+
+
+ Do not call $180m a verified SAM. It is an assumption-driven planning scenario. Region and segment
+ organization counts, reachable proportions, purchase propensity and annual contract values must be
+ validated. Also, these opportunity estimates are not additive to the category-level report figures.
+
+
+ Near-term obtainable market (SOM)
+ A starting commercial target might be 200 paying organizations at $2,400 annual recurring spend each,
+ yielding $480,000 annualized recurring revenue if all are active at period end. This is an operating milestone,
+ not a forecast of adoption. If users purchase only isolated mandates, recognize actual contract value, not
+ annualized subscription revenue.
+
+
+ Bottom-up funnel: a falsifiable model
+ Qualified accounts = reachable organizations × contactability × response × meeting rate × paid conversion.
+ Example: 8,000 reachable × 35% contactable × 12% reply × 35% meeting × 25% close ≈ 29 accounts. Every
+ percentage is a scenario assumption and must be replaced with CRM data after early sales.
+
+
+ Implication for venture-scale ambition
+ A $17bn+ category supports a large incumbent ecosystem. It does not prove TalentQ can become a
+ billion-dollar company. Venture-scale outcomes require sustained acquisition, repeat usage, expanding ACV,
+ gross margin discipline and defensibility beyond a generic agent interface. A business reaching a few million
+ dollars of ARR can still be worthwhile without being venture-scale.
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                          13 / 24
+TALENTQ                                                                        MARKET RESEARCH / DOCUMENT 02
+
+
+
+ CHAPTER 08
+
+
+ Business model & packaging
+ Pricing should match buyer frequency and the cost of executing each workflow. Limit free high-cost sourcing
+ and avoid penalizing candidates for being discoverable.
+
+   Offer | proposed                    Who / purchase pattern           Included / metered
+
+
+   TalentQ Pilot                       Occasional direct employer       Role calibration, permitted search, shortlist and
+   $129 per active mandate, 30                                          limited messaging. Overage for external data /
+   days                                                                 assessments.
+
+
+   Growth                              SME employer / small HR          Up to 3 active mandates, team collaboration and
+   $349 per month                      team                             orchestration; usage allowance, not unlimited
+                                                                        sourcing.
+
+
+   Agency                              Specialist agency                5 seats, multiple mandates, client workspaces,
+   $799 per month                                                       ATS link; fair-use limits and usage metering.
+
+
+   Enterprise                          High-volume /                    Governance, integrations, security review, SLA
+   From $24k/year, custom              multi-country TA                 and negotiated data-processing terms.
+
+
+   Add-on usage                        All paid customers               Proctored skill assessment, video minutes,
+   Variable                                                             verification, premium data and high-volume
+                                                                        outreach.
+
+
+ All TalentQ prices are TEST PRICES, not observed quotes or committed pricing. Existing vendors use different bundles,
+ pricing and service guarantees. Local-currency tiers need actual exchange, payment and purchasing-power analysis.
+
+
+ Business model trade-offs
+ • Per-mandate: easy to try and align to hiring jobs; volatile recurring revenue and support load.
+
+ • Seat subscription: useful for agencies, but exposed to recruiter headcount reductions and seat-sharing.
+
+ • Per successful hire: aligns outcomes, but creates disputes over attribution, exclusivity, replacement and
+ legal placement-fee regimes.
+
+ • Hybrid usage: best protects AI / sourcing gross margins, but adds pricing complexity.
+
+ • Candidate premium: optional job-preparation services only; never charge simply to be considered or to
+ correct personal data.
+
+
+ The MVP monetization experiment
+ Run a randomized offer menu among comparable pilot leads: mandate fee versus team subscription versus
+ subscription plus usage. Measure signed payment and repeat renewal rather than stated willingness to pay.
+ Publish pricing only after cost caps and acceptable cancellation terms are established.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                                  14 / 24
+TALENTQ                                                                      MARKET RESEARCH / DOCUMENT 02
+
+
+
+ CHAPTER 09
+
+
+ Direct costs & unit economics
+ Published AI service anchors
+ As of the source checks, OpenAI publishes GPT-Live at $0.05 per minute for voice-front-end sessions, with
+ backend model/tool usage billed separately. Tavus lists conversational video overages around $0.35/min at
+ the Builder tier, with a 30-second minimum. Plans and terms may change. [S19,S20]
+
+ Thus a 15-minute GPT-Live front-end voice segment is $0.75 before backend costs; 20 overage Tavus
+ minutes at $0.35 is $7.00 before any other charges. These are unit-cost illustrations, not all-in prices. Always
+ inspect provider bills, minimums, concurrency and included credits.
+
+
+ Example team subscription contribution model
+
+   Line item                                                            Monthly / account assumption
+
+
+   Monthly price / customer                                             $349
+
+
+   Source licensing and verification                                    $22
+
+
+   Inference, retrieval and search                                      $12
+
+
+   Messaging / delivery                                                 $8
+
+
+   Audio interviews                                                     $10
+
+
+   Cloud and storage                                                    $8
+
+
+   Direct support and success                                           $22
+
+
+   Billing / disputes allowance                                         $11
+
+
+   TOTAL direct cost                                                    $93
+
+
+   Gross contribution                                                   $256
+
+
+   Illustrative gross margin                                            73.4%
+
+
+ The line items above are modeled, not measured. They assume bounded usage and omit taxes, salaries
+ outside direct service delivery, core engineering, security audit programs, legal retainers and customer
+ acquisition. Enterprise source licenses could make costs much higher. Never offer uncapped video interviews
+ within fixed monthly pricing.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                           15 / 24
+TALENTQ                                                                       MARKET RESEARCH / DOCUMENT 02
+
+
+
+
+ CAC, churn and payback model
+ Example: $1,100 acquisition cost ÷ $256 monthly gross contribution = 4.3-month gross-contribution
+ payback before fixed corporate expenses. At an assumed 5% monthly logo churn and unchanged margin,
+ simple undiscounted gross-contribution LTV ≈ $256 / 0.05 = $5,120, or 4.7× CAC. But 5% monthly churn
+ implies approximately 46% annual customer loss if not offset by acquisitions. It is not a healthy retention
+ claim.
+
+
+ Economic stress tests
+
+   Variable                Stress case                          Implication
+
+
+   Data licensing          Adds $100 per paid                   Gross margin declines 28.7 percentage points at
+                           customer-month                       $349 price.
+
+
+   Usage intensity         Audio/video minutes quadruple        Margin may collapse without minute caps / overages.
+
+
+   CAC                     Doubles to $2,200                    Illustrative payback rises to 8.6 months.
+
+
+   Churn                   10% monthly instead of 5%            Simple gross LTV halves to $2,560.
+
+
+   Support                 Manual intervention on every         AI automation advantage may vanish.
+                           sourcing mandate
+
+
+ CHAPTER 10
+
+
+ Financial scenarios, not forecasts
+ The model below is a five-year planning device for recurring subscriptions only. Years are calendar
+ 2027–2031, currency USD. Average paying accounts are annual averages, not end-of-year logos. ARPA is
+ monthly revenue per account. Revenue is 12 × average accounts × ARPA. Assessments, implementation,
+ transaction commissions and one-off hiring fees are excluded, making the mechanism easier to audit.
+
+   Year       Avg            Monthly        Revenue           GM              After direct         After modeled
+              accounts       ARPA                             target          costs                OPEX
+
+
+   2027       40             $250           $0.12m            65%             $0.08m               $-0.62m
+
+
+   2028       150            $270           $0.49m            70%             $0.34m               $-0.81m
+
+
+   2029       500            $290           $1.74m            73%             $1.27m               $-0.53m
+
+
+   2030       1,500          $310           $5.58m            75%             $4.18m               $+0.98m
+
+
+   2031       3,600          $330           $14.26m           78%             $11.12m              $+4.32m
+
+
+ OPEX contains salaries, broad GTM, overhead, development and general expenses under the scenario. "After modeled
+ OPEX" is a simplified operating contribution, not audited EBITDA, earnings or free cash flow. No taxes, debt,
+ depreciation, financing fees or working capital schedule are included.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                             16 / 24
+TALENTQ                                                                   MARKET RESEARCH / DOCUMENT 02
+
+
+
+
+ Revenue sensitivity: same business, very different outcomes
+ Subscription revenue in 2031 (annual model)
+ Downside 2031                                                                                               $1.80m
+
+ Base 2031                                                                                                  $14.26m
+
+ Upside 2031                                                                                                $47.52m
+
+
+
+   2031 scenario              Avg accounts         Monthly ARPA               Annual subscription revenue
+
+
+   Downside                   750                  $200                       $1.80m
+
+
+   Base                       3,600                $330                       $14.26m
+
+
+   Upside                     9,000                $440                       $47.52m
+
+
+ The variation mainly reflects customer acquisition, retention, upmarket expansion and pricing power, none of
+ which have yet been demonstrated. The upside is not a management forecast. It is a stress case for market
+ capacity and infrastructure planning.
+
+
+ Funding and cash discipline
+ The 2027–2028 base-case modeled operating deficits sum to about $1.43m, before working capital and
+ exceptional costs. A conceptual $1.8m raise could support a roughly 18–24 month milestone program only if
+ actual spending, existing runway, hiring rate and revenue track tightly with the modeled plan. Real
+ fundraising should be sized from a monthly cash model, not this annual illustration.
+
+ CHAPTER 11
+
+
+ Use of funds & go-to-market
+ Illustrative seed capital deployment
+
+   Use                                                    Share          $1.8m hypothetical
+
+
+   Product / engineering / quality                        45%            $810,000
+
+
+   Customer acquisition and pilots                        22%            $396,000
+
+
+   Data rights, privacy, legal, audit                     15%            $270,000
+
+
+   Infrastructure and specialist evaluation               10%            $180,000
+
+
+   Reserve and contingencies                              8%             $144,000
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                           17 / 24
+TALENTQ                                                                         MARKET RESEARCH / DOCUMENT 02
+
+
+
+ An illustrative expenditure allocation, not an investment offer. An actual amount, terms, runway and valuation should
+ follow a hiring plan and observed pilot economics.
+
+
+ Distribution channels and experiments
+
+   Channel                         Test design                                   Success / kill signal
+
+
+   Agency design partners          10 outreach conversations, 5                  Paid repeat usage and visible
+                                   instrumented mandates, anonymized             recruiter-hours saved.
+                                   baseline
+
+
+   Niche professional              Candidate portfolio import + role-based       Qualified opt-in and job-specific
+   communities                     invitation                                    response rates.
+
+
+   ATS integrations                One importer + one bi-directional             Low onboarding friction; consent / audit
+                                   approved connector                            success.
+
+
+   Founder / SME education         Live demonstration using employer's           Paid conversion without complex sales
+                                   actual anonymized mandate                     engineering.
+
+
+   Recruitment associations        Co-host independent workshops /               Pipeline generated and paid cost per
+                                   outcome studies                               qualified lead.
+
+
+
+ 90-day / 180-day / 12-month gates
+ • 0–90 days: 30+ buyer interviews, 20 candidates, current-process metrics, 5 pilot contracts, explicit
+ data-source audit.
+
+ • 90–180 days: real mandate-to-shortlist product, 20+ paid mandates, blinded shortlist comparison,
+ documented candidate experience and refusal handling.
+
+ • 6–12 months: repeat revenue, measured candidate and employer success, stable unit economics,
+ legitimate partner access and a named role-family expansion decision.
+
+
+ Metrics that matter
+ North star: employer-accepted and candidate-interested shortlisted people per recruiter-hour. Supporting:
+ qualified shortlist precision, evidence coverage, time to first useful result, interview attendance, employer
+ follow-through, offer acceptance, candidate trust, repeat paid mandates, average direct cost per role, gross
+ margin, monthly net revenue retention and deletion/correction SLA. Track cohorts and roles to avoid
+ misleading pooled averages.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                                    18 / 24
+TALENTQ                                                                  MARKET RESEARCH / DOCUMENT 02
+
+
+
+ CHAPTER 12
+
+
+ Risks, regulation & data access
+ Legal/compliance scope
+
+  Jurisdiction       Current authority / rule                        Product implication
+
+
+  UK                 ICO audited AI recruiting tools and             DPIA, lawful basis, data rights, human
+                     identified significant transparency, fairness   oversight and vendor accountability.
+                     and minimization issues. [S22,S23]
+
+
+  EU                 Official 2026 AI Act timeline lists             High-risk obligations require early
+                     employment high-risk system provisions          engineering / legal preparation, not
+                     from 2 Dec 2027. [S24]                          last-minute compliance.
+
+
+  New York City      Local Law 144 requires applicable AEDT          Scope test, audit plan and pre-use notices
+                     bias audits and public notices. [S25]           when the tool qualifies.
+
+
+  Nigeria            NDPA s.37 concerns solely automated             Human decision process, transparent
+                     significant decisions, human intervention       appeals and lawful candidate-data
+                     and contest rights. [S26]                       treatment.
+
+
+  LinkedIn           Disallows unauthorized third-party              No platform dependence on unauthorized
+                     automation and scraping. [S21]                  profile extraction.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                             19 / 24
+TALENTQ                                                                           MARKET RESEARCH / DOCUMENT 02
+
+
+
+
+ Material operational risks
+
+   Risk                               Likelihood        Impact          Mitigation
+
+
+   Data access revoked                High              High            Use licensed partners, candidate first-party flows
+                                                                        and employer ATS imports.
+
+
+   Incumbent bundling                 High              High            Role-specific differentiation; quantify outcome
+                                                                        delta; avoid generic AI agent positioning.
+
+
+   Inaccurate assessments             Medium            High            Structured job task tests, audit, human review,
+                                                                        independent validity study.
+
+
+   Discrimination and privacy         Medium            Critical        Purpose limitation, protected attribute safeguards,
+   harm                                                                 DPIA, human review, redress.
+
+
+   Uncontrolled LLM / video           High              Medium          Usage-based tiers, credit caps, async fallback and
+   costs                                                                per-tenant budgets.
+
+
+   Marketplace cold start             High              High            Start B2B with imported / licensed supply; recruit
+                                                                        candidate opt-ins as workflows run.
+
+
+   Employer ghosting persists         High              Medium          Contractual response workflows and escalation,
+                                                                        not fabricated candidate status.
+
+
+   Too broad geographic launch        Medium            High            Country-level gates for payments, language,
+                                                                        labour law and sourcing rights.
+
+
+   Weak retention                     High              High            Target repeat-hiring operators; enforce
+                                                                        cohort-level retention / CAC gates.
+
+
+ Risk ratings are qualitative management judgments, not calculated probabilities. Legal issues require local counsel; no
+ statement above constitutes a legal opinion.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                                    20 / 24
+TALENTQ                                                                     MARKET RESEARCH / DOCUMENT 02
+
+
+
+ CHAPTER 13
+
+
+ Investor diligence & capital return logic
+ How an investor gets their money back
+ Venture equity normally returns capital through a secondary sale, acquisition, IPO or cash distributions if
+ legally and financially appropriate. There is no scheduled repayment unless a financing agreement expressly
+ creates one. Revenue growth is not cash available to investors.
+
+
+ Illustrative year-five value sensitivity
+ If base-case year-five subscription revenue is $14.26m, a hypothetical revenue-based valuation sensitivity of
+ 3×–6× gives an enterprise-value illustration of $42.8m–$85.5m. These multiples are purely scenario inputs,
+ not market-validated 2026 transaction comparables. Year-five revenue is used as a simplifying proxy; actual
+ exit pricing depends on growth, quality, recurring mix, profitability, retention, debt, cash and market
+ conditions.
+
+ If a hypothetical shareholder owns 8% fully diluted at exit, the simple gross equity-value illustration is
+ ~$3.42m–$6.84m before preferred security terms, further dilution, liquidation preference, transaction costs
+ and tax. It is not an IRR, guaranteed outcome or investable promise.
+
+
+ What would justify the story
+ • A signed, audited product and data-rights foundation.
+
+ • Real paid pilot cohorts with baseline-controlled recruiter-time and shortlist comparisons.
+
+ • Clear month-by-month conversion, retention, unit costs and burn.
+
+ • Role-by-role assessment validity evidence and human decision governance.
+
+ • A replicable distribution channel with measured CAC and cash payback.
+
+ • A standalone reason employers choose TalentQ over their existing stack.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                             21 / 24
+TALENTQ                                                                     MARKET RESEARCH / DOCUMENT 02
+
+
+
+
+ Investor readiness scorecard
+
+   Dimension                       Current evidence                                Status
+
+
+   Market existence                Multiple analyst markets and live incumbent     Established directionally
+                                   categories
+
+
+   Competitor intensity            Major AI agents and end-to-end platforms live   High risk
+
+
+   TalentQ differentiation         Clear measurable hypothesis                     Not validated
+
+
+   Access to candidate supply      No signed comprehensive rights                  Open
+                                   demonstrated
+
+
+   Willingness to pay              Price hypotheses only                           Open
+
+
+   Algorithm outcomes              Technical method proposed, no prospective       Open
+                                   data
+
+
+   Revenue, margins, retention     Illustrative financial scenarios only           Open
+
+
+   Regulatory readiness            Desk-scoped obligations                         Legal and audit work open
+
+
+ CHAPTER 14
+
+
+ Fieldwork still required before an investor deck
+ This desk research is a substantial foundation, but investors will probe a different question: "Which customer
+ paid, why, and what changed?" The following are explicit data collection instructions for the next diligence
+ cycle.
+
+
+ Primary interview and testing work orders
+ • Buyer panel: 10 Nigeria, 10 UK/EU, 10 US interviews across agency and employer segments. Record role
+ volumes, software invoices, time spent, source access, rejection drivers and willingness to buy.
+
+ • Candidate panel: 20-30 candidates balanced by experience and job-search status. Test CV upload trust,
+ voice preferences, data deletion and consent, interview accommodations and actual application completion.
+
+ • Competitor hands-on: Where permitted, map complete current journeys in LinkedIn Recruiter, Indeed,
+ Jobberman, MyJobMag, Greenhouse, Workable, Recruiterflow, Gupy and relevant technical assessment
+ providers.
+
+ • Supplier deals: solicit written source-data/API pricing, verification fees, email/SMS costs, employment
+ assessment licensing, voice/video discounts and data processing addenda.
+
+ • Algorithm benchmark: anonymized consented mandates, independent recruiter quality labels, blind
+ comparison, subgroup fairness and missing-evidence error analysis.
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                              22 / 24
+TALENTQ                                                                         MARKET RESEARCH / DOCUMENT 02
+
+
+
+
+ • Pilot economics: per-tenant token/audio/video billing, human exceptions, refunds, time to supported
+ resolution and realized customer acquisition spend.
+
+
+ Evidence-based stop signs
+ Pause or change direction if: hiring managers will not pay after blind comparisons; legal candidate supply is
+ uneconomic; the agent makes repeated expensive mistakes; human oversight negates time saved; qualified
+ candidates reject the screening experience; or CAC payback stays beyond realistic customer lifespan. A pitch
+ deck must not suppress these possibilities.
+
+
+     FINAL INVESTMENT THESIS
+
+     TalentQ has a viable hypothesis in a sizable global category, but the category already has powerful AI-driven
+     incumbents. The company earns the right to be a venture-scale business only by demonstrating trusted
+     candidate evidence, reliable workflow economics, legal supply, superior recruitment outcomes and repeat
+     paying customers.
+
+
+ APPENDIX
+
+
+ Source register
+ The source IDs in this report point to these public pages, reviewed in the research process for this 25
+ October 2026 version. Open a source via the clickable link. Pricing pages and product releases can change;
+ re-check before using data in a dated investor deck.
+
+ [S01] Fortune Business Insights, Online Recruitment Technology Market, Sep 28 2026. Open source
+ [S02] Grand View Research, AI Recruitment Market, Aug 2026. Open source
+ [S03] LinkedIn, Hiring Assistant 2 product news, Sep 29 2026. Open source
+ [S04] Greenhouse, Orchestrated Hiring Ecosystem, Oct 15 2026. Open source
+ [S05] Indeed, Sourcing Assistant release, Jun 15 2026. Open source
+ [S06] Greenhouse, Future of Hiring Candidate Report summary, Oct 20 2026. Open source
+ [S07] SHRM, 2026 Talent Trends, Apr 2026. Open source
+ [S08] World Economic Forum, Future of Jobs 2025. Open source
+ [S09] BLS, JOLTS August 2026, published Sep 29 2026. Open source
+ [S10] UK ONS, Vacancies and Jobs, Oct 20 2026. Open source
+ [S11] Jobberman, employer products and public pricing, Oct 2026 access. Open source
+ [S12] Jobberman, Pro Recruit candidate shortlist promise. Open source
+ [S13] MyJobMag, employer products and public pricing. Open source
+ [S14] Workable, recruiting/HR pricing. Open source
+ [S15] Recruiterflow, agency ATS/CRM and AI agent pricing. Open source
+ [S16] Indeed, job posting cost mechanics, Aug 19 2026. Open source
+ [S17] Gupy, Brazil HR AI platform and WhatsApp hiring. Open source
+ [S18] Candidato Ja, Brazilian AI recruitment offers, Oct 7 2026. Open source
+ [S19] OpenAI, API and GPT-Live session pricing. Open source
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                                23 / 24
+TALENTQ                                                                        MARKET RESEARCH / DOCUMENT 02
+
+
+
+ [S20] Tavus, conversational video subscription and overage pricing. Open source
+ [S21] LinkedIn, automated activity and software restrictions. Open source
+ [S22] UK ICO, AI recruitment tool audit findings, Nov 2024. Open source
+ [S23] UK ICO, Recruitment Rewired enforcement expectations, 2026. Open source
+ [S24] EU Commission, AI Act updated timeline, 2026. Open source
+ [S25] NYC DCWP, Local Law 144 Automated Employment Decision Tools. Open source
+ [S26] Nigeria Data Protection Commission, NDPA Section 37. Open source
+ [S27] ILO, Employment and Social Trends 2026, Jan 2026. Open source
+ [S28] ILO, Global Employment Trends for Youth 2026, Aug 2026. Open source
+ [S29] ILO / World Bank, Youth ALMP impact systematic review, Apr 2026. Open source
+ [S30] REC, Recruitment Industry Status Report 2024/25, Dec 2025. Open source
+ [S31] Bullhorn, 2026 UK and Ireland agency technology survey. Open source
+ [S32] LHH, candidate ghosting study, Jul 2026. Open source
+ [S33] foundit India, 2025 hiring review and 2026 outlook. Open source
+ [S34] CV-Library, 2026 Candidate Behaviour Barometer. Open source
+ [S35] Indeed, AI employer product feature overview, Oct 2 2026. Open source
+ [S36] SHRM, recruiter executive priorities 2026. Open source
+ [S37] ILO, WAEMU youth country briefs, May 2026. Open source
+ [S38] Indeed, pricing myths vs facts, current guidance. Open source
+
+
+
+
+25 OCT 2026 • RESEARCH / STRATEGY                                                                     24 / 24
+

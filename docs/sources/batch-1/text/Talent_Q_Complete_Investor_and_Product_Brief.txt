@@ -1,0 +1,1345 @@
+TALENT Q                                                   COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+
+TALENT Q
+
+
+The complete investor
+and product brief
+A grounded proposal for an AI-native recruitment and career
+intelligence company, from the employer’s first hiring need to a
+candidate’s next opportunity.
+
+
+
+
+What this document provides
+The business case, full proposed feature catalogue, customer journeys, global market
+evidence, competitive position, matching methodology, technical approach, pricing,
+economics, funding proposal, investor return sensitivities, risks and execution plan. It is
+written to be read, not presented as slides.
+
+
+DOCUMENT STATUS: INVESTMENT CONCEPT / VERSION 1 / 26 OCTOBER 2026
+
+Important distinction: Talent Q is not represented here as an operational business with paying
+customers, tested algorithms or secured data partnerships. Dollar figures are USD unless
+specified; estimates and scenario assumptions are identified.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                           01
+TALENT Q                                                   COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+
+How to read this brief
+A reader can follow the document from the problem and proposed experience to the
+economic case and investment requirements. It answers the practical questions an investor,
+potential design partner, or engineering lead would ask. It also makes clear where research
+ends and assumptions begin.
+
+
+Contents
+1. Executive summary                                                                      3
+
+2. The problem and the customer                                                           4
+
+3. The solution: how Talent Q works                                                       5
+
+4. Complete proposed feature catalogue                                                    6
+
+5. Ten representative journeys and their failure paths                                    9
+
+6. Q-Match: proposed matching and evidence method                                         10
+
+7. Technical architecture, AI agents and speed                                            12
+
+8. Global market evidence and competitive reality                                         14
+
+9. Market entry and distribution plan                                                     16
+
+10. Business model, pricing and unit economics                                            17
+
+11. Five-year financial scenarios and investor economics                                  19
+
+12. Competitive advantage, defensibility and “why us”                                     21
+
+13. Risks, legal obligations and failure scenarios                                        22
+
+14. Development roadmap, evidence gates and operating milestones                          24
+
+15. What the investment would fund and what the investor should ask                       26
+
+16. Source register and research boundaries                                               27
+
+
+
+Evidence standard
+ • Source-backed facts use numbered references in square brackets, with public links in
+   the source register.
+
+ • Product proposals describe what Talent Q should build, not what is already live.
+
+ • Financial scenarios are mathematical illustrations, not forecasts or guarantees.
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                       02
+TALENT Q                                                  COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+
+1. Executive summary
+Talent Q is a proposed AI-native recruitment platform designed to solve a stubborn
+problem: finding applicants has become easier than establishing who can do the work, who
+actually wants the opportunity, and how to move both parties to a good hiring decision.
+Employers still coordinate sourcing, screening, contact, interviews and offers across
+disconnected systems. Candidates repeat the same history, receive inconsistent
+information and rarely retain useful evidence from one hiring process to the next.
+
+Talent Q would let an employer explain a hiring need in ordinary language. Q would clarify
+the work to be done, translate it into a structured and reviewable hiring mandate, discover
+people from lawful and permissioned sources, show what is known and unknown about
+their capabilities, check mutual employment preferences, and coordinate the next steps.
+On the candidate side, Q would support a reusable professional profile, practical
+demonstrations of ability, structured interviews, preparation and skill growth.
+
+
+
+   THE INVESTMENT THESIS
+   Do not sell more AI-generated CV rankings. Sell a shorter, more trustworthy
+   path from a genuine hiring need to a qualified, interested candidate and an
+   accountable hiring process.
+
+
+The first paying customers should be organizations with repeated professional hiring:
+specialist recruitment agencies and small to mid-sized employers with recurring roles.
+Rather than compete immediately for the entire global job market, the business would
+launch a narrow role and geographic segment, prove hiring outcomes, and expand by
+repeatable playbooks. It can be built as a globally configurable product without claiming
+global distribution on day one.
+
+Talent Q has no demonstrated customer traction or validated Q-Match predictive
+advantage as of this brief. The opportunity is conditional: access to compliant candidate
+data, credible assessment evidence, repeat buyer willingness to pay, disciplined AI service
+costs, and real performance improvements against existing workflows.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                         03
+TALENT Q                                                   COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+
+2. The problem and the customer
+Why recruitment remains difficult
+A job posting can produce hundreds of resumes while still failing to produce a confident
+hire. Employers encounter vague hiring requirements, low-signal applications, incomplete
+professional profiles, nonresponsive candidates, complex scheduling and limited
+assessment expertise. Job seekers encounter low-visibility applications, repetitive forms,
+opaque decisions and expensive or irrelevant preparation.
+
+In a 2026 survey of 2,094 US HR professionals, SHRM reported that 68% found full-time
+recruitment difficult, and 41% were training existing employees for hard-to-fill roles. This is
+survey evidence of the problem, not proof that Talent Q can solve it. [03]
+
+Greenhouse reported in October 2026 that 81% of surveyed US candidates had been
+rejected without speaking to anyone at the company, while 45% of respondents who had
+interviewed reported employer ghosting. The multi-country survey included more than
+2,800 job seekers, but the quoted percentages refer to the reported US groups. [04]
+
+
+The four primary customers
+Occasional employer. A founder or manager who hires infrequently and needs help
+defining a role, assessing people and keeping the process moving without employing a full
+recruitment team.
+
+Recurring employer. An HR or talent-acquisition team hiring multiple roles each quarter,
+seeking better candidate evidence and less administrative work without necessarily
+replacing its ATS.
+
+Recruitment agency. A recruiter managing multiple clients and candidates. The product
+must respect client separation, authorization to represent candidates, placement
+attribution and repeat sourcing workflows.
+
+Candidate. A graduate, experienced employee, career switcher or specialist who wants
+opportunities appropriate to their abilities, pay expectations, location and career ambitions.
+
+
+The actual customer outcome
+For employers, the unit of value is not a profile found or a message sent. It is the time and
+expense required to reach a defensible hiring decision. For candidates, the value is being
+considered for appropriate work, having meaningful control over their information, and
+building professional evidence that helps over time.
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                          04
+TALENT Q                                                   COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+
+3. The solution: how Talent Q works
+The employer journey, in ordinary language
+Step 1. Explain the job
+A founder says: “We need a backend engineer who can stop our API failures and improve
+database performance. We can pay up to $2,000 per month, and they must overlap with
+our working hours.” Q does not begin blindly searching. It asks which outcomes matter,
+what is mandatory, which skills are negotiable, whether remote work is possible, and who
+can make the hiring decision.
+
+Step 2. Build a real hiring mandate
+Q writes a clear brief with responsibilities, competencies, budget, working conditions,
+assessment criteria and approval boundaries. The employer confirms it. If the combination
+looks unrealistic, Q explains the trade-offs and offers options: change budget, relax
+location, train a junior hire or narrow requirements.
+
+Step 3. Find people and show the evidence
+Q searches authorized candidate profiles, employer-approved historical applicants,
+compatible partners and permitted public professional information. It shows the strongest
+current matches, indicating where evidence comes from and when it was last confirmed.
+No verified candidate found is a legitimate result; Q must not fabricate a shortlist.
+
+Step 4. Confirm whether interest is mutual
+Before arranging interviews, Q checks whether the candidate is open to the role, the
+compensation range is viable, location and working patterns fit, and key requirements are
+confirmed. Recruiters can approve outreach and review communications. People who opt
+out should not receive repeated messages.
+
+Step 5. Assess and decide
+Q can run a structured text or voice screening, coordinate a specialist practical test, collect
+interviewer feedback and present a comparison tied to the employer’s original rubric. A
+human makes the consequential hiring decision. Q helps communicate the outcome,
+schedule next steps and keep records current.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                          05
+TALENT Q                                                  COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+The candidate journey
+The candidate uploads a CV or starts by talking to Q. Q creates a private professional
+profile from information the candidate approves, asks about work preferences and
+supports optional evidence such as credentials, portfolios and assessments. The candidate
+can see relevant opportunities, decide which information to share, complete appropriate
+interviews, track status where the employer participates, and receive meaningful feedback
+or learning suggestions when permitted.
+
+Talent Q is not a generic course marketplace. Practice and learning exist because they close
+demonstrated competency gaps and improve candidates’ ability to secure suitable work.
+
+
+
+   PRODUCT BOUNDARY
+   A single product for matching and progressing talent. Interview practice,
+   learning, specialist assessments and integrations are supporting journeys,
+   not reasons to turn Talent Q into a separate LMS, cyber range, or all-purpose
+   HR suite.
+
+
+
+
+4. Complete proposed feature catalogue
+This catalogue distinguishes the minimum service required to prove the business from later
+capabilities. “P0” means the first commercial pilot; “P1” means a near-term expansion after
+measurable demand; “P2” means a later or conditional investment. All features below are
+proposed, not represented as shipping.
+
+
+A. Employer and recruiter workspace
+P0 | Conversational role intake. Text and voice input; asks clarifying questions; turns
+business outcomes into a versioned job brief; distinguishes must-haves from preferences.
+
+P0 | Hiring feasibility review. Flags contradictory constraints and budget/location
+mismatches; suggests realistic alternative mandates, with reasons.
+
+P0 | Search and shortlist. Hybrid keyword, attribute and semantic retrieval; deduplicates
+profiles; provides evidence-linked explanations and unknown-data labels.
+
+P0 | Recruiter corrections. “Not this kind of candidate” feedback edits the structured
+mandate and re-ranks without losing prior decisions or history.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                         06
+TALENT Q                                                  COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+P0 | Hiring pipeline. Track interested, contacted, screened, interviewed, offered, hired,
+declined, withdrawn and closed states with clear ownership.
+
+P1 | Team collaboration. Role-based access; hiring manager notes; independent scorecards;
+approvals, shared decisions and audit trails.
+
+P1 | Recruiter analytics. Show effort per mandate, shortlist quality, candidate response,
+interview conversion, stage delays and cost drivers.
+
+P1 | ATS and calendar connectors. Bidirectional, permissioned candidate-stage sync where
+the provider supports it; email/calendar scheduling without migration.
+
+P2 | Multi-client agency console. Client mandates, candidate ownership and representation
+permission, submission tracking, client-specific billing and team reporting.
+
+P2 | Persistent recruiting agents. Policy-controlled research, permitted sourcing, approved
+outreach, follow-ups and exception escalation across sessions.
+
+
+B. Candidate experience
+P0 | Candidate-led profile. CV/portfolio ingestion with editable professional experience,
+verified claims and explicit consent settings.
+
+P0 | Opportunity preferences. Salary, location, remote/hybrid preference, employment
+type, availability and desired career direction.
+
+P0 | Invitation and opt-out controls. Candidate can accept, defer or decline contact and
+revoke inappropriate future outreach.
+
+P1 | Application and interview tracking. Status, appointments, required actions and
+confirmations; employer-derived status only when actual integration or consent exists.
+
+P1 | Q interview rehearsal. Private mock interviews by role, with questions, transcripts,
+meaningful explanations and repeat practice; private practice is not employer-accessible by
+default.
+
+P1 | Reusable skill evidence. Candidate-controlled credentials, assessment results and
+project evidence that can be selectively shared with employers.
+
+P1 | Feedback and growth. Competency-gap explanation, targeted reading, practice tasks,
+curated external resources and learning progress, not a full course marketplace.
+
+P2 | Career navigation. Role adjacencies, alternative career routes, salary-range
+preferences, alerts and opportunities based on a growing evidence profile.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                         07
+TALENT Q                                                    COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+P2 | Accessible low-bandwidth mode. Mobile-first, resumable forms, asynchronous text
+and audio alternatives, assistive technology support and clear time/cost expectations.
+
+
+C. Interviews, technical evaluation and verification
+P1 | Structured Q-led interviews. Text/voice conversations using role-specific questions
+and follow-ups; candidate disclosure, resumable sessions and human-readable transcripts.
+
+P1 | Live video interview option. Optional avatar or human video integration for
+appropriate use cases; not mandatory for every candidate or priced as unlimited.
+
+P1 | Practical exercise orchestrator. Launch a relevant standardized task, capture outputs,
+and request qualified human review where results matter.
+
+P1 | Credential and reference workflows. Record what has been verified, by whom, with
+what authority; request external verification only where appropriate.
+
+P2 | Specialist integrations. Coding assessments, SOC simulations, analytics tasks, language
+and sales roleplay tools, chosen based on job relevance.
+
+P2 | Adapted assessment support. Appropriate accommodations, accessible alternatives
+and rescheduling without treating connectivity or disability as incompetence.
+
+
+D. Trust, governance and platform operations
+P0 | Consent and source provenance. Every evidence item linked to source, freshness,
+permission scope and deletion/correction process.
+
+P0 | Account/tenant isolation. Company, agency, candidate and internal reviewer access
+strictly segregated and logged.
+
+P0 | Human review gates. No silent automated final rejection or hiring decision; employer
+decisions and AI advice distinguishable.
+
+P1 | Audit and explainability. Replay recommendations against the role rubric and
+model/data versions; view which factors contributed.
+
+P1 | Usage and spend controls. Per-account budgets, provider routing, email/SMS caps,
+interview-minute caps and fraud prevention.
+
+P1 | Policy and fairness evaluation. Routine validation of job-related criteria, accessibility
+and potential discriminatory effects.
+
+P2 | Partner and connector marketplace. Approved candidate-source, ATS, verification and
+assessment connectors with vendor-replacement boundaries.
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                              08
+TALENT Q                                                    COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+
+5. Ten representative journeys and their failure
+paths
+These are design personas, not completed user interviews. Their purpose is to force the
+product to handle distinct buying behaviours and actual failure conditions. Each future
+journey should be user-tested with people from the relevant segment.
+
+Ada | Lagos startup founder
+Need: One backend engineer; no full-time recruiter. Proposed path: Role clarified >
+candidate shortlist > compatibility check > code test > human final interview. Typical
+blocker: Budget does not fit “senior” requirement. Talent Q recovery: Q explains
+trade-offs, suggests scoped alternatives and saves the revised mandate.
+
+Amaka | Corporate HR manager
+Need: Multiple operations, sales and technical roles. Proposed path: Import requirements >
+rediscover consented applicants > parallel manager review > scheduling > offer. Typical
+blocker: Managers disagree or ATS data are duplicated. Talent Q recovery: Q flags
+conflicts, preserves decisions and reconciles source provenance.
+
+David | Security hiring manager
+Need: Find SOC analysts who can investigate real incidents. Proposed path: Competency
+rubric > initial Q screen > synthetic log-investigation task > human review. Typical blocker:
+Strong resume but weak practical evidence. Talent Q recovery: Defer confident ranking;
+choose a task or clarify missing evidence.
+
+Ibrahim | High-volume support recruiter
+Need: Dozens of customer-care roles with tight schedules. Proposed path: Batch roles >
+mobile intake > basic eligibility > concise screens > slots > offers. Typical blocker:
+Candidate internet drops mid-interview. Talent Q recovery: Save the session; resume from
+checkpoint or switch to text.
+
+Tunde | Recruitment agency founder
+Need: Several client mandates and repeat placements. Proposed path: Client intake >
+talent-pool rediscovery > approved outreach > client submissions > placement tracking.
+Typical blocker: Client conflicts or candidate represented twice. Talent Q recovery:
+Representation ledger, role permissions and duplicate-submission warning.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                        09
+TALENT Q                                                   COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+Grace | Multinational HR operator
+Need: Multi-country and multilingual regulated recruiting. Proposed path: Jurisdiction
+config > local intake > source controls > assessments > approvals > system sync. Typical
+blocker: A workflow is permitted in one country but restricted in another. Talent Q
+recovery: Country-specific policy gate and manual escalation.
+
+Chiamaka | New graduate
+Need: First cybersecurity job; little formal experience. Proposed path: Profile > evidence
+inventory > realistic junior roles > optional practice > apply > feedback. Typical blocker:
+Experience requirements and limited financial resources. Talent Q recovery: Show
+entry-level paths, affordable evidence tasks and non-paywalled access.
+
+Femi | Passive senior developer
+Need: Better opportunity without alerting current employer. Proposed path: Confidential
+invite > compensation fit > selective disclosure > interview > offer. Typical blocker: Privacy
+risk or salary mismatch. Talent Q recovery: Privacy-first interest check; no surprise public
+status change.
+
+Zara | Career switcher
+Need: Move from operations into data analysis. Proposed path: Transferable skills >
+competency gaps > sample work > target roles > practice. Typical blocker: Historic title
+masks transferable competence. Talent Q recovery: Use work samples and adjacent skills,
+not keywords alone.
+
+Emeka | Low-bandwidth applicant
+Need: Qualified candidate using an older mobile phone. Proposed path: Short mobile
+intake > async assessment > interview choice > confirmation. Typical blocker: Audio/video
+fails or data cost is too high. Talent Q recovery: Resume, switch format and ensure
+accommodations are meaningful.
+
+
+
+6. Q-Match: proposed matching and evidence
+method
+The core matching engine should be a set of transparent services, not one large language
+model prompted to “choose the best candidate.” Models can interpret language and explain
+findings, but access controls, source permissions, mandatory conditions, scoring and state
+transitions should be checked by deterministic code.
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                           10
+TALENT Q                                                     COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+Step one: define the role and legitimate constraints
+A mandate contains responsibilities, observable skills, weights, employment conditions,
+approved criteria and a rubric version. The system checks confirmed legal and role-relevant
+requirements before ranking. Missing data is marked “unverified,” not treated as evidence
+of failure. Age, sex, ethnicity, disability, inferred personality and social-media lifestyle must
+not become routine score inputs; any lawful occupational exception requires case-by-case
+legal review.
+
+
+Step two: calculate employer competency fit
+For candidate i and requirement j, let w(j) be the requirement weight (all weights sum to 1),
+s(i,j) the demonstrated skill score from 0 to 1, c(i,j) confidence in that evidence from 0 to 1,
+and m(j) a pre-established neutral prior for uncertain evidence.
+
+
+
+   PROPOSED BASELINE FORMULA
+   Employer fit F(i) = 100 × SUM over requirements j of w(j) × [ c(i,j) × s(i,j) + (1 −
+   c(i,j)) × m(j) ].
+
+
+Separately report evidence coverage C(i) = SUM w(j) × c(i,j). High fit with low coverage is a
+warning to collect more evidence, not an instruction to reject the candidate. Source
+timestamps, contradictions and assessment quality must influence confidence under
+pre-specified rules.
+
+
+Step three: measure candidate-side compatibility
+Build a distinct, candidate-controlled preference score A(i) covering compensation,
+location, working pattern, role ambitions and availability. Each dimension receives an
+explicit nonnegative weight. If preferences are unknown, present the match as provisional
+and ask the person instead of inventing a preference.
+
+
+Step four: combine the two sides
+
+   PROPOSED MUTUAL INDEX
+   Mutual index M(i) = square root of [ F(i) × A(i) ], for candidates who satisfy
+   confirmed legitimate eligibility conditions. This is a ranking heuristic, not a
+   probability of hiring success.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                            11
+TALENT Q                                                  COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+Illustrative comparison: Candidate A has employer fit 82 and candidate compatibility 90,
+giving a mutual index of about 85.9. Candidate B has employer fit 93 and compatibility 40,
+giving about 61.0. Candidate A is the stronger initial mutual fit, although interviews and
+further checks could change the judgment.
+
+A shortlist should also account for evidence diversity, source quality, interview capacity
+and search coverage. Showing the top 15 numerical scores without checking what each
+number represents would be a design failure.
+
+
+Step five: validate before making predictive claims
+The weights, priors and thresholds start as design parameters. They must be tested against
+structured recruiter assessments, candidate interest outcomes and subsequent hiring
+results. When sufficient permissioned data exist, later models may estimate probabilities
+such as interview acceptance or offer acceptance. Those probabilities require
+out-of-sample calibration, data-leakage controls, segment-level fairness testing and
+monitoring. Do not present a fit index as “an 86% chance of success.”
+
+
+What could actually become proprietary
+The formula itself is easy to copy. Defensibility would instead come from a role-specific
+competency taxonomy, high-quality candidate evidence, permissioned outcome data,
+standardized evaluation methods, well-calibrated ranking, and trustworthy orchestration
+across real employers and candidates. These do not yet exist at scale for Talent Q.
+
+
+
+7. Technical architecture, AI agents and speed
+The system in five layers
+1. Experience. Web/mobile interfaces for employers, agencies and candidates; accessible
+text and voice interactions, clear state, human decisions and transparent controls.
+
+2. Governed Q orchestration. Intent understanding, memory, tool planning, permission
+checks, task execution, session continuity, voice and provider routing. Q is the shared brain
+inside Talent Q; no investor-facing dependency on another brand.
+
+3. Recruitment domain services. Hiring mandates, evidence store, candidate profiles,
+consent, search, Q-Match, outreach, interviews, assessments, calendar coordination and
+pipeline.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                          12
+TALENT Q                                                  COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+4. Data and integrations. Transactional database, search indexes, document storage, event
+log, vector retrieval, approved ATS, messaging, licensed data and assessment providers.
+
+5. Assurance. Role permissions, tenant isolation, auditing, data rights, budget caps, human
+review, model evaluation, incident response and observability.
+
+
+The agent model
+A recruiter can delegate sourcing, shortlist refreshes, interview coordination or follow-ups
+to an agent for a defined mandate. Every agent action has a scope, permitted tool list,
+explicit spend and communication limits, time to live, records and a human escalation rule.
+Agents may propose a rejection, but they should not independently make a consequential
+final hiring decision.
+
+
+Interviews and practical assessments
+Use a provider-neutral adapter for video avatars and live voice, so the user can choose
+low-cost text, audio or premium video when appropriate. A technical interview does not
+always need an avatar. For cybersecurity, a controlled synthetic alert investigation is a
+sensible starting exercise; for software engineering, use a reputable coding environment;
+for sales, roleplay can measure job-specific behaviours. Full cyber ranges or IDEs can be
+integrated rather than rebuilt initially.
+
+
+Super-speed without false promises
+
+ Interaction                                            Target, not achieved
+
+ Interface acknowledgement                              p95 under 300 milliseconds
+
+ First streamed Q text                                  p95 under 1.5 seconds
+
+ Re-rank already indexed profiles                       p95 under 2 seconds
+
+ First useful external search result                    Aim under 5 seconds where source
+                                                        permits
+
+ Full external verification                             Asynchronous with source-specific
+                                                        completion state
+
+
+A new external search cannot honestly be guaranteed to finish instantly. Preindex
+permitted data, cache stable summaries, stream results progressively, parallelize source
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                         13
+TALENT Q                                                   COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+calls and perform deterministic matching outside LLM tokens. Preserve source freshness
+and privacy even when optimizing response time.
+
+
+Data model essentials
+Core entities: organization; role and mandate version; candidate profile; employment
+preference; competency; evidence item; source/permission grant; verification; match
+snapshot; outreach attempt; application; interview session; assessment; scorecard; human
+decision; agent run; financial usage event; model and policy version. Every important state
+transition needs an event record, not just a rewritten final status.
+
+
+
+8. Global market evidence and competitive reality
+Market context: substantial, but not ours by default
+Fortune Business Insights estimates online recruitment technology at $17.48 billion in
+2026, growing to $46.07 billion by 2034. Grand View Research separately estimates the AI
+recruitment category at $5.1 billion in 2026. The category definitions overlap, and
+publisher forecasts are not an independently auditable count of Talent Q customers. The
+figures cannot be added together. [01][02]
+
+2026 published market estimates (USD billions)
+
+Online recruitment tech                                                               $17.48m
+
+
+AI recruitment                                                                         $5.10m
+
+
+
+These market estimates demonstrate investment in recruitment software, not a guaranteed
+serviceable market for a new entrant. The meaningful business case is bottom-up:
+organizations reachable through our distribution channels multiplied by conversion,
+retention and actual annual account spend.
+
+
+The competition already has sophisticated AI
+LinkedIn Recruiter / Hiring Assistant 2. Conversational search, richer verification, recruiter
+memory and agentic workflow execution. LinkedIn reported over 20,000 companies using
+its agentic hiring solutions in its first year. [05]
+
+Indeed. Launched an AI Sourcing Assistant in June 2026, with employer-reported time and
+candidate quality improvements presented as vendor claims. [06]
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                         14
+TALENT Q                                                 COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+Greenhouse. Its October 2026 Orchestrated Hiring Ecosystem connects candidate profiles,
+sourcing, voice interviews, scheduling and ATS management. [07]
+
+Juicebox and hireEZ. Already market agent-led sourcing, outreach, search calibration, ATS
+connections and hiring analytics. [08][09]
+
+Jobberman and MyJobMag. Offer substantial Nigerian talent reach, application
+management, prequalification and human recruitment services. Public prices include
+Jobberman Standard at NGN 100,000 per role and MyJobMag at NGN 7,500 per job or
+NGN 75,000 per month for an unlimited posting plan. Features differ. [10][11]
+
+The appropriate claim is not that competitors have no AI or no connected workflow. It is
+that Talent Q intends to compete on a stronger relationship between defined work,
+candidate-owned job-relevant evidence, two-sided interest and accountable completion.
+This must be measured in pilots, since major incumbents are also targeting parts of the
+same problem.
+
+
+Where the opportunity could be
+ • Better role understanding for non-experts: founders often need to describe a business
+   outcome before they know what title to hire.
+
+ • Evidence portability: candidates should not have to demonstrate the same skill from
+   scratch when validated, consented evidence can be reused appropriately.
+
+ • Mutual suitability early: compensation, working conditions and interest should be
+   discussed before costly interviews.
+
+ • Actionable candidate status: participating employers can commit to review windows
+   and more reliable communication.
+
+ • Practical assessment orchestration: the platform selects or connects the correct tools
+   without demanding every employer learn a specialist testing product.
+
+
+Geographic strategy: global design, selective launch
+A global product must accommodate different currencies, languages, employment rules,
+data locations and candidate expectations. The initial commercial effort should compare
+Nigerian or West African professional-role employers, international specialist agencies and
+English-speaking mid-market teams. The winner is the segment with lawful data access,
+repeat mandates, reachable buyers, reasonable acquisition cost and strong retention, not
+simply the biggest country.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                         15
+TALENT Q                                                  COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+
+9. Market entry and distribution plan
+The first commercial wedge
+Begin with a managed software-assisted pilot for specialist agencies and employers
+handling recurring professional hiring. Concentrate on two or three role families, such as
+business development, technical support and software engineering. This reduces the
+assessment design space and allows a clear comparison with existing recruitment
+workflows.
+
+
+How the first customers are acquired
+Design partners. Recruit ten to fifteen employers or agencies for detailed intake interviews,
+secure a small set of real hiring mandates and establish their existing costs and conversion
+rates.
+
+Proof-of-value pilots. Deliver permissioned shortlists with source and interest verification,
+track recruiter hours and candidate response, then charge at least a modest pilot fee.
+
+Repeatability. Standardize successful role rubrics, outreach approvals, evidence criteria and
+support playbooks. Measure renewals and repeated usage.
+
+Partner distribution. Evaluate niche recruiters, HR consultancies, professional
+communities, training organizations and approved ATS partners, with consent and
+representation terms.
+
+Geographic expansion. Open a new country only after local legal review, source contracts,
+currency/payment handling, support capability and buyer economics are credible.
+
+
+The first measurable funnel
+One scenario: 8,000 reachable organizations × 35% contactable × 12% response × 35%
+meeting conversion × 25% paid conversion gives roughly 29 paying accounts. This is an
+illustrative funnel to falsify, not a customer forecast. Track every stage in a CRM and
+replace all percentages with observed cohort data.
+
+
+What constitutes product-market progress
+A good sign is not large free signup volume. It is repeat paid mandates, organizations
+renewing for a second cycle, recruiters spending materially less time per acceptable
+shortlist, candidates willing to participate without coercion, and paid accounts whose direct
+delivery costs stay bounded.
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                          16
+TALENT Q                                                   COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+
+10. Business model, pricing and unit economics
+What customers would buy
+The recommended business model is employer-funded. Candidates should not be charged
+merely to become visible, apply, contest an error or correct their data. Employers pay for
+useful recruitment workflows; higher-cost assessments, verification and premium video are
+metered.
+
+ Proposed offer                   Test pricing and purpose
+
+ Pilot mandate                    USD 129 for one 30-day active hiring requirement, limited
+                                  usage.
+
+ Growth subscription              USD 349 per month for small HR teams and up to three
+                                  active mandates, subject to usage limits.
+
+ Agency subscription              USD 799 per month for multi-client recruiting and a
+                                  defined number of users and mandates.
+
+ Enterprise                       From USD 24,000 per year, custom requirements,
+                                  governance and integrations.
+
+ Metered add-ons                  Specialist assessments, third-party verification, licensed
+                                  data and high-cost video minutes.
+
+
+These are proposed tests, not actual customer prices, accepted quotes or demonstrated
+willingness to pay. They cannot be compared one-for-one with a simple job-posting fee.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                            17
+TALENT Q                                                 COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+Illustrative cost per Growth customer-month
+
+ Modeled direct cost                                               USD / month
+
+ Source licensing and verification                                 22
+
+ AI inference and retrieval                                        12
+
+ Messaging                                                         8
+
+ Voice interviews                                                  10
+
+ Hosting and storage                                               8
+
+ Direct support                                                    22
+
+ Billing and disputes                                              11
+
+ Total direct cost                                                 93
+
+
+At a USD 349 monthly price and USD 93 modeled direct cost, the gross contribution is
+USD 256 and the gross margin about 73.4%. This is before central engineering, research,
+broad marketing, legal retainers, overhead, taxes and capital expenditure. Heavy video,
+licensed data or human support can sharply reduce the margin.
+
+
+Customer acquisition, churn and payback
+At a hypothetical customer acquisition cost of USD 1,100, monthly gross contribution of
+USD 256 implies approximately 4.3 months of gross-contribution payback. At an assumed
+monthly logo churn of 5%, simple undiscounted contribution LTV would be USD 5,120, or
+4.7 times CAC. But 5% monthly churn corresponds to roughly 46% of accounts lost
+annually before replacement and should not be treated as a healthy long-term target.
+
+Operational dashboards must show paid acquisition cost, fully loaded acquisition payback,
+source and interview cost per mandate, support effort, monthly churn, expansion revenue,
+candidate response, shortlist-to-interview conversion, interview-to-offer conversion and
+time-to-hire.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                        18
+TALENT Q                                                    COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+
+11. Five-year financial scenarios and investor
+economics
+The business has no financial operating history. The figures below are explicit models for
+the calendar years 2027 to 2031, not forecasts. Subscription revenue = 12 × average
+paying accounts during the year × average monthly revenue per account. Variable hiring
+fees, assessment overages and implementation are excluded from these base calculations.
+
+ Year           Avg paid             Monthly ARPA      Revenue            Modeled result*
+                accounts
+
+ 2027           40                   $250              $0.12m             -$0.62m
+
+ 2028           150                  $270              $0.49m             -$0.81m
+
+ 2029           500                  $290              $1.74m             -$0.53m
+
+ 2030           1,500                $310              $5.58m             +$0.98m
+
+ 2031           3,600                $330              $14.26m            +$4.32m
+
+
+*Modeled result is subscription gross profit less broad assumed operating expenses, not net
+income, audited EBITDA or free cash flow. Calculation assumptions for gross margin across
+2027–2031 are 65%, 70%, 73%, 75% and 78%.
+
+
+2031 is highly sensitive to customer acquisition
+
+ Case                 Avg accounts           Monthly                   Annual subscriptions
+                                             revenue/account
+
+ Downside             750                    $200                      $1.80m
+
+ Base                 3,600                  $330                      $14.26m
+
+ Upside               9,000                  $440                      $47.52m
+
+
+The main drivers are successful customer acquisition, sustained retention, account
+expansion and ability to charge for recurring value. None has yet been demonstrated. A
+business capable of earning several million dollars in recurring revenue is still not
+necessarily venture-scale if acquisition costs, churn or valuation multiples are unfavorable.
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                           19
+TALENT Q                                                     COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+Illustrative capital raise and spending plan
+A planning case of USD 1.8 million could finance a milestone-driven program if monthly
+spending is controlled. It is not a final funding ask, valuation, financing agreement or
+guarantee of 18–24 months of runway. The base-model 2027 and 2028 operating
+shortfalls total approximately USD 1.43 million before cash timing, exceptional costs and
+working capital. A monthly cash plan is required before formally raising.
+
+ Capital use                                            Share          Amount
+
+ Product, engineering and quality                       45%            $810,000
+
+ Customer acquisition and pilots                        22%            $396,000
+
+ Data rights, privacy, legal, audit                     15%            $270,000
+
+ Infrastructure and assessments                         10%            $180,000
+
+ Reserve and contingencies                              8%             $144,000
+
+
+
+
+How an equity investor might earn a return
+Equity investors generally expect value through an acquisition, secondary sale or another
+liquidity event. Talent Q cannot promise either a dividend or a scheduled exit. For
+illustration only, suppose a USD 1.8 million investment were made at a USD 7.2 million
+pre-money valuation: the investor would initially own 20%. If further financing reduced
+that ownership by 30% relative, the remaining stake would be 14% before any special
+rights.
+
+Using a simplifying exit valuation of annual subscription revenue multiplied by an
+illustrative revenue multiple, and ignoring debt, preferred return terms, liquidation
+preferences, taxes and transaction costs, we can show the sensitivity.
+
+ Illustrative exit case               Exit value       14% proceeds         Multiple of
+                                                                            $1.8m
+
+ Downside: $1.80m × 2                 $3.60m           $0.50m               0.28×
+
+ Base: $14.26m × 4                    $57.04m          $7.99m               4.44×
+
+ Upside: $47.52m × 6                  $285.12m         $39.92m              22.18×
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                         20
+TALENT Q                                                   COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+
+These values are not predicted exit prices, valuation comparables or promised investor
+proceeds. Actual investor outcomes depend heavily on timing, ownership, financing
+dilution, liquidation preferences, revenue quality, growth, competition and whether a buyer
+exists. Total capital loss is possible.
+
+
+What evidence would justify a stronger investment case
+Signed paid customers, repeat buying behaviour, account retention, measured gross margin
+from provider bills, the number of qualified candidates actually progressing to interviews,
+defensible use of recruitment data, and independent comparative testing of the Q-Match
+system would be more persuasive than increasing the projected upside multiple.
+
+
+
+12. Competitive advantage, defensibility and “why
+us”
+Talent Q should be presented independently. Investors should not need to know about
+another product to understand why it exists. The future advantage must be measurable in
+the recruitment experience and difficult for rivals to cheaply reproduce.
+
+
+The plausible advantages to pursue
+Better job definition. Q turns vague business needs into explicit, testable skills and
+constraints, reducing the risk of optimizing search against the wrong brief.
+
+Mutual compatibility. The candidate’s real preferences and consent matter alongside
+employer capability requirements; unsuitable salary and work arrangements are surfaced
+earlier.
+
+Candidate evidence portability. With candidate permission, verified professional evidence
+can be reused, reducing repetitive assessments and improving discoverability.
+
+Integrated execution. Q is not only a search bar; it coordinates recruiter approvals,
+interviews, assessments, communication and records.
+
+Local and sector specialization. Deep playbooks for specific roles, languages, markets and
+employer workflows may create a strong initial reason to choose Talent Q.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                           21
+TALENT Q                                                  COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+Potential moats, once earned
+Evidence network. A continuously maintained and permissioned graph of professional
+evidence may become hard to rebuild. Outcome learning. Carefully validated observations
+could improve relevance and reduce missed matches. Workflow embedding. Recruiter
+habits, integrations, team rubrics and prior candidate relationships can drive retention.
+Distribution partnerships. Licensed data, professional associations and employer networks
+can improve lawful supply.
+
+At concept stage, these are future possibilities rather than assets already possessed.
+LinkedIn, Greenhouse, Juicebox and hireEZ already have significant product capability and
+distribution. Our credibility must come from execution and evidence, not from claiming a
+magic model or a market nobody else noticed.
+
+
+Why now
+Three forces align: AI is making applications easier to generate and harder to interpret;
+employers are investing in tools that reduce screening and administrative friction; and
+modern AI tools can handle conversation, retrieval and workflow coordination more
+affordably than before. [03][04][05][07] All three forces also help incumbents, making early
+focus and differentiation essential.
+
+
+Why this team?
+A credible founder/team slide or investor paragraph should describe actual
+recruitment-domain insight, product execution ability, security competence, distribution
+access and customer evidence. This brief deliberately does not invent named founders,
+prior exits, enterprise contracts or exclusive relationships. Those credentials should be
+added when verified, with the role each person plays in achieving the proposed milestones.
+
+
+
+13. Risks, legal obligations and failure scenarios
+Dependence on external talent data
+Risk: LinkedIn does not permit unauthorized scraping or automation. Recruiter
+subscriptions are not blanket data-licensing agreements. [12] Response: Use
+candidate-owned profiles, employer records with appropriate permissions, licensed
+providers and approved connectors; test data economics.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                         22
+TALENT Q                                                   COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+Algorithmic hiring and bias
+Risk: Hiring tools can affect livelihoods and can reproduce historical discrimination.
+Response: Use job-related criteria, human review, documented rubrics, accessibility, impact
+evaluations and challenge/correction routes.
+
+Privacy and regulatory fragmentation
+Risk: European recruitment-selection AI appears in AI Act Annex III as a high-risk category;
+the EU currently lists December 2027 as the application date for those high-risk
+obligations. [13][14] Response: Obtain qualified local advice, country-specific policies,
+consent records, traceability, incident response and audited deployment practices.
+
+Automation replacing actual recruiter judgment
+Risk: Companies may over-rely on an apparently authoritative score or transcript.
+Response: Scores are provisional aids; decisions require a legitimate human reviewer and
+source evidence.
+
+Candidate trust
+Risk: Unwanted outreach, social-media investigation and private interview reuse could
+drive users away. Response: Permissioned communication, minimized collection, visible
+sharing controls, deletion/correction, clear alternatives to video.
+
+Unit costs and provider dependency
+Risk: Sourcing licenses, voice sessions and premium video can overwhelm fixed
+subscription revenue. Response: Budget gates, usage caps, adapter architecture, metered
+add-ons, provider switching and full-bill monitoring.
+
+Marketplace cold start
+Risk: Employers want qualified candidates before paying; candidates want real jobs before
+joining. Response: Enter through paying employers and authorized existing talent pools;
+build candidate network from genuine demand.
+
+Sales cycles and retention
+Risk: Recruitment freezes or a one-time role can eliminate ongoing spend. Response:
+Target repeated hiring workflows and agencies, test mandates alongside subscriptions,
+measure cohort retention.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                         23
+TALENT Q                                                   COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+Weak predictive validity
+Risk: Q-Match could perform no better than conventional screening. Response: Blind
+benchmark against rule-based baselines, measure false positives and decision quality,
+improve only when evidence supports it.
+
+Security and misuse
+Risk: Leaked CVs, forged credentials, compromised integrations or manipulated interviews
+could cause harm. Response: Strong tenant isolation, limited credentials, vetted content,
+monitoring, abuse controls, incident and deletion playbooks.
+
+For Nigeria, section 37 of the Nigeria Data Protection Act addresses significant solely
+automated decisions and associated safeguards, including human intervention and the
+ability to contest. This requires legal and operational design review, not simply a disclosure
+checkbox. [15]
+
+
+
+14. Development roadmap, evidence gates and
+operating milestones
+Phase 0: technical and demand validation
+Audit Q reuse boundaries and data isolation; interview prospective employers and
+candidates; confirm sourcing rights; define two role families, standard job rubrics and a
+measurable conventional recruiting baseline. No claim of proprietary algorithm
+performance should precede benchmark testing.
+
+
+Phase 1: paid pilot, minimum complete journey
+Build candidate and employer accounts, role intake, approved candidate import, retrieval,
+Q-Match baseline, reviewable shortlists, consented outreach, simple pipeline and recruiter
+dashboard. Run actual mandates end to end, including failures and refusals. The product is
+useful only if a qualified interested candidate can reach a recruiter decision.
+
+
+Phase 2: structured interviews and candidate growth
+Add text/voice screens, practical assessment orchestration, interview scheduling,
+candidate-owned reusable evidence, targeted practice and compliant feedback. Validate
+assessment reliability and candidate experience, particularly on older devices and weak
+networks.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                         24
+TALENT Q                                                    COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+Phase 3: recurring accounts and agents
+Develop multi-user teams, agency client mandates, ATS/calendar integrations, persistent
+permission-scoped Q agents and metered usage. Focus on retention, gross margin and
+reliability rather than launching ten new unrelated products.
+
+
+Phase 4: geographic and vertical expansion
+Add countries and role families when legal readiness, data supply, buyer willingness and
+acquisition economics are proven. Publish an evidence-based talent matching methodology
+and maintain audit-ready evaluation results.
+
+
+Key pilot targets proposed for validation
+
+ Gate                         Suggested target / decision
+
+ Customer discovery           10–15 substantive employer/agency interviews plus candidate
+                              interviews.
+
+ Real hiring mandates         At least five instrumented recruitment pilots using real roles
+                              and documented baseline.
+
+ Commercial signal            Multiple paid pilots or contracts, then repeat usage and
+                              renewal.
+
+ Matching reliability         Blind shortlist reviews and comparison against simpler
+                              rule-based alternatives.
+
+ Candidate experience         Consent completion, interview drop-off, accessibility and
+                              meaningful status communication.
+
+ Delivery economics           Positive direct contribution per paid mandate/account with
+                              realistic support and provider charges.
+
+ Security and compliance      Permissions tests, documented data-source rights, legal review
+                              and issue response readiness.
+
+
+Each target above is a proposed management gate, not a milestone already reached. Failed
+tests should change the product plan or the target customer, not be hidden by additional
+features.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                            25
+TALENT Q                                                  COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+
+15. What the investment would fund and what the
+investor should ask
+The proposed investment story
+Talent Q is seeking to establish whether a focused AI-native hiring system can deliver a
+better qualified-and-interested shortlist, lower recruiting effort and a more transparent
+candidate experience at sustainable cost. The tentative USD 1.8 million financing scenario
+funds engineering, pilots, lawful data access, evaluation, privacy, market development and
+runway contingency. This amount must be reworked after a monthly operating budget and
+verified founder commitments.
+
+
+Diligence questions an investor should receive answers to
+ • Which exact customer segment buys first, and what does a buyer replace or stop paying
+   for?
+
+ • How many real mandates have been completed, what did they cost and how did they
+   compare with the previous process?
+
+ • What sources of candidate information are contractually and legally available in each
+   target market?
+
+ • Which matching outputs are verified, and how is uncertainty represented to employers
+   and candidates?
+
+ • What proportion of the shortlist accepts contact, proceeds to interview and receives an
+   offer?
+
+ • How much does a full Q-led interview and specialist assessment actually cost with
+   support included?
+
+ • What is the monthly cash-burn plan, runway, expected dilution and alternative financing
+   if milestones take longer?
+
+ • Who owns the IP and customer relationships, and what roles are filled by the founding
+   team?
+
+ • What prevents a large competitor from including a similar workflow in an existing
+   subscription?
+
+ • What customer proof would cause management to double down, and what failure
+   would cause a pivot or stop?
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                         26
+TALENT Q                                                 COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+The close
+A fundable next step is a live, evidence-backed Talent Q demo on a real but properly
+permissioned hiring mandate, alongside signed or paid pilot commitments, a transparent
+cost report and a benchmark against existing recruiting methods. The investment case
+becomes convincing when a first-time reader can see not only what Q can do, but why
+employers pay, why candidates participate, and why each completed mandate makes the
+product more useful.
+
+
+
+   FINAL PROPOSITION
+   Talent Q aims to make hiring a decision supported by evidence and mutual
+   interest, not a contest of who can generate or screen the most resumes. The
+   next milestone is proof that this produces better outcomes at a cost
+   customers will repeatedly pay.
+
+
+
+
+16. Source register and research boundaries
+Public links were checked during preparation on 26 October 2026. Company product
+descriptions are vendor claims; market numbers are third-party estimates; research
+statistics reflect the specified respondent populations. Source access and product terms
+can change.
+
+[01] Fortune Business Insights. Online Recruitment Technology Market, updated Sep 28 2026.
+https://www.fortunebusinessinsights.com/online-recruitment-market-103730
+
+[02] Grand View Research. AI Recruitment Market (2026–2035), published 2026.
+https://www.grandviewresearch.com/industry-analysis/ai-recruitment-market-report
+
+[03] SHRM. 2026 Talent Trends, Apr 27 2026; survey methodology in release.
+https://www.shrm.org/about/press-room/shrm-unveils-2026-talent-trends-report--data-driven
+-insights-for
+
+[04] Greenhouse. Future of Hiring Candidate Report announcement, Oct 20 2026.
+https://www.greenhouse.com/newsroom/6-in-10-job-seekers-are-rethinking-how-they-write-t
+o-avoid-sounding-like-ai-even-as-most-use-it-in-their-search
+
+[05] LinkedIn. Hiring Assistant 2 announcement, Sep 29 2026.
+https://news.linkedin.com/2026/hiring-assistant-2
+
+[06] Indeed. Sourcing Assistant announcement, Jun 15 2026.
+https://www.indeed.com/news/releases/indeeds-ai-powered-sourcing-assistant-helps-employe
+rs-hire-over-30-faster
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                        27
+TALENT Q                                                   COMPLETE INVESTOR + PRODUCT BRIEF
+
+
+
+[07] Greenhouse. Orchestrated Hiring Ecosystem launch, Oct 15 2026.
+https://www.greenhouse.com/blog/introducing-the-orchestrated-hiring-ecosystem
+
+[08] Juicebox. AI recruiting agents product documentation, accessed Oct 2026.
+https://juicebox.ai/agents
+
+[09] hireEZ. AI recruitment platform documentation, accessed Oct 2026.
+https://hireez.com/platform/
+
+[10] Jobberman Nigeria. Employer listings and recruitment service pricing, accessed Oct 2026.
+https://www.jobberman.com/employer
+
+[11] MyJobMag. Employer packages and AI matching features, accessed Oct 2026.
+https://www.myjobmag.com/employers/
+
+[12] LinkedIn Help. Prohibited software and extensions, accessed Oct 2026.
+https://www.linkedin.com/help/linkedin/answer/a1341387/prohibition-of-scraping-software?la
+ng=en
+
+[13] EU AI Act Service Desk. Annex III: high-risk employment and recruitment uses.
+https://ai-act-service-desk.ec.europa.eu/en/ai-act/annex-3
+
+[14] European Commission. EU AI Act implementation timeline, accessed Oct 2026.
+https://ai-act-service-desk.ec.europa.eu/en/ai-act/eu-ai-act-implementation-timeline
+
+[15] Nigeria Data Protection Act 2023, section 37 (text reproduction).
+https://lawcarenigeria.com/nigeria-data-protection-act-2023/
+
+
+Outstanding research work
+Before any investor-facing claim of traction or a predictive moat, Talent Q needs
+completed primary interviews, real contract pricing for candidate data providers, direct
+source licensing review, authenticated competitor workflow tests, real candidate testing,
+legal opinions where deployed, measured provider billing, a month-by-month cash model
+and a validation study. Desk research does not substitute for those activities. Legal
+discussion throughout is a design consideration, not legal advice.
+
+
+
+   THE DECISION AHEAD
+   Support a disciplined proof-of-value program: real hiring mandates, willing
+   candidates, lawful data access, independently checked matching quality,
+   repeat paying customers and bounded delivery costs. If those results hold,
+   Talent Q has an investment case grounded in evidence rather than promises.
+
+
+
+
+26 OCTOBER 2026 | CONCEPT-STAGE INVESTMENT MATERIAL                                         28
+

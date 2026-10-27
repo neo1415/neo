@@ -1,0 +1,58 @@
+motion_id,name,event_trigger,intended_behavior,implementation_hint,reduced_motion_or_text_fallback,primary_surface,required_capture,fake_progress_prohibited
+MO-001,Q orb idle,app:idle,Slow ambient gold presence without distractive loops,CSS/Rive,Static gold icon,Q Home and interview,MP4 8-20s + working component state,Yes
+MO-002,Q listens,voice:recording,"Quiet intensity and caption indicator, no fake waveform",Rive/CSS,Listening text and transcript,Voice interview,MP4 8-20s + working component state,Yes
+MO-003,Q thinks,run:accepted,Subtle gold change and accurate accepted state,CSS,Accepted task label,All run views,MP4 8-20s + working component state,Yes
+MO-004,Q speaks,voice:audio-out,Measured pulse synchronized to actual audio amplitude,Rive/Canvas,Captions,Voice/video,MP4 8-20s + working component state,Yes
+MO-005,Q interrupted,voice:interrupted,Immediate transition to listening and cancel audio,Rive,State text,Voice/video,MP4 8-20s + working component state,Yes
+MO-006,Q disconnected,transport:lost,"Warn, preserve visible state, reconnect affordance",CSS,Connection lost banner,Any run,MP4 8-20s + working component state,Yes
+MO-007,Q reconnected,transport:restored,Small return to available state; no staged spectacle,CSS,Connected message,Any run,MP4 8-20s + working component state,Yes
+MO-008,Task plan grows,plan:created,Approved steps appear in readable order,Motion,Static checklist,Q planner,MP4 8-20s + working component state,Yes
+MO-009,Parallel agents start,task:spawned,Independent tasks expand as lanes,Motion,Task list,Run explorer,MP4 8-20s + working component state,Yes
+MO-010,Research source found,source:retrieved,Source badge becomes visible with timestamp,Motion,Source list update,Research explorer,MP4 8-20s + working component state,Yes
+MO-011,First candidate arrives,candidate:retrieved,Card enters without blocking scroll,Motion,Instant card,Explore Talent,MP4 8-20s + working component state,Yes
+MO-012,Candidate evidence loaded,evidence:ready,Citation inline update and badge clarity,Motion,Evidence text,Candidate deep profile,MP4 8-20s + working component state,Yes
+MO-013,Candidate comparison morph,compare:changed,Shared-element cards to comparison grid,Motion,Direct table redraw,Compare candidates,MP4 8-20s + working component state,Yes
+MO-014,Job preference filter,filter:changed,Smooth list reorder; no LLM required,Motion,Direct redraw,Explore Jobs,MP4 8-20s + working component state,Yes
+MO-015,Mandate wording revised,mandate:patched,Highlight changed fields and conflicts,Motion,Text diff,Mandate builder,MP4 8-20s + working component state,Yes
+MO-016,Uploaded file accepted,file:received,Progress follows actual upload bytes,CSS,Percentage text,Uploader,MP4 8-20s + working component state,Yes
+MO-017,Uploaded file parsed,document:parsed,Extraction summary enters after event,Motion,Summary list,CV intake,MP4 8-20s + working component state,Yes
+MO-018,Question plan appears,interview:plan-ready,"Competency cards roll in, readable",Motion,Question list,Interview plan,MP4 8-20s + working component state,Yes
+MO-019,Question asked,interview:question-start,"Controlled transition, no typewriter delay in actual interviews",Motion,Full question text,Interview room,MP4 8-20s + working component state,Yes
+MO-020,Clarification added,interview:probe,Branch preview shows reason for follow-up,Motion,Probe label,Interview room,MP4 8-20s + working component state,Yes
+MO-021,Answer recorded,interview:answer-saved,Soft confirmed state from server receipt,CSS,Saved notice,Interview room,MP4 8-20s + working component state,Yes
+MO-022,Interview progress,interview:coverage-updated,Coverage grows from verified answered competencies,Motion,Text x of y,Interview room,MP4 8-20s + working component state,Yes
+MO-023,Live Q suggests followup,copilot:suggestion-ready,"Non-intrusive side panel, user controlled",Motion,Suggestion card,Live companion,MP4 8-20s + working component state,Yes
+MO-024,Interview paused,interview:paused,Resume anchor preserved and clearly labeled,CSS,Paused label,Interview,MP4 8-20s + working component state,Yes
+MO-025,Interview complete,interview:completed,Brief closure and next steps,Motion,Completion summary,Interview,MP4 8-20s + working component state,Yes
+MO-026,Candidate score review,review:ready,Highlight uncertainty before score,Motion,Static scorecard,Employer review,MP4 8-20s + working component state,Yes
+MO-027,Invite approval,action:awaiting-approval,"Exact payload takes focus, soft gold CTA",Motion,Approval form,Outreach,MP4 8-20s + working component state,Yes
+MO-028,Message sent,action:receipt,"Receipt with time/channel, no false delivery claim",CSS,Sent receipt,Outreach,MP4 8-20s + working component state,Yes
+MO-029,Candidate share revoked,share:revoked,Preview hides content instantly; access invalidates,CSS,Revoked label,Portfolio,MP4 8-20s + working component state,Yes
+MO-030,CV draft generated,artifact:ready,"Document grows as ready, editor functional",Motion,Loaded document,CV builder,MP4 8-20s + working component state,Yes
+MO-031,Graphic from Q,artifact:chart-ready,Native chart renders from numeric data,Motion/SVG,Static SVG/accessible table,Q canvas,MP4 8-20s + working component state,Yes
+MO-032,Video artifact available,media:ready,"Show actual still/captions, optional play",Native video,Transcript,Q canvas,MP4 8-20s + working component state,Yes
+MO-033,Safe browser preview,preview:loaded,Snapshot/iframe constrained; no trusted-origin scripts,CSS,Link and screenshot,Project preview,MP4 8-20s + working component state,Yes
+MO-034,Download scanned,scan:passed,Receipt appears only after scan completes,CSS,Verified file state,File vault,MP4 8-20s + working component state,Yes
+MO-035,Agent budget warning,budget:threshold,"Clear soft warning, stop/spend decision",CSS,Warning text,Q planner,MP4 8-20s + working component state,Yes
+MO-036,Model/provider error,run:failed,"Honest retry / recovery path, preserve progress",CSS,Error explanation,Run explorer,MP4 8-20s + working component state,Yes
+MO-037,Onboarding handoff to explore,onboarding:complete,Shared element Q remains consistent into results,Motion,Direct navigation,Candidate onboarding,MP4 8-20s + working component state,Yes
+MO-038,Desktop-mobile narrative transition,demo:viewport-change,Show same synchronized state using fictional seed data,Recorded video,Screenshots,Demo film,MP4 8-20s + working component state,Yes
+MO-039,Policy rule update,policy:published,Shows affected runs and explicit invalidation,CSS,Revalidation list,Policy studio,MP4 8-20s + working component state,Yes
+MO-040,Candidate application status,application:updated,Stage changes after authoritative employer event,Motion,Stage text,Applications,MP4 8-20s + working component state,Yes
+MO-041,Consent change,consent:updated,Remove controls and invalidate access visibly,CSS,Access update,Privacy center,MP4 8-20s + working component state,Yes
+MO-042,Scheduling proposal created,schedule:proposed,Proposed times slide into a readable selection strip; no false booking,CSS/Motion,Static suggested slots,Scheduler,Working prototype state + replayable 8-20 sec capture,Yes
+MO-043,Candidate selects slot,schedule:slot_selected,Tentative selection changes to verifying availability,Motion,Validating availability text,Candidate scheduler,Working prototype state + replayable 8-20 sec capture,Yes
+MO-044,Calendar conflict found,schedule:conflict,Nonalarming conflict message replaces stale option,CSS,"Time unavailable, select another",Booking,Working prototype state + replayable 8-20 sec capture,Yes
+MO-045,Provider booking confirmed,schedule:provider_ack,Confirmation visual only after provider receipt,Motion,Booked and calendar details,Booking,Working prototype state + replayable 8-20 sec capture,Yes
+MO-046,Invite delivery status,outreach:receipt,Draft/send/delivered/failed shown from receipts,CSS,Clear message status,Inbox,Working prototype state + replayable 8-20 sec capture,Yes
+MO-047,Reschedule completed,schedule:rescheduled,Timeline updates without duplicate event animation,Motion,Time changed label,Scheduling,Working prototype state + replayable 8-20 sec capture,Yes
+MO-048,J7 career path explored,career:path_selected,Role prerequisites animate incrementally,Motion/SVG,Linear roadmap,Career map,Working prototype state + replayable 8-20 sec capture,Yes
+MO-049,J7 gap evidence expanded,career:gap_open,Source-grounded evidence expands beneath rubric,Motion,Expandable details,Gap view,Working prototype state + replayable 8-20 sec capture,Yes
+MO-050,J7 practice feedback arrived,practice:feedback_ready,Feedback annotations reveal alongside answer,Motion,Plain feedback sections,Practice,Working prototype state + replayable 8-20 sec capture,Yes
+MO-051,J7 comparable growth trend,career:progress_loaded,Evidence-linked trend not confetti or fake progress,Motion,Table of attempts,Career progress,Working prototype state + replayable 8-20 sec capture,Yes
+MO-052,J7 evidence sharing approved,evidence:share_approved,Private becomes shared only after consent receipt,CSS,Sharing status text,Evidence Passport,Working prototype state + replayable 8-20 sec capture,Yes
+MO-053,Memory retrieved with provenance,memory:retrieved,Small source chip opens evidence and validity,CSS,Source/last confirmed,Q memory,Working prototype state + replayable 8-20 sec capture,Yes
+MO-054,Memory corrected and invalidated,memory:correction_ack,"Old statement marked superseded, not disappearing silently",Motion,Corrected/versioned,Q memory,Working prototype state + replayable 8-20 sec capture,Yes
+MO-055,Q run resumed from checkpoint,run:resume,"Accurate recovery marker, no restarting phantom tasks",CSS,Resuming from saved state,Q progress,Working prototype state + replayable 8-20 sec capture,Yes
+MO-056,Q conflicting evidence,memory:conflict,Side-by-side claims and uncertainty details,Motion,Text comparison,Q memory,Working prototype state + replayable 8-20 sec capture,Yes
+MO-057,Policy applied before outreach,policy:resolved,Applicable guideline shown before approval,CSS,Policy source text,Outreach,Working prototype state + replayable 8-20 sec capture,Yes

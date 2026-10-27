@@ -1,0 +1,1596 @@
+  Q
+                  TALENTQ
+
+
+
+
+The Technical
+Blueprint
+Evidence-driven matching. Two-sided compatibility.
+Governed AI recruitment from discovery to hiring.
+
+
+
+PROPOSED SYSTEM • V1
+
+
+
+
+Architecture / mathematical models / data governance /
+latency / agent workflows / validation / build gates
+
+
+
+
+25 OCTOBER 2026                                   STRATEGY / ENGINEERING / INVESTOR DILIGENCE
+                                                                                    TALENTQ / SYSTEM DESIGN
+
+
+
+ TECHNICAL SERIES / DOCUMENT 01
+
+
+
+ Document purpose
+ A proposed technical specification for a standalone AI-native recruitment platform. It is intended
+ to guide architecture, experimentation, product requirements and future investor diligence. It is
+ not evidence of a deployed, validated or patented matching system.
+
+   Independent product narrative
+   TalentQ stands on its own merits. The external product identity, mission, performance
+   claims and investment narrative should not depend on another application. Internally,
+   engineering teams may reuse existing governed Q capabilities where security,
+   performance and modularity tests justify doing so.
+
+
+
+ Decisions this document makes
+  • Defines a candidate-evidence system with provenance, freshness and candidate permissions.
+  • Separates job eligibility, employer competency fit and candidate preference fit.
+  • Specifies a transparent Q-Match baseline with missing-data treatment, uncertainty and
+    ranking diagnostics.
+  • Defines agent scopes, interview orchestration, measurable speed budgets and reliability
+    controls.
+  • Sets validation gates before claims about predictive accuracy, fairness, autonomous operation
+    or defensibility.
+
+ Decisions it deliberately does not make
+  • Market size, realistic pricing, competitor economics, country-by-country willingness to pay or
+    an investor return multiple. These require the dedicated market report.
+  • Legal approval for any jurisdiction; the technical controls here require qualified legal review.
+  • A claim that a mathematical equation or a model is patentable, unique or already trained.
+  • Any promise of unrestricted LinkedIn data access or instant completion of every external
+    search.
+
+
+ Notation: F = employer-side competency fit; A = candidate-side compatibility; M = mutual-fit index; C =
+ evidence coverage; U = uncertainty; S = optimized shortlist. Unless explicitly labeled as sourced facts, all
+ thresholds, examples and architecture choices are proposed design parameters.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                                  02 / 32
+                                                                                   TALENTQ / SYSTEM DESIGN
+
+
+
+
+ DESIGN PRINCIPLES
+
+
+
+ Executive system summary
+                                           TALENTQ EXPERIENCE
+                                Employer • Candidate • Agency • Human reviewer
+
+
+
+
+                                          GOVERNED Q RUNTIME
+                         Intent parsing • Workflow orchestration • Tools • Memory • Voice
+
+
+
+
+        TALENT DOMAIN                         TRUST CONTROL                          SPECIALIST TOOLS
+        Mandates • Profiles                     Consent • Audit                       Assessments • ATS
+        Matching • Pipeline                    Policy • Verification                  Calendar • Outreach
+
+
+
+
+               Postgres + structured retrieval + vector search + event log + secure object store
+
+ TalentQ has four users: employer, agency recruiter, candidate and human reviewer. Each
+ interacts with one governed conversational system backed by deterministic recruiting services
+ and traceable evidence.
+
+   North-star technical principle
+   An LLM understands requirements and explains evidence. Deterministic services validate
+   permissions, calculate scores, record events and enforce transitions. AI agents may
+   propose or execute authorized tasks, but cannot silently become the final hiring authority.
+
+
+
+ Seven architectural invariants
+ • No ranking without a defined role, versioned rubric and source-traceable evidence.
+ • No cross-tenant sharing without explicit access rights; candidate-owned information stays
+   permission-scoped.
+ • No surprise candidate outreach, background investigation or reuse of private practice
+   recordings.
+ • Unknown, stale and contradicted evidence remain visibly uncertain.
+ • Human review remains meaningful for consequential selection decisions.
+ • All important outputs are reproducible from their data, model, policy and rubric versions.
+ • Every screen responds promptly even when external discovery or verification is still working.
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                                03 / 32
+                                                                             TALENTQ / SYSTEM DESIGN
+
+
+
+
+ 01 / END-TO-END WORKFLOW
+
+
+
+ The recruitment journey as a state machine
+        1               2                     3                  4              5                  6
+
+    Mandate          Discover              Compare         Engage           Evaluate            Decide
+
+
+      Clarify          Find                 Mutual        Consent           Interview            Human
+      intent         evidence                fit          & interest         & work             approval
+
+
+
+
+ State transitions
+
+  Object                    Valid states                               Transition authority
+
+  Hiring mandate            draft → clarified → approved → sourcing    Employer or authorized recruiter;
+                            → review → closed                          Q may draft
+
+  Candidate                 discovered → eligible-to-contact →         Policy engine + candidate choice
+  representation            invited → engaged → withdrawn
+
+  Application               interested → screened → assessed →         Authorized recruiter or hiring
+                            interview → decision → offer → hired       manager
+
+  Assessment                assigned → consented → started →           Candidate, specialist provider,
+                            submitted → reviewed → expired             reviewer
+
+  Outreach                  drafted → approved → sent → replied /      User approval or tightly scoped
+                            opted-out                                  standing delegation
+
+
+
+ Where automation stops
+ Q can generate search strategies, candidate comparisons, invitation drafts, assessment
+ recommendations, rescheduling suggestions and status summaries. A human owns job approval,
+ assessment exceptions, final advancement or rejection decisions, offers and material changes to
+ applicant rights.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                           04 / 32
+                                                                                    TALENTQ / SYSTEM DESIGN
+
+
+
+   Failure-first requirement
+   If external data access fails, the workflow enters source unavailable, not no candidates
+   exist. If a candidate preference is unknown, the system asks or reports uncertainty, not an
+   invented willingness to relocate or accept pay.
+
+
+
+ 02 / SERVICE ARCHITECTURE
+
+
+
+ Modules and reusable contracts
+  Module                    Responsibility                                       Primary outputs
+
+  M01 Mandate               Convert hiring conversation into approved            Versioned job rubric + eligibility
+  compiler                  requirements                                         rules
+
+  M02 Candidate             Profiles, roles, preferences, visibility, opt-outs   Authorized identity and grants
+  identity & consent
+
+  M03 Evidence graph        Normalize claims, skill evidence, verification       Traceable competency
+                            and freshness                                        evidence
+
+  M04 Source                Ingest permitted external and                        Source events + sync
+  connectors                employer-owned records                               diagnostics
+
+  M05 Discovery &           Hybrid search, eligibility, fit and slate ranking    Ranked provisional candidate
+  matching                                                                       set
+
+  M06 Engagement            Outreach, interest confirmation, messaging,          Communication timeline
+                            scheduling
+
+  M07 Interview &           Voice/text interview and practical provider          Structured competency
+  assessment                routing                                              observations
+
+  M08 Agent runtime         Long-running governed sourcing and                   Scoped job records and action
+                            coordination                                         proposals
+
+  M09 Candidate             Private practice, feedback, credential updates       Candidate-controlled
+  growth                                                                         improvement plan
+
+  M10 Analytics &           Audit, fairness evaluation, A/B tests,               Versioned quality and risk
+  governance                monitoring                                           metrics
+
+ Services expose versioned tools and events. They must not depend on a specific assistant prompt, UI
+ framework or voice provider. The orchestration layer can be reused internally, but TalentQ preserves
+ separate branding, tenancy, policies and application data.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                                   05 / 32
+                                                                                    TALENTQ / SYSTEM DESIGN
+
+
+
+ Recommended core implementation
+ An API and workflow service with PostgreSQL for transactional entities, full-text indexes for
+ exact attributes, a vector index for semantic retrieval, object storage for permitted artifacts, and
+ an event/outbox pattern for reliable asynchronous work. Begin with a modular monolith and an
+ isolated job-worker tier. Extract services only after operational evidence justifies the complexity.
+
+
+ 03 / CANDIDATE DATA MODEL
+
+
+
+ Evidence is the product
+ A profile is not a single AI-generated summary. It is a graph of claims with provenance, rights and
+ temporal context. A generated narrative is only a view of that graph.
+
+  Entity                   Required fields                                            Rule
+
+  Candidate                candidate_id, tenant relationships, visibility policy      Candidate identity
+                                                                                      separate from organization
+                                                                                      record
+
+  Claim                    subject, predicate, value, asserted_by, asserted_at        May remain unverified
+
+  Evidence                 claim_id, source URI, captured_at, method, license,        Must be traceable
+                           consent scope
+
+  Verification             evidence_id, status, reviewer/provider, expiry             Credential checks never
+                                                                                      implied
+
+  Competency               ontology_id, role relevance, level rubric                  Versioned skill taxonomy
+
+  Preference               candidate_id, field, value, last_confirmed                 Candidate-editable, not
+                                                                                      inferred from stereotypes
+
+  Sharing grant            purpose, recipient/tenant, data scope, expiry,             Enforced on every read
+                           revocation                                                 and outbound action
+
+
+
+ Evidence reliability
+
+   r(e) = v(e) × f(e) × d(e)
+
+
+   v = validation quality, f = freshness discount, d = evidence relevance; all in [0,1]. Proposed heuristic,
+   not a population-calibrated probability.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                                   06 / 32
+                                                                            TALENTQ / SYSTEM DESIGN
+
+
+
+ Freshness may use an exponential decay where appropriate: f(e) = exp[-ln(2) × age / half-life].
+ The half-life depends on evidence type. A work sample may be relevant for longer than a phone
+ number or job-availability declaration.
+
+ Conflict handling
+  • If two sources disagree about employment dates, show the conflicting claims and request
+    clarification.
+  • Never silently rewrite third-party facts from an LLM inference.
+  • For de-duplication, require positive identity evidence; reversible merge operations are
+    mandatory.
+  • Candidate edits do not falsify external records; they create correction events and review flags.
+
+
+ 04 / DATA ACCESS
+
+
+
+ Authorized acquisition and source strategy
+ The fastest way to ruin the data strategy is to treat a professional-network subscription as an
+ unrestricted data API. LinkedIn Recruiter System Connect access requires approved partner
+ status and data agreements [S1].
+
+  Acquisition tier         Examples                           Permitted use condition
+
+  Tier A / Native          Candidate CV, work history,        Explicit notice, purpose and candidate
+                           portfolio, assessments             controls
+
+  Tier B / Employer        ATS records, referrals, previous   Employer authorization and role-based
+                           applicants                         scopes
+
+  Tier C / Licensed        Recruitment data feeds,            Specific agreement, retention and
+                           verification or skill providers    redistribution rules
+
+  Tier D / Public          Personal websites, open            Lawful basis, platform terms and
+  professional             repositories, professional         documented necessity
+                           directories
+
+  Tier E / Disallowed by   Unapproved scraping, private       Never ingest without separate lawful and
+  default                  social media, brokered sensitive   policy approval
+                           dossiers
+
+
+
+ Connector acceptance checklist
+  • Document identity, authorization mechanism, permitted purposes and contractual data
+    restrictions.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                          07 / 32
+                                                                            TALENTQ / SYSTEM DESIGN
+
+
+
+ • Define rate limits, freshness SLAs, deletion propagation and pagination behavior.
+ • Test partial sync, stale cursor, retries, webhook signatures, duplicate events and account
+   revocation.
+ • Store the source contract version for every imported record and block impermissible
+   downstream use.
+
+   Explicit scope boundary
+   A recruiter asking Q to inspect Instagram posts does not by itself establish that such
+   investigation is necessary or lawful. Off-role social behavior, inferred personality,
+   relationship graphs and protected attributes are excluded from routine candidate scoring.
+
+
+
+ 05 / LANGUAGE TO STRUCTURE
+
+
+
+ Mandate compilation: from speech to rubric
+ The recruiter begins with natural language. Q asks targeted follow-ups until the mandate has
+ enough structure for defensible comparison. The employer approves the final specification
+ before scoring or outreach.
+
+ Mandate fields
+
+  Field group          Examples                                           Treatment
+
+  Job outcomes         Maintain APIs; reduce errors; produce monthly      Translate into observable
+                       risk reports                                       competencies
+
+  Eligibility          Legally required license, work authorization,      Approved explicit gates;
+                       essential shifts                                   unknown prompts verification
+
+  Competencies         Incident triage, SQL, enterprise account           Weights linked to job analysis
+                       management
+
+  Constraints          Budget range, location, work arrangement, start    Mutual compatibility
+                       date                                               dimensions
+
+  Assessments          Interview dimensions, work sample, accessibility   Consistent versioned plans
+                       alternatives
+
+  Permissions          May Q contact? use ATS? share profiles?            Mandate-scoped action
+                       schedule?                                          capabilities
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                         08 / 32
+                                                                                 TALENTQ / SYSTEM DESIGN
+
+
+
+
+   R = {J, H, K, W, P, T, G, V}
+
+
+   J role outcomes; H approved hard constraints; K competencies; W weights; P employment
+   preferences; T assessments; G granted actions; V rubric version.
+
+
+
+
+ Mandate quality gate
+ Reject ambiguous requirements such as “smart person with good culture fit” until they are
+ converted to observable tasks and legitimate work conditions. Flag unrealistic conjunctions (e.g.,
+ rare skill bundle with low budget); offer trade-offs. A rubric can be updated, but a new version
+ must trigger explicit reranking and preserve earlier results.
+
+
+ 06 / RECOMMENDATION ARCHITECTURE
+
+
+
+ Q-Match is a pipeline, not a magic score
+         1                 2                  3                  4                  5                  6
+
+       Gate            Retrieve           Evidence            Match             Diversify           Explain
+
+
+      Rights            Exact +           Coverage           Employer             Top-k            Citations
+    & eligibility      semantic           & quality         + candidate           slate             & gaps
+
+
+
+
+ Stage 1: safe retrieval
+ Apply data entitlements and legitimate hard filters first. Retrieve candidate IDs via structured
+ predicates (e.g., geography, certification where mandatory) plus lexical and vector search. Hybrid
+ retrieval can use reciprocal-rank fusion:
+
+
+   RRF(i) = Σ_s [1 / (k + rank_s(i))]
+
+
+   s indexes retrieval systems; k is a positive smoothing constant chosen on retrieval benchmarks (e.g.,
+   tested values around 60).
+
+
+ RRF is only a candidate-generation mechanism. It does not assert a candidate is qualified. Scores
+ from different sources must not be treated as comparable without normalization and testing.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                               09 / 32
+                                                                                   TALENTQ / SYSTEM DESIGN
+
+
+
+ Stage 2: evidence-based reranking
+ • Build feature vectors from permitted competency evidence and preferences.
+ • Use deterministic scoring formulas initially; compare to validated alternative models later.
+ • Record exclusion reason, unresolved requirements, evidence coverage and candidate-interest
+   state.
+ • Generate explanations only from cited facts and computed features; never free-form infer
+   hidden traits.
+
+   Product contract
+   The UI should show best documented match among the searched and permitted pool, not
+   best person in Lagos. Source coverage is necessarily incomplete.
+
+
+
+ 07 / CORE MATHEMATICS
+
+
+
+ Employer-side competency fit
+ Every role has n job-relevant competency dimensions. The weights w_j are non-negative and sum
+ to 1. Candidate demonstrations are evaluated against a role-specific rubric, not compared against
+ personal characteristics.
+
+
+   Σ(j=1..n) w_j = 1; 0 ≤ s_ij, c_ij, μ_j ≤ 1
+
+
+   s_ij = demonstrated competency level; c_ij = evidence confidence; μ_j = prespecified neutral
+   missing-evidence baseline.
+
+
+
+   F_i = 100 × Σ_j w_j [c_ij s_ij + (1-c_ij) μ_j]
+
+
+   F_i = provisional employer-fit index, 0–100. This is an interpretable shrinkage heuristic, not a
+   probability of successful performance.
+
+
+
+   C_i = Σ_j w_j c_ij; U_i = 1 - C_i
+
+
+   C_i = weighted evidence coverage; U_i = unresolved evidence fraction.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                              10 / 32
+                                                                                   TALENTQ / SYSTEM DESIGN
+
+
+
+ Why two separate numbers matter
+ A candidate with an attractive F score but low C has an uncertain evaluation. The UI must
+ present both. We do not multiply confidence by fit and then portray missing data as poor
+ performance. The baseline μ is a provisional method that must be tuned and audited for
+ differential effects.
+
+ Role weight construction
+ Start with job analysis: pairwise importance comparisons or a structured weighting workshop
+ with an employer and a subject-matter expert. Cap any one dimension from dominating without
+ documented justification. Version the rubric and compare inter-rater agreement before release.
+
+ Example competency rubric
+
+   Competency                               Weight           Evidence source
+
+   Investigate alerts                       0.40             Scenario with investigation notes
+
+   Query security logs                      0.30             Practical log task
+
+   Communicate incident findings            0.20             Structured report rubric
+
+   Document containment decisions           0.10             Incident discussion
+
+ This example is a design illustration only. Weights and competency definitions are not assumed valid across
+ all SOC employers.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                              11 / 32
+                                                                                 TALENTQ / SYSTEM DESIGN
+
+
+
+
+ 08 / TWO-SIDED MATCHING
+
+
+
+ Candidate compatibility and mutual fit
+ The employer fit F asks whether evidence supports the role requirements. Candidate
+ compatibility A asks whether the opportunity fits the candidate’s own stated requirements.
+ Neither can replace explicit interest.
+
+
+   A_i = 100 × [Σ_k v_k a_ik / Σ_k v_k]
+
+
+   a_ik [0,1] for known candidate preference k. Unknowns must be shown as unknown and omitted
+   from the numerator and denominator only with an explicit low-coverage warning.
+
+
+ Compatibility dimensions can include candidate-stated salary expectations, location, permitted
+ work format, desired schedule and career direction. Separate exact constraints from negotiable
+ preferences.
+
+
+   M_i = √(F_i × A_i)
+
+
+   The geometric mean penalizes one-sided matches; it is a heuristic index, not the probability a
+   candidate will join or succeed.
+
+
+
+
+ Crucial distinction: salary fit versus protected attributes
+ Compensation compatibility is job-related and candidate-controlled. Age, sex, ethnicity, religion,
+ pregnancy, disability or proxies for protected characteristics are not inputs to routine Q-Match
+ ranking. If a lawful occupational exception exists, it requires jurisdiction-specific review outside
+ the ordinary scoring pipeline.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                            12 / 32
+                                                                             TALENTQ / SYSTEM DESIGN
+
+
+
+ Interest is a separate state
+
+  Candidate state      Display language                                Next action
+
+  Unknown              Potential match; interest not confirmed         Request permission-aware
+                                                                       interest check
+
+  Interested           Confirmed interest at timestamp                 Invite to next legitimate step
+
+  Not interested       Declined or opted out                           Stop outreach and follow
+                                                                       retention rules
+
+  Unavailable          Not currently available                         Respect preferred future-contact
+                                                                       settings
+
+
+
+ 09 / CALCULATIONS AND INTERPRETATION
+
+
+
+ Worked example: three candidates
+ Synthetic SOC analyst mandate: w = (0.40, 0.30, 0.20, 0.10). Baseline μ_j = 0.50 for each
+ dimension. Numbers are illustrative and not performance predictions.
+
+  Candidate           Demonstrated s vector                      Confidence c vector
+
+  A                   0.85, 0.80, 0.80, 0.70                     0.95, 0.85, 0.90, 0.70
+
+  B                   0.95, 0.90, 0.70, 0.85                     0.40, 0.35, 0.55, 0.30
+
+  C                   0.75, 0.85, 0.80, 0.80                     0.95, 0.95, 0.90, 0.90
+
+
+  Candidate         Employer fit F             Coverage C        Candidate A              Mutual M
+
+  A                 77.8                       88.5%             92                       84.6
+
+  B                 64.6                       40.5%             65                       64.8
+
+  C                 77.6                       93.5%             78                       77.8
+
+
+   Read the scores correctly
+   Candidate B has ambitious claimed scores but sparse supporting evidence. Candidate A
+   has stronger mutual compatibility. Candidate C has the best coverage. None should be
+   automatically hired or rejected based on this table. The shortlist should highlight missing
+   verification work and invite human comparison of evidence.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                             13 / 32
+                                                                            TALENTQ / SYSTEM DESIGN
+
+
+
+ What happens when salary is unknown?
+ Do not fill it from social media or past salary. Mark A as provisional and ask the candidate
+ privately. If a recruiter insists on a definitive ranking, Q should warn that the employer-side rank
+ is available but the mutual-fit rank is incomplete.
+
+
+ 10 / SLATE DESIGN
+
+
+
+ Shortlist optimization: not just top 15 scores
+ Naively selecting the 15 highest-index candidates can create a redundant shortlist of people with
+ nearly identical backgrounds. A better objective covers relevant capabilities and distinct
+ approaches without manipulating protected demographics.
+
+
+   S* = argmax_|S|≤K [Σ_(i∈S) M_i + λ D(S) - η R(S)]
+
+
+   D = job-relevant coverage of distinct competencies/experience; R = redundancy among
+   near-duplicate profiles; λ and η chosen by experiments.
+
+
+ Use a transparent greedy maximal marginal relevance approximation for an initial
+ implementation. Re-rank with evidence and policy checks after every new mandate version or
+ material evidence update.
+
+ Minimum operational controls
+  • Do not let diversity optimization import protected attributes into individual scores.
+  • Allow a reviewer to inspect exactly which job-relevant dimension each candidate adds.
+  • Use consistent score versions within any shortlist comparison.
+  • Respect candidate visibility and representation rights across agencies.
+  • Never inflate an empty candidate pool into the requested K results.
+
+ The stopping condition
+ The system can return fewer than K candidates. Its explanation should identify whether the
+ limiting factor was legal constraints, missing sources, poor evidence, compensation mismatch or
+ confirmed unwillingness to engage. These are very different outcomes.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                        14 / 32
+                                                                        TALENTQ / SYSTEM DESIGN
+
+
+
+
+ 11 / MODEL OUTPUT CONTRACT
+
+
+
+ Uncertainty, explanation and human review
+ Every recommendation should be explainable as a chain of evidence. The language model renders
+ the explanation; deterministic code controls the facts and the calculated values.
+
+  Output field             Example                                Control
+
+  Summary                  "Strong log-investigation evidence"    Bound to an observed work
+                                                                  sample
+
+  Supporting evidence      Assessment A-104, timestamp, rubric    Clickable provenance
+                           v3
+
+  Unverified item          "Employer dates not verified"          Explicit uncertainty
+
+  Missing requirement      "No evidence of cloud detection"       No negative personal inference
+
+  Compatibility            "Hybrid arrangement confirmed"         Candidate-confirmed timestamp
+
+  Next action              "Invite for specialist review"         No automatic rejection
+
+
+
+ Human-in-the-loop is not a checkbox
+ Reviewers need adequate evidence, time, authority and the ability to override recommendations.
+ A nominal approval click on a concealed AI decision is not meaningful oversight. UK privacy
+ guidance and Dutch regulator guidance discuss the importance of meaningful human
+ involvement [S5, S6].
+
+ Counterfactual tests
+ For a candidate matched to a job, ask which job-relevant evidence would legitimately change the
+ assessment. Example: obtaining an evaluated incident-response work sample could address a skill
+ evidence gap. Never advise a candidate to change protected or irrelevant personal
+ characteristics.
+
+   Trust rule
+   Separate three things: facts (source-backed), judgments (rubric-backed and contestable)
+   and forecasts (calibrated only after sufficient data). The UI must not blur them.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                     15 / 32
+                                                                                TALENTQ / SYSTEM DESIGN
+
+
+
+
+ 12 / STATISTICAL LEARNING PLAN
+
+
+
+ From heuristics to validated prediction
+ Hand-designed Q-Match indices establish a testable baseline, not predictive authority. A later
+ model can learn probabilities of specific outcomes when enough representative, lawfully
+ processed data exists.
+
+
+   p_t(i,j) = P(Y_t = 1 | X_ij, segment, time)
+
+
+   Possible t: qualified at review, interview accepted, offer accepted. Keep separate outcomes rather
+   than collapsing them into a vague "hireability" number.
+
+
+
+
+ Data requirements
+  • A pre-registered outcome definition and clear time window for each model.
+  • Training labels from observed events, with reasons for missing outcomes and right-censoring.
+  • Recruitment-market and job-family stratification; no assumed transportability between
+    Nigeria, UK and US.
+  • Leakage prevention: no post-interview events as features when predicting pre-interview
+    suitability.
+  • Temporal holdout splits, reviewer-blind datasets and prospective validation before use in
+    consequential decisions.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                                16 / 32
+                                                                                TALENTQ / SYSTEM DESIGN
+
+
+
+ Evaluation metrics
+
+  Measure                  Technical meaning                            Why it matters
+
+  Precision@K              Relevant candidates among reviewed           Recruiter time saved
+                           top K
+
+  NDCG@K                   Quality of ranked results vs expert          Ranking effectiveness
+                           relevance labels
+
+  Brier score / ECE        Probability calibration if predictive        Honest confidence
+                           model exists
+
+  Recall by subgroup       Qualified candidates retrieved across        Discoverability risk
+                           assessed groups
+
+  Override and appeals     Human corrections and substantiated          Accountability
+                           objections
+
+  Time to shortlist        Clock to first useful, confirmed shortlist   User value
+
+ A recent 2026 review challenges overconfident validity claims drawn from weak study designs. TalentQ
+ therefore needs its own prospective operational validation, not borrowed accuracy percentages [S11].
+
+
+ 13 / RESPONSIBLE RECRUITMENT
+
+
+
+ Bias testing and lawful selection
+ A global recruitment product must treat employment ranking as a sensitive, regulated use case
+ from day one. The EU AI Act includes automated recruitment matching and ranking within
+ high-risk employment examples [S2]; its current stand-alone high-risk obligations timetable
+ extends to December 2027 [S3].
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                          17 / 32
+                                                                                  TALENTQ / SYSTEM DESIGN
+
+
+
+ Required audit layers
+
+   Audit                 What to test                                          Response
+
+   Feature review        Direct and proxy use of protected characteristics     Remove or justify lawfully,
+                                                                               version policy
+
+   Access parity         Who can complete identity, interview and skill        Provide accessible equivalents
+                         steps
+
+   Selection-rate        Differential screening progression by legally         Investigate causes and
+   analysis              assessed groups                                       remediation
+
+   Calibration           Are model probabilities reliable across subgroups?    Retrain, recalibrate or
+                                                                               withdraw
+
+   Adversarial           Accent, formatting, name swaps, prompt injection      Test invariance / harden inputs
+   testing
+
+   Reviewer quality      Rubric compliance and inter-rater agreement           Training and quality assurance
+
+
+
+ Jurisdictional examples
+  • European Union: AI Act high-risk recruitment considerations, privacy, transparency,
+    documentation and oversight [S2, S3].
+  • United Kingdom: UK GDPR protections around significantly impactful solely automated
+    decisions [S5].
+  • New York City: Local Law 144 bias-audit and notice rules apply to covered automated
+    employment decision tools [S7].
+  • Nigeria: Section 37 of the Nigeria Data Protection Act restricts certain solely automated
+    significant decisions [S8].
+ Country entry requires legal review of the actual deployed tool, employer responsibilities, hiring
+ discrimination rules, retention, cross-border transfers, use of biometric/video information and candidate
+ rights.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                                 18 / 32
+                                                                             TALENTQ / SYSTEM DESIGN
+
+
+
+
+ 14 / EVALUATION ORCHESTRATION
+
+
+
+ Q interviews and specialist assessments
+ Tavus-class video avatars, low-latency speech and natural-language interviewing are interfaces,
+ not substitutes for assessment science. Candidate outcomes should rest on observable
+ job-related answers and work products.
+
+ Four evaluation modes
+
+  Mode                           Appropriate role                  Infrastructure
+
+  Structured text or voice       Sales, service, administration    Question bank + rubric + transcript
+
+  Live conversational scenario   Business development, support     Realistic customer/problem roleplay
+
+  Sandbox work sample            Engineering, operations,          Constrained IDE/log/SQL/document
+                                 cybersecurity                     tasks
+
+  Specialist provider            Advanced cyber, regulated roles   Secure third-party integration and
+  assessment                                                       review
+
+
+
+ Interview protocol
+ • Notify the candidate of AI participation, processing purposes, recordings and available
+   alternative arrangements.
+ • Anchor questions to the approved role rubric. Ask follow-ups that clarify evidence, not
+   protected traits.
+ • Timestamp transcript turns and assessment artifacts; separate raw observation from evaluator
+   judgment.
+ • Use human evaluation where required; provide recourse for technical issues and
+   accommodation needs.
+ • Maintain candidate coaching/rehearsal data separately from employer hiring evidence.
+
+   Cybersecurity example
+   A Level-1 SOC applicant receives synthetic sign-in logs and a mock alert. The candidate
+   explains triage and writes an incident note. Q records time-stamped steps and maps work
+   to an approved rubric. A qualified analyst reviews the evidence. TalentQ does not claim to
+   replicate a complete SIEM or outperform specialist cyber ranges.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                          19 / 32
+                                                                                 TALENTQ / SYSTEM DESIGN
+
+
+
+
+ 15 / AUTONOMY AND PERMISSIONS
+
+
+
+ Governed recruitment agents
+ Persistent agents should work across sessions, but their autonomy must be delegated explicitly.
+ Agent output is auditable and scoped to a single organization, mandate and candidate
+ permissions.
+
+  Action                             Default policy                        Required safeguard
+
+  Search authorized sources          Automatic after mandate               Source entitlement, rate budget
+                                     approval
+
+  Update evidence / match            Automatic within permission           Lineage, version, re-score audit
+                                     scope
+
+  Draft candidate outreach           Automatic                             Policy and contact preference
+                                                                           checks
+
+  Send outreach                      Approval or explicit standing         Opt-out, frequency cap, anti-spam
+                                     delegation
+
+  Book interview                     Candidate agreement +                 Calendar availability and
+                                     scheduling scope                      confirmation
+
+  Reject, advance, offer             Human decision                        Recorded reviewer and rationale
+
+
+
+ Agent execution protocol
+
+   Intent → Plan → Permission check → Idempotent tool call → Verify → Record →
+   Report
+
+
+   For long-running work, store checkpoints; retries must not duplicate invitations, charges or
+   candidate state transitions.
+
+
+ • Require idempotency keys and outbox/event-delivery guarantees.
+ • Set cost and token budgets per mandate; on exhaustion, request authorization.
+ • Tool outputs and imported web text are untrusted; strip prompt instructions from source
+   content.
+ • Disable unilateral agent policy changes or credential access.
+ • Provide a clear "stop all activity" control and replayable audit trail.
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                               20 / 32
+                                                                           TALENTQ / SYSTEM DESIGN
+
+
+
+
+ 16 / SUPER-SPEED WITHOUT FICTION
+
+
+
+ Latency architecture and performance
+ budgets
+ The goal is immediate feedback and fast useful information, not a promise that all external data
+ can be acquired instantaneously. The system should progressively reveal authorized and
+ trustworthy results.
+
+  User-visible event                 Proposed target              Path
+
+  UI response                        p95 < 300 ms                 Optimistic UI + local state
+
+  First streamed text                p95 < 1.5 s                  Small planner, context prefetch,
+                                                                  stream
+
+  Re-rank indexed shortlist          p95 < 2 s                    Cached features + deterministic
+                                                                  scoring
+
+  First useful new-search set        p95 < 5 s where sources      Parallel source dispatch + progressive
+                                     allow                        results
+
+  External verification complete     No universal instant SLA     Async connector and visible status
+
+  Real-time voice turn               Provider-specific            Streaming audio + interruption
+                                     measured target              handling
+
+
+
+ Performance design
+  • Precompute embeddings and candidate competency vectors; update incrementally with
+    change events.
+  • Route exact structured filters to indexes and use vector retrieval only when semantics add
+    value.
+  • Separate retrieval, policy checks, scoring and explanation. Parallelize independent steps.
+  • Cache by tenant, mandate version, source-entitlement hash and data version.
+  • Avoid serial voice → LLM → search → LLM chains on simple tasks; speculative work must
+    remain permission-safe.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                         21 / 32
+                                                                                   TALENTQ / SYSTEM DESIGN
+
+
+
+
+   T_useful = max(T_index, T_remote-first) + T_rank + T_render
+
+
+   An illustrative critical-path model. Total completion time includes slow connectors; the first useful
+   result should not wait on every connector.
+
+
+ Measure p50/p95/p99 by jurisdiction, tenant size, data freshness, provider, query class and concurrent load.
+ Collect results on realistic networks, including low-bandwidth mobile usage.
+
+
+ 17 / ENGINEERING SPECIFICATION
+
+
+
+ Storage, API boundaries and event contracts
+ Minimum relational core
+
+   Table                                         Primary linkage / concern
+
+   organizations / tenants                       Multi-tenant isolation and region controls
+
+   users / memberships                           Roles, inviter, expiry, account recovery
+
+   candidates / candidate_consents               Candidate identity and data rights
+
+   mandates / mandate_versions                   Approved requirements and history
+
+   competencies / ontology_versions              Versioned role skill graph
+
+   claims / evidence / verifications             Source provenance and verification lifecycle
+
+   matches / match_explanations                  Inputs, indexes, rubric and model versions
+
+   applications / interviews / assessments       Candidate events, outcomes and human review
+
+   agent_jobs / action_log / outbox              Delegation, retries and operational trace
+
+   deletion_requests / audit_events              Access history, correction and erasure
+
+
+
+ Representative endpoint contracts
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                                   22 / 32
+                                                                            TALENTQ / SYSTEM DESIGN
+
+
+
+
+   POST /v1/mandates/{id}/compile → rubric_draft + gaps + version
+
+
+   Requires recruiter role; employer approval before search.
+
+
+
+   POST /v1/mandates/{id}/matches → job_id + snapshot_id
+
+
+   Returns an asynchronous job reference, stream updates and idempotency key.
+
+
+
+   GET /v1/matches/{snapshot_id} → list + F/A/M/C + evidence_refs
+
+
+   Response never expands evidence outside the current grant.
+
+
+
+   POST /v1/agents/{job_id}/approve-action → action_receipt
+
+
+   Requires specific approval scope; append audit event.
+
+
+ Public APIs require authentication, authorization and tenant-scoped policy evaluation per
+ request. Use provider adapters so interview, email, ATS and model vendors can be substituted
+ independently.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                    23 / 32
+                                                                           TALENTQ / SYSTEM DESIGN
+
+
+
+
+ 18 / NON-NEGOTIABLE CONTROLS
+
+
+
+ Security, privacy and data lifecycle
+ Threats that matter specifically to TalentQ
+
+  Threat                   Why it matters                     Control
+
+  Cross-tenant data leak   Candidate history crosses          Tenant isolation, ABAC/RLS, adversarial
+                           employer boundaries                tests
+
+  Prompt injection         Malicious CV/web text instructs    Treat retrieved content as data; tool
+                           agent to act                       policy gates
+
+  Privilege escalation     Agent sends unauthorized           Short-lived scopes, approval, action logs
+                           messages
+
+  Candidate                Fraudulent representation or       Risk-based verification and disputes
+  impersonation            fabricated credentials
+
+  Sensitive data           Recordings and employment          Encryption, minimization, lifecycle
+  exposure                 history are high-impact            deletion
+
+  Provider outage/cost     Third-party voice/sourcing tools   Circuit breakers, quotas, fallback paths
+  spike                    unavailable
+
+
+
+ Data-rights semantics
+ • Candidate export, correction, withdrawal, access logs and deletion requests must reach linked
+   caches, vector indexes and downstream providers according to retention obligations.
+ • Explicitly separate consent to store a CV from permission to share a profile with a particular
+   recruiter.
+ • Bound recordings to stated assessment purpose; implement short default retention subject to
+   law and employer obligations.
+ • Protect assessor notes from cross-employer reuse; reuse candidate work samples only when
+   permitted.
+ • Apply scoped encryption keys, secret rotation, documented incident response and
+   independent security review.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                         24 / 32
+                                                                          TALENTQ / SYSTEM DESIGN
+
+
+
+   Build gate
+   No production outreach or AI-assisted ranking for consequential decisions before a
+   documented data-protection assessment, fairness evaluation plan, access-control
+   penetration tests and jurisdiction-specific policy approval.
+
+
+
+ 19 / WHAT HAPPENS WHEN THINGS FAIL
+
+
+
+ Operational resilience and failure recovery
+  Failure                 Incorrect behavior to avoid          Required recovery
+
+  No search results       "There is nobody suitable"           State which sources ran; offer
+                                                               calibrated changes
+
+  LinkedIn integration    Background scraping workaround       Explicit unsupported-source notice
+  unavailable
+
+  Candidate profile       Silent overwrite                     Keep source versions + request
+  conflict                                                     verification
+
+  Voice call disconnect   Restart interview from zero          Resume consented session/checkpoint
+
+  Ranking model timeout   Invent LLM ranking                   Show cached snapshot as dated or fail
+                                                               safely
+
+  Applicant opts out      Continued follow-ups                 Stop agent actions and process request
+
+  Assessment provider     Mark candidate failed                Pause, reassign or accessible alternative
+  outage
+
+  Candidate challenges    Auto-dismiss appeal                  Qualified human review with trace
+  assessment
+
+
+
+ Operational event examples
+ mandate.approved, source.sync_failed, evidence.verified, candidate.opted_out,
+ match.recomputed, interview.disconnected, assessment.reviewed,
+ application.human_decision_recorded. Each carries tenant ID, entity ID, occurred_at, actor,
+ schema_version and idempotency key.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                        25 / 32
+                                                                              TALENTQ / SYSTEM DESIGN
+
+
+
+
+ 20 / PROVE BEFORE CLAIMING
+
+
+
+ Evaluation suite and acceptance gates
+  Gate                     Benchmark / artifact                       Go/no-go principle
+
+  G0 Data rights           Tenant and source-entitlement tests;       Zero known authorization bypasses
+                           deletion drill
+
+  G1 Mandate               Expert review of structured role           Clarification before uncertain
+  accuracy                 extraction                                 commitments
+
+  G2 Search relevance      Labeled role-specific dataset;             Beat simple keyword baseline
+                           Precision@K/NDCG
+
+  G3 Fit quality           Blinded expert assessment;                 Credible, reproducible explanations
+                           disagreement analysis
+
+  G4 Fairness &            Subgroup analyses, accommodations,         No unresolved material harm
+  accessibility            audit docs
+
+  G5 User outcomes         Matched control pilots and measured        Evidence of real customer
+                           recruiter hours                            improvement
+
+  G6 Speed & reliability   Load tests, p95/p99, retries and outages   Targets met on representative
+                                                                      workloads
+
+  G7 Paid value            Renewal/repeat mandates and verified       Sustainable paid usage
+                           unit costs
+
+
+
+ Experiment design
+ Randomize or alternate appropriately matched recruitment mandates between an existing
+ recruiter workflow and TalentQ assistance where customers agree. Record recruitment hours,
+ candidates reviewed, interviews accepted, employer rating of evidence, candidate drop-off and
+ placement outcomes. Do not infer future on-job performance from a small pilot.
+
+ Pre-registered stop conditions
+ • Discovery legally blocked by data licensing or retention conditions.
+ • Bias audit or accessibility findings cannot be mitigated promptly.
+ • Outreach complaint rate exceeds an agreed threshold.
+ • Actual per-mandate delivery cost overwhelms pricing in repeat pilots.
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                            26 / 32
+                                                                               TALENTQ / SYSTEM DESIGN
+
+
+
+  • Q-Match performs no better than cheaper keyword / rule-based alternatives.
+
+
+ 21 / TECHNICAL ECONOMICS
+
+
+
+ Costs, unit budgets and scale
+ The market research report will estimate real provider costs and competitive pricing. This
+ engineering model defines what to instrument before proposing margins.
+
+
+   Cost(m) = Σ_p units(m,p) × rate(p) + storage(m) + egress(m) + review(m)
+
+
+   p includes model tokens, voice minutes, video sessions, enrichment calls, assessment provider
+   events and message delivery. Rates are contractual and geography-dependent.
+
+
+
+   Gross contribution(m) = Revenue(m) - direct variable cost(m)
+
+
+   Exclude sunk product R&D; include paid human review when it is needed to fulfil the mandate.
+
+
+
+
+ Cost-control mechanisms
+  • Use smaller models for extraction and candidate-format normalization; reserve stronger
+    reasoning for exceptional ambiguity and explanation review.
+  • Deduplicate enrichment events and avoid full reindexing on minor changes.
+  • Meter premium video interviews, verification and specialist assessment usage.
+  • Place per-tenant and per-mandate quotas on sourcing queries, outreach and models.
+  • Prefer cached evidence snapshots for repeat recruiter interactions, with visible freshness
+    labels.
+  • Require manual authorization before unusually expensive agent plans.
+
+ Scale architecture
+ A modular-monolith baseline reduces operational overhead. Split the ingestion worker, search
+ cluster or interview media subsystem only when performance and risk telemetry demonstrates
+ the need. Regional tenancy, data residency and processor-contract support should exist in the
+ schema before international deployment.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                           27 / 32
+                                                                           TALENTQ / SYSTEM DESIGN
+
+
+
+
+ 22 / DELIVERY ORDER
+
+
+
+ Phased engineering roadmap
+  Phase                  Build                                           Exit evidence
+
+  P0 / Design &          Mandate taxonomy, privacy architecture, skill   Approved data model and
+  assurance              ontology, jurisdiction review                   safety controls
+
+  P1 / Recruiter pilot   Mandate compiler, ATS import, source-limited    Blind shortlist evaluation on
+                         search, deterministic Q-Match                   real mandates
+
+  P2 / Candidate loop    Native profile, consent UI, interest checks,    Candidate completion and
+                         scheduling, status                              trust metrics
+
+  P3 / Evaluation        Structured Q interviews, simple work samples,   Assessment consistency and
+  layer                  human review                                    fairness testing
+
+  P4 / Agent             Mandate-scoped agents, outreach approvals,      Measured hours saved,
+  operations             retry orchestration                             controlled costs
+
+  P5 / Outcome           Longitudinal data, calibration, monitoring,     Prospective validation before
+  models                 predictive trials                               deployment
+
+
+
+ Technical definition of done for every module
+ • An owner, product contract, access policy, validation metrics and budget.
+ • Threat modeling, unit/integration tests and representative failure recovery.
+ • Versioned schemas, source auditability and opt-out/delete semantics.
+ • Latency/cost instrumentation and externally observable error states.
+ • A tested replacement path for provider dependencies.
+
+   Critical design judgment
+   Do not build a full learning management system, custom SIEM, global applicant-tracking
+   suite or proprietary voice engine in phase one. Connect the specialist capabilities needed
+   by real recruitment journeys; build deeper only when external integrations fail
+   commercially or technically.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                         28 / 32
+                                                                                  TALENTQ / SYSTEM DESIGN
+
+
+
+
+ 23 / WHAT IS REAL VS PROPOSED
+
+
+
+ Investor claim register
+   Claim                                       Current classification        Proof needed
+
+   "Q-Match exists"                            Design proposal in this       Implemented scoring service +
+                                               blueprint                     reproducibility tests
+
+   "Q-Match predicts successful hires"         Not supported                 Prospective outcomes and
+                                                                             calibration
+
+   "All LinkedIn talent is searchable"         Not supported; access         Executed partner agreement /
+                                               restricted                    lawful source contract
+
+   "Recruitment agents run end to end"         Proposed operational          Permissioned integrations and
+                                               design                        safe completion logs
+
+   "TalentQ has a data moat"                   Potential future moat         Scale of consented evidence and
+                                                                             outcome signals
+
+   "Sub-second search"                         Target only for               p95 benchmark at representative
+                                               indexed/known sets            load
+
+   "Assessments are fair"                      Unproven until audited        Validity, accessibility and impact
+                                                                             tests
+
+
+
+ Pitch-safe technical statement
+   Defensible wording
+   “TalentQ is developing an evidence-driven, two-sided matching system that links job
+   requirements, candidate-verified capabilities and candidate preferences. Its planned
+   architecture provides source-aware explanations and human-governed recruitment
+   workflows, with predictive models subject to prospective validation.”
+
+
+ There is no need to disclose internal reuse of the Q runtime in the public pitch. If an investor asks about
+ ownership, dependency or intellectual property, answer fully and accurately about the legal and technical
+ relationships. Marketing independence is not a license to misrepresent IP ownership.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                                 29 / 32
+                                                                           TALENTQ / SYSTEM DESIGN
+
+
+
+
+ 24 / UNRESOLVED QUESTIONS
+
+
+
+ Open decisions for engineering and diligence
+  Decision                        Proposed baseline                  Evidence required
+
+  First job family                B2B sales or technical support     Employer demand, assessment
+                                  plus one specialist test           practicality
+
+  Candidate source model          Native plus authorized employer    Actual access rights and candidate
+                                  ATS imports                        availability
+
+  Candidate compensation          Ranges with explicit consent; no   User interviews and jurisdiction
+  privacy                         historical salary inference        review
+
+  Matching model                  Rubric-driven transparent          Expert labels, bias tests,
+                                  heuristic                          comparative benchmarks
+
+  Recruiter autonomy              Draft first, send only with        Adoption and opt-out
+                                  authorization                      measurement
+
+  Interview mode                  Text/voice first, video optional   Completion, cost and
+                                                                     accommodations
+
+  Data geography                  Jurisdiction-aware tenant          Contractual and legal analysis
+                                  partitions
+
+  AI provider strategy            Adapter interfaces, no             Latency, cost, safety evaluation
+                                  hard-coding
+
+
+
+ The next two companion artifacts
+ Document 02: Global market and commercial diligence. A research protocol with nested
+ evidence tasks, competitor workflows, user complaints, regional TAM/SAM/SOM with
+ reproducible assumptions, pricing, cost benchmarks, regulation, market entry and sensitivity
+ scenarios. Source dates and confidence levels will be explicit.
+
+ Document 03: Investor pitch deck. Built only after comparing the technical feasibility and market
+ findings. It should distinguish credible current assets, planned capabilities, market hypotheses and
+ explicit investment scenarios; no invented traction, IP claims or investor-return guarantees.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                          30 / 32
+                                                                                   TALENTQ / SYSTEM DESIGN
+
+
+
+
+ APPENDIX A / PRIMARY SOURCES
+
+
+
+ Research and regulatory references
+ [S1] LinkedIn Talent Solutions / Recruiter System Connect technical overview
+
+ https://learn.microsoft.com/en-us/linkedin/talent/recruiter-system-connect?view=li-lts-2026-04
+
+ [S2] European Commission AI Act Service Desk / Employment high-risk use cases
+
+ https://ai-act-service-desk.ec.europa.eu/en/employment-0
+
+ [S3] European Commission / AI Act implementation timeline and 2026 amendments
+
+ https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai
+
+ [S4] NIST / Artificial Intelligence Risk Management Framework 1.0
+
+ https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10
+
+ [S5] UK ICO / Rights related to automated decision-making and profiling
+
+ https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/individual-rights/rig
+ hts-related-to-automated-decision-making-including-profiling/
+
+ [S6] Dutch Data Protection Authority / Automated assessment decisions
+
+ https://autoriteitpersoonsgegevens.nl/en/themes/employment-and-benefits/job-applications/online-and-g
+ ame-based-assessments-in-recruitment-and-selection-rules-for-automated-decision-making
+
+ [S7] New York City DCWP / Automated Employment Decision Tools, Local Law 144
+
+ https://www.nyc.gov/site/dca/about/automated-employment-decision-tools.page
+
+ [S8] Nigeria Data Protection Act 2023, section 37 (public transcription)
+
+ https://lawcarenigeria.com/nigeria-data-protection-act-2023/
+
+ [S9] ISO/IEC 42001:2023 / AI management systems, IEC
+
+ https://webstore.iec.ch/en/publication/90574
+
+ [S10] 2026 selection-science review, Annual Review of Organizational Psychology
+
+ https://www.annualreviews.org/content/journals/10.1146/annurev-orgpsych-020924-072127
+
+ [S11] Niessen et al., 2026 / Critique of selection criterion validity estimates
+
+ https://onlinelibrary.wiley.com/doi/10.1111/ijsa.70086
+
+ [S12] NIST AI RMF / Generative AI Profile
+
+ https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-i
+ ntelligence
+
+ Accessed / checked 25 October 2026. Sources inform risk and technical context; they do not validate
+ TalentQ performance. This is a design document, not legal or statistical certification.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                              31 / 32
+                                                                                  TALENTQ / SYSTEM DESIGN
+
+
+
+
+ APPENDIX B / DETERMINISTIC MATCH FLOW
+
+
+
+ Algorithm reference pseudocode
+  Step     Operation                       Output / control
+
+  01       Authorize request               Check tenant, recruiter role, mandate approval, source grants and
+                                           candidate visibility.
+
+  02       Compile constraints             Normalize job tasks, validated eligibility, rubric and candidate
+                                           preference slots.
+
+  03       Generate pool                   Structured search plus licensed lexical/semantic retrieval;
+                                           deduplicate.
+
+  04       Resolve evidence                Fetch source-linked evidence within scope, freshness and
+                                           contradiction status.
+
+  05       Score employer fit              For each role competency, compute observed score, confidence
+                                           and prior baseline.
+
+  06       Compute mutual fit              Candidate preferences, compatibility coverage and geometric
+                                           index; preserve unknowns.
+
+  07       Optimize shortlist              Greedy relevance/coverage optimization under legitimate
+                                           constraints.
+
+  08       Explain, audit, return          Evidence-bound explanations, snapshot, versions, action and
+                                           policy logs.
+
+
+
+ Version string carried with every match
+
+   match_version = hash(mandate_v, rubric_v, source_snapshot, policy_v,
+   algorithm_v)
+
+
+   This allows deterministic reproduction, differential regression testing and audit of why rankings
+   changed.
+
+
+
+
+TALENTQ / TECHNICAL BLUEPRINT / OCT 2026                                                                 32 / 32
+
