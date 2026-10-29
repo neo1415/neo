@@ -2,6 +2,13 @@
 
 This register lists only decisions that are still open. Approved product and design decisions live in `decisions/`. "Founder" means a product or design trade-off that only the founder can make. "Engineering" means the next phase can decide it with the founder informed.
 
+## Decided by the founder (29 Oct)
+
+| # | Decision | What it means for the build | Where it is in the prototype |
+|---|---|---|---|
+
+## Still open
+
 | # | Decision | Owner | Why it matters | Prototype's current assumption |
 |---|---|---|---|---|
 | D1 | **Default discovery rule.** Should candidates be findable only by verified employers by default, with no agencies? | Founder | It decides how big the agency market is and how much privacy candidates get. Agencies currently see only people who registered with them or who opted in. | `VERIFIED_EMPLOYERS` by default (`mock/world.ts` `discoveryRule`). R4's pools shrank accordingly. |

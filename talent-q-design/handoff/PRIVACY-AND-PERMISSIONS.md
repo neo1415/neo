@@ -12,10 +12,11 @@ Production must implement the **same policy as one authorisation service**, call
 2. either:
    - there is an **explicit relationship**: the person applied to one of the organisation's jobs, shared at least one item with it (and has not revoked it), or registered with it (agencies); **or**
    - the person's **discovery rule** allows the organisation:
+     - `ANYONE` (the default, founder decision D1): any organisation, verified or not. Unverified organisations are limited (§6).
+     - `EMPLOYERS_AND_AGENCIES`: any organisation with a verified domain.
+     - `VERIFIED_EMPLOYERS`: employers with a verified domain and a verified company registration. Agencies are excluded.
      - `NOBODY`: no one may discover them.
-     - `VERIFIED_EMPLOYERS` (the default): employers with a verified domain and a verified company registration. Agencies are excluded.
-     - `ANYONE_VERIFIED`: any organisation with a verified domain.
-     - `hideFrom[]` overrides both of the above for the organisations listed.
+     - `hideFrom[]` overrides all of the above for the organisations listed.
 
 The global switch `consents.discoverable = false` means the same as `NOBODY`.
 
@@ -59,12 +60,17 @@ The global switch `consents.discoverable = false` means the same as `NOBODY`.
 | Make offers | OWNER, ADMIN, RECRUITER (R5: a hiring manager is refused, with who can do it) |
 | Open confidential mandates | Members on the mandate. A VIEWER requests access and an OWNER grants it (R4) |
 
-## 6. Organisation verification
+## 6. Organisation verification and limits (founder decisions D1, D3)
 
-- An unverified organisation can post roles and receive applicants, which creates a relationship.
-- It can't discover anyone under the default rule.
 - Verification needs a verified domain and a company registration check against an external registry.
-- The prototype simulates this and labels it; R1 is being updated to show it.
+- **Until verified, an organisation:**
+  - can search, and finds people whose rule is `ANYONE`;
+  - **cannot post roles**;
+  - can send **at most 3 outreach messages a week**, each labelled for the candidate as "This employer isn't verified yet";
+  - **cannot** run campaigns or make submittals;
+  - **cannot** see contact details.
+- The limits are one configuration object (`UNVERIFIED_LIMITS` in `prototype/src/mock/world.ts`); production keeps them in configuration, not code.
+- Every send path checks the weekly allowance at send time.
 
 ## 7. Candidate controls (all reversible and audited)
 
