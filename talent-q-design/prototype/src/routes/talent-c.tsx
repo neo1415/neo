@@ -9,7 +9,7 @@ import { FirstSteps } from '../journeys/talent-c/FirstSteps';
 import { uploadPct } from '../journeys/talent-c/runtime';
 import '../styles/talent-c.css';
 
-registerRoute({ path: '/c/interview', side: 'candidate', label: 'practice and interviews', render: () => <Interview />, nav: { group: 'Grow', label: 'Practice and interview', icon: 'practice', order: 13 } });
+registerRoute({ path: '/c/interview', side: 'candidate', label: 'practice and interviews', render: () => <Interview />, nav: { group: 'Interviews', label: 'Interview room', icon: 'practice', order: 42 } });
 // Reached from home, Q ("help me start") and proactive suggestions; kept out of the rail (nine-item limit).
 registerRoute({ path: '/c/start', side: 'candidate', label: 'your first steps', render: () => <FirstSteps /> });
 

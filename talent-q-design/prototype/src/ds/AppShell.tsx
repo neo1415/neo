@@ -15,10 +15,11 @@ import { QThread, useQMood } from '../q/QThread';
 import { flushOutbox, useQThread } from '../q/core/engine';
 import { ICONS } from './icons';
 import { QMark } from './QMark';
+import { arrive } from './motion';
 import { InShell, Split, useNarrow } from './Workspace';
 import './ds.css';
 
-const GROUP_ORDER = ['Q', 'Hiring', 'Agency', 'Work', 'Grow', 'Evidence', 'Organisation', 'You'];
+const GROUP_ORDER = ['Q', 'Hiring', 'Agency', 'Work', 'Interviews', 'Grow', 'Evidence', 'Organisation', 'You'];
 const COLLAPSIBLE = new Set(['Organisation', 'You']);
 
 function useNav() {
@@ -70,7 +71,10 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
         <button type="button" className="ds-btn" onClick={() => update((w) => { w.network = 'online'; })}>Reconnect</button>
       </div>
     )}
-    {children}
+    {narrow && <p className="ds-proto-bar">Prototype · simulated data</p>}
+    {/* Orientation: the new page settles in (200 ms, decelerate). Keyed by path so returning to a page with
+        preserved state still reads as arriving; reduced motion makes this an instant swap. */}
+    <motion.div key={path} className="ds-page-body" {...arrive}>{children}</motion.div>
   </div>;
 
   return (
@@ -78,7 +82,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
     <div className="ds ds-app" data-rail={rail} data-audience={actor.side === 'candidate' ? 'candidate' : undefined} data-lite={lite ? 'on' : undefined}>
       <a className="skip-link" href="#ds-content" onClick={(e) => { e.preventDefault(); document.getElementById('ds-content')?.focus(); }}>Skip to content</a>
       <nav className="ds-rail" aria-label="Talent Q navigation">
-        <Link to={actor.side === 'recruiter' ? '/r/home' : '/c/home'} className="ds-rail-brand" aria-label="Talent Q home"><QMark mood={network === 'offline' ? 'offline' : 'idle'} size={30} /><span className="ds-hide-collapsed">Talent Q</span></Link>
+        <Link to={actor.side === 'recruiter' ? '/r/home' : '/c/home'} className="ds-rail-brand" aria-label="Talent Q home"><QMark mood={network === 'offline' ? 'offline' : 'idle'} size={30} /><span className="ds-hide-collapsed ds-brandname">Talent Q<span className="ds-proto">Prototype · simulated data</span></span></Link>
         <div className="ds-space">
           <button type="button" className="ds-space-btn" aria-expanded={who} aria-label={`Signed in as ${actor.name}${actor.journey ? `, journey ${actor.journey}` : ''}. Switch person`} onClick={() => setWho(!who)}>
             <span className="ds-av" aria-hidden="true">{actor.initials}</span>

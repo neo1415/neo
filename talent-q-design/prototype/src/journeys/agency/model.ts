@@ -1,7 +1,7 @@
 // Agency (R4) model: client-scoped selectors, mutations and the simulated multi-agent runner.
 // Tenant isolation is enforced HERE, not in the views: every selector takes the client in focus and
 // returns only that client's records, so pages, Q replies and reports cannot mix Kora and Medlink.
-import { actorOf, emit, getWorld, orgOf, simNow, uid, update, type World } from '../../mock/world';
+import { actorOf, canSeeCandidate, emit, getWorld, orgOf, simNow, uid, update, type World } from '../../mock/world';
 import type { Actor, MandateX } from '../../state/domain';
 import { agency, area, type AgencyState, type AgentRun, type ClientId, type FitMark, type Pool, type Report, type Submittal } from '../../state/areas/agency';
 import { appendQ } from '../../q/core/engine';
@@ -50,7 +50,7 @@ export const runsFor = (w: World, client: ClientId) => agency(w).runs.filter((r)
 export const docsFor = (w: World, client: ClientId) => agency(w).docs.filter((d) => d.clientOrgId === client);
 export const pipelineFor = (w: World, client: ClientId) => { const ids = agencyMandates(w, client).map((m) => m.id); return w.pipeline.filter((p) => ids.includes(p.mandateId)); };
 /** Everyone who appears in a client's records (pipeline or pools): the only people a client view or report may name. */
-export const peopleFor = (w: World, client: ClientId) => [...new Set([...pipelineFor(w, client).map((p) => p.personId), ...poolsFor(w, client).flatMap((p) => p.members)])];
+export const peopleFor = (w: World, client: ClientId) => [...new Set([...pipelineFor(w, client).map((p) => p.personId), ...poolsFor(w, client).flatMap((p) => p.members)])].filter((p) => allowed(w, p));
 
 // ---------------- Permissions (confidential records) ----------------
 export function hasAccess(w: World, a: Actor, recordId: string) {
@@ -90,7 +90,11 @@ export const mustHavesShown = (w: World, mandateId: string, personId: string) =>
   const must = (m?.requirements ?? []).filter((r) => r.mustHave);
   return { shown: must.filter((r) => (f[r.reqId] ?? 'none') !== 'none').length, of: must.length };
 };
-export const activeMembers = (w: World, pool: Pool) => pool.members.filter((p) => !isWithdrawn(w, p));
+/** Privacy: pool members the agency may see (registered with it, or discoverable by agencies). */
+export const allowed = (w: World, personId: string) => canSeeCandidate(w, personId, AGENCY_ID);
+export const activeMembers = (w: World, pool: Pool) => pool.members.filter((p) => !isWithdrawn(w, p) && allowed(w, p));
+/** Members hidden by their own privacy settings: counted, never named. */
+export const hiddenMembers = (w: World, pool: Pool) => pool.members.filter((p) => !isWithdrawn(w, p) && !allowed(w, p));
 export const removedMembers = (w: World, pool: Pool) => pool.members.filter((p) => isWithdrawn(w, p));
 export const ranked = (w: World, pool: Pool) => [...activeMembers(w, pool)].sort((a, b) => fitScore(w, pool.mandateId, b) - fitScore(w, pool.mandateId, a) || personName(w, a).localeCompare(personName(w, b)));
 
@@ -167,7 +171,7 @@ export function launchCampaign(w: World, actor: Actor, id: string) {
   c.messages = pool.members.map((p) => {
     const body = messageFor(w, c.template, p); const n = words(body);
     if (isWithdrawn(w, p)) return { personId: p, status: 'EXCLUDED' as const, reason: consentReason(w, p, c.clientOrgId), words: n };
-    if (w.consents[p] && !w.consents[p].discoverable) return { personId: p, status: 'EXCLUDED' as const, reason: 'Not open to being contacted', words: n };
+    if (!allowed(w, p)) return { personId: p, status: 'EXCLUDED' as const, reason: 'Their privacy settings don’t allow agencies to contact them', words: n };
     if (n > c.limits.maxWords) return { personId: p, status: 'HELD' as const, reason: `Message is ${n} words; the limit is ${c.limits.maxWords}`, words: n };
     if (c.messages.some((m) => m.personId === p && m.status === 'SENT_SIMULATED')) return c.messages.find((m) => m.personId === p)!;
     if (queued >= c.limits.perRun) return { personId: p, status: 'HELD' as const, reason: `Over this run’s limit of ${c.limits.perRun}; goes in the next run`, words: n };

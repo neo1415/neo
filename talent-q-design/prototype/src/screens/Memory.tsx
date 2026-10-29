@@ -7,6 +7,8 @@ import type { Actor } from '../state/domain';
 import { Banner, Button, Label, Segmented, Sheet, TextArea, toast } from '../ui/kit';
 import { Link } from '../ui/router';
 
+/** What someone said is shown as their words, in sentence case and quoted; everything else as written (critique F8). */
+const shown = (m: MemoryItem) => { const t = m.content.trim(); const c = t.charAt(0).toUpperCase() + t.slice(1); return m.truth_class === 'STATED_BY_USER' ? `“${c}”` : c; };
 const TRUTH: Record<MemoryItem['truth_class'], string> = { STATED_BY_USER: 'You said this', VERIFIED_FACT: 'Verified', THIRD_PARTY_CLAIM: 'Someone else’s claim', INFERENCE: 'Q inferred this', ORG_POLICY: 'Organisation rule' };
 const SCOPE: Record<MemoryItem['visibility_scope'], string> = { PERSONAL_PRIVATE: 'Only you', TEAM: 'Your hiring team', ORGANIZATION: 'Everyone at Kora Pay', SHARED_WITH_EMPLOYER: 'Shared with an employer', CANDIDATE_PRIVATE_PRACTICE: 'Private practice, only the candidate' };
 
@@ -74,7 +76,7 @@ export function Memory({ viewer }: { viewer: 'recruiter' | 'candidate' }) {
             <ul className="stack gap-4">
               {list.map((m) => (
                 <li key={m.memory_id} className="panel stack gap-3">
-                  <p className="t-voice" style={{ fontSize: 19 }}>{m.content}</p>
+                  <p className="t-voice" style={{ fontSize: 19 }}>{shown(m)}</p>
                   <div className="row wrap gap-2">
                     <span className="tag">{TRUTH[m.truth_class]}</span><span className="tag">{SCOPE[m.visibility_scope]}</span>
                     {m.evidence_status === 'CONTESTED' && <span className="tag" style={{ borderColor: 'var(--color-warn)' }}>Not confirmed</span>}

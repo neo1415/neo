@@ -60,7 +60,7 @@ export interface World {
 const KEY = 'tq.world.v4';
 
 /** Feature areas add their own seed records in src/state/seeds/*.ts (export const seed: SeedPatch). */
-export interface SeedPatch { actors?: Actor[]; orgs?: Org[]; people?: Person[]; mandates?: MandateX[]; pipeline?: PipelineEntry[]; threads?: Thread[]; calendar?: CalEvent[]; interviews?: Interview[]; jobs?: Job[]; applications?: Application[]; evidence?: World['evidence']; memories?: World['memories']; events?: World['events'] }
+export interface SeedPatch { actors?: Actor[]; orgs?: Org[]; people?: Person[]; mandates?: MandateX[]; pipeline?: PipelineEntry[]; threads?: Thread[]; calendar?: CalEvent[]; interviews?: Interview[]; jobs?: Job[]; applications?: Application[]; evidence?: World['evidence']; memories?: World['memories']; events?: World['events']; registrations?: { personId: string; orgId: string }[] }
 /** Feature areas with their own state register an initial slice in src/state/areas/*.ts (export const area). */
 const AREA_INITS = Object.values(import.meta.glob<{ area: { id: string; init: () => unknown } }>('../state/areas/*.ts', { eager: true })).map((m) => m.area).filter(Boolean);
 const SEEDS = Object.values(import.meta.glob<{ seed: SeedPatch }>('../state/seeds/*.ts', { eager: true })).map((m) => m.seed).filter(Boolean);
@@ -73,7 +73,7 @@ export function initialWorld(): World {
     v: 4,
     session: { actor: 'u_ada', now: NOW, offsetDays: 0, lastRoute: {} },
     actors, orgs: merged('orgs', ORGS), people, mandates: merged('mandates', MANDATES), pipeline: merged('pipeline', PIPELINE), threads: merged('threads', THREADS), calendar: merged('calendar', CAL), interviews: merged('interviews', INTERVIEWS), jobs: merged('jobs', JOBS), applications: merged('applications', APPLICATIONS),
-    consents: Object.fromEntries(people.map((p) => [p.personId, consentFor(p.personId)])),
+    consents: Object.fromEntries(people.map((p) => { const c = consentFor(p.personId); const reg = SEEDS.flatMap((x) => x.registrations ?? []).filter((r) => r.personId === p.personId).map((r) => r.orgId); return [p.personId, reg.length ? { ...c, registeredWith: reg } : c]; })),
     profiles: {}, j7: {}, planners: {}, areas: Object.fromEntries(AREA_INITS.map((a) => [a.id, a.init()])),
     q: { threads: {}, frames: {}, suggestions: [], prefs: Object.fromEntries(actors.map((a) => [a.id, defaultPrefs(a)])), nav: {}, ui: {}, undo: {}, glossarySeen: {}, outbox: {} },
     events: merged('events', []),
@@ -178,10 +178,36 @@ export const useActor = () => useWorld((w) => actorOf(w));
 export const simNow = (w: World) => new Date(new Date(w.session.now).getTime() + w.session.offsetDays * 864e5);
 
 /** What an organisation may see of a person's Passport: shared items only, never practice, never revoked. */
+// ---------------- Candidate privacy: one policy for search, profiles, Q's tools, caches and artifacts ----------------
+type DiscoveryRule = { who: 'ANYONE_VERIFIED' | 'VERIFIED_EMPLOYERS' | 'NOBODY'; hideFrom: string[] };
+/** The candidate's discovery rule (set on their Passport; default: verified employers only, no agencies). */
+export const discoveryRule = (w: World, pid: string): DiscoveryRule => (w.areas['talent-b'] as { discovery?: Record<string, DiscoveryRule> } | undefined)?.discovery?.[pid] ?? { who: 'VERIFIED_EMPLOYERS', hideFrom: [] };
+/** An explicit relationship the candidate created: applied, shared something, or registered with an agency. */
+export function relationshipWith(w: World, pid: string, orgId: string) {
+  const c = w.consents[pid];
+  if (c?.registeredWith?.includes(orgId)) return true;
+  if (w.applications.some((a) => a.personId === pid && w.jobs.find((j) => j.id === a.jobId)?.orgId === orgId)) return true;
+  return w.evidence.some((e) => e.ownerId === pid && e.visibility === 'SHARED_WITH' && e.sharedWith.includes(orgId) && !e.revokedFrom?.includes(orgId));
+}
+/** Whether an organisation may find this person without a relationship (search, sourcing, pools, campaigns). */
+export function canDiscover(w: World, pid: string, orgId: string) {
+  if (!w.consents[pid]?.discoverable) return false;
+  const d = discoveryRule(w, pid); const o = w.orgs.find((x) => x.id === orgId);
+  if (!o || d.who === 'NOBODY' || d.hideFrom.includes(orgId)) return false;
+  if (d.who === 'VERIFIED_EMPLOYERS') return o.kind === 'EMPLOYER' && o.verified.domain && o.verified.registry === 'VERIFIED';
+  return o.verified.domain;
+}
+/** Whether an organisation may see this person at all. Withdrawn consent always wins. */
+export function canSeeCandidate(w: World, pid: string, orgId: string) {
+  if (w.consents[pid]?.withdrawnFrom.includes(orgId)) return false;
+  return relationshipWith(w, pid, orgId) || canDiscover(w, pid, orgId);
+}
+/** What an organisation may read. Shared items follow the explicit share; public items need canSeeCandidate. */
 export function visibleEvidence(w: World, personId: string, viewerOrgId: string) {
   if (w.consents[personId]?.withdrawnFrom.includes(viewerOrgId)) return [];
+  const seen = canSeeCandidate(w, personId, viewerOrgId);
   return w.evidence.filter((e) => e.ownerId === personId && e.kind !== 'PRACTICE' && !e.revokedFrom?.includes(viewerOrgId)
-    && (e.visibility === 'PUBLIC_PROFILE' || (e.visibility === 'SHARED_WITH' && e.sharedWith.includes(viewerOrgId))));
+    && ((e.visibility === 'PUBLIC_PROFILE' && seen) || (e.visibility === 'SHARED_WITH' && e.sharedWith.includes(viewerOrgId))));
 }
 /** Events a given actor may read (tenant isolation). */
 export function eventsFor(w: World, actorId: string) {

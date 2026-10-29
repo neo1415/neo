@@ -2,7 +2,7 @@
 // a unit of simulated work; nothing advances on a timer alone.
 import type { ActionProposal, ContextUse, MessagePayload, RunId } from '@contracts';
 import { FITS, MANDATE, PEOPLE, POLICIES, SOURCE_POOL, BUSY } from '../mock/fixtures';
-import { getWorld, log, now, setSchedulingState, uid, update } from '../mock/world';
+import { canSeeCandidate, getWorld, log, now, setSchedulingState, uid, update } from '../mock/world';
 import { latency, nameRun, startRun, type ScriptContext } from '../mock/runtime';
 import { calculateSlots } from './slots';
 
@@ -43,7 +43,7 @@ export function startSourcing(): RunId {
       ctx.step({ stepId: 'read', stage: 'READING_PROFILES', label: 'Reading profiles against 5 requirements', done: i, total, result: 'RUNNING' });
       await ctx.work(160);
       const pid = SOURCE_POOL[i];
-      if (matching.has(pid)) {
+      if (matching.has(pid) && canSeeCandidate(getWorld(), pid, 'org_kora')) {
         const p = PEOPLE.find((x) => x.personId === pid)!;
         ctx.find('candidate', pid, `${p.name}: ${p.headline}`);
         update((d) => { if (!d.sourcing.found.includes(pid)) d.sourcing.found.push(pid); });

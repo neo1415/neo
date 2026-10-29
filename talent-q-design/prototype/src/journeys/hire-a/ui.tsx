@@ -1,7 +1,7 @@
 // Small shared pieces for hire-a pages, and the live cards Q shows inside its messages (brief, memory,
 // source conflict). Cards render from state, so they update when the brief or memory changes.
 import { useWorld, visibleEvidence, actorOf } from '../../mock/world';
-import { Link } from '../../ui/router';
+import { Link, useRoute } from '../../ui/router';
 import { Glyph, type GlyphKind } from '../../ds/Glyph';
 import { readA } from '../../state/areas/hire-a';
 import { curV, payText, STATUS_PLAIN, dayLabel } from './model';
@@ -20,6 +20,7 @@ export function evidenceGlyph(e: { kind: string; verification?: string; verified
 export function BriefRef({ id }: { id: string }) {
   const m = useWorld((w) => w.mandates.find((x) => x.id === id) ?? readA(w).discarded[id]);
   const gone = useWorld((w) => !w.mandates.some((x) => x.id === id));
+  const here = useRoute().path;
   if (!m) return null;
   return (
     <div className="hire-a-ref" aria-label={`Role brief: ${m.title}`}>
@@ -27,7 +28,7 @@ export function BriefRef({ id }: { id: string }) {
       <b className="voice" style={{ fontSize: 18 }}>{m.title}</b>
       <span className="t14">{m.location} · {payText(m)}</span>
       <ul>{m.requirements.slice(0, 3).map((r) => <li key={r.reqId} className="t14">{r.label}{r.mustHave ? '' : ' (nice to have)'}</li>)}</ul>
-      {!gone && <Link to={`/r/roles/${m.id}`} className="ds-chip" style={{ justifySelf: 'start', textDecoration: 'none' }}>Open the brief</Link>}
+      {!gone && here !== `/r/roles/${m.id}` && <Link to={`/r/roles/${m.id}`} className="ds-chip" style={{ justifySelf: 'start', textDecoration: 'none' }}>Open the brief</Link>}
     </div>
   );
 }

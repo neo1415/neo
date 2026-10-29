@@ -11,6 +11,9 @@ import { Link, navigate, useRoute } from '../../ui/router';
 import { APP_LABEL, NEED_GLYPH, NEED_LABEL, adviceFor, fitLine, matchFor, mutualFit, orgName, signalsOf, tb, verifiedEmployer, evById, KIND } from './logic';
 import { VerTag } from './ui';
 
+/** Location and work mode without repeating each other (“Remote · remote”). */
+const where = (loc: string, mode: string) => (loc.toLowerCase().includes(mode.toLowerCase()) ? loc : `${loc} · ${mode.toLowerCase()}`);
+
 const act = (op: string, args: Record<string, unknown> = {}) => void runAction({ label: op, act: { t: 'do', op, args } });
 type F = 'all' | 'verified' | 'saved' | 'remote';
 
@@ -51,7 +54,7 @@ export function JobsPage() {
             <li key={j.id} className="ds-sheet tb-card">
               <div className="tb-row-between"><span className="lab">{orgName(w, j.orgId)}</span><Signals job={j} compact /></div>
               <h2 className="tb-title"><Link to={`/c/jobs/${j.id}`}>{j.title}</Link></h2>
-              <p className="t14" style={{ margin: 0 }}>{j.location} · {j.workMode.toLowerCase()} · {j.pay}</p>
+              <p className="t14" style={{ margin: 0 }}>{where(j.location, j.workMode)} · {j.pay}</p>
               <p className="t14" style={{ margin: 0, display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>{m.map((n) => <Glyph key={n.need} k={NEED_GLYPH[n.state]} size={16} title={`${n.need}: ${NEED_LABEL[n.state]}`} />)}<b>{fitLine(m)}</b></p>
               <p className="t14 muted" style={{ margin: 0 }}>{j.signals.replies}</p>
               <div className="tb-actions">
@@ -93,7 +96,7 @@ export function JobDetailPage({ id }: { id: string }) {
       aside={<div className="tb-actions"><button type="button" className="ds-btn" aria-pressed={saved} onClick={() => act('tb.save', { jobId: job.id })}>{saved ? 'Saved' : 'Save'}</button>{!app && !applying && !closed && <button type="button" className="ds-btn primary" onClick={() => act('tb.apply.start', { jobId: job.id })}>Apply</button>}</div>}>
       {closed && <div className="ds-banner" data-k="warn" role="status"><span aria-hidden="true">⚠</span><span><b>This listing has closed.</b> It isn’t taking applications. {applying ? 'Nothing was sent; your choices are kept below in case it reopens.' : ''}</span><button type="button" className="ds-btn" onClick={() => void runAction({ label: 'similar', act: { t: 'say', text: 'show me similar jobs that are still open' } })}>Similar open jobs</button></div>}
       {app && <div className="ds-banner" role="status"><Glyph k="full" /><span>You applied. Status: <b>{APP_LABEL[app.status]}</b>.</span><Link className="ds-btn" to="/c/applications">Track it</Link></div>}
-      <p style={{ margin: 0 }}>{job.location} · {job.workMode.toLowerCase()} · {job.pay} · posted {new Date(job.posted).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</p>
+      <p style={{ margin: 0 }}>{where(job.location, job.workMode)} · {job.pay} · posted {new Date(job.posted).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</p>
 
       {applying && (
         <section className="ds-sheet tb-stack tb-apply" aria-labelledby="tb-ap-h">

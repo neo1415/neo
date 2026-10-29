@@ -3,7 +3,7 @@
 // here comes from a run event. Partial results appear as soon as they exist.
 import { PEOPLE, SOURCE_POOL } from '../mock/fixtures';
 import { useNamedRun, useRun } from '../mock/runtime';
-import { actorOf, useWorld } from '../mock/world';
+import { actorOf, canSeeCandidate, useWorld } from '../mock/world';
 import { Canvas } from '../ds/Workspace';
 import { Glyph } from '../ds/Glyph';
 import { QMark } from '../ds/QMark';
@@ -21,7 +21,8 @@ export function Sourcing() {
   if (a.orgId !== 'org_kora') return <OtherOrgSearch />;
   const interrupted = !runId && w.sourcing.cursor > 0 && !w.sourcing.done;
   const notStarted = !runId && w.sourcing.cursor === 0;
-  const found = runId ? view.findings.filter((f) => f.kind === 'candidate').map((f) => f.ref) : w.sourcing.found;
+  // Cached results are re-checked against each person's privacy settings every time they're shown.
+  const found = (runId ? view.findings.filter((f) => f.kind === 'candidate').map((f) => f.ref) : w.sourcing.found).filter((pid) => canSeeCandidate(w, pid, 'org_kora'));
   const read = view.steps.find((s) => s.stepId === 'read');
   const progress = view.steps.length ? view.steps.reduce((x, s) => x + (s.total ? s.done / s.total : s.result === 'DONE' ? 1 : 0), 0) / 5 : 0;
   const done = view.completed || (!runId && w.sourcing.done);

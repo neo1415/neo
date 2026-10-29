@@ -1,6 +1,6 @@
 // Core skills every journey relies on: help and next steps, honesty about Q, explaining terms, "go back",
 // undo, opening pages and people, forgetting, preferences, the fair-hiring guard, and small talk.
-import { actorOf, emit, type World } from '../../mock/world';
+import { actorOf, canSeeCandidate, emit, type World } from '../../mock/world';
 import type { Actor, QAction } from '../../state/domain';
 import { qBack, registerOp, registerSkill } from '../core/engine';
 import { GLOSSARY, findTerm } from '../core/glossary';
@@ -47,6 +47,10 @@ registerSkill({
   handle: (c) => {
     if (c.ents.people.length && c.actor.side === 'recruiter') {
       const pid = c.ents.people[0]; const p = c.w.people.find((x) => x.personId === pid)!;
+      // Privacy: the same rule as search and profiles. Say nothing about what they have, only that it's theirs to share.
+      if (!c.actor.orgId || !canSeeCandidate(c.w, pid, c.actor.orgId)) {
+        return { msgs: [{ kind: 'refusal', text: `I can’t show you ${p.name.split(' ')[0]}’s profile. They haven’t shared it with ${c.w.orgs.find((o) => o.id === c.actor.orgId)?.name ?? 'your organisation'}, and their privacy settings don’t let you find them. If they apply or share something with you, you’ll see it then.` }] };
+      }
       return { msgs: [{ kind: 'reply', text: `Here’s ${p.name.split(' ')[0]}’s profile: what they’ve shared with ${c.w.orgs.find((o) => o.id === c.actor.orgId)?.name ?? 'you'}, where each piece comes from, and where they are in your hiring. I’ll keep our conversation here.` }], nav: { to: `/r/people/${pid}`, label: `${p.name}’s profile` } };
     }
     const p = PAGES.find((x) => x.side === c.actor.side && anyOf(c.norm, x.kws))!;

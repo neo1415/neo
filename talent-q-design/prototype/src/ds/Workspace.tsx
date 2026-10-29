@@ -187,9 +187,9 @@ export function Canvas<V extends string>({ title, kicker, views, view, setView, 
       )}
       <header className="ds-canvas-head">
         <div style={{ display: 'grid', gap: 4, minWidth: 0 }}>
-          <span className="lab" style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          {/* One line of context. Status belongs in tags and banners; "simulated" is marked once by the shell. */}
+          <span className="lab ds-kicker">
             {kicker}{latest && <span className="num">· v{latest.v}{building ? ' · updating' : ''}</span>}
-            <span className="ds-sim">Simulated</span>
           </span>
           <h1 className="voice t30" style={{ margin: 0 }}>{title}</h1>
         </div>

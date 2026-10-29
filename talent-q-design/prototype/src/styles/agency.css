@@ -86,3 +86,8 @@
   .agency-runs-mini > li { grid-template-columns: minmax(0, 1fr) auto; }
   .agency-runs-mini .agency-bar { grid-column: 1; }
 }
+/* Demo identity switch lives at the foot of the page, not in the header (critique F6). */
+.agency-demo { display: grid; gap: 8px; padding: 12px 14px; border: 1px dashed var(--rule-2); border-radius: 12px; }
+.agency-viewas { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+/* Phones: the section bar scrolls sideways; fade the edge so it reads as scrollable (critique F7). */
+@media (max-width: 860px) { .agency-subnav { -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); } }

@@ -21,6 +21,10 @@ const mandates: MandateX[] = [
 const pe = (mandateId: string, personId: string, stage: PipelineEntry['stage'], at: string, by = 'u_dele'): PipelineEntry => ({ mandateId, personId, stage, at, by });
 
 export const seed: SeedPatch = {
+  // People who signed up with Talentbridge: an explicit relationship, so the agency may see them whatever
+  // their discovery setting. Everyone else needs their discovery rule to allow agencies.
+  registrations: [...['p_tb_bisi', 'p_tb_femi', 'p_tb_halima', 'p_tb_kemi', 'p_tb_nneka', 'p_tb_obinna', 'p_tb_ruth', 'p_tb_segun', 'p_tb_yemi'], 'p_dayo'].map((personId) => ({ personId, orgId: 'org_tb' })),
+
   people: [
     P('p_tb_femi', 'Femi Ogun', 'Backend engineer, card payments · 6 yrs', 'Lagos'),
     P('p_tb_halima', 'Halima Musa', 'Go engineer, payouts and ledgers · 7 yrs', 'Lagos'),

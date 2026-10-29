@@ -2,7 +2,7 @@
 // simulated uploads and issuer checks, matching with its basis, honest application status, and candidate
 // memory with deletion receipts. Everything mutates the one store; nothing is really uploaded, checked or sent.
 import type { Evidence } from '@contracts';
-import { emit, getWorld, now, simNow, uid, update, type World } from '../../mock/world';
+import { canDiscover, emit, getWorld, now, simNow, uid, update, type World } from '../../mock/world';
 import type { Actor, Application, Job } from '../../state/domain';
 import { appendQ, pushUndo, registerOp } from '../../q/core/engine';
 import { tb, type CandMemory, type Upload, type UploadKind } from '../../state/areas/talent-b';
@@ -191,13 +191,7 @@ function resolveCheck(w: World, c: { evidenceId: string; personId: string; attem
 // ---------------- Discovery ----------------
 export const discoveryOf = (w: World, pid: string) => tb(w).discovery[pid] ?? { who: 'VERIFIED_EMPLOYERS' as const, hideFrom: [], showSalary: false };
 /** Whether an organisation may find this person in search (respects the global switch and per-org hiding). */
-export function discoverableBy(w: World, pid: string, orgId: string) {
-  if (!w.consents[pid]?.discoverable) return false;
-  const d = discoveryOf(w, pid); const o = w.orgs.find((x) => x.id === orgId);
-  if (!o || d.who === 'NOBODY' || d.hideFrom.includes(orgId)) return false;
-  if (d.who === 'VERIFIED_EMPLOYERS') return o.kind === 'EMPLOYER' && o.verified.domain && o.verified.registry === 'VERIFIED';
-  return o.verified.domain;
-}
+export const discoverableBy = (w: World, pid: string, orgId: string) => canDiscover(w, pid, orgId); // the one policy lives in the store
 registerOp('tb.discovery', (w, a, actor) => {
   const pid = actor.personId!; const d = { ...discoveryOf(w, pid) };
   if (a.who) d.who = a.who as typeof d.who;

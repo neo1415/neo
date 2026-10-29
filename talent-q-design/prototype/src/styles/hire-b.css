@@ -60,3 +60,4 @@ textarea.ds-input { resize: vertical; line-height: 1.5; }
   .hire-b-cards { display: grid; }
   .hire-b-links li { grid-template-columns: minmax(0, 1fr); }
 }
+.hire-b-lede { font-size: clamp(19px, 1.6vw, 22px); line-height: 1.4; color: var(--ink-2); max-width: 62ch; }

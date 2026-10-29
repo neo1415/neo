@@ -15,4 +15,4 @@ const page = (n: ReactNode) => <InShell.Provider value>{n}</InShell.Provider>;
 
 registerRoute({ path: '/c/welcome', side: 'candidate', label: 'your profile', render: () => page(<Onboarding />), nav: { group: 'Q', label: 'Your profile', icon: 'welcome', order: 3 } });
 registerRoute({ path: '/c/career', side: 'candidate', label: 'your career atlas', render: () => page(<J7 />), nav: { group: 'Grow', label: 'Career atlas', icon: 'atlas', tab: true, order: 11 } });
-registerRoute({ path: '/c/growth', side: 'candidate', label: 'readiness to apply', render: () => page(<Career />), nav: { group: 'Grow', label: 'Readiness to apply', icon: 'measures', order: 12 } });
+registerRoute({ path: '/c/growth', side: 'candidate', label: 'readiness to apply', render: () => page(<Career />) });

@@ -62,7 +62,8 @@ export interface Job {
 export type AppStatus = 'DRAFT' | 'SUBMITTED' | 'VIEWED' | 'INTERVIEW' | 'OFFER' | 'NOT_PROGRESSING' | 'WITHDRAWN' | 'JOB_CLOSED';
 export interface Application { id: string; jobId: string; personId: string; status: AppStatus; timeline: { at: string; text: string; by: 'YOU' | 'EMPLOYER' | 'Q' | 'SYSTEM' }[]; shared: string[]; lastEmployerActivity?: string }
 
-export interface Consent { personId: string; discoverable: boolean; withdrawnFrom: string[]; notifications: { email: boolean; sms: boolean; inApp: boolean; digest: 'DAILY' | 'WEEKLY' | 'OFF' }; lite: boolean }
+/** registeredWith: agencies the person signed up with (an explicit relationship, like applying). */
+export interface Consent { personId: string; discoverable: boolean; withdrawnFrom: string[]; registeredWith?: string[]; notifications: { email: boolean; sms: boolean; inApp: boolean; digest: 'DAILY' | 'WEEKLY' | 'OFF' }; lite: boolean }
 
 // ---------- Q ----------
 export type QOp = { t: 'say'; text: string } | { t: 'nav'; to: string } | { t: 'do'; op: string; args?: Record<string, unknown> };

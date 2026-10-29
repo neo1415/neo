@@ -10,7 +10,7 @@
   --gold: var(--ref-gold-600); --gold-ink: var(--ref-gold-800); --gold-light: var(--ref-gold-400); --gold-wash: #f1e3bf;
   --ok: var(--ref-green-light); --warn: var(--ref-amber-light); --risk: var(--ref-red-light);
   --voice: var(--font-voice); --ui: var(--font-ui); --data: var(--font-mono);
-  --shadow: 0 1px 0 rgb(80 60 20 / .06), 0 18px 40px -24px rgb(80 60 20 / .35);
+  --shadow: 0 1px 0 rgb(80 60 20 / .05), 0 10px 28px -18px rgb(80 60 20 / .30);
   --r-control: 10px; --r-surface: 16px;
   --rail-w: 232px; --thread-w: 380px;
   background: var(--paper); color: var(--ink); font-family: var(--ui); font-size: 16px; line-height: 1.55;
@@ -214,7 +214,7 @@
 .ds-linkbtn:focus-visible { outline: 2px solid var(--gold-light); }
 .ds-q[data-kind='refusal'] .say, .ds-q[data-kind='approval'] .say { border-left: 2px solid var(--gold-light); padding-left: 12px; }
 .ds-page { min-width: 0; min-height: 100vh; }
-.ds-page > .ds-canvas { min-height: 100vh; }
+.ds-page-body > .ds-canvas { min-height: 100vh; }
 .ds-askbar { display: none; }
 @media (max-width: 860px) {
   .ds-askbar { display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: center; position: fixed; left: 8px; right: 8px; bottom: 76px; z-index: 55; background: var(--night); color: var(--moon); border-radius: 16px; padding: 8px 12px; box-shadow: 0 10px 30px -12px rgb(0 0 0 / .6); border: 1px solid var(--night-3); }
@@ -223,7 +223,7 @@
   .ds-qsheet { position: fixed; inset: 0 0 68px 0; z-index: 65; display: flex; }
   .ds-qsheet > .ds-thread { flex: 1; height: auto; min-height: 0; position: static; }
   .ds-page { padding-bottom: 96px; }
-  .ds-page > .ds-canvas { min-height: auto; }
+  .ds-page-body > .ds-canvas { min-height: auto; }
 }
 .ds-groupbtn { all: unset; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; padding: 4px 10px; cursor: pointer; color: var(--moon-2); min-height: 32px; }
 .ds-groupbtn:focus-visible { outline: 2px solid var(--gold-light); border-radius: 6px; }
@@ -235,3 +235,22 @@
 .ds-app[data-lite='on'] .ds-chip, .ds-app[data-lite='on'] .ds-btn { min-height: 52px; }
 .ds .ds-groupbtn > .lab { color: var(--moon-2); }
 .ds-compose:focus-within { box-shadow: 0 0 0 2px var(--gold-light); }
+/* Q noticed: main actions as chips; why / later / dismiss as a quiet footer row (design critique F3). */
+.ds-suggest-foot { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: -2px; }
+.ds-suggest-foot .sp { flex: 1; }
+.ds-chip.quiet { border-color: transparent; background: transparent; min-height: 36px; padding: 6px 10px; font-size: 14px; color: var(--moon-2); }
+.ds-chip.quiet:hover { color: var(--moon); border-color: var(--night-4); }
+
+/* ---- Design-elevation pass (shared components) ---- */
+/* Kicker: one line of context, never a status dump. Long kickers truncate rather than wrap over the title. */
+.ds .ds-kicker { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+/* Display type: tighter tracking at title sizes. */
+.ds h1.voice, .ds .t30 { letter-spacing: -0.012em; }
+/* Honesty marker, once, in the shell (not a badge on every page). */
+.ds-brandname { display: grid; line-height: 1.1; }
+.ds-proto { font-family: var(--data); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--moon-2); margin-top: 3px; }
+.ds-proto-bar { margin: 0; padding: 8px 16px 0; font-family: var(--data); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+/* Elevation: one level. A card inside a card is a flat panel, not another floating sheet. */
+.ds-sheet .ds-sheet { box-shadow: none; border: 1px solid var(--rule); background: transparent; }
+.ds-page-body { min-width: 0; }
+.ds-thinking { display: flex; gap: 8px; align-items: center; margin: 0; color: var(--moon-2); }

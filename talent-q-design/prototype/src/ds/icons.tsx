@@ -2,6 +2,8 @@
 const P = { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.75, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const, 'aria-hidden': true };
 export const ICONS = {
   q: <svg {...P}><path d="M16.4 16.4A6.5 6.5 0 1 1 18.5 12" /><path d="M15.5 15.5 19 19" /><circle cx="12" cy="12" r="1.8" fill="currentColor" stroke="none" /></svg>,
+  home: <svg {...P}><path d="M4 11 12 4l8 7" /><path d="M6 9.5V20h12V9.5" /><path d="M10 20v-5h4v5" /></svg>,
+  mail: <svg {...P}><rect x="3.5" y="5.5" width="17" height="13" rx="2" /><path d="m4 7 8 6 8-6" /></svg>,
   agents: <svg {...P}><circle cx="6" cy="6" r="2.2" /><circle cx="18" cy="6" r="2.2" /><circle cx="12" cy="18" r="2.2" /><path d="M8 7.2 10.8 16M16 7.2 13.2 16M8.2 6h7.6" /></svg>,
   roles: <svg {...P}><rect x="4" y="7" width="16" height="12" rx="2" /><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M4 12h16" /></svg>,
   search: <svg {...P}><circle cx="11" cy="11" r="6" /><path d="m20 20-4.5-4.5" /></svg>,

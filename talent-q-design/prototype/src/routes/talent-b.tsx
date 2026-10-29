@@ -14,4 +14,4 @@ registerRoute({ path: '/c/memory', side: 'candidate', label: 'what Q remembers',
 registerRoute({ path: '/c/jobs', side: 'candidate', label: 'jobs', render: () => <JobsPage />, nav: { group: 'Work', label: 'Jobs', icon: 'search', tab: true, order: 31 } });
 registerRoute({ path: '/c/jobs/:id', side: 'candidate', label: 'a job', render: (p) => <JobDetailPage id={p.id} /> });
 registerRoute({ path: '/c/applications', side: 'candidate', label: 'your applications', render: () => <ApplicationsPage />, nav: { group: 'Work', label: 'Applications', icon: 'roles', order: 32 } });
-registerRoute({ path: '/c/prep', side: 'candidate', label: 'interview prep', render: () => <PrepPage />, nav: { group: 'Work', label: 'Interview prep', icon: 'interview', order: 33 } });
+registerRoute({ path: '/c/prep', side: 'candidate', label: 'interview prep', render: () => <PrepPage />, nav: { group: 'Interviews', label: 'Prepare', icon: 'interview', order: 41 } });

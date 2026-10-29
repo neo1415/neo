@@ -11,6 +11,7 @@ import { isThinking, labelFor, onThinking, runAction, sendToQ, useQThread } from
 import { useSuggestions } from './core/proactive';
 import { gatewayConfigured } from './core/engine';
 import { refRenderer } from './refs';
+import { arrive } from '../ds/motion';
 import { useRoute } from '../ui/router';
 
 export const usePageTask = () => useSyncExternalStore(onPageTask, getPageTask);
@@ -65,7 +66,7 @@ export function QThread({ onClose }: { onClose?: () => void }) {
             {task.entries.map((e, i) => <EntryView key={e.id} e={e} latest={i === task.entries.length - 1} />)}
           </section>
         )}
-        {thinking && <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="t14" style={{ color: 'var(--moon-2)', margin: 0 }} aria-live="polite">Q is thinking…</motion.p>}
+        {thinking && <motion.p {...arrive} className="t14 ds-thinking" aria-live="polite"><QMark mood="thinking" size={22} />Reading what you said…</motion.p>}
       </div>
       <Composer />
     </aside>
@@ -81,19 +82,22 @@ function Welcome() {
 }
 
 function Msg({ m, live }: { m: QMsg; live: boolean }) {
-  if (m.who === 'me') return <motion.p className="ds-me" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18 }}>{m.text}</motion.p>;
+  if (m.who === 'me') return <motion.p className="ds-me" {...arrive}>{m.text}</motion.p>;
   const R = m.ref ? refRenderer(m.ref.type) : undefined;
+  // Never offer to open the page the person is already on (critique F5: duplicate actions).
+  const here = useRoute().path;
+  const acts = (m.actions ?? []).filter((a) => !(a.act.t === 'nav' && a.act.to === here));
   return (
-    <motion.div className="ds-q" data-kind={m.kind} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }}>
+    <motion.div className="ds-q" data-kind={m.kind} {...arrive}>
       {m.used && m.used.length > 0 && <div className="ds-used" aria-label="Context Q used">{m.used.map((u) => <span key={u}>{u}</span>)}</div>}
       {m.kind === 'refusal' && <span className="lab" style={{ color: 'var(--gold-light)' }}>Declined</span>}
       {m.kind === 'notice' && <span className="lab">Update</span>}
       <p className="say">{m.text}</p>
       {R && <R id={m.ref!.id} />}
       {m.why && <span className="ds-why"><svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M5 0.5 9.5 5 5 9.5 0.5 5Z" fill="var(--gold-light)" /></svg>{m.why}</span>}
-      {live && m.actions && m.actions.length > 0 && (
+      {live && acts.length > 0 && (
         <div className="ds-next" role="group" aria-label="Suggested next steps">
-          {m.actions.map((a) => <button key={a.label} type="button" className={`ds-chip ${a.primary ? 'go' : ''}`} onClick={() => void runAction(a)}>{a.label}</button>)}
+          {acts.map((a) => <button key={a.label} type="button" className={`ds-chip ${a.primary ? 'go' : ''}`} onClick={() => void runAction(a)}>{a.label}</button>)}
         </div>
       )}
     </motion.div>
@@ -103,15 +107,18 @@ function Msg({ m, live }: { m: QMsg; live: boolean }) {
 function SuggestionCard({ s }: { s: Suggestion }) {
   const [why, setWhy] = useState(false);
   return (
-    <motion.div className="ds-suggest" layout initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.22 }} role="note" aria-label="Q noticed">
+    <motion.div className="ds-suggest" layout {...arrive} role="note" aria-label="Q noticed">
       <span className="lab" style={{ color: 'var(--gold-light)' }}>Q noticed</span>
       <p style={{ margin: 0 }}>{s.text}</p>
-      <button type="button" className="ds-linkbtn" aria-expanded={why} onClick={() => setWhy(!why)}>{why ? 'Hide why' : 'Why am I seeing this?'}</button>
       {why && <p className="t14" style={{ margin: 0, color: 'var(--moon-2)' }}>{s.why}</p>}
       <div className="ds-next">
         {s.actions.map((a) => <button key={a.label} type="button" className={`ds-chip ${a.primary ? 'go' : ''}`} onClick={() => { void runAction({ label: 'done', act: { t: 'do', op: 'suggestion.done', args: { id: s.id } } }); void runAction(a); }}>{a.label}</button>)}
-        <button type="button" className="ds-chip" onClick={() => void runAction({ label: 'Later', act: { t: 'do', op: 'suggestion.snooze', args: { id: s.id, hours: 24 } } })}>Later</button>
-        <button type="button" className="ds-chip" aria-label={`Dismiss: ${s.text}`} onClick={() => void runAction({ label: 'Dismiss', act: { t: 'do', op: 'suggestion.dismiss', args: { id: s.id } } })}>Dismiss</button>
+      </div>
+      <div className="ds-suggest-foot">
+        <button type="button" className="ds-linkbtn" aria-expanded={why} onClick={() => setWhy(!why)}>{why ? 'Hide why' : 'Why am I seeing this?'}</button>
+        <span className="sp" />
+        <button type="button" className="ds-chip quiet" onClick={() => void runAction({ label: 'Later', act: { t: 'do', op: 'suggestion.snooze', args: { id: s.id, hours: 24 } } })}>Later</button>
+        <button type="button" className="ds-chip quiet" aria-label={`Dismiss: ${s.text}`} onClick={() => void runAction({ label: 'Dismiss', act: { t: 'do', op: 'suggestion.dismiss', args: { id: s.id } } })}>Dismiss</button>
       </div>
     </motion.div>
   );

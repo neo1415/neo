@@ -35,7 +35,7 @@ export function Onboarding() {
   return (
     <Canvas title={title} kicker={<span>Your profile · private to you</span>} open onClose={() => {}}
       views={[{ id: 'profile', label: 'Profile' }, { id: 'form', label: 'Short form' }, { id: 'jobs', label: 'Jobs that fit' }, { id: 'cv', label: 'CV' }]} view={view} setView={setView}
-      aside={p.done ? <span className="ds-tag" data-k="ok">Set up</span> : p.answered.length ? <span className="ds-tag">{p.answered.length + p.none.length} of 6 · {missingOf(p).length} missing</span> : null}>
+      aside={p.done ? <span className="ds-tag" data-k="ok">Profile set up</span> : p.answered.length ? <span className="ds-tag">{p.answered.length + p.none.length} of 6 · {missingOf(p).length} missing</span> : null}>
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={view} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2, ease: 'easeOut' }} style={{ display: 'grid', gap: 16, minWidth: 0 }}>
           {view === 'profile' && <ProfileView p={p} pid={pid} offline={offline} />}
@@ -58,7 +58,7 @@ function Ways({ p }: { p: Profile }) {
         <button type="button" className="ds-opt" aria-pressed={p.method === 'form'} onClick={() => op('ta.view', { route: '/c/welcome', view: 'form' })}><span><b>Fill a short form</b><span className="t14 muted" style={{ display: 'block' }}>Seven fields, all optional.</span></span></button>
       </div>
       <ul className="talent-a-promises" aria-label="Promises">
-        {['Private by default. You choose each employer who sees anything.', 'What you tell Q is a claim in your words. Q never adds anything you didn’t say.', 'No job history is fine: projects, volunteering and your studies count.'].map((t) => <li key={t}><Glyph k="verified" size={16} /><span>{t}</span></li>)}
+        {['Private by default. You choose each employer who sees anything.', 'What you tell Q is a claim in your words. Q never adds anything you didn’t say.', 'No job history is fine: projects, volunteering and your studies count.'].map((t) => <li key={t}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flex: "none", marginTop: 3, color: "var(--ink-2)" }}><path d="M5 12.5 10 17.5 19 7" /></svg><span>{t}</span></li>)}
       </ul>
     </section>
   );

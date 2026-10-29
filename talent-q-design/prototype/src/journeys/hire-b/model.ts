@@ -2,7 +2,7 @@
 // the profile, Q's skills and the proactive rules, so every surface explains the same thing the same way.
 // Rule-based and deliberately transparent: every cell names the evidence (or its absence) behind it.
 import type { Evidence, Requirement } from '@contracts';
-import { actorOf, simNow, visibleEvidence, type World } from '../../mock/world';
+import { actorOf, canSeeCandidate, simNow, visibleEvidence, type World } from '../../mock/world';
 import type { Interview } from '../../state/domain';
 import { hireB, type Level, type Rating } from '../../state/areas/hire-b';
 
@@ -112,11 +112,12 @@ export const defaultView = (w: World): CompareView => ({ people: rolePeople(w), 
 export const weightOf = (w: World, reqId: string, mode: Weighting) => { const r = reqsOf(w).find((x) => x.reqId === reqId); const base = r?.mustHave ? 2 : 1; return mode === 'Q' && reqId === 'r1' ? base * 1.5 : base; };
 
 /** People in Kora's Senior Backend pipeline who are still in the process. */
-export const rolePeople = (w: World) => w.pipeline.filter((p) => p.mandateId === KORA_ROLE && !['REJECTED', 'WITHDRAWN'].includes(p.stage)).map((p) => p.personId).filter((id, i, a) => a.indexOf(id) === i);
+export const rolePeople = (w: World) => w.pipeline.filter((p) => p.mandateId === KORA_ROLE && !['REJECTED', 'WITHDRAWN'].includes(p.stage)).map((p) => p.personId).filter((id, i, a) => a.indexOf(id) === i && canSeeCandidate(w, id, 'org_kora'));
 
 export interface Ranked { pid: string; score: number; verified: number; evidenced: number; partial: number; none: number }
 export function rank(w: World, v: CompareView): Ranked[] {
-  return v.people.map((pid) => {
+  // Saved views are caches: re-check privacy every time they are read.
+  return v.people.filter((pid) => canSeeCandidate(w, pid, viewerOrg(w))).map((pid) => {
     const r: Ranked = { pid, score: 0, verified: 0, evidenced: 0, partial: 0, none: 0 };
     for (const req of v.criteria) {
       const c = cellFor(w, pid, req, { lastYear: v.lastYear });

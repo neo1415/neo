@@ -3,7 +3,7 @@
 // (audit events and Bayo's remembered preference). Pages and Q skills both use these, so what Q says and
 // what the page shows always come from the same state.
 import type { MemoryItem, Requirement } from '@contracts';
-import { actorOf, emit, getWorld, orgOf, simNow, uid, update, type World } from '../../mock/world';
+import { actorOf, canSeeCandidate, emit, getWorld, orgOf, simNow, uid, update, type World } from '../../mock/world';
 import type { Actor, MandateX, OrgRole } from '../../state/domain';
 import { hireA, readA, type HAIntake, type RoleKey, type Snap } from '../../state/areas/hire-a';
 import { startSourcing } from '../../q/scripts';
@@ -186,9 +186,10 @@ export function revertTo(w: World, a: Actor, id: string, to: number) {
 
 // ---------------- Search (simulated, org-scoped pools) ----------------
 export function poolFor(w: World, m: MandateX): string[] {
-  if (m.orgId === 'org_kora') return KORA_POOL.filter((p) => w.consents[p]?.discoverable !== false || p === 'p_kunle');
+  // Privacy: only people this organisation may see (their own discovery rules, or a relationship they created).
+  if (m.orgId === 'org_kora') return KORA_POOL.filter((p) => canSeeCandidate(w, p, m.orgId));
   const role = readA(w).meta[m.id]?.roleKey;
-  return Object.entries(POOL).filter(([, x]) => x.role && x.role === role).map(([p]) => p);
+  return Object.entries(POOL).filter(([p, x]) => x.role && x.role === role && canSeeCandidate(w, p, m.orgId)).map(([p]) => p);
 }
 export function runSearch(w: World, a: Actor, m: MandateX) {
   const found = poolFor(w, m).sort((x, y) => (POOL[y].fit.length - POOL[y].unknown.length) - (POOL[x].fit.length - POOL[x].unknown.length) || POOL[y].years - POOL[x].years);

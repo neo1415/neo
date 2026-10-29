@@ -2,7 +2,7 @@
 // with provenance per item, their place in the pipeline, a safe project viewer, and how Q would check
 // each requirement. Confidential items show that they exist, never their contents.
 import { useEffect, useRef } from 'react';
-import { actorOf, useWorld, visibleEvidence } from '../../mock/world';
+import { actorOf, canSeeCandidate, useWorld, visibleEvidence } from '../../mock/world';
 import { Canvas } from '../../ds/Workspace';
 import { Glyph } from '../../ds/Glyph';
 import { Link } from '../../ui/router';
@@ -31,8 +31,7 @@ export function Profile({ id }: { id: string }) {
   );
   const first = firstName(w, id);
   const withdrawn = w.consents[id]?.withdrawnFrom.includes(org);
-  const inPipeline = w.pipeline.some((p) => p.personId === id && ((org === 'org_kora' && w.mandate.mandateId === p.mandateId) || w.mandates.find((m) => m.id === p.mandateId)?.orgId === org));
-  if (withdrawn || (!inPipeline && w.consents[id] && !w.consents[id].discoverable)) return (
+  if (withdrawn || !canSeeCandidate(w, id, org)) return (
     <Canvas title={`You can’t see ${first}’s profile`} kicker="Candidate profile · permission" open onClose={() => history.back()}>
       <section className="ds-banner" data-k="risk" role="status"><Glyph k="none" /><span>{withdrawn ? `${first} has stopped sharing their profile with ${orgName}. Q no longer uses anything they shared, and won’t say what it was.` : `${first} isn’t discoverable and hasn’t applied to ${orgName}, so there’s nothing you’re allowed to see.`}</span><Link className="ds-btn" to="/r/compare">Back</Link></section>
     </Canvas>
@@ -55,12 +54,14 @@ export function Profile({ id }: { id: string }) {
   const qs = questionsFor(w, id).slice(0, 3);
 
   return (
-    <Canvas title={title} kicker={<>Candidate profile · what {first} shared with {orgName}</>} open onClose={() => history.back()} qLine={`${person.name}`}
+    <Canvas title={person.name} kicker={<>Candidate profile · what {first} shared with {orgName}</>} open onClose={() => history.back()} qLine={`${person.name}`}
       aside={<div className="ds-actions">
         <button type="button" className="ds-btn" onClick={() => void runAction({ label: 'Compare', act: { t: 'say', text: `compare ${first} with the others` } })}>Compare</button>
         {iv && <Link className="ds-btn" to={`/r/interviews/${iv.id}`}>Interview</Link>}
         <Link className="ds-btn quiet" to="/r/messages">Messages</Link>
       </div>}>
+      {/* Q's one-line reading of the evidence leads the page; the person's name is the title (critique F4). */}
+      <p className="voice hire-b-lede" style={{ margin: 0 }}>{title}</p>
       {w.network === 'offline' && <div className="ds-banner" data-k="warn" role="status"><Glyph k="unclear" /><span>You’re offline. This is what was loaded; new sharing changes will appear when you reconnect.</span><span /></div>}
       {fresh.length > 0 && (
         <div className="ds-banner" role="status"><Glyph k="verified" /><span><b>New since you last looked ({fmtDate(prev!.at)}):</b> {fresh.map(([eid, v]) => `${items.find((e) => e.evidenceId === eid)?.title ?? 'an item'} (${v === 'VERIFIED' ? 'verified' : v.toLowerCase().replace('_', ' ')})`).join('; ')}.</span><span /></div>
@@ -68,7 +69,7 @@ export function Profile({ id }: { id: string }) {
 
       <div className="hire-b-two">
         <section className="ds-sheet hire-b-grid" aria-labelledby="pf-who">
-          <h2 id="pf-who" className="voice t24" style={{ margin: 0 }}>{person.name}</h2>
+          <h2 id="pf-who" className="voice t24" style={{ margin: 0 }}>About {first}</h2>
           <p style={{ margin: 0 }}>{person.headline}</p>
           <p className="t14 muted" style={{ margin: 0 }}>{person.location} · {person.timezone.replace('_', ' ')}</p>
           <p className="t14 muted" style={{ margin: 0 }}>You see only what {first} chose to share with {orgName}. Private items, practice and anything they took back are never shown or counted.</p>

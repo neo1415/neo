@@ -14,8 +14,7 @@ import { runAction, sendToQ, useViewState } from '../../q/core/engine';
 import { agency, type AgentRun, type ClientId, type FitMark, type Pool, type Report, type ReportSection } from '../../state/areas/agency';
 import {
   lc, agencyMandates, briefSigned, campaignsFor, canAct, canSeeMandate, clientIds, clientName, clientShort, consentReason, consentState, deniedReason, docsFor, fitOf, fmtDay, focusOf, isolationCheck, isWithdrawn,
-  mandateOf, messageFor, mustHavesShown, notesFor, peopleFor, personName, pipelineFor, poolsFor, PRIORITY, ranked, removedMembers, RUN_STATE, runsFor, searchesFor, setFocus, submittalsFor, today,
-} from './model';
+  mandateOf, messageFor, mustHavesShown, notesFor, peopleFor, personName, pipelineFor, poolsFor, PRIORITY, ranked, removedMembers, RUN_STATE, runsFor, searchesFor, setFocus, submittalsFor, today, hiddenMembers } from './model';
 import { needsYou } from '../../q/skills/agency';
 
 const P = '/r/agency';
@@ -60,10 +59,12 @@ function ViewAs({ w, a }: { w: World; a: Actor }) {
 function Frame({ title, kicker, here, children, switcher = true, aside }: { title: string; kicker: string; here: string; children: ReactNode; switcher?: boolean; aside?: ReactNode }) {
   const { w, a, focus } = useAg();
   return (
-    <Canvas title={title} kicker={kicker} open onClose={() => navigate('/r/home')} aside={<div className="agency-aside">{aside}<ViewAs w={w} a={a} /></div>}>
+    <Canvas title={title} kicker={kicker} open onClose={() => navigate('/r/home')} aside={aside ? <div className="agency-aside">{aside}</div> : undefined}>
       <SubNav here={here} />
       {switcher && <ClientSwitch w={w} a={a} focus={focus} />}
       {children}
+      {/* Demo-only identity switch, kept out of the product header (critique F6). */}
+      <section className="agency-demo" aria-label="Demo controls"><span className="lab">Demo controls</span><ViewAs w={w} a={a} /></section>
     </Canvas>
   );
 }
@@ -227,7 +228,7 @@ export function Pools() {
   );
 }
 function PoolCard({ w, a, pool }: { w: World; a: Actor; pool: Pool }) {
-  const live = ranked(w, pool); const gone = removedMembers(w, pool);
+  const live = ranked(w, pool); const gone = removedMembers(w, pool); const hidden = hiddenMembers(w, pool).length;
   const [who, setWho] = useState(live[0] ?? '');
   return (
     <section className="ds-sheet agency-pool" aria-labelledby={`pool-${pool.id}`}>
@@ -236,6 +237,7 @@ function PoolCard({ w, a, pool }: { w: World; a: Actor; pool: Pool }) {
         const s = mustHavesShown(w, pool.mandateId, pid);
         return <li key={pid}><span className="num rank">{i + 1}</span><span className="who"><b>{personName(w, pid)}</b><span className="t14 muted">{w.people.find((x) => x.personId === pid)?.headline}</span></span><span className="t14">{s.shown} of {s.of} must-haves shown</span>{consentTag(w, pid, pool.clientOrgId)}</li>;
       })}</ul>
+      {hidden > 0 && <p className="t14 muted" role="note" style={{ margin: 0 }}>{hidden === 1 ? 'One person' : `${hidden} people`} added to this pool earlier {hidden === 1 ? 'isn’t' : 'aren’t'} shown: their own privacy settings don’t allow agencies to find them, and they haven’t registered with Talentbridge. Talent Q doesn’t say who.</p>}
       {gone.length > 0 && <div className="agency-removed" role="note"><b>Removed from this pool</b>{gone.map((pid) => <p key={pid} className="t14" style={{ margin: 0 }}>{personName(w, pid)}: {lc(consentReason(w, pid, pool.clientOrgId))}. Not searchable, contactable or submittable.</p>)}</div>}
       {canAct(a) && live.length > 0 && (
         <details className="agency-demo"><summary>Simulate a candidate withdrawing consent <span className="ds-sim">Simulated</span></summary>

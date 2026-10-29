@@ -56,7 +56,7 @@ function CandidateHome() {
     <Canvas title={`Hello, ${a.first}`} kicker="Q · your day" open onClose={() => {}}>
       <section className="ds-sheet" aria-label="Your day" style={{ display: 'grid', gap: 18, maxWidth: 820 }}>
         {next && (
-          <div className="ds-banner"><Glyph k="full" /><span><b>Interview {new Date(next.start).toLocaleString('en-GB', { weekday: 'long', hour: '2-digit', minute: '2-digit', timeZone: a.timezone })}</b> · {next.title.replace('Interview: ', '')}</span><Link className="ds-btn" to="/c/interview">Prepare</Link></div>
+          <div className="ds-banner"><Glyph k="full" /><span><b>Interview {new Date(next.start).toLocaleString('en-GB', { weekday: 'long', hour: '2-digit', minute: '2-digit', timeZone: a.timezone })}</b> · {[w.orgs.find((o) => o.id === next.orgId)?.name, (next.mandateId && w.mandates.find((m) => m.id === next.mandateId)?.title) || (next.mandateId === w.mandate.mandateId ? w.mandate.title : undefined)].filter(Boolean).join(', ') || 'with an employer'}</span><Link className="ds-btn" to="/c/interview">Prepare</Link></div>
         )}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: 12 }}>
           {[
@@ -71,8 +71,8 @@ function CandidateHome() {
   );
 }
 
-registerRoute({ path: '/r/home', side: 'recruiter', label: 'Q home', render: () => <RecruiterHome />, nav: { group: 'Q', label: 'Home', icon: 'q', tab: true, order: 1 } });
-registerRoute({ path: '/c/home', side: 'candidate', label: 'Q home', render: () => <CandidateHome />, nav: { group: 'Q', label: 'Home', icon: 'q', tab: true, order: 1 } });
+registerRoute({ path: '/r/home', side: 'recruiter', label: 'Q home', render: () => <RecruiterHome />, nav: { group: 'Q', label: 'Home', icon: 'home', tab: true, order: 1 } });
+registerRoute({ path: '/c/home', side: 'candidate', label: 'Q home', render: () => <CandidateHome />, nav: { group: 'Q', label: 'Home', icon: 'home', tab: true, order: 1 } });
 
 // ---------------- Signup, verify, work mode, personalise ----------------
 function Signup() {
