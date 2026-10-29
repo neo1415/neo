@@ -1,7 +1,7 @@
 PASS [d] Passport opens as a D-native workspace
 PASS [d] Q starts an upload from natural language · Uploading “system-design-doc.pdf” to your Passport (simulated). It stays private
 PASS [d] Curveball [recover]: upload drops at 60% · FAILED 60%
-PASS [d] Retry resumes from 60% while on another page · Retrying “system-design-doc.pdf” from 60%.
+PASS [d] Retry resumes from 60% while on another page · Uploading “system-design-doc.pdf” stopped at 60% because the connection dropped. Nothing is lost. / Opening your applica
 PASS [d] Upload finished and item is in the Passport (private)
 PASS [d] Q explains pending is not failed · “AWS Solutions Architect – Associate” is check pending. We’ve asked the source and are wai
 PASS [d] Curveball [info]: issuer unreachable, still PENDING
@@ -28,7 +28,7 @@ PASS [d] Prep for the booked Medlink interview
 PASS [m] Passport opens as a D-native workspace
 PASS [m] Q starts an upload from natural language · Uploading “system-design-doc.pdf” to your Passport (simulated). It stays private
 PASS [m] Curveball [recover]: upload drops at 60% · FAILED 60%
-PASS [m] Retry resumes from 60% while on another page · Retrying “system-design-doc.pdf” from 60%.
+PASS [m] Retry resumes from 60% while on another page · Uploading “system-design-doc.pdf” stopped at 60% because the connection dropped. Nothing is lost. / Opening your applica
 PASS [m] Upload finished and item is in the Passport (private)
 PASS [m] Q explains pending is not failed · “AWS Solutions Architect – Associate” is check pending. We’ve asked the source and are wai
 PASS [m] Curveball [info]: issuer unreachable, still PENDING

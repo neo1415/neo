@@ -28,22 +28,26 @@ export function Sourcing() {
   const done = view.completed || (!runId && w.sourcing.done);
   const mood = w.network === 'offline' ? 'offline' : done ? 'done' : view.failure ? 'blocked' : runId ? 'working' : 'idle';
   return (
-    <Canvas title={done ? `${w.sourcing.found.length} people to compare` : runId ? `Searching · ${found.length} found so far` : 'Search for Senior Backend'} kicker={<>Senior Backend · search</>} open onClose={openQ}
-      qLine={done ? 'Search finished. Compare them next.' : runId ? 'Searching. You can leave this page.' : 'Approve the brief to start.'}
+    <Canvas title={done ? `${w.sourcing.found.length} people to compare` : runId ? `Searching · ${found.length} found so far` : notStarted ? 'Search hasn’t started' : 'Search for Senior Backend'} kicker={<>Search · {w.mandate.title}</>} open onClose={openQ}
+      qLine={done ? 'Search finished. Compare them next.' : runId ? 'Searching. You can leave this page.' : w.mandate.status === 'DRAFT' ? 'Approve the brief to start.' : 'Ready to search.'}
       aside={<span style={{ display: 'flex', gap: 8, alignItems: 'center' }} aria-live="polite"><QMark mood={mood} size={32} agents={runId && !done ? [{ label: 'Search', done: Math.round(progress * 5), total: 5 }] : []} /><span className="t14 muted">{done ? 'Done' : runId ? `${Math.round(progress * 100)}%` : 'Not running'}</span></span>}>
       <div className="hire-a-legacy">
         {notStarted && (
-          <div className="ds-banner" role="status"><Glyph k="none" /><span>Q starts searching once the mandate is approved.</span>
-            {w.mandate.status === 'DRAFT' ? <Link to="/r/mandate" className="ds-btn primary">Approve the mandate first</Link> : <button type="button" className="ds-btn primary" onClick={() => startSourcingWithQ()}>Start the search</button>}</div>
+          <section className="ds-sheet hire-a-start" aria-labelledby="src-start">
+            <h2 id="src-start" className="voice t24" style={{ margin: 0 }}>{w.mandate.status === 'DRAFT' ? 'Approve the brief and Q starts searching' : 'Ready when you are'}</h2>
+            <p style={{ margin: 0 }}>Q reads profiles from three sources, checks each person against the brief’s requirements, and shows people here as soon as it finds them. Nobody is contacted.</p>
+            <ol><li>Reads profiles shared with Kora Pay and open to offers</li><li>Checks each requirement, hardest first</li><li>Shows early results while it works</li></ol>
+            {w.mandate.status === 'DRAFT' ? <Link to="/r/mandate" className="ds-btn primary">Review the brief</Link> : <button type="button" className="ds-btn primary" onClick={() => startSourcingWithQ()}>Start the search</button>}
+          </section>
         )}
         {interrupted && (
-          <div className="ds-banner" data-k="warn" role="status"><Glyph k="partial" /><span><b>This search was interrupted.</b> Q had read {w.sourcing.cursor} of {SOURCE_POOL.length} profiles when the page closed. It will carry on from profile {w.sourcing.cursor + 1}, not start again.</span><button type="button" className="ds-btn primary" onClick={() => startSourcingWithQ()}>Resume</button></div>
+          <div className="ds-banner hire-a-banner" data-k="warn" role="status"><Glyph k="partial" /><span><b>This search was interrupted.</b> Q had read {w.sourcing.cursor} of {SOURCE_POOL.length} profiles when the page closed. It will carry on from profile {w.sourcing.cursor + 1}, not start again.</span><button type="button" className="ds-btn primary" onClick={() => startSourcingWithQ()}>Resume</button></div>
         )}
-        <section className="ds-sheet" aria-labelledby="src-steps" style={{ display: 'grid', gap: 12 }}>
+        {!notStarted && <section className="ds-sheet" aria-labelledby="src-steps" style={{ display: 'grid', gap: 12 }}>
           <Label as="h2" id="src-steps">Steps</Label>
           {view.steps.length ? <RunSteps steps={view.steps} /> : <p className="muted" style={{ margin: 0 }}>{w.sourcing.done ? `Finished earlier: ${SOURCE_POOL.length} profiles read, ${w.sourcing.found.length} shortlisted.` : 'Steps appear here as Q starts each one.'}</p>}
-        </section>
-        <section className="ds-sheet" aria-labelledby="src-res" style={{ display: 'grid', gap: 12 }}>
+        </section>}
+        {!notStarted && <section className="ds-sheet" aria-labelledby="src-res" style={{ display: 'grid', gap: 12 }}>
           <div className="row between"><Label as="h2" id="src-res">Early results · {found.length}</Label>{read && <span className="t-mono subtle">{read.done} of {read.total} read</span>}</div>
           {found.length === 0 && <p className="muted" style={{ margin: 0 }}>Nobody yet. People appear here as soon as Q finds them; you don’t have to wait for the whole search.</p>}
           <ul className="stack gap-3" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
@@ -53,7 +57,7 @@ export function Sourcing() {
                 <Link to="/r/compare" className="ds-btn">Evidence</Link>
               </div></Arrive></li>); })}
           </ul>
-        </section>
+        </section>}
         {w.sourcing.failedSource && <div className="ds-banner" data-k="warn" role="status"><Glyph k="unclear" /><span><b>One source was unavailable.</b> PeopleGraph rate-limited the search. Results come from 2 of 3 sources. Q will retry it tonight and tell you if anyone new appears.</span></div>}
         {done && <Link to="/r/compare" className="ds-btn primary" style={{ justifySelf: 'start' }}>Compare the {w.mandate.shortlist.length || w.sourcing.found.length} people</Link>}
         {view.failure && <p className="t14" role="alert" style={{ margin: 0, color: 'var(--risk)' }}>{view.failure.message}</p>}
@@ -68,8 +72,9 @@ function OtherOrgSearch() {
   const a = actorOf(w);
   const ms = orgMandates(w, a);
   return (
-    <Canvas title={ms.length ? 'Search for your roles' : 'Nothing to search for yet'} kicker="Search" open onClose={openQ}>
+    <Canvas title={ms.length ? 'Search for your roles' : 'Search'} kicker="Search" open onClose={openQ}>
       <section className="ds-sheet hire-a-empty">
+        {!ms.length && <h2 className="voice t24" style={{ margin: 0 }}>Nothing to search for yet</h2>}
         {ms.length ? <ul className="hire-a-list" style={{ width: '100%' }}>{ms.map((m) => <li key={m.id} className="hire-a-row"><span><b>{m.title}</b> · {STATUS_PLAIN[m.status]}{readA(w).search[m.id] ? ` · ${readA(w).search[m.id].found.length} found` : ''}</span><Link to={`/r/roles/${m.id}`} className="ds-btn">Open</Link></li>)}</ul>
           : <p style={{ margin: 0 }}>Q searches once you have an approved role brief. Tell Q who you need, or what you need help with.</p>}
       </section>

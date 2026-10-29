@@ -65,7 +65,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   step('Curveball [info]: issuer unreachable, still PENDING', (await ev('e_tobi_aws')).verification === 'PENDING' && /didn’t answer/.test(await lastQ()));
   r = await ask('ok check my aws cert again', 2400);
   step('Second check: issuer cannot confirm → FAILED', (await ev('e_tobi_aws')).verification === 'FAILED');
-  const sugg = await page.locator('.ds-suggest').filter({ hasText: /AWS certificate check failed/ }).count();
+  await page.locator('.ds-suggest-more[aria-expanded="false"]').first().click({ timeout: 600 }).then(() => page.waitForTimeout(350)).catch(() => {}); const sugg = await page.locator('.ds-suggest').filter({ hasText: /AWS certificate check failed/ }).count();
   step('Proactive: “your AWS certificate check failed”', sugg > 0);
   await closeQ(); await shot('03-cert-failed'); await openQ(); await shot('03b-cert-failed-thread');
   r = await ask('my aws cert failed, what do i do now??');

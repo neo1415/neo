@@ -54,3 +54,108 @@
 /* Legacy Kora screens (brief and search) now render as a canvas only; Q's conversation is global. */
 .hire-a-legacy { display: grid; gap: 16px; max-width: 860px; }
 .hire-a-legacy .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; }
+
+/* ---- Design pass (DESIGN-PASS-BRIEF): one elevation level, status in tags, dense rows, phone-safe banners ---- */
+.hire-a-ref-head { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; justify-content: space-between; }
+.hire-a-ref .ds-tag { color: var(--moon-2); border-color: var(--night-5, var(--night-4)); }
+.hire-a-ref .ds-tag[data-k='ok'] { color: var(--ref-green-dark); border-color: var(--ref-green-dark); }
+.hire-a-ref .ds-tag[data-k='busy'], .hire-a-ref .ds-tag[data-k='warn'] { color: var(--gold-light, var(--ref-gold-400)); border-color: var(--ref-gold-600); }
+.hire-a-ref .sub { color: var(--moon-2); }
+.hire-a-ref .hire-a-checks li { border-color: var(--night-4); }
+.hire-a-ref .hire-a-checks svg { color: var(--moon-2); }
+.hire-a-ref .hire-a-checks .sub { color: var(--moon-2); }
+
+/* Banners: text first, the action drops below on narrow screens instead of squeezing the words. */
+.hire-a-banner { grid-template-columns: auto 1fr; }
+.hire-a-banner > :last-child:is(a, button, .t14) { grid-column: 1 / -1; justify-self: start; }
+@media (min-width: 700px) { .hire-a-banner { grid-template-columns: auto 1fr auto; } .hire-a-banner > :last-child:is(a, button, .t14) { grid-column: auto; } }
+
+/* Pay against the illustrative range (bullet meter). */
+.hire-a-range { margin: 6px 0 0; display: grid; gap: 4px; max-width: 320px; }
+.hire-a-range .track { position: relative; height: 10px; margin-top: 26px; border-radius: 999px; background: var(--wash, var(--ref-paper-2)); }
+.hire-a-range .band { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: var(--rule-2); }
+.hire-a-range .mark { position: absolute; top: -6px; width: 3px; height: 22px; margin-left: -1.5px; border-radius: 2px; background: var(--ink); }
+.hire-a-range .lbl { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 12px; font-weight: 600; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.hire-a-range .scale { position: relative; height: 16px; font: 12px/1 var(--data); color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.hire-a-range .scale span { position: absolute; transform: translateX(-50%); top: 2px; }
+.hire-a-range figcaption { color: var(--ink-2); font-weight: 400; }
+.hire-a-range figcaption svg, .hire-a-posted svg { display: inline-block; vertical-align: -2px; margin-right: 4px; }
+.hire-a-range[data-where='below'] figcaption { color: var(--warn); }
+.hire-a-range[data-where='below'] figcaption .muted { color: var(--ink-3); }
+
+/* Verification checklist and panel. */
+.hire-a-checks { list-style: none; margin: 0; padding: 0; display: grid; }
+.hire-a-checks li { display: grid; grid-template-columns: 24px 1fr; gap: 10px; align-items: start; padding: 10px 0; border-top: 1px solid var(--rule); }
+.hire-a-checks li:first-child { border-top: 0; }
+.hire-a-checks li > span:first-child { display: inline-flex; padding-top: 2px; }
+.hire-a-checks .sub { display: block; color: var(--ink-2); }
+.hire-a-verify { display: grid; gap: 14px; max-width: 760px; }
+.hire-a-verify-head { display: grid; gap: 6px; }
+.hire-a-posted { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+/* Roles list: one sheet, scannable rows; the whole row is the link (44px+). */
+.hire-a-rows { list-style: none; margin: 0; padding: 0 clamp(16px, 2.2vw, 28px); }
+.hire-a-rows > li { border-top: 1px solid var(--rule); }
+.hire-a-rows > li:first-child { border-top: 0; }
+.hire-a-rowlink { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; align-items: center; padding: 16px 0; color: inherit; text-decoration: none; min-height: 44px; }
+.hire-a-rowlink:hover .voice { text-decoration: underline; text-underline-offset: 4px; }
+.hire-a-rowlink .meta { color: var(--ink-2); font-size: 14px; }
+.hire-a-rowlink .next { font-size: 14px; color: var(--ink); display: flex; gap: 6px; align-items: center; }
+.hire-a-rowlink .side { display: grid; gap: 6px; justify-items: end; }
+@media (max-width: 560px) { .hire-a-rowlink { grid-template-columns: 1fr; } .hire-a-rowlink .side { justify-items: start; } }
+.hire-a-summary { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+/* Founder home: next step first, then progress. */
+.hire-a-next { display: grid; gap: 12px; max-width: 760px; }
+.hire-a-next .voice { margin: 0; }
+.hire-a-progress { display: grid; gap: 8px; }
+.hire-a-progress .bar { height: 6px; border-radius: 999px; background: var(--wash, var(--ref-paper-2)); overflow: hidden; }
+.hire-a-progress .bar > span { display: block; height: 100%; background: var(--ink); border-radius: 999px; }
+.hire-a-steps li { position: relative; }
+.hire-a-steps li:not(:last-child)::after { content: ''; position: absolute; left: 11px; top: 32px; bottom: -6px; width: 1px; background: var(--rule); }
+.hire-a-steps li[data-done='1'] b { color: var(--ink-2); font-weight: 500; }
+
+/* People found: one sheet of rows, shortlisted rows carry an ink rule (shape, not colour alone: the button says it). */
+.hire-a-people.ds-sheet { gap: 0; padding: 4px clamp(16px, 2.2vw, 28px); }
+.hire-a-people > li { padding: 16px 0; border-top: 1px solid var(--rule); display: grid; gap: 10px; }
+.hire-a-people > li:first-child { border-top: 0; }
+.hire-a-people > li[data-on='1'] { box-shadow: inset 3px 0 0 var(--ink); padding-left: 14px; margin-left: -14px; }
+.hire-a-people .hire-a-person-head .who { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
+.hire-a-people .ds-btn { min-height: 44px; }
+.hire-a-people .ds-btn[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+@media (min-width: 900px) { .hire-a-fit { grid-template-columns: 1fr 1fr; column-gap: 24px; } }
+
+/* Audit: compact toolbar, one sheet of day groups. */
+.hire-a-auditbar { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.hire-a-auditbar .words { grid-column: 1 / -1; }
+@media (min-width: 900px) { .hire-a-auditbar { grid-template-columns: 1fr 1fr 1.2fr; } .hire-a-auditbar .words { grid-column: auto; } }
+.hire-a-auditbar .ds-field label { font-size: 13px; color: var(--ink-2); }
+.hire-a-days { display: grid; gap: 0; }
+.hire-a-days h2 { position: sticky; top: 0; background: var(--sheet); padding: 14px 0 8px; margin: 0; z-index: 1; }
+.hire-a-days > section + section h2 { border-top: 1px solid var(--rule-2); }
+.hire-a-audit li { grid-template-columns: 52px 1fr; }
+.hire-a-audit .who { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
+.hire-a-audit .kind { font-size: 12px; color: var(--ink-3); font-family: var(--data); letter-spacing: .04em; text-transform: uppercase; }
+
+/* Kora legacy brief and search. */
+.hire-a-legacy .ds-switchrow { padding: 12px 0; }
+.hire-a-start { display: grid; gap: 12px; justify-items: start; max-width: 760px; }
+.hire-a-start ol { list-style: decimal; margin: 0; padding-left: 20px; display: grid; gap: 4px; color: var(--ink-2); }
+.hire-a-paybox { display: grid; gap: 12px 24px; grid-template-columns: 1fr; align-items: end; padding-top: 14px; border-top: 1px solid var(--rule); }
+@media (min-width: 900px) { .hire-a-paybox { grid-template-columns: minmax(0, 1fr) 300px; } }
+.hire-a-paybox .t14 { display: block; margin-top: 2px; }
+
+/* Limits for a new, unverified organisation (D1/D3). */
+.hire-a-limits { display: grid; gap: 12px; }
+.hire-a-limits.compact { box-shadow: none; border: 1px solid var(--rule-2); background: transparent; padding: 14px 16px; }
+.hire-a-limits-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
+.hire-a-limitlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.hire-a-limitlist li { display: flex; flex-wrap: wrap; gap: 4px 16px; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--rule); font-size: 15px; }
+.hire-a-limitlist li:first-child { border-top: 0; }
+.hire-a-limitlist li > :first-child { color: var(--ink-2); }
+.hire-a-limitlist svg { vertical-align: -2px; margin-right: 4px; }
+.hire-a-allow { display: inline-flex; gap: 4px; align-items: center; }
+.hire-a-allow .seg { width: 18px; height: 8px; border-radius: 2px; background: var(--ink); }
+.hire-a-allow .t14 { margin-left: 6px; }
+.hire-a-limitlist li > span:last-child { display: inline-flex; align-items: center; gap: 4px; }
+.hire-a-allow .seg[data-s='draft'] { background: transparent; box-shadow: inset 0 0 0 1.5px var(--ink); }

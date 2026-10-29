@@ -13,6 +13,7 @@ import { MANDATE } from '../../mock/fixtures';
 import {
   actorName, band, can, createDraft, curV, ensureSeed, firstName, hoursText, isFounder, k, LEVEL_LABEL, listNames, naira, orgMandates, payText, pickMandate,
   POOL, revertTo, revise, ROLE_LABEL, ROLES, rolesIn, round5k, runSearch, scopeOf, simIso, startSourcingWithQ, titleFor, whoCan, dayLabel, timeLabel, poolFor, levelOf,
+  isVerified, confirmEmail, tryRegistry, cacNumber, failedTries, MAX_TRIES, emailDomain, businessEmail, postRole, postedJob, limitsFor,
 } from '../../journeys/hire-a/model';
 
 type Out = Omit<QMsg, 'id' | 'at' | 'who'>;
@@ -179,7 +180,7 @@ function startOrResume(c: QCtx): QReply {
 }
 
 function r1Answer(c: QCtx): QReply | null {
-  const step = c.frame?.awaiting as IntakeStep | 'search' | 'propose' | undefined;
+  const step = c.frame?.awaiting as IntakeStep | 'search' | 'propose' | 'verify' | undefined;
   const st = intakeOf(c.w, c.actor);
   if (strongOther(c, R1)) return null;
   if ((c.ents.correction || CHANGE_MIND.test(c.norm)) && (rolesFrom(c.norm).length || parseHours(c.norm).hours || c.ents.money)) return applyChange(c);
@@ -234,6 +235,7 @@ function r1Answer(c: QCtx): QReply | null {
       if (/\b(approve|aprove|approved|looks good|look good|that is fine|that is good|go ahead|perfect|ok approve|yes)\b/.test(c.norm) && !/\bnot\b/.test(c.norm)) return { msgs: [], frame: frame(R1, 'search', { id }), effects: (w, a) => approveIn(w, a, id, curV(m)) };
       return applyChange(c);
     }
+    case 'verify': return verifyAnswer(c, c.frame!.slots.id);
     case 'search': {
       const id = c.frame!.slots.id;
       if (c.ents.yes || /\b(find|search|look|go)\b/.test(c.norm)) return searchReply(c, findM(c.w, id));
@@ -257,7 +259,8 @@ registerSkill({
     const st = readA(c.w).intake[c.actor.id];
     if (st && (c.ents.correction || CHANGE_MIND.test(c.norm)) && rolesFrom(c.norm).length) return 0.9;
     if (st?.mandateId && findM(c.w, st.mandateId) && /\b(change|make|set|raise|lower|increase|reduce|move|update)\b/.test(c.norm) && (c.ents.money || parseHours(c.norm).hours)) return 0.84;
-    if (NEED.test(c.norm)) return 0.86;
+    // "find people now" after a brief exists is a search, not a new intake (hire-a.search owns it).
+    if (NEED.test(c.norm)) return st?.mandateId && findM(c.w, st.mandateId) && /\b(find|search|look)\b/.test(c.norm) ? 0 : 0.86;
     if (/\b(budget|pay)\b.*\b(fix|options|help|low|too low)\b|\bfix the budget\b/.test(c.norm) && st?.mandateId) return 0.85;
     return 0;
   },
@@ -389,6 +392,7 @@ function whereWasI(c: QCtx): QReply {
     else if (!found.length) next = { text: 'Next is finding people for it.', actions: [op('Find people', 'hire-a.search', { id: m.id }, true)], frame: frame(R1, 'search', { id: m.id }) };
     else if (!sl.length) next = { text: 'Next is choosing who to look at closely.', actions: [ask('Shortlist the top 3'), nav('See the people', `/r/roles/${m.id}`)], frame: null };
     else if (!holds) next = { text: 'Next is meeting them.', actions: [ask('Propose interview times')], frame: null };
+    else if (!isVerified(w, a.orgId)) next = { text: `Next is approving the invitations in Messages. When you have a minute, verify ${org?.name ?? 'your business'} to post the role and lift the weekly message limit.`, actions: [nav('Open Messages', '/r/messages', true), ask('Verify my business')], frame: null };
     else next = { text: 'Next is approving the invitations in Messages.', actions: [nav('Open Messages', '/r/messages', true)], frame: null };
     return { msgs: [{ kind: 'reply', used: ['Your conversation so far', ...(m ? [`${m.title} v${curV(m)}`] : [])], text: `Welcome back. ${lines.join(' ')} ${next.text}`, actions: next.actions }], frame: next.frame, nav: m ? { to: `/r/roles/${m.id}`, label: 'the role brief' } : undefined };
   }
@@ -402,6 +406,112 @@ function whereWasI(c: QCtx): QReply {
 registerSkill({ id: 'hire-a.where', side: 'recruiter', match: (c) => (WHERE.test(c.norm) ? 0.9 : 0), handle: whereWasI });
 
 // =====================================================================================================
+// Verify the business (R1): candidates only let verified employers find them. Simulated checks, every attempt
+// logged. Until it's done Q offers what is possible: posting the role so people can choose to apply.
+// =====================================================================================================
+const VERIFY_RE = /\b(verify|verified|verification|cac|business (registration|number)|registration number|rc number|bn number|registered business|prove (my|the|that) business)\b/;
+const NO_NUMBER = /\b(do not have|dont have|don't have|no cac|not registered|haven't registered|have not registered|never registered|no registration|what is a cac|what's a cac)\b/;
+function verifyIntro(c: QCtx, m?: MandateX): QReply {
+  const a = c.actor; const o = orgOf(c.w, a.orgId);
+  if (!o) return { msgs: [{ kind: 'reply', text: 'Tell me about your business first, and I’ll set it up with you.' }] };
+  if (isVerified(c.w, o.id)) return { msgs: [{ kind: 'reply', ref: { type: 'hire-a.verify', id: o.id }, text: `${o.name} is already verified: you can post roles and message as many people as you need.`, actions: m && m.status !== 'DRAFT' && !postedJob(c.w, m.id) ? [ask('Post it as a job')] : [] }] };
+  const emailOk = businessEmail(a.email);
+  const lim = limitsFor(c.w, o.id);
+  const text = `To verify ${o.name}, Talent Q checks that it’s a real business. Until then you can search and shortlist, but you can’t post roles, you can message up to ${lim.outreachPerWeek} people a week, and each message says you’re not verified yet.`
+    + (emailOk ? ` Your business email is already confirmed from sign-up.` : ` Your sign-up email is a personal address (${emailDomain(a.email)}), so you’ll also need one at your business’s own website.`)
+    + ` What’s your CAC registration number? It starts with RC or BN and is on your certificate.`;
+  return { msgs: [{ kind: 'question', ref: { type: 'hire-a.verify', id: o.id }, used: [`${o.name}`, 'Candidates’ privacy settings'],
+    why: 'New organisations have limits until they’re verified. It protects people on Talent Q from fake job offers.',
+    text, actions: [ask('I don’t have a CAC number')] }],
+    effects: (w, actor) => { confirmEmail(w, actor); }, frame: frame(R1, 'verify', { id: m?.id ?? '' }) };
+}
+function verifyAnswer(c: QCtx, mid: string): QReply | null {
+  const a = c.actor; const o = orgOf(c.w, a.orgId); if (!o) return null;
+  if (strongOther(c, R1)) return null;
+  const m = mid ? findM(c.w, mid) : undefined;
+  if (/\b(post|advertise|publish|put (it|the job|the role) (up|out)|let (people|them) apply|apply)\b/.test(c.norm)) return postAsk(c, m);
+  if (NO_NUMBER.test(c.norm)) { const lim = limitsFor(c.w, o.id); return { msgs: [{ kind: 'reply', used: ['Limits for new organisations'],
+    text: `That’s all right. Without a registration number I can’t verify ${o.name}, so the limits stay: no posted roles, and up to ${lim.outreachPerWeek} messages a week, each saying you’re not verified yet. You can still search and shortlist. To verify later, register a business name with the CAC, then tell me the BN number.` }], frame: null }; }
+  const num = cacNumber(c.text);
+  if (!num) return /\?$/.test(c.text.trim()) ? null : { msgs: [{ kind: 'reply', text: 'I need the CAC number to check: it starts with RC or BN and is printed on your certificate, like “BN 1234567”.' }], frame: c.frame };
+  return verifyTry(c, num, m);
+}
+function verifyTry(c: QCtx, num: string, m?: MandateX): QReply {
+  const o = orgOf(c.w, c.actor.orgId)!;
+  const tries = failedTries(c.w, o.id);
+  if (tries >= MAX_TRIES) return { msgs: [{ kind: 'reply', text: `I’ve stopped checking numbers for ${o.name} after ${MAX_TRIES} misses, to keep the register safe from guessing. Upload your CAC certificate in Organisation and a person at Talent Q will check it within a working day (simulated). Meanwhile you can post the role so people can apply.` }], frame: null };
+  return { msgs: [], frame: null, effects: (w, a) => {
+    confirmEmail(w, a);
+    const r = tryRegistry(w, a, num);
+    const left = MAX_TRIES - failedTries(w, o.id);
+    if (!r.ok) {
+      qsay(w, a, { kind: 'question', ref: { type: 'hire-a.verify', id: o.id }, used: ['Business register (simulated check)'],
+        text: r.reason === 'FORMAT' ? `${num} looks too short for a CAC number. They’re RC or BN followed by 7 digits, printed on your certificate. Could you check it?` : `I couldn’t find ${num} on the business register (simulated check). CAC numbers have 7 digits after RC or BN; it may be a typo. Could you check your certificate? ${left === 1 ? 'You have one more try before a person needs to check it.' : ''}`.trim(),
+        actions: [ask('I don’t have a CAC number')] });
+      w.q.frames[a.id] = frame(R1, 'verify', { id: m?.id ?? '' });
+      return;
+    }
+    const ok = isVerified(w, o.id);
+    qsay(w, a, { kind: ok ? 'reply' : 'question', ref: { type: 'hire-a.verify', id: o.id }, used: ['Business register (simulated check)', `${emailDomain(a.email)} (your sign-up email)`],
+      text: ok ? `Found it: ${num} is ${o.name} on the business register (simulated check). ${o.name} is now a verified employer. The limits are lifted: you can post roles, message as many people as you need, and candidates no longer see “not verified yet”.${m && m.status !== 'DRAFT' && !postedJob(w, m.id) ? ` Shall I post “${m.title}” so people can apply?` : ''}`
+        : `${num} matches ${o.name} on the register (simulated). One more thing: your sign-up email is a personal address, so I can’t confirm the business’s website. Sign up an address at your own domain in Settings, then tell me.`,
+      actions: ok && m && m.status !== 'DRAFT' && !postedJob(w, m.id) ? [ask('Post it as a job'), ask('Not yet')] : [] });
+    w.q.frames[a.id] = null;
+  } };
+}
+registerSkill({
+  id: 'hire-a.verify', side: 'recruiter',
+  match: (c) => {
+    if (!c.actor.orgId || !isFounder(c.actor)) return 0;
+    if (VERIFY_RE.test(c.norm) && !/\b(what does|what is|explain|why)\b/.test(c.norm)) return 0.88;
+    if (cacNumber(c.text) && /\b(rc|bn)\b/i.test(c.text) && !isVerified(c.w, c.actor.orgId)) return 0.88;
+    return 0;
+  },
+  handle: (c) => {
+    const st = readA(c.w).intake[c.actor.id];
+    const m = st?.mandateId ? findM(c.w, st.mandateId) : pickMandate(c.w, c.actor, c.norm, c.route);
+    const num = /\b(rc|bn)\b/i.test(c.text) ? cacNumber(c.text) : null;
+    if (num && !isVerified(c.w, c.actor.orgId)) return verifyTry(c, num, m);
+    return verifyIntro(c, m);
+  },
+});
+registerSkill({
+  id: 'hire-a.why-verify', side: 'recruiter',
+  match: (c) => (c.actor.orgId && isFounder(c.actor) && /\bwhy\b/.test(c.norm) && /\b(verify|verified|verification|cac|limit|limits|can(not|'t)? (i )?post)\b/.test(c.norm) && !isVerified(c.w, c.actor.orgId) ? 0.9 : 0),
+  handle: () => ({ msgs: [{ kind: 'reply', used: ['Candidates’ privacy settings'], text: 'Because people on Talent Q need to know a job offer is real. New organisations can search, but until they’re verified they can’t post roles, can send only a few messages a week, and each message says they aren’t verified. Some people also choose to be found by verified employers only. Verifying takes a minute with your CAC number.', actions: [ask('Verify my business')] }] }),
+});
+
+function postAsk(c: QCtx, m?: MandateX): QReply {
+  if (!m) return { msgs: [{ kind: 'reply', text: 'There’s no role brief to post yet. Tell me who you need and I’ll draft one.' }] };
+  if (m.status === 'DRAFT') return { msgs: [{ kind: 'approval', ref: { type: 'hire-a.brief', id: m.id }, text: `“${m.title}” is still a draft. I only post an approved brief, so people see exactly what you agreed. Approve v${curV(m)} first?`, actions: [op(`Approve v${curV(m)}`, 'hire-a.mandate.approve', { id: m.id, v: curV(m) }, true)] }] };
+  const job = postedJob(c.w, m.id);
+  if (job) return { msgs: [{ kind: 'reply', text: `“${m.title}” is already posted (since ${dayLabel(job.posted)}). I’ll tell you when someone applies.` }] };
+  const o = orgOf(c.w, m.orgId)!;
+  if (!limitsFor(c.w, o.id).postRoles) return { msgs: [{ kind: 'refusal', ref: { type: 'hire-a.verify', id: o.id }, used: ['Limits for new organisations'], why: 'Only verified organisations can publish job listings, so people can trust that a posted job is real.',
+    text: `I can’t post “${m.title}” yet: only verified businesses can post roles on Talent Q. Verifying ${o.name} takes a minute with your CAC registration number. Meanwhile you can keep searching and shortlisting.`,
+    actions: [ask('Verify my business')] }], frame: frame(R1, 'verify', { id: m.id }) };
+  return { msgs: [{ kind: 'approval', ref: { type: 'hire-a.brief', id: m.id }, used: [`${m.title} v${curV(m)} (approved)`],
+    text: `Post “${m.title}” on Talent Q jobs? Anyone looking for work can see it and choose to apply; when they apply, they share their profile with ${o.name}. You can take it down any time.`,
+    actions: [op('Post the role', 'hire-a.post', { id: m.id }, true), ask('Not yet')] }], frame: c.frame };
+}
+registerOp('hire-a.post', (w, a, actor) => {
+  const m = findM(w, String(a.id)); if (!m || m.orgId !== actor.orgId || m.status === 'DRAFT') return;
+  if (!can(actor, 'approve_send')) { qsay(w, actor, { kind: 'refusal', text: `As ${ROLE_LABEL[actor.role!]} you can’t post roles.` }); return; }
+  if (!postRole(w, actor, m)) { qsay(w, actor, { kind: 'refusal', ref: { type: 'hire-a.verify', id: actor.orgId! }, text: `I can’t post it: ${orgOf(w, actor.orgId)?.name} isn’t verified yet, and only verified businesses can post roles.`, actions: [ask('Verify my business')] }); return; }
+  qsay(w, actor, { kind: 'reply', text: `Posted (simulated). “${m.title}” is on Talent Q jobs. When someone applies, I’ll show them on the role with what they chose to share.`, actions: [ask('Undo that')] });
+});
+registerOp('hire-a.unpost', (w, a, actor) => {
+  const jid = readA(w).posted[String(a.id)]; const j = w.jobs.find((x) => x.id === jid); if (!j) return;
+  j.status = 'CLOSED'; delete hireA(w).posted[String(a.id)];
+  emit(w, actor.id, 'job.closed', scopeOf(actor), `${actor.name} took down “${j.title}” from Talent Q jobs.`, { mandateId: String(a.id) });
+});
+registerSkill({
+  id: 'hire-a.post', side: 'recruiter',
+  match: (c) => (c.actor.orgId && /\b(post|advertise|publish|put (it|the job|the role|an? advert) (up|out)|put the (job|role) out|list)\b.*\b(role|job|it|advert|vacancy|out there)\b|\b(let|so) (people|them) apply\b/.test(c.norm) && !/\b(message|invitation|email)\b/.test(c.norm) && orgMandates(c.w, c.actor).length ? 0.87 : 0),
+  handle: (c) => { const st = readA(c.w).intake[c.actor.id]; return postAsk(c, st?.mandateId ? findM(c.w, st.mandateId) : pickMandate(c.w, c.actor, c.norm, c.route)); },
+});
+
+// =====================================================================================================
 // Search, shortlist and interview holds (org-scoped: Crumb & Co never sees Kora's pipeline)
 // =====================================================================================================
 function rankFound(w: World, m: MandateX) { return poolFor(w, m).sort((x, y) => (POOL[y].fit.length - POOL[y].unknown.length) - (POOL[x].fit.length - POOL[x].unknown.length) || POOL[y].years - POOL[x].years); }
@@ -409,11 +519,13 @@ function searchReply(c: QCtx, m?: MandateX): QReply {
   if (!m) return { msgs: [{ kind: 'reply', text: isFounder(c.actor) ? 'We need a role brief first. Tell me what you need help with and I’ll draft one.' : 'Which role should I search for?' }] };
   if (m.status === 'DRAFT') return { msgs: [{ kind: 'approval', ref: { type: 'hire-a.brief', id: m.id }, text: `“${m.title}” is still a draft, and I only search against an approved brief, so it’s clear what I’m looking for. Approve v${curV(m)} first?`, actions: [op(`Approve v${curV(m)}`, 'hire-a.mandate.approve', { id: m.id, v: curV(m) }, true), nav('Read it first', `/r/roles/${m.id}`)] }] };
   const found = rankFound(c.w, m);
+  const lim = limitsFor(c.w, m.orgId); const oname = orgOf(c.w, m.orgId)?.name ?? 'Your business';
+  const limNote = lim.verified ? '' : ` ${oname} isn’t verified yet, so for now you can message up to ${lim.outreachPerWeek} people a week, each message says you’re not verified yet, and you can’t post the role. Verifying lifts these limits.`;
   const top = found[0];
   const kora = m.orgId === 'org_kora';
   return { msgs: [{ kind: 'reply', used: [`${m.title} v${curV(m)} (approved)`, kora ? 'Applicants and Talent Q profiles shared with Kora Pay' : 'Talent Q profiles open to offers (simulated)'],
-    text: found.length ? `I found ${found.length} people who could fit${kora ? '' : ', from Talent Q profiles that are open to offers (simulated)'}. ${top ? `${personOf(c.w, top)?.name} looks closest: ${POOL[top].fit[0].toLowerCase()}.` : ''} Pick the ones you want to look at closely; that’s your shortlist.` : 'I didn’t find anyone yet. I’ll keep looking and tell you when someone appears.',
-    actions: found.length ? [ask('Shortlist the top 3'), ask('What’s a shortlist?')] : [] }],
+    text: found.length ? `I found ${found.length} people who could fit${kora ? '' : ', from Talent Q profiles that are open to offers (simulated)'}. ${top ? `${personOf(c.w, top)?.name} looks closest: ${POOL[top].fit[0].toLowerCase()}.` : ''} Pick the ones you want to look at closely; that’s your shortlist.${limNote}` : `Nobody who fits has made their profile visible to ${oname} yet. I’ll keep looking and tell you when someone appears.${limNote}`,
+    actions: [...(found.length ? [ask('Shortlist the top 3'), ask('What’s a shortlist?')] : []), ...(lim.verified ? [] : [ask('Verify my business')])] }],
     effects: (w, a) => { const mm = findM(w, m.id)!; runSearch(w, a, mm); ui(w, a, '/r/roles', { view: 'people' }); if (readA(w).intake[a.id]?.mandateId === m.id) setIntake(w, a, { step: 'searched' }); },
     frame: null, nav: { to: `/r/roles/${m.id}`, label: `people for ${m.title}` } };
 }
@@ -423,7 +535,7 @@ registerOp('hire-a.search', (w, a, actor) => {
   const r = searchReply(c, m);
   r.effects?.(w, actor);
   for (const msg of r.msgs) qsay(w, actor, msg);
-  w.q.frames[actor.id] = null;
+  w.q.frames[actor.id] = r.frame ?? null;
   return r.nav ? { nav: r.nav } : undefined;
 });
 registerSkill({
@@ -497,13 +609,19 @@ function slotsFrom(w: World, norm: string, n: number) {
 function proposeReply(c: QCtx, m: MandateX): QReply {
   const sl = c.w.pipeline.filter((e) => e.mandateId === m.id && e.stage === 'SHORTLISTED').map((e) => e.personId);
   if (!sl.length) return { msgs: [{ kind: 'reply', text: 'Nobody is on the shortlist yet. Pick who you want to meet first, for example “shortlist the top 2”.' }] };
-  const slots = slotsFrom(c.w, c.norm, sl.length);
-  const plan = sl.map((pid, i) => ({ pid, start: slots[i] }));
+  // D1: an unverified organisation may message only a few people a week (orgLimits); plan within what's left.
+  const lim = limitsFor(c.w, m.orgId);
+  const who = sl.slice(0, Number.isFinite(lim.left) ? lim.left : sl.length);
+  if (!who.length) return { msgs: [{ kind: 'refusal', ref: { type: 'hire-a.verify', id: m.orgId }, text: `You’ve used all ${lim.outreachPerWeek} messages this week for an unverified business. Verify ${orgOf(c.w, m.orgId)?.name} to invite the rest now, or wait until next week.`, actions: [ask('Verify my business')] }] };
+  const slots = slotsFrom(c.w, c.norm, who.length);
+  const plan = who.map((pid, i) => ({ pid, start: slots[i] }));
   const tz = c.actor.timezone;
-  return { msgs: [{ kind: 'approval', used: ['Your shortlist', 'Weekdays, 10:00 and 14:00 (you can change this)'],
-    text: `Here’s a plan: ${plan.map((p) => `${personOf(c.w, p.pid)!.name}, ${dayLabel(p.start, tz)} at ${timeLabel(p.start, tz)}`).join('; ')}. I’ll hold these times on your calendar and draft an invitation to each person. Nothing is sent or booked: the holds are only on your side, and each invitation waits for your approval. Go ahead?`,
+  const cut = sl.length - who.length;
+  const capNote = lim.verified ? '' : ` Until ${orgOf(c.w, m.orgId)?.name} is verified you can message ${lim.outreachPerWeek} people a week (${lim.used} sent so far), and each invitation says you’re not verified yet.${cut ? ` So I’ve left out ${listNames(sl.slice(who.length).map((p) => firstName(c.w, p)))}; verify to invite ${cut === 1 ? 'them' : 'them all'} now.` : ''}`;
+  return { msgs: [{ kind: 'approval', used: ['Your shortlist', 'Weekdays, 10:00 and 14:00 (you can change this)', ...(lim.verified ? [] : ['Limits for new organisations'])],
+    text: `Here’s a plan: ${plan.map((p) => `${personOf(c.w, p.pid)!.name}, ${dayLabel(p.start, tz)} at ${timeLabel(p.start, tz)}`).join('; ')}. I’ll hold these times on your calendar and draft an invitation to each person. Nothing is sent or booked: the holds are only on your side, and each invitation waits for your approval.${capNote} Go ahead?`,
     why: 'Holds stop you double-booking while people reply. They are simulated in this prototype.',
-    actions: [op('Hold the times and draft invitations', 'hire-a.propose', { id: m.id, plan }, true), ask('Afternoons instead'), ask('What’s a hold?')] }],
+    actions: [op('Hold the times and draft invitations', 'hire-a.propose', { id: m.id, plan }, true), ask('Afternoons instead'), ...(cut ? [ask('Verify my business')] : [ask('What’s a hold?')])] }],
     frame: frame(R1, 'propose', { id: m.id, plan: JSON.stringify(plan) }) };
 }
 function proposeIn(w: World, a: Actor, id: string, plan: { pid: string; start: string }[]) {
@@ -516,7 +634,7 @@ function proposeIn(w: World, a: Actor, id: string, plan: { pid: string; start: s
     let t: Thread | undefined = w.threads.find((x) => x.orgId === m.orgId && x.personId === p.pid && x.mandateId === id);
     if (!t) { t = { id: uid('t'), orgId: m.orgId, personId: p.pid, mandateId: id, messages: [] }; w.threads.push(t); }
     const msg: Msg = { id: uid('msg'), from: a.id, to: p.pid, subject: `Interview for ${m.title} at ${org}`, channel: 'EMAIL', status: 'DRAFT', at: now(),
-      body: `Hello ${firstName(w, p.pid)},\n\nThank you for your interest in the ${m.title} role at ${org}. Could you come in for a 45-minute chat on ${dayLabel(p.start, a.timezone)} at ${timeLabel(p.start, a.timezone)}? If that time doesn’t work, reply with two times that suit you.\n\n${a.first}, ${org}` };
+      body: `Hello ${firstName(w, p.pid)},\n\nThank you for your interest in the ${m.title} role at ${org}. Could you come in for a 45-minute chat on ${dayLabel(p.start, a.timezone)} at ${timeLabel(p.start, a.timezone)}? If that time doesn’t work, reply with two times that suit you.\n\n${a.first}, ${org}${limitsFor(w, m.orgId).verified ? '' : `\n\nFrom Talent Q: ${org} hasn’t verified its business yet.`}` };
     t.messages.push(msg); msgs.push(msg.id);
   }
   const names = listNames(plan.map((p) => firstName(w, p.pid)));

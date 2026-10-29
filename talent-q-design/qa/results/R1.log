@@ -20,12 +20,28 @@ PASS [d] home shows where she is
 PASS [d] [recover] Q resumes from where she stopped
 PASS [d] proactive: draft unapproved for over a day
 PASS [d] approved after explicit approval
-PASS [d] simulated search finds bookkeepers only
+PASS [d] searches while still unverified: bookkeepers only
+PASS [d] Q states the limits plainly (messages a week, label, no posting)
+PASS [d] people who chose verified employers only stay hidden (Zara, Tobi)
 PASS [d] Kora pipeline invisible to Crumb & Co
+PASS [d] People view shows the weekly message cap
 PASS [d] shortlist by name
+PASS [d] shortlist grows to 4
 PASS [d] Q proposes times and asks for approval
-PASS [d] CalEvent HOLDs written (simulated)
+PASS [d] [recover] outreach cap hit: 3 planned, the 4th left out and named
+PASS [d] CalEvent HOLDs written (simulated), within the cap
 PASS [d] DRAFT invitations written, nothing sent
+PASS [d] each invitation tells the candidate the business isn’t verified yet
+PASS [d] [info] posting refused: only verified businesses can post
+PASS [d] Q explains verification and asks for the CAC number
+PASS [d] business email confirmed from sign-up; registry not yet
+PASS [d] [info] registry check fails plainly, nothing verified
+PASS [d] verified after a correct number: domain and registry
+PASS [d] every attempt is in the audit trail
+PASS [d] store limits lifted (orgLimits)
+PASS [d] posting now asks for approval, nothing posted yet
+PASS [d] role posted (simulated) as a verified employer
+PASS [d] People view: limits gone, posting shown
 PASS [d] roles page scoped to Crumb & Co
 PASS [d] audit log shows only Crumb & Co events
 PASS [d] Kora’s legacy brief is not shown to Funmi
@@ -51,14 +67,30 @@ PASS [m] home shows where she is
 PASS [m] [recover] Q resumes from where she stopped
 PASS [m] proactive: draft unapproved for over a day
 PASS [m] approved after explicit approval
-PASS [m] simulated search finds bookkeepers only
+PASS [m] searches while still unverified: bookkeepers only
+PASS [m] Q states the limits plainly (messages a week, label, no posting)
+PASS [m] people who chose verified employers only stay hidden (Zara, Tobi)
 PASS [m] Kora pipeline invisible to Crumb & Co
+PASS [m] People view shows the weekly message cap
 PASS [m] shortlist by name
+PASS [m] shortlist grows to 4
 PASS [m] Q proposes times and asks for approval
-PASS [m] CalEvent HOLDs written (simulated)
+PASS [m] [recover] outreach cap hit: 3 planned, the 4th left out and named
+PASS [m] CalEvent HOLDs written (simulated), within the cap
 PASS [m] DRAFT invitations written, nothing sent
+PASS [m] each invitation tells the candidate the business isn’t verified yet
+PASS [m] [info] posting refused: only verified businesses can post
+PASS [m] Q explains verification and asks for the CAC number
+PASS [m] business email confirmed from sign-up; registry not yet
+PASS [m] [info] registry check fails plainly, nothing verified
+PASS [m] verified after a correct number: domain and registry
+PASS [m] every attempt is in the audit trail
+PASS [m] store limits lifted (orgLimits)
+PASS [m] posting now asks for approval, nothing posted yet
+PASS [m] role posted (simulated) as a verified employer
+PASS [m] People view: limits gone, posting shown
 PASS [m] roles page scoped to Crumb & Co
 PASS [m] audit log shows only Crumb & Co events
 PASS [m] Kora’s legacy brief is not shown to Funmi
 ERRORS []
-PASS R1: 62/62 steps passed
+PASS R1: 94/94 steps passed

@@ -41,7 +41,7 @@ async function shot(page, name, top = false) { if (top) await page.evaluate(() =
 const MINE = /hasn’t been approved|hasn’t replied|interview panel|asked to move|queued while|wrote to Kora/;
 async function suggestions(page, re) {
   for (let i = 0; i < 8; i++) {
-    const t = await page.locator('.ds-suggest').allInnerTexts();
+    await page.locator('.ds-suggest-more[aria-expanded="false"]').first().click({ timeout: 600 }).then(() => page.waitForTimeout(350)).catch(() => {}); const t = await page.locator('.ds-suggest').allInnerTexts();
     if (t.some((x) => re.test(x))) return t.join(' | ');
     if (!t.length) return '';
     const k = t.findIndex((x) => !MINE.test(x));

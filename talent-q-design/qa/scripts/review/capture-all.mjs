@@ -2,10 +2,11 @@
 // full page. Used for the visual audit and before/after comparison. Usage: node capture-all.mjs <base> <outdir>
 import pw from '/opt/node-tools/node_modules/playwright/index.js';
 import { mkdirSync } from 'node:fs';
-const [BASE = 'http://localhost:4174/', OUT = 'review'] = process.argv.slice(2);
+const [BASE = 'http://localhost:4174/', OUT = 'review', ONLY = ''] = process.argv.slice(2);
 export const PAGES = {
   u_funmi: ['/r/home', '/r/roles'],
   u_ada: ['/r/home', '/r/plan', '/r/compare', '/r/people/p_tobi', '/r/interviews', '/r/pipeline', '/r/messages', '/r/calendar', '/r/team', '/r/setup', '/r/roles', '/r/audit', '/r/memory', '/r/mandate', '/r/sourcing', '/settings'],
+  u_bayo: ['/r/home', '/r/roles', '/r/audit', '/r/memory'],
   u_dele: ['/r/home', '/r/agency/agents', '/r/agency/campaigns', '/r/agency/clients', '/r/agency/client/org_kora', '/r/agency/compare', '/r/agency/docs', '/r/agency/mandate/m_ops', '/r/agency/notes', '/r/agency/pools', '/r/agency/reports', '/r/agency/searches', '/r/agency/submittals'],
   p_amaka: ['/c/home', '/c/welcome', '/c/jobs'],
   p_chidi: ['/c/career', '/c/growth'],
@@ -22,6 +23,7 @@ for (const [vp, size] of [['d', { width: 1440, height: 900 }], ['m', { width: 39
   for (const [actor, routes] of Object.entries(PAGES)) {
     if (actor !== 'public') { await page.evaluate((a) => { const w = JSON.parse(localStorage.getItem('tq.world.v4')); w.session.actor = a; w.actors.find((x) => x.id === a).signedUp = true; localStorage.setItem('tq.world.v4', JSON.stringify(w)); }, actor); await page.reload(); await page.waitForTimeout(400); }
     for (const r of routes) {
+      if (ONLY && !ONLY.split(',').some((o) => `${actor}${r}`.includes(o))) continue;
       await page.goto(`${BASE}#${r}`); await page.waitForTimeout(900);
       const dir = `${OUT}/${vp === 'd' ? 'desktop' : 'phone'}`; mkdirSync(dir, { recursive: true });
       await page.screenshot({ path: `${dir}/${actor}${r.replace(/\//g, '_')}.png`, fullPage: true });

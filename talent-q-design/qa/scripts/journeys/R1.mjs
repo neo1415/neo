@@ -106,7 +106,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   await ask('hi im back, where was i?');
   step(v, '[recover] Q resumes from where she stopped', /Welcome back/.test(await lastQ()) && /still a draft/.test(await lastQ()), await lastQ());
   await openQ();
-  step(v, 'proactive: draft unapproved for over a day', await page.locator('.ds-suggest').filter({ hasText: /has been a draft since/ }).count() > 0);
+  await page.locator('.ds-suggest-more[aria-expanded="false"]').first().click({ timeout: 600 }).then(() => page.waitForTimeout(350)).catch(() => {}); step(v, 'proactive: draft unapproved for over a day', await page.locator('.ds-suggest').filter({ hasText: /has been a draft since/ }).count() > 0);
   await shot('back-next-day');
   await closeQ();
 
@@ -114,27 +114,76 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   await chip(/^Approve v3$/);
   m = await mandate();
   step(v, 'approved after explicit approval', m?.status === 'APPROVED', m?.status);
+  // ---- Search BEFORE verifying (D1): she sees people whose own rules allow it, and Q names the limits ----
   await ask('yes go ahead and look for people', 900);
   w = await world();
   const found = w.areas['hire-a'].search[m.id]?.found ?? [];
-  step(v, 'simulated search finds bookkeepers only', found.length === 4 && found.every((p) => p.startsWith('p_ha_')), found.join());
+  const crumb0 = w.orgs.find((o) => o.id === 'org_crumb');
+  step(v, 'searches while still unverified: bookkeepers only', crumb0.verified.registry !== 'VERIFIED' && found.length === 4 && found.every((p) => p.startsWith('p_ha_')), found.join());
+  step(v, 'Q states the limits plainly (messages a week, label, no posting)', /isn’t verified yet/.test(await lastQ()) && /up to 3 people a week/.test(await lastQ()) && /can’t post the role/.test(await lastQ()), await lastQ());
+  const hidden = await page.evaluate(() => { const q = window.__tqQA; const g = q.getWorld(); return ['p_zara', 'p_tobi'].filter((p) => q.canSeeCandidate(g, p, 'org_crumb')); });
+  step(v, 'people who chose verified employers only stay hidden (Zara, Tobi)', hidden.length === 0, hidden.join());
   step(v, 'Kora pipeline invisible to Crumb & Co', !/Tobi|Ifeoma|Zara|Kunle/.test(await canvas()));
+  step(v, 'People view shows the weekly message cap', /Until Crumb & Co is verified/i.test(await canvas()) && /0 of 3 sent this week/.test(await canvas()) && /Off until verified/.test(await canvas()));
   await shot('people', true); await shot('people-canvas');
   await ask('shortlist kemi and yusuf');
   w = await world();
   step(v, 'shortlist by name', w.pipeline.filter((e) => e.mandateId === m.id && e.stage === 'SHORTLISTED').length === 2);
+  await ask('add halima and tope too');
+  w = await world();
+  step(v, 'shortlist grows to 4', w.pipeline.filter((e) => e.mandateId === m.id && e.stage === 'SHORTLISTED').length === 4);
 
-  // ---- Hand-off to interview scheduling (minimal, simulated) ----
+  // ---- [recover] Hits the outreach cap: Q plans within it and says who is left out ----
   await ask('can i meet them next week?');
   step(v, 'Q proposes times and asks for approval', /Here’s a plan/.test(await lastQ()) && /Nothing is sent or booked/.test(await lastQ()), await lastQ());
+  step(v, '[recover] outreach cap hit: 3 planned, the 4th left out and named', /message 3 people a week \(0 sent so far\)/.test(await lastQ()) && /I’ve left out/.test(await lastQ()) && ((await lastQ()).match(/Here’s a plan: (.*?)\. I’ll hold/)?.[1] ?? '').split('; ').length === 3, await lastQ());
   await shot('propose', true);
   await chip(/Hold the times/);
   w = await world();
   const holds = w.calendar.filter((e) => e.mandateId === m.id && e.status === 'HOLD');
   const drafts = w.threads.filter((t) => t.mandateId === m.id).flatMap((t) => t.messages).filter((x) => x.status === 'DRAFT');
-  step(v, 'CalEvent HOLDs written (simulated)', holds.length === 2 && holds.every((h) => h.simulated));
-  step(v, 'DRAFT invitations written, nothing sent', drafts.length === 2 && !w.threads.flatMap((t) => t.messages).some((x) => x.status === 'SENT_SIMULATED' && x.from === 'u_funmi'));
+  step(v, 'CalEvent HOLDs written (simulated), within the cap', holds.length === 3 && holds.every((h) => h.simulated));
+  step(v, 'DRAFT invitations written, nothing sent', drafts.length === 3 && !w.threads.flatMap((t) => t.messages).some((x) => x.status === 'SENT_SIMULATED' && x.from === 'u_funmi'));
+  step(v, 'each invitation tells the candidate the business isn’t verified yet', drafts.every((d) => /hasn’t verified its business yet/.test(d.body)));
   await shot('handoff', true);
+
+  // ---- [info] Posting is refused until verified (D3) ----
+  await ask('can i put the job out there so people apply?');
+  w = await world();
+  step(v, '[info] posting refused: only verified businesses can post', /only verified businesses can post roles/.test(await lastQ()) && !w.jobs.some((j) => j.mandateId === m.id), await lastQ());
+  await shot('post-refused', true);
+
+  // ---- [info] Verification (simulated): fails once, then passes ----
+  await ask('ok verify my business');
+  w = await world();
+  step(v, 'Q explains verification and asks for the CAC number', /checks that it’s a real business/.test(await lastQ()) && /CAC registration number/.test(await lastQ()), await lastQ());
+  step(v, 'business email confirmed from sign-up; registry not yet', w.orgs.find((o) => o.id === 'org_crumb').verified.domain === true && w.orgs.find((o) => o.id === 'org_crumb').verified.registry !== 'VERIFIED');
+  await shot('verify-ask', true);
+  await ask('my cac number is BN 312456');
+  w = await world();
+  step(v, '[info] registry check fails plainly, nothing verified', /couldn’t find BN 312456/.test(await lastQ()) && w.orgs.find((o) => o.id === 'org_crumb').verified.registry !== 'VERIFIED' && w.areas['hire-a'].verify.org_crumb.tries.length === 1, await lastQ());
+  await shot('verify-failed', true);
+  await ask('sorry typo, its BN 3124567');
+  w = await world();
+  const crumb = w.orgs.find((o) => o.id === 'org_crumb');
+  step(v, 'verified after a correct number: domain and registry', crumb.verified.domain === true && crumb.verified.registry === 'VERIFIED' && /now a verified employer/.test(await lastQ()) && /limits are lifted/.test(await lastQ()), await lastQ());
+  step(v, 'every attempt is in the audit trail', w.events.filter((e) => e.scope === 'ORG:org_crumb' && /^org\.verif/.test(e.type)).length >= 3);
+  const lim = await page.evaluate(() => { const q = window.__tqQA; return q.orgLimits ? q.orgLimits(q.getWorld(), 'org_crumb') : null; });
+  step(v, 'store limits lifted (orgLimits)', !lim || (lim.postRoles === true && lim.verified === true), JSON.stringify(lim));
+
+  // ---- After verification posting works, with approval ----
+  await chip(/^Post it as a job$/);
+  w = await world();
+  step(v, 'posting now asks for approval, nothing posted yet', /Post “Part-time bookkeeper/.test(await lastQ()) && !w.jobs.some((j) => j.mandateId === m.id && j.status === 'OPEN'), await lastQ());
+  await chip(/^Post the role$/);
+  w = await world();
+  const job = w.jobs.find((j) => j.mandateId === m.id);
+  step(v, 'role posted (simulated) as a verified employer', job?.status === 'OPEN' && job.signals.registryVerified === true && job.signals.domainVerified === true && /Posted \(simulated\)/.test(await lastQ()), await lastQ());
+  await go(`/r/roles/${m.id}`);
+  await page.getByRole('button', { name: /^People/ }).click(); await page.waitForTimeout(300);
+  step(v, 'People view: limits gone, posting shown', !/Until Crumb & Co is verified/i.test(await canvas()) && /Posted on Talent Q jobs/.test(await canvas()));
+  await shot('verified-canvas');
+
 
   // ---- Isolation and audit ----
   await go('/r/roles');

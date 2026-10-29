@@ -6,6 +6,8 @@ import { actorOf, emit, log, now, uid, update, useWorld, visibleMemories, type W
 import type { Actor } from '../state/domain';
 import { Banner, Button, Label, Segmented, Sheet, TextArea, toast } from '../ui/kit';
 import { Link } from '../ui/router';
+import { Canvas } from '../ds/Workspace';
+import { openQ } from '../journeys/hire-a/ui';
 
 /** What someone said is shown as their words, in sentence case and quoted; everything else as written (critique F8). */
 const shown = (m: MemoryItem) => { const t = m.content.trim(); const c = t.charAt(0).toUpperCase() + t.slice(1); return m.truth_class === 'STATED_BY_USER' ? `“${c}”` : c; };
@@ -52,41 +54,35 @@ export function Memory({ viewer }: { viewer: 'recruiter' | 'candidate' }) {
     log(d, viewer === 'recruiter' ? 'You' : 'Candidate', `${s === 'revoked' ? 'Stopped Q using' : 'Asked Q to forget'}: ${x.memory_key}`);
   });
 
+  const org = actor.orgId ? w.orgs.find((o) => o.id === actor.orgId)?.name : undefined;
+  const EMPTY_NOTE: Partial<Record<string, string>> = { CONVERSATION: 'Kept in your conversation history, not as memories. Search them from Q.', CONTEXT_PACK: 'Short summaries Q makes for one task; they expire with it. See “What Q would use” above.', EVALUATED_LEARNING: 'Changes to how Q works, reviewed by people before release. Nothing from your conversations is used without consent.' };
+  const notKept = MEMORY_LAYERS.filter((l) => l !== 'LIVE_STATE' && EMPTY_NOTE[l] && !items.some((m) => m.layer === l));
   return (
-    <main className="main stack gap-12">
-      <header className="stack gap-3">
-        <span className="t-label q-text">What Q remembers</span>
-        <h1 className="t-display measure">{viewer === 'recruiter' ? 'Everything Q remembers for you, and where it came from.' : 'What Q keeps about you, and who can see it.'}</h1>
-        <p className="t-lead muted measure">Q remembers what you tell it to, what a task needs, and your organisation’s rules. It doesn’t remember everything, and it shows you when it uses a memory.</p>
-      </header>
+    <Canvas title={viewer === 'recruiter' ? 'What Q remembers' : 'What Q keeps about you'} kicker={viewer === 'recruiter' ? (org ? `Memory · ${org}` : 'Memory') : 'Memory · only you and Q'} open onClose={openQ}
+      aside={<span className="tag num">{items.length} in use</span>}>
+      <p className="muted measure" style={{ margin: 0 }}>{viewer === 'recruiter' ? 'What Q keeps for you, where each item came from, and who can see it. Correct or remove anything; Q shows you when it uses a memory.' : 'Who can see each item, and where it came from. Correct or remove anything.'}</p>
 
       {viewer === 'recruiter' && items.length === 0 && <Banner tone="info" title="Nothing remembered yet">Q hasn’t saved anything for you yet. When it does (a preference you state, or your organisation’s rules), it appears here with its source.</Banner>}
       {MEMORY_LAYERS.filter((l) => l !== 'LIVE_STATE').map((layer) => {
         const list = items.filter((m) => m.layer === layer);
-        if (!list.length && (layer === 'CONVERSATION' || layer === 'CONTEXT_PACK' || layer === 'EVALUATED_LEARNING')) return (
-          <section key={layer} className="stack gap-2" aria-label={MEMORY_LAYER_LABELS[layer]}>
-            <Label as="h2">{MEMORY_LAYER_LABELS[layer]}</Label>
-            <p className="t-caption">{layer === 'CONVERSATION' ? 'Your conversations are kept in your history, not as memories. Search them from Q.' : layer === 'CONTEXT_PACK' ? 'Short summaries Q makes for a task. They expire with the task. See “What Q would use” below.' : 'Changes to how Q works, reviewed by people before release. Nothing from your conversations is used without consent.'}</p>
-          </section>
-        );
         if (!list.length) return null;
         return (
-          <section key={layer} className="stack gap-4" aria-labelledby={`l-${layer}`}>
-            <Label as="h2" id={`l-${layer}`}>{MEMORY_LAYER_LABELS[layer]}</Label>
-            <ul className="stack gap-4">
-              {list.map((m) => (
-                <li key={m.memory_id} className="panel stack gap-3">
-                  <p className="t-voice" style={{ fontSize: 19 }}>{shown(m)}</p>
-                  <div className="row wrap gap-2">
+          <section key={layer} className="stack gap-3" aria-labelledby={`l-${layer}`}>
+            <Label as="h2" id={`l-${layer}`}>{MEMORY_LAYER_LABELS[layer]} · {list.length}</Label>
+            <ul className="panel" style={{ listStyle: 'none', margin: 0, paddingTop: 4, paddingBottom: 4 }}>
+              {list.map((m, i) => (
+                <li key={m.memory_id} className="stack gap-2" style={{ padding: '16px 0', borderTop: i ? '1px solid var(--color-line)' : 0 }}>
+                  <p className="t-voice" style={{ fontSize: 18, margin: 0 }}>{shown(m)}</p>
+                  <div className="row wrap gap-2" style={{ alignItems: 'center' }}>
                     <span className="tag">{TRUTH[m.truth_class]}</span><span className="tag">{SCOPE[m.visibility_scope]}</span>
                     {m.evidence_status === 'CONTESTED' && <span className="tag" style={{ borderColor: 'var(--color-warn)' }}>Not confirmed</span>}
-                    {m.expires_at && <span className="tag">Until {m.expires_at.slice(0, 10)}</span>}
+                    {m.expires_at && <span className="tag">Until {new Date(m.expires_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>}
                   </div>
                   <details>
-                    <summary className="t-caption" style={{ cursor: 'pointer' }}>Why Q keeps this, and the source</summary>
-                    <div className="stack gap-2" style={{ marginTop: 10 }}>
-                      <p>{m.importance_reason}</p>
-                      {m.source_refs.map((s, i) => <p key={i} className="t-caption">{s.label} · {s.at.slice(0, 10)}{s.quote ? <> · “{s.quote}”</> : null}</p>)}
+                    <summary className="t-caption" style={{ cursor: 'pointer', padding: '6px 0' }}>Why Q keeps this, and the source</summary>
+                    <div className="stack gap-2" style={{ marginTop: 6 }}>
+                      <p style={{ margin: 0 }}>{m.importance_reason}</p>
+                      {m.source_refs.map((s, j) => <p key={j} className="t-caption" style={{ margin: 0 }}>{s.label} · {s.at.slice(0, 10)}{s.quote ? <> · “{s.quote}”</> : null}</p>)}
                     </div>
                   </details>
                   <div className="row wrap gap-2">
@@ -112,13 +108,20 @@ export function Memory({ viewer }: { viewer: 'recruiter' | 'candidate' }) {
 
       {viewer === 'recruiter' ? (actor.orgId === 'org_kora' && <ContextPack w={w} task={task} setTask={setTask} actor={actor} />) : <NonSharing w={w} />}
 
+      {notKept.length > 0 && (
+        <section className="stack gap-2" aria-labelledby="nk-h">
+          <Label as="h2" id="nk-h">Not kept as memories</Label>
+          <dl className="stack gap-2" style={{ margin: 0 }}>{notKept.map((l) => <div key={l}><dt style={{ fontWeight: 600 }}>{MEMORY_LAYER_LABELS[l]}</dt><dd className="t-caption" style={{ margin: 0 }}>{EMPTY_NOTE[l]}</dd></div>)}</dl>
+        </section>
+      )}
+
       <Sheet open={!!editing} onClose={() => setEditing(null)} title="Correct this memory" side="center">
         <form className="stack gap-4" onSubmit={(e) => { e.preventDefault(); correct(); }}>
           <TextArea label="What should Q remember instead?" value={text} onChange={setText} rows={4} help="Q keeps the old version in history and uses yours from now on." />
           <div className="row gap-3"><Button type="submit" variant="primary">Save correction</Button><Button variant="quiet" onClick={() => setEditing(null)}>Cancel</Button></div>
         </form>
       </Sheet>
-    </main>
+    </Canvas>
   );
 }
 
@@ -135,13 +138,13 @@ function ContextPack({ w, task, setTask, actor }: { w: World; task: Task; setTas
   });
   return (
     <section className="stack gap-4" aria-labelledby="cp-h">
-      <h2 id="cp-h" className="t-heading">What Q would use</h2>
-      <p className="muted measure">Pick a task to see the memories Q would bring to it, and the ones it must leave out.</p>
+      <Label as="h2" id="cp-h">What Q would use for a task</Label>
+      <p className="muted measure" style={{ margin: 0 }}>Pick a task to see what Q would bring to it, and what it must leave out.</p>
       <Segmented<Task> label="Task" value={task} onChange={setTask} options={(Object.keys(TASKS) as Task[]).map((k) => ({ value: k, label: TASKS[k].label }))} />
       <ul className="stack">
         {rows.map((r) => (
-          <li key={r.k} className="row wrap gap-4" style={{ padding: '14px 0', borderTop: '1px solid var(--color-line)' }}>
-            <span className="tag" style={{ borderColor: r.use ? 'var(--color-ok)' : 'var(--color-line-strong)', minWidth: 88, justifyContent: 'center' }}>{r.use ? 'Used' : 'Left out'}</span>
+          <li key={r.k} style={{ display: 'grid', gridTemplateColumns: '88px minmax(0, 1fr)', gap: 16, alignItems: 'start', padding: '14px 0', borderTop: '1px solid var(--color-line)' }}>
+            <span className="tag" style={{ borderColor: r.use ? 'var(--color-ok)' : 'var(--color-line-strong)', justifyContent: 'center' }}>{r.use ? 'Used' : 'Left out'}</span>
             <span className="grow stack"><span>{r.use ? r.item?.content : <span className="muted">{r.k.startsWith('person.p_tobi.practice') ? 'Something private to the candidate' : !r.item ? 'Someone else’s private preference (content hidden)' : 'A memory you told Q not to use (content hidden)'}</span>}</span><span className="t-caption">{r.why}</span></span>
           </li>
         ))}

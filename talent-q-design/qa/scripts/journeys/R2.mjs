@@ -119,7 +119,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   await go('/r/interviews');
   await page.getByRole('button', { name: /Simulate: Kunle disputes/ }).click(); await page.waitForTimeout(600);
   if (phone) await openQ();
-  const card = await page.locator('.ds-suggest').filter({ hasText: 'disputed' }).count();
+  await page.locator('.ds-suggest-more[aria-expanded="false"]').first().click({ timeout: 600 }).then(() => page.waitForTimeout(350)).catch(() => {}); const card = await page.locator('.ds-suggest').filter({ hasText: 'disputed' }).count();
   if (phone) await closeQ();
   step(v, '[info] proactive: dispute raised from real state', card > 0);
   await ask('whats going on with kunles dispute');
@@ -167,7 +167,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   // 11. Proactive: Tobi shares a newly verified certificate since Ada last looked (other tab, same store).
   await otherTab("const e = w.evidence.find((x) => x.evidenceId === 'e_tobi_aws'); e.visibility = 'SHARED_WITH'; e.sharedWith = ['org_kora']; e.verification = 'VERIFIED'; e.verified = true;", '#/r/home');
   if (phone) await openQ();
-  const cert = await page.locator('.ds-suggest').filter({ hasText: 'new verified certificate' }).count();
+  await page.locator('.ds-suggest-more[aria-expanded="false"]').first().click({ timeout: 600 }).then(() => page.waitForTimeout(350)).catch(() => {}); const cert = await page.locator('.ds-suggest').filter({ hasText: 'new verified certificate' }).count();
   if (phone) { await shot('proactive-cert'); await closeQ(); } else await shot('proactive-cert');
   step(v, 'proactive: new verified certificate since last look', cert > 0);
 

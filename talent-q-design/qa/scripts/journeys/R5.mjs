@@ -43,7 +43,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   await page.reload(); await page.waitForTimeout(600); await page.goto(`${BASE}#/r/home`); await page.waitForTimeout(1100);
   step(v, 'home shows what is waiting on Bayo', /Waiting on you/i.test(await page.locator('#ds-content').innerText()) && /Backend Engineer, Payouts/.test(await page.locator('#ds-content').innerText()));
   await openQ();
-  step(v, 'proactive: draft waiting on him for over a day', await page.locator('.ds-suggest').filter({ hasText: /Payouts.*has been a draft since/ }).count() > 0);
+  await page.locator('.ds-suggest-more[aria-expanded="false"]').first().click({ timeout: 600 }).then(() => page.waitForTimeout(350)).catch(() => {}); step(v, 'proactive: draft waiting on him for over a day', await page.locator('.ds-suggest').filter({ hasText: /Payouts.*has been a draft since/ }).count() > 0);
   await closeQ();
   await shot('home', true);
 

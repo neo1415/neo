@@ -11,7 +11,7 @@ import { Memory } from '../screens/Memory';
 import { RoleDetail, RolesList } from '../journeys/hire-a/Roles';
 import { Audit } from '../journeys/hire-a/Audit';
 import { FounderHome, WaitingOnYou } from '../journeys/hire-a/Home';
-import { BriefRef, ConflictRef, MemoryRef } from '../journeys/hire-a/ui';
+import { BriefRef, ConflictRef, MemoryRef, VerifyRef } from '../journeys/hire-a/ui';
 import { isFounder } from '../journeys/hire-a/model';
 import '../styles/hire-a.css';
 
@@ -31,3 +31,4 @@ registerHomeSection('recruiter', { id: 'hire-a.waiting', order: 5, when: (w) => 
 registerRef('hire-a.brief', BriefRef);
 registerRef('hire-a.memory', MemoryRef);
 registerRef('hire-a.conflict', ConflictRef);
+registerRef('hire-a.verify', VerifyRef);

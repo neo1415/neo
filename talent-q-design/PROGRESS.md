@@ -2,6 +2,19 @@
 
 Updated 29 Oct 2026. Measured counts are in `COVERAGE-SUMMARY.md`; this file says what is done and what to do next, in order.
 
+## Milestone: the design pass (29 Oct): every page reworked with design skills first
+
+After the founder's "you didn't use design skills" feedback, film production stopped and every page was redesigned. The prototype is now treated as the product and design blueprint, not the production app.
+
+| | Status |
+|---|---|
+| **Design pass** | <ul><li>Seven area designers (hire-a, hire-b, hire-c, agency, talent-a, talent-b, talent-c) each invoked `design-critique`, `design-elevation`, `interaction-design`, `ux-writing` and `dataviz` (and `creative` where needed) before changing a page. Invocations are logged in `DESIGN-SKILL-AUDIT.md`; changes per screen are in `journeys/design/<area>.md`.</li><li>The lead fixed root causes in the shared layer: page header, Q cards, switches, phone bars, banners and motion tokens (`src/ds/motion.ts`).</li><li>41 before/after pairs are in `captures/review/pairs/`.</li></ul> |
+| **Fixed during review** | <ul><li>Two areas could show a card about the same interview. Now there is one card per subject, and dismissing it covers both.</li><li>Q shows its most urgent card and folds the rest.</li><li>Reset, cancel plan and cancel agent used browser dialogs, which embedded viewers block. They now confirm in place (`ds/ConfirmButton.tsx`).</li><li>Review links: `#/route?as=<person>` opens any page as that person.</li></ul> |
+| **Founder decisions applied** | D1 discovery default and unverified limits, D3 verification before posting, D6 ESCO on ISCO-08, D8 English built to translate (`handoff/DECISION-REGISTER.md`). |
+| **Privacy** | Discovery rules are enforced in the store and at every read path, with tests (`qa/scripts/review/privacy.mjs`, `handoff/PRIVACY-AND-PERMISSIONS.md`). |
+| **Motion** | 38 of 57 motions prototyped (MO-002, 021, 022, 024 and 025 were added in the interview room). Nine motion clips are recorded from the build for review. |
+| **Next** | <ol><li>The founder reviews the gallery (before/after, motion, every screen, the live prototype).</li><li>Apply that feedback.</li><li>Record the final films.</li><li>Complete the product-definition package: atlases, requirements and the roadmap.</li></ol> |
+
 ## Milestone: the complete experience (29 Oct): ten connected journeys on one Q
 
 The founder's "complete experience" directive. Each journey is built, tested with curveballs, and filmed.

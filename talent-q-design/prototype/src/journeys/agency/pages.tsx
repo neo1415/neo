@@ -5,6 +5,7 @@
 // Navigation (design pass): the rail holds the top destinations; the page shows only the client lens (which
 // client's records you are looking at) and, inside the Clients and Talent pools sections, their own
 // secondary tabs. Privacy: people Talentbridge may not see are counted, never named (canSeeCandidate).
+import { ConfirmButton } from '../../ds/ConfirmButton';
 import { useEffect, useState, type ReactNode } from 'react';
 import { motion } from 'motion/react';
 import { actorOf, update, useWorld, type World } from '../../mock/world';
@@ -218,7 +219,7 @@ function RunRow({ w, a, r, compact = false }: { w: World; a: Actor; r: AgentRun;
           <motion.div className="ds-actions agency-run-more" {...arrive}>
             {r.priority > 1 && btn('Make urgent', 'agency.run.priority', { p: 1 })}
             {r.priority < 3 && btn('Lower priority', 'agency.run.priority', { p: 3 })}
-            <button type="button" className="ds-btn quiet" onClick={() => { if (confirm(`Cancel ${r.label}? Finished work is kept, but it can’t be resumed.`)) doOp('agency.run.cancel', { id: r.id }, 'Cancel'); }}>Cancel this agent</button>
+            <ConfirmButton label="Cancel this agent" question={`Cancel ${r.label}? Finished work is kept, but it can’t be resumed.`} yes="Cancel the agent" onConfirm={() => doOp('agency.run.cancel', { id: r.id }, 'Cancel')} />
           </motion.div>
         )}
         {log && <ol className="agency-log" aria-label={`${r.label} activity`}>{r.log.slice(-8).map((l, i) => <li key={i} data-k={l.k}>{l.text}</li>)}</ol>}

@@ -36,6 +36,7 @@ export function QThread({ onClose }: { onClose?: () => void }) {
   const task = usePageTask();
   const log = useRef<HTMLDivElement>(null);
   const [showLimits, setShowLimits] = useState(false);
+  const [allSugg, setAllSugg] = useState(false);
   useEffect(() => { const el = log.current; if (el) el.scrollTop = el.scrollHeight; }, [msgs.length, thinking, sugg.length, task?.entries.length, task?.entries[task.entries.length - 1]?.text]);
   const lastQIdx = msgs.map((m) => m.who).lastIndexOf('q');
   const state = mood === 'working' ? `Working · ${agents.length} ${agents.length === 1 ? 'agent' : 'agents'}` : mood === 'thinking' ? 'Thinking' : mood === 'waiting' ? 'Waiting for you' : mood === 'offline' ? 'Offline · your messages will wait' : 'Ready';
@@ -56,8 +57,10 @@ export function QThread({ onClose }: { onClose?: () => void }) {
       <p className="ds-context" aria-live="polite"><span className="sr">Q can see: </span>On {labelFor(path)} · {actor.first}{actor.orgId ? ` · ${actor.orgId.replace('org_', '').replace(/^\w/, (c) => c.toUpperCase())}` : ''}</p>
       <div className="ds-log" ref={log} role="log" aria-label="Messages">
         <AnimatePresence initial={false}>
-          {sugg.slice(0, 2).map((s) => <SuggestionCard key={s.id} s={s} />)}
+          {sugg.slice(0, allSugg ? 3 : 1).map((s) => <SuggestionCard key={s.id} s={s} />)}
         </AnimatePresence>
+        {/* One card at a time keeps the conversation in view; the rest wait one tap away, most urgent first. */}
+        {sugg.length > 1 && <button type="button" className="ds-linkbtn ds-suggest-more" aria-expanded={allSugg} onClick={() => setAllSugg(!allSugg)}>{allSugg ? 'Show fewer' : `${Math.min(sugg.length, 3) - 1} more thing${Math.min(sugg.length, 3) > 2 ? 's' : ''} Q noticed`}</button>}
         {msgs.length === 0 && <Welcome />}
         {msgs.map((m, i) => <Msg key={m.id} m={m} live={!task && i >= lastQIdx - 1 && i >= msgs.length - 3} />)}
         {task && (

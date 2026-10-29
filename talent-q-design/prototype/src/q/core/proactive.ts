@@ -17,6 +17,8 @@ export function evaluateSuggestions(w: World): Suggestion[] {
   const t = simNow(w).getTime();
   const out: Suggestion[] = [];
   const high = new Set<string>();
+  // A decision on one card covers its subject: two rules about the same interview never bring it back.
+  const quiet = new Set(w.q.suggestions.filter((x) => x.actor === actor.id && (x.state === 'DISMISSED' || x.state === 'DONE' || (x.state === 'SNOOZED' && x.until && new Date(x.until).getTime() > t))).map((x) => x.subject));
   for (const r of rules) {
     if (r.side !== 'both' && r.side !== actor.side) continue;
     if (prefs.proactive === 'QUIET' && r.priority !== 'high') continue;
@@ -25,12 +27,15 @@ export function evaluateSuggestions(w: World): Suggestion[] {
       const saved = w.q.suggestions.find((x) => x.id === id);
       if (saved && (saved.state === 'DISMISSED' || saved.state === 'DONE')) continue;
       if (saved?.state === 'SNOOZED' && saved.until && new Date(saved.until).getTime() > t) continue;
+      if (quiet.has(s.subject)) continue;
       if (r.priority === 'high') high.add(id);
       out.push({ id, actor: actor.id, rule: r.id, subject: s.subject, text: s.text, why: s.why, actions: s.actions ?? [], at: w.session.now, state: 'OPEN' });
     }
   }
-  // High-priority suggestions first (stable), so another area's cards can't hide an urgent one.
-  return [...out.filter((s) => high.has(s.id)), ...out.filter((s) => !high.has(s.id))];
+  // High-priority suggestions first (stable), so another area's cards can't hide an urgent one; then one
+  // card per subject (the first, so the higher-priority rule wins when two areas notice the same thing).
+  const seen = new Set<string>();
+  return [...out.filter((s) => high.has(s.id)), ...out.filter((s) => !high.has(s.id))].filter((s) => !seen.has(s.subject) && !!seen.add(s.subject));
 }
 export function useSuggestions() {
   const w = useWorld((x) => x);
@@ -39,7 +44,7 @@ export function useSuggestions() {
 
 const decide = (w: World, id: string, state: Suggestion['state'], until?: string) => {
   const i = w.q.suggestions.findIndex((x) => x.id === id);
-  const rec: Suggestion = { ...(i >= 0 ? w.q.suggestions[i] : { id, actor: w.session.actor, rule: id.split(':')[1], subject: id.split(':')[2], text: '', why: '', actions: [], at: w.session.now }), state, until };
+  const rec: Suggestion = { ...(i >= 0 ? w.q.suggestions[i] : { id, actor: w.session.actor, rule: id.split(':')[1], subject: id.split(':').slice(2).join(':'), text: '', why: '', actions: [], at: w.session.now }), state, until };
   if (i >= 0) w.q.suggestions[i] = rec; else w.q.suggestions.push(rec);
 };
 registerOp('suggestion.dismiss', (w, a, actor) => { decide(w, String(a.id), 'DISMISSED'); emit(w, actor.id, 'q.suggestion.dismissed', actor.orgId ? `ORG:${actor.orgId}` : `PERSON:${actor.personId}`, `Dismissed a suggestion (${String(a.id).split(':')[1]}).`); return { say: 'Okay, I won’t bring that up again. You can turn suggestions down in Settings any time.' }; });

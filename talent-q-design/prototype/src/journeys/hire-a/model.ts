@@ -3,9 +3,9 @@
 // (audit events and Bayo's remembered preference). Pages and Q skills both use these, so what Q says and
 // what the page shows always come from the same state.
 import type { MemoryItem, Requirement } from '@contracts';
-import { actorOf, canSeeCandidate, emit, getWorld, orgOf, simNow, uid, update, type World } from '../../mock/world';
+import { actorOf, canSeeCandidate, emit, getWorld, orgLimits, orgOf, outreachThisWeek, simNow, uid, update, type World } from '../../mock/world';
 import type { Actor, MandateX, OrgRole } from '../../state/domain';
-import { hireA, readA, type HAIntake, type RoleKey, type Snap } from '../../state/areas/hire-a';
+import { hireA, readA, type HAIntake, type RoleKey, type Snap, type VerifyTry } from '../../state/areas/hire-a';
 import { startSourcing } from '../../q/scripts';
 import { subscribe } from '../../mock/runtime';
 import { appendQ, pushUndo } from '../../q/core/engine';
@@ -183,6 +183,81 @@ export function revertTo(w: World, a: Actor, id: string, to: number) {
   s.meta[id] = { ...s.meta[id], hours: snap.hours, days: snap.days, roleKey: (Object.keys(ROLES) as RoleKey[]).find((r) => snap.title.toLowerCase().includes(ROLES[r].label.toLowerCase())) ?? s.meta[id]?.roleKey };
   emit(w, a.id, 'mandate.reverted', scopeOf(a), `Undid a change: “${m.title}” is back to v${to}.`, { mandateId: id });
 }
+
+// ---------------- Business verification (R1): lifts the limits on a new, unverified organisation ----------------
+// Founder decisions D1/D3: unverified organisations can search (people whose own rule allows it), but can't post
+// roles, may send a few messages a week, and every message says they aren't verified. The limits come from the
+// store (orgLimits in mock/world.ts); never hard-code them here. Verification needs a business email domain and a
+// registry match. Both checks are SIMULATED: production calls the CAC register (see journeys/handoff/hire-a.md).
+/** What this organisation may do now, and how much of the weekly message allowance is used. */
+export function limitsFor(w: World, orgId?: string) {
+  const l = orgLimits(w, orgId ?? '');
+  const used = orgId ? outreachThisWeek(w, orgId) : 0;
+  // Drafts waiting for approval count against what's left, so Q never plans more sends than the week allows.
+  const drafted = orgId ? w.threads.filter((t) => t.orgId === orgId).flatMap((t) => t.messages).filter((m) => (m.status === 'DRAFT' || m.status === 'AWAITING_APPROVAL') && w.actors.find((a) => a.id === m.from)?.orgId === orgId).length : 0;
+  return { ...l, used, drafted, left: Number.isFinite(l.outreachPerWeek) ? Math.max(0, l.outreachPerWeek - used - drafted) : Infinity };
+}
+export const isVerified = (w: World, orgId?: string) => { const o = w.orgs.find((x) => x.id === orgId); return !!o && o.verified.domain && o.verified.registry === 'VERIFIED'; };
+const FREE_MAIL = /@(gmail|googlemail|yahoo|ymail|outlook|hotmail|live|icloud|me|aol|proton|protonmail)\./i;
+export const emailDomain = (email: string) => email.split('@')[1] ?? '';
+export const businessEmail = (email: string) => !!email && !FREE_MAIL.test(email);
+/** Pull an RC/BN number out of free text: "BN 3124567", "rc-0123456", "my cac number is 3124567". */
+export function cacNumber(text: string): string | null {
+  const m = text.match(/\b(rc|bn)\s*[-:.#]?\s*(?:no\.?|number)?\s*(\d{3,10})\b/i) ?? text.match(/\b()(\d{5,10})\b/);
+  return m ? `${(m[1] || 'RC').toUpperCase()} ${m[2]}` : null;
+}
+/** Simulated register lookup: CAC numbers carry 7 digits; anything else isn't on the (simulated) register. */
+export function lookupRegistry(num: string): Omit<VerifyTry, 'at' | 'number'> {
+  const digits = num.replace(/\D/g, '');
+  if (digits.length < 5) return { ok: false, reason: 'FORMAT' };
+  return digits.length === 7 ? { ok: true } : { ok: false, reason: 'NOT_FOUND' };
+}
+export const MAX_TRIES = 3;
+/** Confirms the business email from sign-up (its code already proved the inbox). No-op for personal addresses. */
+export function confirmEmail(w: World, a: Actor) {
+  const o = w.orgs.find((x) => x.id === a.orgId); if (!o) return false;
+  const v = (hireA(w).verify[o.id] ??= { tries: [] });
+  const ok = businessEmail(a.email);
+  if (!v.email || v.email.ok !== ok) {
+    v.email = { address: a.email, at: simIso(w), ok };
+    if (ok) { o.verified.domain = true; emit(w, a.id, 'org.verification.email', `ORG:${o.id}`, `Business email confirmed for ${o.name}: ${emailDomain(a.email)} (from ${a.first}’s sign-up code, simulated).`); }
+  }
+  return ok;
+}
+/** One registry attempt. Every attempt is logged; success marks the organisation as a verified employer. */
+export function tryRegistry(w: World, a: Actor, number: string) {
+  const o = w.orgs.find((x) => x.id === a.orgId)!;
+  const v = (hireA(w).verify[o.id] ??= { tries: [] });
+  const r = lookupRegistry(number);
+  v.tries.push({ at: simIso(w), number, ...r });
+  if (r.ok) {
+    o.verified = { domain: o.verified.domain, registry: 'VERIFIED' };
+    if (isVerified(w, o.id)) v.at = simIso(w);
+    for (const j of w.jobs) if (j.orgId === o.id) j.signals = { ...j.signals, domainVerified: o.verified.domain, registryVerified: true };
+    emit(w, a.id, 'org.verified', `ORG:${o.id}`, `${o.name} matched the business register as ${number} (simulated check)${isVerified(w, o.id) ? '. It is now a verified employer; the limits for new accounts are lifted' : ''}.`);
+  } else emit(w, a.id, 'org.verification.failed', `ORG:${o.id}`, `Registry check for ${o.name} failed: ${number} ${r.reason === 'FORMAT' ? 'isn’t a complete CAC number' : 'wasn’t found'} (simulated check).`);
+  return r;
+}
+export const failedTries = (w: World, orgId?: string) => (orgId ? readA(w).verify[orgId]?.tries.filter((t) => !t.ok).length ?? 0 : 0);
+
+// ---------------- Posting a role so people can apply (works before verification) ----------------
+export function postRole(w: World, a: Actor, m: MandateX) {
+  if (!orgLimits(w, m.orgId).postRoles) return null; // D3: only verified organisations publish listings
+  const s = hireA(w);
+  if (s.posted[m.id] && w.jobs.some((j) => j.id === s.posted[m.id] && j.status === 'OPEN')) return w.jobs.find((j) => j.id === s.posted[m.id])!;
+  const o = w.orgs.find((x) => x.id === m.orgId)!;
+  const id = `j_${m.id}`;
+  const prev = w.jobs.find((j) => j.id === id);
+  const job = { id, orgId: m.orgId, mandateId: m.id, title: m.title, location: m.location, workMode: m.workMode, pay: payText(m), posted: simIso(w).slice(0, 10), status: 'OPEN' as const,
+    needs: m.requirements.filter((r) => r.mustHave).map((r) => r.label), signals: { domainVerified: o.verified.domain, registryVerified: o.verified.registry === 'VERIFIED', recruiterActive: true, replies: 'New on Talent Q' } };
+  if (prev) Object.assign(prev, job); else w.jobs.push(job);
+  s.posted[m.id] = id;
+  pushUndo(w, a.id, `Post ${m.title}`, 'hire-a.unpost', { id: m.id });
+  emit(w, a.id, 'job.posted', scopeOf(a), `${a.name} posted “${m.title}” on Talent Q jobs (simulated).`, { mandateId: m.id });
+  return job;
+}
+export const postedJob = (w: World, mandateId: string) => { const id = readA(w).posted[mandateId]; return id ? w.jobs.find((j) => j.id === id && j.status === 'OPEN') : undefined; };
+export const applicantsFor = (w: World, jobId: string) => w.applications.filter((x) => x.jobId === jobId && x.status !== 'WITHDRAWN' && x.status !== 'DRAFT');
 
 // ---------------- Search (simulated, org-scoped pools) ----------------
 export function poolFor(w: World, m: MandateX): string[] {

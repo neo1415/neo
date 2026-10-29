@@ -177,6 +177,7 @@ function WhoMenu({ onDone }: { onDone: () => void }) {
   const actors = useWorld((w) => w.actors.filter((a) => a.journey));
   const cur = useWorld((w) => w.session.actor);
   const last = useWorld((w) => w.session.lastRoute);
+  const [sure, setSure] = useState(false);
   const sw = (id: string) => {
     const a = actors.find((x) => x.id === id)!;
     update((w) => { w.session.actor = id; });
@@ -196,7 +197,15 @@ function WhoMenu({ onDone }: { onDone: () => void }) {
           ))}
         </div>
       ))}
-      <button type="button" className="ds-railbtn" onClick={() => { if (confirm('Reset the whole demo to its starting state? Every person’s conversations and work will be cleared.')) { resetWorld(); onDone(); navigate('/'); } }}>{ICONS.reset}<span>Reset the demo</span></button>
+      {/* Confirmed in place, not with confirm(): embedded viewers block browser dialogs. */}
+      {!sure ? <button type="button" className="ds-railbtn" onClick={() => setSure(true)}>{ICONS.reset}<span>Reset the demo</span></button>
+        : <div role="group" aria-label="Confirm reset" style={{ display: 'grid', gap: 6, padding: '6px 10px' }}>
+          <span className="t14">Reset everyone’s conversations and work to the start?</span>
+          <span style={{ display: 'flex', gap: 8 }}>
+            <button type="button" className="ds-chip go" onClick={() => { resetWorld(); onDone(); navigate('/'); }}>Reset everything</button>
+            <button type="button" className="ds-chip quiet" onClick={() => setSure(false)}>Cancel</button>
+          </span>
+        </div>}
     </div>
   );
 }

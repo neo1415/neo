@@ -1,45 +1,16 @@
-PASS Signup sets plain words for Grace · /c/home
-PASS Home offers first steps
-PASS Q: "where do i start pls" opens first steps · Let’s do it in three small steps: your work, your certificate, your interview. Y
-PASS Explains "passport" in plain words · Your Evidence Passport is your private folder of proof about your work, like your certificates. You choose which employer can see each thing.
-PASS Rephrases when still unclear · Put simply: Think of it as a folder on your phone for your certificates. Nobody sees it unless you say yes.
-PASS Explains "evidence" as proof of what you did · Evidence means proof of what you did, like a certificate or a photo of your work.
-PASS Explains a care-sector term (safeguarding) · Safeguarding means keeping the people you care for safe from harm, and speaking up if something is wrong.
-PASS Q closes the explanation when she understands · Good. Ask me about any other word, any time.
-PASS “dont understand” on a step explains the step simply · This step is just: tell us what work you’ve done. One line is enough, like “care assistant, 4 years”. Type it, say it, or use the small form.
-PASS Switching type ↔ form keeps both answers
-PASS Voice unavailable falls back to typing, words kept
-PASS Q: "my mic not working" switches to typing · That’s fine. I’ve switched this step to typing, and anything you already said is kept. Short answers are fine. You can also use the simple form, with one small box per question.
-PASS Q switches to the simple form on request · Switched this step to the simple form. Your words are kept.
-PASS Step 1 saved as a private claim (not proof)
-PASS Upload fails at 60% with an honest message · Stopped at 60%: part 7 didn’t go through. The first 6 parts are safe.
-PASS Q: "try again pls" resumes from 60%, not from the start · Carrying on from 60% (part 7 of 10). The first 6 parts were already safe, so nothing is sent twice.
-PASS Upload continues past part 6 (nothing re-sent) · 7/10
-PASS Connection drop pauses the upload at the last safe part · Paused at 70%: no connection. 7 parts are safe. It carries on by itself when you’re back online.
-PASS Reconnect carries on by itself from the same part · 7 → 7
-PASS Closing the app pauses the upload honestly · Paused at 70%: the app was closed. 7 parts are safe.
-PASS On return, Q says where she was and offers to continue · Welcome back, Grace. Last time you were on step 2 of 3, sending your certificate. 7 of 10 parts (70%) are safe. Nothing was lost. Do you want to carry on?
-PASS Upload resumes from the last part and finishes
-PASS Slow connection: the page offers lite mode
-PASS Q turns on lite mode; bigger targets, no picture · button 56px
-PASS Q knows when the interview is · Your Kora Pay interview is Friday 30 Oct, 11:00 your time. I’ve put together what they’re likely to ask about, the proof you can point to for each, and the gaps to have a story ready for. Practice with me is private and never counts as proof.
-PASS Q opens private practice · Let’s practise. 4 questions like the real ones. It’s private: it never counts as proof and Kora Pay never sees it. Ask me “say it again” or “simpler” whenever you like.
-PASS “pls repeat” repeats the question · Here it is again, question 1: “Tell us about a time you looked after someone who was upset or worried. What did you do?”
-PASS “dont understand” gives simpler words on the canvas · Think of a time someone was upset. What did you do to help them?
-PASS Interview pauses honestly; answer kept on this phone · We lost connection at question 1. Your answer so far is saved on this phone. The interview
-PASS Reconnect resumes at the same question with the answer · Connection is back. Your practice carries on at question 1, with your answer just as you left it.
-PASS Mic denied in the interview: falls back to typing, answer kept
-PASS Practice finishes privately and is never counted as proof
-PASS Q opens the real interview and says what the employer sees · Opening your interview with Kora Pay. 4 questions, no time limit, and you can pa
-PASS Leaving mid-question pauses and remembers the place
-PASS Q: "where was i" says where she was · Last time you were in your interview, at question 1, with an answer half written. It’s saved on this phone. Nothing was lost.
-PASS Carry on returns to the question with the answer kept
-PASS Review shows exactly what the employer will see
-PASS Sending needs explicit approval · Send your 4 answers to Kora Pay? They’ll see them exactly as shown on the page. 
-PASS Sent (simulated) with a receipt, no decision promised · Sent to Kora Pay (simulated). Receipt RCPT_TR81NCQG. A person at Kora Pay reads your answe
-PASS Phone: all targets ≥ 44px, no sideways scroll
-PASS Desktop: interview room works beside the global Q · In simpler words: “Think of a time someone was upset. What d
-PASS Interview room is Direction D (no legacy bridge, no embedded conversation)
-PASS No page errors
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
 
-T4: 43/43 passed. Screenshots: /home/user/neo/talent-q-design/captures/cx/T4/
+locator.getAttribute: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('switch', { name: /Use plain, simple words/ })[22m
+
+    at /home/user/neo/talent-q-design/qa/scripts/journeys/T4.mjs:75:90 {
+  log: [
+    "  - waiting for getByRole('switch', { name: /Use plain, simple words/ })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v22.22.0

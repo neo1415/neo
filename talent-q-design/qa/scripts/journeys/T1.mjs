@@ -107,7 +107,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   r = await ask('not sure yet, maybe something with numbers');
   w = await world();
   step('Profile complete; claims sync to her private Passport', w.profiles.p_amaka.done && w.evidence.filter((e) => e.ownerId === 'p_amaka' && e.kind === 'CLAIM').every((e) => e.visibility === 'PRIVATE') && /0|Nothing is shared/.test(r), r);
-  await openQ(); const sg = await page.locator('.ds-suggest').allInnerTexts();
+  await openQ(); await page.locator('.ds-suggest-more[aria-expanded="false"]').first().click({ timeout: 600 }).then(() => page.waitForTimeout(350)).catch(() => {}); const sg = await page.locator('.ds-suggest').allInnerTexts();
   step('Proactive from real state: a new entry-level job matches, with a reason', sg.some((t) => /new entry-level job matches/.test(t)), sg.join(' | '));
   await page.locator('.ds-suggest').first().scrollIntoViewIfNeeded().catch(() => {}); await shot('05b-proactive');
   await closeQ(); await page.getByRole('button', { name: 'Profile', exact: true }).click().catch(() => {});

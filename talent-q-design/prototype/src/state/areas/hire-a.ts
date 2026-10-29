@@ -27,11 +27,17 @@ export interface HireAState {
   koraIntake?: { step: 'mode' | 'hardest' | 'review'; at: string };
   /** Run ids of Kora sourcing runs already forwarded into the global Q thread. */
   forwarded: string[];
+  /** Business verification per organisation (simulated checks): every registry attempt is kept, failures included. */
+  verify: Record<string, VerifyState>;
+  /** Roles posted as jobs so people can apply (mandate id → job id). */
+  posted: Record<string, string>;
 }
+export interface VerifyTry { at: string; number: string; ok: boolean; reason?: 'NOT_FOUND' | 'FORMAT' }
+export interface VerifyState { email?: { address: string; at: string; ok: boolean }; tries: VerifyTry[]; at?: string }
 
 export const area = {
   id: 'hire-a',
-  init: (): HireAState => ({ intake: {}, orgs: [], snapshots: {}, meta: {}, discarded: {}, search: {}, instructions: {}, conflicts: {}, requests: [], forwarded: [] }),
+  init: (): HireAState => ({ intake: {}, orgs: [], snapshots: {}, meta: {}, discarded: {}, search: {}, instructions: {}, conflicts: {}, requests: [], forwarded: [], verify: {}, posted: {} }),
 };
 /** For effects and ops inside update(): creates or completes the slice. */
 export const hireA = (w: World): HireAState => {

@@ -1,6 +1,7 @@
 // SC-119 Q task planner · SC-131 multi-agent activity · SC-132 handoff approval center · SC-135 failure and
 // reconnect · SC-181 paused task resume. The conversation is derived from the durable planner state, so leaving
 // and returning (or reloading) shows the same thread at the same point.
+import { ConfirmButton } from '../../ds/ConfirmButton';
 import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { AGENTS, CONTEXT_USED, GOAL, planner, usePlanner, type Approval, type PlannerState, type Task } from '../../services/agents';
@@ -41,7 +42,7 @@ export function Planner() {
       canvas={
         <Canvas title={s.goal || 'Plans and agents'} kicker={s.status === 'NONE' ? 'Q · work in progress' : `Plan · ${statusWord(s)}`} views={views} view={view} setView={setView}
           open={open} onClose={() => setOpen(false)} qLine={lastQ}
-          aside={s.status === 'NONE' ? null : <div className="ds-actions">{s.status === 'RUNNING' ? <button type="button" className="ds-btn" onClick={() => planner.pause()}>Pause plan</button> : s.status === 'PAUSED' ? <button type="button" className="ds-btn primary" onClick={() => planner.resume()}>Resume</button> : null}<button type="button" className="ds-btn quiet" onClick={() => { if (confirm(s.status === 'COMPLETED' ? 'Close this plan? Approved actions and receipts are kept in the activity log.' : 'Cancel this plan? Finished steps are kept; nothing waiting for approval will be sent.')) planner.reset(); }}>{s.status === 'COMPLETED' ? 'Close plan' : 'Cancel plan'}</button></div>}>
+          aside={s.status === 'NONE' ? null : <div className="ds-actions">{s.status === 'RUNNING' ? <button type="button" className="ds-btn" onClick={() => planner.pause()}>Pause plan</button> : s.status === 'PAUSED' ? <button type="button" className="ds-btn primary" onClick={() => planner.resume()}>Resume</button> : null}<ConfirmButton label={s.status === 'COMPLETED' ? 'Close plan' : 'Cancel plan'} question={s.status === 'COMPLETED' ? 'Close this plan? Approved actions and receipts stay in the activity log.' : 'Cancel this plan? Finished steps are kept; nothing waiting for approval will be sent.'} yes={s.status === 'COMPLETED' ? 'Close it' : 'Cancel the plan'} onConfirm={() => planner.reset()} /></div>}>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={view} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2, ease: 'easeOut' }} style={{ display: 'grid', gap: 16, minWidth: 0 }}>
               {s.status === 'PAUSED' && <div className="ds-banner" data-k="warn" role="status"><Glyph k="partial" /><span><b>Paused.</b> {s.pausedReason}</span><button type="button" className="ds-btn primary" onClick={() => planner.resume()}>Resume</button></div>}

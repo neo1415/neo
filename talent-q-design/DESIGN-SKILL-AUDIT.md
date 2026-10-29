@@ -51,6 +51,31 @@ Correction to the previous version of this file: it credited `design-superpowers
 | Claude Design canvas (Artifact type) | Yes | Yes (Phase 1) | Three-direction board (Nocturne, Ledger, Atelier) | First exploration, now superseded by the working prototypes | n/a |
 | Playwright + Chromium, ffmpeg with libass, axe-core (pre-installed tools) | n/a | Used | All screenshots, motion previews (captions in a separate band), accessibility scans | Evidence that every claim can be checked against | n/a |
 
+## Design pass (29 Oct): skills invoked before any change
+
+The founder found that the journey phase had used no design skills. The design pass corrected that: every area designer invoked its skills through the Skill tool **before** changing a page, and each recorded which skill changed which screen in `journeys/design/<area>.md` ("Skills → screens → changes"). The invocations below were counted from the agent transcripts, not from the agents' own notes.
+
+| Who | Area (journeys) | Skills invoked |
+|---|---|---|
+| Lead | Shared layer: shell, Canvas, Q thread and cards, switches, motion tokens | `design-elevation`, `creative`, `interaction-design`, `design-critique` |
+| Area designer | hire-a (R1, R5) | `design-critique`, `design-elevation`, `interaction-design`, `ux-writing`, `dataviz` |
+| Area designer | hire-b (R2) | `design-critique`, `design-elevation`, `interaction-design`, `ux-writing`, `dataviz` |
+| Area designer | hire-c (R3) | `design-critique`, `design-elevation`, `interaction-design`, `ux-writing`, `dataviz`, `creative` |
+| Area designer | agency (R4) | `design-critique`, `design-elevation`, `interaction-design`, `ux-writing`, `dataviz` |
+| Area designer | talent-a (T1, T2) | `design-critique`, `design-elevation`, `interaction-design`, `ux-writing`, `dataviz`, `creative` |
+| Area designer | talent-b (T3, T5) | `design-critique`, `design-elevation`, `interaction-design`, `ux-writing`, `dataviz`, `creative` |
+| Area designer | talent-c (T4) | `design-critique`, `design-elevation`, `interaction-design`, `ux-writing`, `dataviz`, `creative` |
+
+What the skills changed, in short (detail in each area file):
+- **design-critique** found the defects, ranked by severity, on every page: dead ends ("0 shown"), status used as titles, card walls, sideways-scrolling tables on phones, buried primary actions.
+- **design-elevation** set the shared surface rules: one sheet of rows instead of floating cards, tags for status, one accent (gold) reserved for Q, and a consistent type scale.
+- **interaction-design** shaped the states and motion: in-place confirmation instead of dialogs, undo instead of "are you sure", the pause, offline and reconnect states, one suggestion card at a time, and motion tokens that never block input.
+- **dataviz** replaced text tables with charts that read at a glance: the evidence ledger in compare, the pay range meter, the shared free-time strip, stage strips and proof strips.
+- **ux-writing** rewrote labels and Q's lines in plain words (no recruiting jargon for Funmi, short calm lines for Grace).
+- **creative** was used where an area needed a new visual idea inside Direction D, for example Grace's interview "ticket" and the career route.
+
+The permanent rule is in `handoff/DESIGN-QUALITY-GATE.md`: skills first, then build, then the gate's checks.
+
 ## Present but unusable here
 
 | Tool | Reason |

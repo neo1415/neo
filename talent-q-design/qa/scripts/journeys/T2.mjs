@@ -111,7 +111,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   r = await ask('simulate 3 weeks later');
   step('Demo clock moves three weeks (simulated)', (await world()).session.offsetDays === 21 && /Simulated/.test(r), r);
   await closeQ(); await page.goto(`${BASE}#/c/home`); await page.waitForTimeout(600); await openQ();
-  const notes = await page.locator('.ds-suggest').allInnerTexts();
+  await page.locator('.ds-suggest-more[aria-expanded="false"]').first().click({ timeout: 600 }).then(() => page.waitForTimeout(350)).catch(() => {}); const notes = await page.locator('.ds-suggest').allInnerTexts();
   step('Proactive notes from real state (commitment due, overdue step)', notes.some((t) => /You said/.test(t)) && notes.some((t) => /plan step|past their dates/.test(t)), notes.join(' | '));
   await page.locator('.ds-suggest').first().scrollIntoViewIfNeeded().catch(() => {}); await shot('08-three-weeks-later');
   r = await ask('hi im back, what changed since i was last here');

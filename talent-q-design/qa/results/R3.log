@@ -5,44 +5,53 @@ PASS Draft names the pay band (guideline used chip)
 PASS Edit in place: Friday + friendlier, shows v1 → v2 diff — Kora guideline v1: Name the pay band in the first message to a …
 Kora guideline v1: Panel of two for engineering interviews
 Kora guideline v1: Interviews 10:00–
-PASS "Send it" runs checks and asks for explicit approval (not sent yet) — Kora guideline v1: Name the pay band in the first message to a …
-Kora guideline v1: Panel of two for engineering intervi
+PASS "Send it" runs checks and asks for explicit approval (not sent yet) — Kora Pay guidelines (5)
+Tobi’s contact choices
+Calendars: Ada and Musa
+
+v2 of the interview invitation to Tobi passed ev
 PASS After approval: SENT_SIMULATED with a "Simulated send" label — UPDATE
 
-Simulated send: the interview invitation went to Tobi by email (receipt sim_8o759pcd). Nothing really left Talen
+Simulated send: the interview invitation went to Tobi by email. Nothing really left Talent Q. The calendar invit
 PASS Proactive: Seyi’s unapproved draft to Zara is flagged, not sent — Q NOTICED
 
 Seyi’s interview invitation to Zara has been a draft since Tue 27 Oct. It hasn’t been approved, so it hasn’t been sent.
 
-Why am I seeing this?
 Check it and send
 Open it
+Why am I seeing this?
 Later
 Dismiss | Q NO
 PASS Proactive: reminder that Grace hasn’t replied (from real state) — Q NOTICED
 
 Seyi’s interview invitation to Zara has been a draft since Tue 27 Oct. It hasn’t been approved, so it hasn’t been sent.
 
-Why am I seeing this?
 Check it and send
 Open it
+Why am I seeing this?
 Later
 Dismiss | Q NO
-PASS Curveball [recover]: sending an unapproved draft → checks first, nothing sent — Kora guideline v1: Name the pay band in the first message to a …
-Kora guideline v1: Panel of two for engineering interviews
-Kora guideline v1: Approve each outgoing message
-Kora guideline v1: Ask job-
-PASS Fix pay band → re-check still flags the calendar clash — Kora guideline v1: Name the pay band in the first message to a …
-Kora guideline v1: Panel of two for engineering interviews
-Kora guideline v1: Approve each outg
-PASS Fix time → all clear, approval requested — Kora guideline v1: Name the pay band in the first message to a …
-Kora guideline v1: Panel of two for engineering intervi
+PASS Curveball [recover]: sending an unapproved draft → checks first, nothing sent — Kora Pay guidelines (5)
+Zara’s contact choices
+Calendars: Seyi and Ngozi
+
+I haven’t sent it. 2 things need sorting first: someone on the panel is now busy and the pay band is missing. The details and 
+PASS Fix pay band → re-check still flags the calendar clash — Kora Pay guidelines (5)
+Zara’s contact choices
+Calendars: Seyi and Ngozi
+
+I haven’t sent it. One thing needs sorting first: someone on the panel is now busy. Th
+PASS Fix time → all clear, approval requested — Kora Pay guidelines (5)
+Zara’s contact choices
+Calendars: Seyi and Ngozi
+
+v3 of the interview invitation to Zara passed 
 PASS Curveball [recover]: offline approve → QUEUED_OFFLINE, not claimed as sent — UPDATE
 
 You’re offline, so nothing has been sent. Your approval is saved and the message to Zara is queued (status: queu
 PASS Reconnect flushes the outbox after a calendar re-check — UPDATE
 
-Back online. I re-checked the calendar and sent the queued message to Zara. Simulated send (receipt sim_dnk6qh86
+Back online. I re-checked the calendar and sent the queued message to Zara. Simulated send (receipt sim_vzcvqavf
 PASS Find a time with Seyi (Lagos) and Musa (London): overlap with both zones — Calendars: Seyi and Musa (busy times only)
 Kunle: Nairobi time
 Musa: London time
@@ -53,10 +62,13 @@ PASS Hold the first slot — Held Mon 2 Nov 11:00 Lagos in Seyi and Musa’s cal
 PASS Draft uses the held time — Kora guideline v1: Name the pay band in the first message to a …
 Kora guideline v1: Panel of two for engineering interviews
 Kora guideline v
-PASS Curveball [info]: slot taken after proposing → noticed, nothing sent, new time offered — Kora guideline v1: Name the pay band in the first message to a …
-Kora guideline v1: Panel of two for engineering interviews
-Kora guideline v1: Approve each outgoing message
-Kora guideline v1: Ask job-
+PASS Curveball [info]: slot taken after proposing → noticed, nothing sent, new time offered — Kora Pay guidelines (5)
+Kunle’s contact choices
+Calendars: Musa and Seyi
+
+I haven’t sent it. One thing needs sorting first: someone on the panel is now busy. The details and fixes are below.
+
+CHECKS B
 PASS Kunle invite sent after moving to a free time
 PASS Move Ife to Interview by typing — Moved Ifeoma from Shortlisted to Interview on Senior Backend Engineer. Moving a card doesn’t message
 PASS Curveball [mind]: undo the move
@@ -71,28 +83,36 @@ PASS Seyi swaps the panel; holds re-validated — Calendars: Ada and Bayo (busy 
 Kora guideline v1: Panel of two for engineering interviews
 
 Done: Tobi’s panel is now Ada and Bayo (was Ada and Musa).
-PASS Seyi (hiring manager) can’t send: routed to approval queue — Kora guideline v1: Approve each outgoing message
-Kora guideline v1: Ask job-related questions only; never age, m…
-Ifeoma’s notification choi
+PASS Seyi (hiring manager) can’t send: routed to approval queue — Kora Pay guidelines (2)
+Ifeoma’s contact choices
+DECLINED
+
+You can’t send this one yourself: at Kora Pay, a hiring manager can draft, but an
 PASS Proactive: Ngozi is told Seyi changed Tobi’s panel — Q NOTICED
 
 Seyi changed Tobi’s interview panel on Thu 29 Oct: Ada and Musa → Ada and Bayo. Re-checked Fri 6 Nov 10:00: Bayo is free.
 
-Why am I seeing this?
 Show the interview
+Why am I seeing this?
 Later
 Dismiss | Q NOTICED
-PASS Zara sees only the sent invite (no drafts), with pay band and her own time zone — Kora Pay
-Verified employer (domain and company registry) · Lagos · Usually replies within 3 days
-Interview · Tuesday 3 N
+PASS Zara sees only the sent invite (no drafts), with pay band and her own time zone — KP
+Kora Pay
+Senior Backend Engineer · Lagos
+✓ Verified employer
+Usually replies within 3 days
+TUESDAY
+3
+NOVEMBER
+Kora Pa
 PASS Zara: Q prepares a reschedule request and asks before sending — I can send Kora Pay this request. Your current time stays held until they offer a new one, and they decide the new time.
 PASS Curveball [mind]: reschedule requested (event RESCHEDULE_REQUESTED)
 PASS Proactive: Ngozi sees Zara’s request — Q NOTICED
 
 Seyi changed Tobi’s interview panel on Thu 29 Oct: Ada and Musa → Ada and Bayo. Re-checked Fri 6 Nov 10:00: Bayo is free.
 
-Why am I seeing this?
-Show
+Show the interview
+Why am 
 PASS New time respects Zara’s Thursday afternoon — Calendars: Seyi and Ngozi (busy times only)
 Zara: Accra time
 Kora guideline v1: Interviews 10:00–16:00 Lagos time unless the…

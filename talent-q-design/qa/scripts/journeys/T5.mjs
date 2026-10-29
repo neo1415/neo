@@ -81,7 +81,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   r = await ask('send it anyway');
   w = await world();
   step('Nothing is submitted to a closed listing', !w.applications.some((a) => a.jobId === 'j_harbour_backend') && /closed/.test(r));
-  step('Proactive: “a job you saved closed”', (await page.locator('.ds-suggest').filter({ hasText: /A job you saved closed/ }).count()) > 0);
+  await page.locator('.ds-suggest-more[aria-expanded="false"]').first().click({ timeout: 600 }).then(() => page.waitForTimeout(350)).catch(() => {}); step('Proactive: “a job you saved closed”', (await page.locator('.ds-suggest').filter({ hasText: /A job you saved closed/ }).count()) > 0);
   await closeQ(); await shot('05-closed-mid-apply'); await openQ(); await shot('05b-closed-thread');
   r = await ask('show me similar jobs that are still open');
   step('Similar open jobs offered', /Still open/.test(r));
@@ -89,7 +89,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   // Recruiter doesn't respond [info]
   r = await ask('has rivers replied to me?? its been ages');
   step('Curveball [info]: honest status, no blame', /hasn’t replied in \d+ days/.test(r) && /says nothing about you/.test(r));
-  const sg = await page.locator('.ds-suggest').allInnerTexts();
+  await page.locator('.ds-suggest-more[aria-expanded="false"]').first().click({ timeout: 600 }).then(() => page.waitForTimeout(350)).catch(() => {}); const sg = await page.locator('.ds-suggest').allInnerTexts();
   step('Proactive: “Rivers hasn’t replied in N days”', sg.some((t) => /Rivers Logistics hasn’t replied in \d+ days/.test(t)), sg.map((t) => t.slice(10, 60)).join(' / '));
   await chip(/Draft a follow-up to Rivers/);
   r = await lastQ();
