@@ -110,8 +110,7 @@ function patch(page) {
   const oLPress = L.press;
   L.press = async function (key, opts) { const res = await oLPress.call(this, key, opts); await enterPause(key); return res; };
   P.press = function (sel, key, opts) { return this.locator(sel).first().press(key, opts); };
-  const oType = L.type;
-  L.type = function (value, opts) { return value ? this.fill(value, opts) : oType.call(this, value, opts); };
+  // Locator.type is left alone: pressSequentially is built on it.
   const oGoto = P.goto;
   P.goto = async function (url, opts) { const r = recOf(this); if (r) current = r; const res = await oGoto.call(this, url, opts); await wait(PACE.afterGo); return res; };
   P.screenshot = async function () { return Buffer.alloc(0); };
