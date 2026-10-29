@@ -34,7 +34,7 @@ export function Calendar() {
       {prop && (
         <section className="ds-sheet" aria-labelledby="pr-h" style={{ display: 'grid', gap: 8 }}>
           <h2 id="pr-h" className="lab" style={{ margin: 0 }}>Q’s proposed times for {nameOf(w, prop.personId)} · {prop.label}</h2>
-          <div className="ds-table-wrap"><table className="ds-table">
+          <div className="ds-table-wrap" tabIndex={0} role="region" aria-label="Calendar table, scrolls sideways"><table className="ds-table">
             <thead><tr><th scope="col">Day</th>{[...prop.panel, prop.personId].map((id) => <th key={id} scope="col">{firstOf(w, id)} <span className="t14 muted">({city(w.actors.find((x) => x.id === id && x.side === 'recruiter')?.timezone ?? personOf(w, id)?.timezone ?? LAGOS)})</span></th>)}<th scope="col"><span className="sr">Actions</span></th></tr></thead>
             <tbody>{prop.slots.map((s, i) => <tr key={s.start}><th scope="row">{tDay(s.start, LAGOS)}</th>{s.notes.map((n) => <td key={n.id} className="num">{n.local}</td>)}
               <td><div className="ds-actions"><button type="button" className="ds-btn" onClick={() => void runAction({ label: 'Hold', act: { t: 'do', op: 'hire-c.useSlot', args: { i, mode: 'hold' } } })}>Hold</button><button type="button" className="ds-btn quiet" onClick={() => void runAction({ label: 'Draft', act: { t: 'do', op: 'hire-c.useSlot', args: { i, mode: 'draft' } } })}>Draft invitation</button></div></td></tr>)}</tbody>
@@ -43,7 +43,7 @@ export function Calendar() {
       )}
       <section className="ds-sheet" aria-labelledby="wk-h" style={{ display: 'grid', gap: 8 }}>
         <h2 id="wk-h" className="lab" style={{ margin: 0 }}>Busy and booked, Mon {tDay(`${days[0]}T12:00:00Z`, LAGOS).split(' ').slice(1).join(' ')} – Fri (Lagos time)</h2>
-        <div className="ds-table-wrap"><table className="ds-table hc-week">
+        <div className="ds-table-wrap" tabIndex={0} role="region" aria-label="Calendar table, scrolls sideways"><table className="ds-table hc-week">
           <thead><tr><th scope="col">Person</th>{days.map((d) => <th key={d} scope="col">{tDay(`${d}T12:00:00Z`, LAGOS)}</th>)}</tr></thead>
           <tbody>{mem.map((m) => <tr key={m.id}><th scope="row">{m.first}<span className="t14 muted" style={{ display: 'block' }}>{city(m.timezone)}</span></th>
             {days.map((d) => { const evs = mine.filter((e) => e.status !== 'CANCELLED' && e.attendees.includes(m.id) && dateIn(e.start, LAGOS) === d).sort((x, y) => x.start.localeCompare(y.start)); return (

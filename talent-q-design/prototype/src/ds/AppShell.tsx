@@ -41,6 +41,9 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
   const [more, setMore] = useState(false);
   const [who, setWho] = useState(false);
   const [qOpen, setQOpen] = useState(false);
+  const qOpenRef = useRef(false); qOpenRef.current = qOpen;
+  // Opening the phone Q sheet moves focus into its composer; closing returns it to "Ask Q".
+  useEffect(() => { if (qOpen) setTimeout(() => document.getElementById('q-ask')?.focus(), 80); }, [qOpen]);
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   useEffect(() => { try { localStorage.setItem('tq.rail', rail); } catch { /* ignore */ } }, [rail]);
   useEffect(() => {
@@ -48,6 +51,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setPalette((p) => !p); }
       // "/" focuses Q's composer from anywhere (like a search box), unless typing in a field.
       if (e.key === '/' && !(e.target as HTMLElement).closest('input,textarea,[contenteditable]')) { e.preventDefault(); if (narrow) setQOpen(true); setTimeout(() => document.getElementById('q-ask')?.focus(), 30); }
+      if (e.key === 'Escape' && qOpenRef.current) { setQOpen(false); setTimeout(() => document.querySelector<HTMLButtonElement>('.ds-askbar button')?.focus(), 60); }
     };
     window.addEventListener('keydown', on); return () => window.removeEventListener('keydown', on);
   }, [narrow]);
@@ -72,7 +76,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
   return (
     <MotionConfig reducedMotion={lite ? 'always' : 'user'}>
     <div className="ds ds-app" data-rail={rail} data-audience={actor.side === 'candidate' ? 'candidate' : undefined} data-lite={lite ? 'on' : undefined}>
-      <a className="skip-link" href="#ds-content">Skip to content</a>
+      <a className="skip-link" href="#ds-content" onClick={(e) => { e.preventDefault(); document.getElementById('ds-content')?.focus(); }}>Skip to content</a>
       <nav className="ds-rail" aria-label="Talent Q navigation">
         <Link to={actor.side === 'recruiter' ? '/r/home' : '/c/home'} className="ds-rail-brand" aria-label="Talent Q home"><QMark mood={network === 'offline' ? 'offline' : 'idle'} size={30} /><span className="ds-hide-collapsed">Talent Q</span></Link>
         <div className="ds-space">
@@ -108,8 +112,8 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
       <AnimatePresence>
         {narrow && qOpen && (
           <motion.div className="ds-qsheet" role="dialog" aria-modal="true" aria-label="Q" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 40, opacity: 0 }} transition={{ duration: 0.22, ease: 'easeOut' }}
-            onKeyDown={(e) => { if (e.key === 'Escape') setQOpen(false); }}>
-            <QThread onClose={() => setQOpen(false)} />
+            >
+            <QThread onClose={() => { setQOpen(false); setTimeout(() => document.querySelector<HTMLButtonElement>('.ds-askbar button')?.focus(), 60); }} />
           </motion.div>
         )}
       </AnimatePresence>

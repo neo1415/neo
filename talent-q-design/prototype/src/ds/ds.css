@@ -233,3 +233,5 @@
 /* Lite mode (slow connections): no motion, bigger targets. */
 .ds-app[data-lite='on'] * { animation: none !important; transition: none !important; }
 .ds-app[data-lite='on'] .ds-chip, .ds-app[data-lite='on'] .ds-btn { min-height: 52px; }
+.ds .ds-groupbtn > .lab { color: var(--moon-2); }
+.ds-compose:focus-within { box-shadow: 0 0 0 2px var(--gold-light); }

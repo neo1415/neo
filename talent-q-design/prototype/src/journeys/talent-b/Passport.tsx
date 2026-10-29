@@ -176,7 +176,7 @@ function Sharing({ items, pid, as, setAs }: { items: Evidence[]; pid: string; as
             {shareable.map((e) => <li key={e.evidenceId}><b className="tb-break">{e.title}</b><div className="tb-actions">{orgs.map((o) => <div key={o} className="tb-mcell"><span className="t14 muted">{orgName(w, o)}</span>{cellBtn(e, o)}</div>)}</div></li>)}
           </ul>
         ) : (
-          <div className="ds-table-wrap">
+          <div className="ds-table-wrap" tabIndex={0} role="region" aria-label="Disclosure table, scrolls sideways">
             <table className="ds-table tb-matrix">
               <caption className="sr">Each row is a Passport item; each column an organisation. Buttons share or end access.</caption>
               <thead><tr><th scope="col">Item</th>{orgs.map((o) => <th key={o} scope="col">{orgName(w, o)}</th>)}</tr></thead>

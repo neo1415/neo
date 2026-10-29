@@ -149,7 +149,7 @@ function MandateList({ w, a, ms }: { w: World; a: Actor; ms: MandateX[] }) {
         const ppl = w.pipeline.filter((p) => p.mandateId === m.id && !isWithdrawn(w, p.personId));
         return (
           <article key={m.id} className="ds-sheet agency-card" aria-labelledby={`m-${m.id}`}>
-            <div className="agency-row"><h3 id={`m-${m.id}`} className="t19" style={{ margin: 0 }}>{m.title}</h3>{m.confidential && <span className="ds-tag" data-k="warn">Confidential</span>}</div>
+            <div className="agency-row"><h2 id={`m-${m.id}`} className="t19" style={{ margin: 0 }}>{m.title}</h2>{m.confidential && <span className="ds-tag" data-k="warn">Confidential</span>}</div>
             {ok ? <>
               <p className="t14 muted" style={{ margin: 0 }}>{m.plain}</p>
               <p className="t14" style={{ margin: 0 }}><b>{m.workMode === 'ONSITE' ? 'On-site' : m.workMode === 'REMOTE' ? 'Remote only' : 'Hybrid'}</b> · {m.location} · {m.status.toLowerCase()} · {ppl.length} people</p>

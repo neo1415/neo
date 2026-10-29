@@ -1,0 +1,850 @@
+[
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/home",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/plan",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/compare",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/people/p_tobi",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/interviews",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/pipeline",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/messages",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/calendar",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/calendar/connect",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/team",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/setup",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/setup/handbook",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/roles",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/audit",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/memory",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/mandate",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/sourcing",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/r/outreach",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_ada",
+  "route": "/settings",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/home",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/agency/agents",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/agency/campaigns",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/agency/clients",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/agency/client/org_kora",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/agency/compare",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/agency/docs",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/agency/mandate/m_ops",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/agency/notes",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/agency/pools",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/agency/reports",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/agency/searches",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/agency/submittals",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "u_dele",
+  "route": "/r/compare",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_tobi",
+  "route": "/c/home",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_tobi",
+  "route": "/c/passport",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_tobi",
+  "route": "/c/jobs",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_tobi",
+  "route": "/c/jobs/j_kora_backend",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_tobi",
+  "route": "/c/applications",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_tobi",
+  "route": "/c/messages",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_tobi",
+  "route": "/c/memory",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_tobi",
+  "route": "/c/prep",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_tobi",
+  "route": "/settings",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_chidi",
+  "route": "/c/career",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_chidi",
+  "route": "/c/growth",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_chidi",
+  "route": "/c/welcome",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_grace",
+  "route": "/c/start",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_grace",
+  "route": "/c/interview",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_grace",
+  "route": "/c/slots",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_zara",
+  "route": "/c/applications",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_zara",
+  "route": "/c/jobs",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "p_zara",
+  "route": "/c/messages",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "public",
+  "route": "/signup",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "desktop",
+  "actor": "public",
+  "route": "/gallery/states",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/home",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/plan",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/compare",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/people/p_tobi",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/interviews",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/pipeline",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/messages",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/calendar",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/calendar/connect",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/team",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/setup",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/setup/handbook",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/roles",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/audit",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/memory",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/mandate",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/sourcing",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/r/outreach",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_ada",
+  "route": "/settings",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/home",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/agency/agents",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/agency/campaigns",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/agency/clients",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/agency/client/org_kora",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/agency/compare",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/agency/docs",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/agency/mandate/m_ops",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/agency/notes",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/agency/pools",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/agency/reports",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/agency/searches",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/agency/submittals",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "u_dele",
+  "route": "/r/compare",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_tobi",
+  "route": "/c/home",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_tobi",
+  "route": "/c/passport",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_tobi",
+  "route": "/c/jobs",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_tobi",
+  "route": "/c/jobs/j_kora_backend",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_tobi",
+  "route": "/c/applications",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_tobi",
+  "route": "/c/messages",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_tobi",
+  "route": "/c/memory",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_tobi",
+  "route": "/c/prep",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_tobi",
+  "route": "/settings",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_chidi",
+  "route": "/c/career",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_chidi",
+  "route": "/c/growth",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_chidi",
+  "route": "/c/welcome",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_grace",
+  "route": "/c/start",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_grace",
+  "route": "/c/interview",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_grace",
+  "route": "/c/slots",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_zara",
+  "route": "/c/applications",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_zara",
+  "route": "/c/jobs",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "p_zara",
+  "route": "/c/messages",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "public",
+  "route": "/signup",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ },
+ {
+  "vp": "phone",
+  "actor": "public",
+  "route": "/gallery/states",
+  "violations": [],
+  "overflow": false,
+  "qReachable": true
+ }
+]

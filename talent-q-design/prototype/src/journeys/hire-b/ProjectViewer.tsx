@@ -63,14 +63,14 @@ export function ProjectViewer({ items, first }: { items: Evidence[]; first: stri
             </>
           ) : null}
         </div>
-        <aside className="hire-b-explain" aria-label="Q’s explanation">
+        <section className="hire-b-explain" aria-label="Q’s explanation">
           <span className="lab hire-b-q">Q explains</span>
           <p className="ds-quote">{p.explain.summary}</p>
           <h3 className="lab" style={{ margin: 0 }}>What it shows</h3>
           <ul className="hire-b-list">{p.explain.shows.map((s) => <li key={s}><Glyph k="full" size={14} />{s}</li>)}</ul>
           <h3 className="lab" style={{ margin: 0 }}>What it doesn’t show</h3>
           <ul className="hire-b-list">{p.explain.doesNot.map((s) => <li key={s}><Glyph k="none" size={14} />{s}</li>)}</ul>
-        </aside>
+        </section>
       </div>
 
       {p.links.length > 0 && (

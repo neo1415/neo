@@ -45,7 +45,7 @@ export function MandateIntake() {
             <Segmented label="How they’ll work" value={m.workMode} onChange={(v) => set({ workMode: v })} options={[{ value: 'HYBRID', label: 'Hybrid' }, { value: 'ONSITE', label: 'Onsite' }, { value: 'REMOTE', label: 'Remote' }]} />
           </div>
           <div className="stack gap-3">
-            <Label as="h3">Requirements, hardest first</Label>
+            <Label as="h2">Requirements, hardest first</Label>
             <ol className="stack">
               {m.requirements.map((r, i) => (
                 <li key={r.reqId} className="row gap-4 wrap" style={{ padding: '14px 0', borderTop: '1px solid var(--color-line)' }}>
