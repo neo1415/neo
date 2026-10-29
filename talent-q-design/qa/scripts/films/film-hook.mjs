@@ -14,7 +14,10 @@ import path from 'node:path';
 const OUT = process.env.FILM_OUT, ID = process.env.FILM_ID;
 if (!OUT || !ID) throw new Error('FILM_OUT and FILM_ID are required');
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-const PACE = { typeMax: 2600, typeDelay: 42, afterSend: 3400, beforeClick: 450, afterClick: 1000, afterGo: 1000 };
+// FILM_PACE scales the pauses (1 = full film pace). Journeys with timer-driven states (uploads that must be
+// interrupted mid-way) record at a lighter pace so the timers still line up with the script.
+const K = Math.max(0, Math.min(1, Number(process.env.FILM_PACE ?? 1)));
+const PACE = { typeMax: 2600 * K, typeDelay: 42 * K, afterSend: 3400 * K, beforeClick: 450 * K, afterClick: 1000 * K, afterGo: 1000 * K };
 
 const POINTER = `(() => { const m = () => { if (!document.body || document.getElementById('__p')) return; const p = document.createElement('div'); p.id='__p';
   p.style.cssText='position:fixed;z-index:2147483647;pointer-events:none;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;border:2px solid #d9a93f;background:rgba(217,169,63,.25);left:50%;top:70%;transition:left .4s cubic-bezier(.2,.7,.2,1),top .4s cubic-bezier(.2,.7,.2,1),transform .15s';

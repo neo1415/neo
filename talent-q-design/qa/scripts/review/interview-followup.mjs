@@ -1,0 +1,30 @@
+// Regression for SC-099: the interview room asks one adaptive follow-up when an answer lacks the detail
+// the question needs, keeps both answers together, can be skipped, and doesn't ask when the answer is full.
+import pw from '/opt/node-tools/node_modules/playwright/index.js';
+const BASE = process.argv[2] || 'http://localhost:4174/';
+let fails = 0; const step = (ok, n, x = '') => { if (!ok) fails++; console.log(`${ok ? 'PASS' : 'FAIL'} ${n}${x ? ` · ${x}` : ''}`); };
+const b = await pw.chromium.launch(); const page = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
+await page.goto(`${BASE}#/settings`); await page.evaluate(() => localStorage.clear()); await page.reload(); await page.waitForTimeout(600);
+await page.evaluate(() => { const w = JSON.parse(localStorage.getItem('tq.world.v4')); w.session.actor = 'p_tobi'; localStorage.setItem('tq.world.v4', JSON.stringify(w)); });
+await page.goto(`${BASE}#/c/interview`); await page.reload(); await page.waitForTimeout(900);
+await page.getByRole('button', { name: 'Start practising' }).click(); await page.waitForTimeout(600);
+const q = () => page.locator('#iv-q').innerText();
+const q1 = await q();
+step(/reconciliation|mismatch/i.test(q1), 'backend practice starts at question 1', q1.slice(0, 60));
+await page.locator('#iv-draft').fill('We compare records.'); await page.getByRole('button', { name: /Save answer/ }).click(); await page.waitForTimeout(400);
+const f1 = await q();
+step(/first minute/i.test(f1) && /follow-up/i.test(await page.locator('.talent-c-question .lab').innerText()), 'vague answer gets one follow-up', f1.slice(0, 60));
+await page.locator('#iv-draft').fill('The on-call engineer is paged within a minute with the batch and amount.'); await page.getByRole('button', { name: /Save answer/ }).click(); await page.waitForTimeout(400);
+const q2 = await q();
+step(/retry/i.test(q2), 'follow-up answered → next question', q2.slice(0, 60));
+const saved = await page.evaluate(() => { const w = JSON.parse(localStorage.getItem('tq.world.v4')); const r = w.areas['talent-c'].people?.p_tobi?.rooms?.PRACTICE; return r?.answers?.[0]?.text ?? JSON.stringify(Object.keys(w.areas['talent-c'] ?? {})); });
+step(/We compare records\.[\s\S]*Follow-up:[\s\S]*paged within a minute/.test(saved), 'both answers kept together, in order', saved.replace(/\n/g, ' ⏎ ').slice(0, 120));
+await page.locator('#iv-draft').fill('ok'); await page.getByRole('button', { name: /Save answer/ }).click(); await page.waitForTimeout(400);
+step(/stored/i.test(await q()), 'second vague answer gets its own follow-up');
+await page.getByRole('button', { name: 'Skip this follow-up' }).click(); await page.waitForTimeout(400);
+const q3 = await q();
+step(/incident/i.test(q3), 'skipping moves on, first answer stands', q3.slice(0, 60));
+await page.locator('#iv-draft').fill('In the first ten minutes I declared the incident and paused payouts; afterwards we added a circuit breaker and wrote a post-mortem.'); await page.getByRole('button', { name: /Save answer/ }).click(); await page.waitForTimeout(500);
+step(!(await page.locator('#iv-q').count()) || !/change(d)? afterwards/i.test(await q()), 'a full answer gets no follow-up');
+await b.close();
+console.log(fails ? `${fails} failed` : 'All interview follow-up checks passed');

@@ -38,6 +38,8 @@ export interface InterviewRoom {
   form: { what: string; did: string; end: string };
   answerMode: AnswerMode;
   simpler: Record<string, boolean>;
+  /** Adaptive follow-ups: ASKED while Q waits for the extra detail, DONE once answered (or skipped). */
+  followUp?: Record<string, 'ASKED' | 'DONE'>;
   repeats: number;
   paused: null | { reason: 'OFFLINE' | 'USER' | 'LEFT'; at: string; qIndex: number };
   done: boolean;

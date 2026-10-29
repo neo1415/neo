@@ -50,7 +50,9 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   await closeQ(); await shot('02-upload-failed');
   r = await ask('open my applications'); await page.waitForTimeout(300);
   r = await ask('pls retry the upload', 400);
-  step('Retry resumes from 60% while on another page', /from 60%/.test(r), r.slice(0, 60));
+  // The resume reply can be followed quickly by the completion notice, so look at Q's recent messages.
+  const recent = (await page.locator('.ds-thread .ds-q .say').allInnerTexts()).slice(-3);
+  step('Retry resumes from 60% while on another page', recent.some((t) => /from 60%/.test(t)), recent.join(' / ').slice(0, 120));
   await page.waitForTimeout(1500);
   r = await ask('go back', 600);
   w = await world(); up = w.areas['talent-b'].uploads.at(-1);

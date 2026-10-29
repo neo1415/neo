@@ -8,7 +8,8 @@ export function current(w: World, pid: string): { p: PersonState; key: string; b
   const p = readPersonC(w, pid); const key = p.room || 'PRACTICE'; const bank = bankOfRoom(w, pid, key); const room = p.rooms[key];
   return { p, key, bank, room, q: bank.questions[room?.qIndex ?? 0] };
 }
-export const qText = (q: IQ, room?: InterviewRoom) => (room?.simpler[q.id] ? q.simpler : q.text);
+export const qText = (q: IQ, room?: InterviewRoom) => (room?.followUp?.[q.id] === 'ASKED' && q.followUp ? q.followUp : room?.simpler[q.id] ? q.simpler : q.text);
+export const isFollowUp = (q: IQ | undefined, room?: InterviewRoom) => !!q && room?.followUp?.[q.id] === 'ASKED';
 
 export function startRoom(w: World, pid: string, key: string) {
   const r = roomC(w, pid, key); const p = personC(w, pid); p.room = key;
@@ -24,7 +25,20 @@ export function answerCurrent(w: World, pid: string, via: AnswerMode): boolean {
   const q = bank.questions[r.qIndex]; if (!q) return false;
   const text = via === 'FORM' ? [r.form.what && `What happened: ${r.form.what}`, r.form.did && `What I did: ${r.form.did}`, r.form.end && `How it ended: ${r.form.end}`].filter(Boolean).join('\n') : r.draft.trim();
   if (!text.trim()) return false;
-  r.answers = r.answers.filter((a) => a.qid !== q.id).concat({ qid: q.id, text, via, simpler: !!r.simpler[q.id], at: now() });
+  const fu = (r.followUp ??= {});
+  if (fu[q.id] === 'ASKED') {
+    // The answer to the follow-up joins the first answer; the employer sees both, in order.
+    const first = r.answers.find((a) => a.qid === q.id);
+    r.answers = r.answers.filter((a) => a.qid !== q.id).concat({ qid: q.id, text: `${first?.text ?? ''}\n\nFollow-up: ${q.followUp}\n${text}`.trim(), via, simpler: !!r.simpler[q.id], at: now() });
+    fu[q.id] = 'DONE';
+  } else {
+    r.answers = r.answers.filter((a) => a.qid !== q.id).concat({ qid: q.id, text, via, simpler: !!r.simpler[q.id], at: now() });
+    // Adaptive (SC-099): one follow-up when the answer lacks the concrete detail this question needs.
+    if (q.followUp && q.cue && via !== 'FORM' && !fu[q.id] && (!q.cue.test(text) || text.split(/\s+/).length < 12)) {
+      fu[q.id] = 'ASKED'; r.draft = '';
+      return true;
+    }
+  }
   r.draft = ''; r.form = { what: '', did: '', end: '' };
   if (r.qIndex + 1 < bank.questions.length) {
     r.qIndex += 1;
@@ -37,6 +51,15 @@ export function answerCurrent(w: World, pid: string, via: AnswerMode): boolean {
     if (r.mode === 'PRACTICE') { p.practicesDone += 1; emit(w, w.session.actor, 'practice.done', `PERSON:${pid}`, 'Finished a private practice interview. Not shared, not counted as proof.'); }
   }
   return true;
+}
+
+/** Skip an adaptive follow-up: the first answer stands, and the room moves on. */
+export function skipFollowUp(w: World, pid: string) {
+  const p = personC(w, pid); const r = roomC(w, pid, p.room); const bank = bankOfRoom(w, pid, p.room); const q = bank.questions[r.qIndex];
+  if (!q || r.followUp?.[q.id] !== 'ASKED') return;
+  r.followUp[q.id] = 'DONE'; r.draft = '';
+  if (r.qIndex + 1 < bank.questions.length) r.qIndex += 1;
+  else { r.done = true; r.paused = null; if (r.mode === 'PRACTICE') p.practicesDone += 1; }
 }
 
 export function submitReal(w: World, pid: string) {

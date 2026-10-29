@@ -10,7 +10,7 @@ import { update, useWorld } from '../../mock/world';
 import { personC, readPersonC, roomC, type AnswerMode } from '../../state/areas/talent-c';
 import { Link, useRoute } from '../../ui/router';
 import { runAction } from '../../q/core/engine';
-import { answerCurrent, bankOfRoom, qText, startRoom, tipsFor } from './interview';
+import { answerCurrent, bankOfRoom, isFollowUp, qText, skipFollowUp, startRoom, tipsFor } from './interview';
 import { timeText, whenText } from './questions';
 import { DemoControls, LiteWrap, MicButton, ModeSwitch, VOICE_NOTE, onLeave, patchMe, useMe, usePlace, useVoice } from './shared';
 
@@ -109,10 +109,11 @@ function QuestionCard({ pid, k, plain, offline }: { pid: string; k: string; plai
   return (
     <>
       <section className="ds-sheet talent-c-card talent-c-question" aria-labelledby="iv-q" aria-live="polite">
-        <span className="lab">Question {room.qIndex + 1} of {bank.questions.length}{q.requiredBy ? ` · asked by ${q.requiredBy}` : ''}{room.simpler[q.id] ? ' · simpler words' : ''}</span>
+        <span className="lab">Question {room.qIndex + 1} of {bank.questions.length}{q.requiredBy ? ` · asked by ${q.requiredBy}` : ''}{room.simpler[q.id] ? ' · simpler words' : ''}{isFollowUp(q, room) ? ' · follow-up' : ''}</span>
         <AnimatePresence mode="wait">
           <motion.h2 key={text + room.repeats} id="iv-q" className="voice talent-c-qtext" initial={{ opacity: 0.2 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>{text}</motion.h2>
         </AnimatePresence>
+        {isFollowUp(q, room) && <p className="t14" style={{ margin: 0 }}>Your answer is saved. Q is asking one follow-up because the question needs a bit more detail. You can add it, or skip. <button type="button" className="ds-linkbtn" style={{ color: 'var(--ink-2)' }} onClick={() => update((w) => skipFollowUp(w, pid))}>Skip this follow-up</button></p>}
         {plain && <p className="t14 muted" style={{ margin: 0 }}>Tip: {q.hint}</p>}
         <div className="talent-c-actions">
           <button type="button" className="ds-btn" onClick={() => { set((r) => { r.repeats += 1; }); speak(text); }}>Say it again</button>
