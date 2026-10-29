@@ -58,7 +58,7 @@ const screens = parseCsv(readFileSync(join(sources, 'batch-2', '02_COMPLETE_SCRE
   return {
     screen_id: r.screen_id, section: r.section, screen_name: r.screen_name, primary_actor: r.primary_actor, priority: p ? `P${p}` : '', surface: status.surfaces[r.section] || '', ...s,
     representation,
-    design_reference: status.design_refs?.[r.screen_id] || (s.route ? `Nocturne prototype ${s.route} (superseded pending direction choice)` : ''),
+    design_reference: s.route ? (status.d_native_routes?.includes(s.route) ? `Direction D, native (${s.route})` : `Direction D shell, legacy bridge (${s.route}); native rebuild pending`) : (status.design_refs?.[r.screen_id] || ''),
     interactive_prototype: s.route ? 'Yes' : 'No',
     production_integration: 'None (simulated)',
     verified: s.status === 'VERIFIED' ? 'Yes' : 'No',

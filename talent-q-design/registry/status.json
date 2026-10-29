@@ -54,9 +54,9 @@
     },
     "SC-162": {
       "status": "INTEGRATED",
-      "route": "/c/career",
+      "route": "/c/growth",
       "evidence": "captures/screens/p10-career-amaka, p10-career-chidi, m-p10-career",
-      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+      "note": "The original career dashboard (six measures, readiness) now lives at /c/growth inside the D shell, still connected to the shared world. The D J7 workspace at /c/career supersedes it in design."
     },
     "SC-118": {
       "status": "INTEGRATED",
@@ -149,10 +149,10 @@
       "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
     },
     "SC-164": {
-      "status": "INTEGRATED",
+      "status": "PROTOTYPED",
       "route": "/c/career",
-      "evidence": "captures/screens/p10-career-amaka (route strip)",
-      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+      "evidence": "captures/batch1/b1-d-j7-1-atlas, b1-m-j7-1-atlas, j7-6-moved; captures/journeys/j7-*",
+      "note": "Primary of /c/career (J7 workspace): radial atlas on desktop, distance bands on phones, three personas. Was INTEGRATED as the Nocturne graph (now at /c/growth); the D atlas uses its own J7 store until batch 2 wires it to the shared record."
     },
     "SC-099": {
       "status": "INTEGRATED",
@@ -308,7 +308,7 @@
       "status": "PROTOTYPED",
       "route": "/c/interview",
       "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet. Also in J7: rubric feedback per criterion."
     },
     "SC-173": {
       "status": "PROTOTYPED",
@@ -319,8 +319,8 @@
     "SC-165": {
       "status": "PROTOTYPED",
       "route": "/c/career",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "captures/batch1/b1-*-j7-2-role",
+      "note": "Role sheet: each competency, evidence proves / does not prove, practise entry point."
     },
     "SC-176": {
       "status": "PROTOTYPED",
@@ -350,13 +350,13 @@
       "status": "PROTOTYPED",
       "route": "/r/sourcing",
       "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet. Also on /r/plan: integration unavailable (rate limited, not connected) with visible recovery mode."
     },
     "SC-181": {
       "status": "PROTOTYPED",
       "route": "/r/sourcing",
       "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "note": "Implemented as a state or section of a priority screen; not separately captured yet. Also on /r/plan: paused plan from an earlier session resumed; interrupted runs resume from the last finished unit."
     },
     "SC-121": {
       "status": "PROTOTYPED",
@@ -375,6 +375,96 @@
       "route": "/r/compare",
       "evidence": "",
       "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+    },
+    "SC-061": {
+      "status": "PROTOTYPED",
+      "route": "/c/welcome",
+      "evidence": "captures/batch1/b1-*-onb-1-welcome; captures/journeys/f2-*",
+      "note": "Primary of /c/welcome. Three starting tracks; private-by-default promises. Own profile store (services/profile.ts), not yet read by Passport."
+    },
+    "SC-062": {
+      "status": "PROTOTYPED",
+      "route": "/c/welcome",
+      "evidence": "captures/batch1/b1-*-onb-2-unreadable, onb-3-reading, onb-4-found",
+      "note": "State of /c/welcome: CV ingestion with unit progress, skeleton, unreadable-scan failure and three recoveries."
+    },
+    "SC-063": {
+      "status": "PROTOTYPED",
+      "route": "/c/welcome",
+      "evidence": "captures/batch1/b1-*-onb-4-found; f2 films",
+      "note": "State of /c/welcome: conversational questions per track; answers become claims."
+    },
+    "SC-064": {
+      "status": "PROTOTYPED",
+      "route": "/c/welcome",
+      "evidence": "captures/batch1/b1-*-onb-5-about",
+      "note": "Section of /c/welcome: structured basics with inline validation and private visibility default."
+    },
+    "SC-065": {
+      "status": "PROTOTYPED",
+      "route": "/c/welcome",
+      "evidence": "captures/batch1/b1-*-onb-6-experience, onb-7-edit",
+      "note": "Section of /c/welcome: claims editor; Q flags vague claims; source shown per claim; claims never become evidence."
+    },
+    "SC-066": {
+      "status": "PROTOTYPED",
+      "route": "/c/welcome",
+      "evidence": "captures/batch1/b1-*-onb-8-skills",
+      "note": "Section of /c/welcome: evidenced / claimed / suggested skills; suggestions need explicit confirmation."
+    },
+    "SC-119": {
+      "status": "PROTOTYPED",
+      "route": "/r/plan",
+      "evidence": "captures/batch1/b1-*-plan-2-clarify, plan-3-graph; captures/journeys/f6-*",
+      "note": "Primary of /r/plan: clarify, recall context and policy, DAG plan with approval gates, optional step, start. Simulated service services/agents.ts."
+    },
+    "SC-131": {
+      "status": "PROTOTYPED",
+      "route": "/r/plan",
+      "evidence": "captures/batch1/b1-*-plan-4-lanes, plan-5-ask, plan-6-findings",
+      "note": "State of /r/plan: agent lanes with unit counts, source health (rate limit → retry; not connected → ask), activity log, findings."
+    },
+    "SC-132": {
+      "status": "PROTOTYPED",
+      "route": "/r/plan",
+      "evidence": "captures/batch1/b1-*-plan-7-approvals, plan-8-approved",
+      "note": "State of /r/plan: handoff approval queue (messages, calendar holds, reference consent) with effect text and simulated receipts."
+    },
+    "SC-163": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "captures/batch1/b1-*-j7-2-role, j7-10-tobi-role",
+      "note": "Section of /c/career: goal per persona, \"Make this my goal\", horizon."
+    },
+    "SC-166": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "captures/batch1/b1-*-j7-3-plan",
+      "note": "Section of /c/career: development plan editor (reorder, done, remove), private."
+    },
+    "SC-167": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "captures/batch1/b1-*-j7-4-practised",
+      "note": "State of /c/career: practice launch for one competency per persona; practice is private and never proof. Full mode chooser pending."
+    },
+    "SC-169": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "captures/batch1/b1-*-j7-5-review",
+      "note": "State of /c/career: practical work sample per persona reviewed against a rubric (simulated reviewer)."
+    },
+    "SC-171": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "captures/batch1/b1-*-j7-7-progress",
+      "note": "Section of /c/career: small multiples; only assessed attempts are joined; practice shown hollow and not counted; table view."
+    },
+    "SC-174": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "captures/batch1/b1-*-j7-3-plan",
+      "note": "Section of /c/career: archived goals keep their evidence."
     }
   },
   "motions": {
@@ -545,6 +635,60 @@
       "route": "/r/outreach",
       "evidence": "",
       "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+    },
+    "MO-008": {
+      "status": "PROTOTYPED",
+      "route": "/r/plan",
+      "evidence": "captures/journeys/f6-*",
+      "note": "Plan graph appears after the clarifying answer; tasks unblock column by column as dependencies finish (real task events)."
+    },
+    "MO-012": {
+      "status": "PROTOTYPED",
+      "route": "/r/plan",
+      "evidence": "captures/journeys/f6-*",
+      "note": "Findings arrive one by one as the evidence agent finishes each check."
+    },
+    "MO-016": {
+      "status": "PROTOTYPED",
+      "route": "/c/welcome",
+      "evidence": "captures/journeys/f2-*",
+      "note": "File accepted: agent 1 advances when each page is read; unreadable scan stops it with a broken-bowl Q mark."
+    },
+    "MO-017": {
+      "status": "PROTOTYPED",
+      "route": "/c/welcome",
+      "evidence": "captures/journeys/f2-*",
+      "note": "Parsed: skeleton gives way to claims only after all four parse stages finish."
+    },
+    "MO-037": {
+      "status": "PROTOTYPED",
+      "route": "/c/welcome",
+      "evidence": "captures/journeys/f2-*",
+      "note": "Done step hands off to the career atlas or Passport."
+    },
+    "MO-048": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "captures/journeys/j7-*",
+      "note": "Atlas/bands: selection and role sheet open; family collapse/expand at 48 occupations."
+    },
+    "MO-049": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "captures/journeys/j7-*",
+      "note": "Evidence expands in place (proves / does not prove)."
+    },
+    "MO-051": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "captures/journeys/j7-*",
+      "note": "Progress small multiples: line joins assessed attempts only; new assessed point appears after review."
+    },
+    "MO-053": {
+      "status": "PROTOTYPED",
+      "route": "/r/plan",
+      "evidence": "captures/journeys/f6-*",
+      "note": "Context chips (with source) appear above Q’s reply before it is used."
     }
   },
   "vision": {
@@ -649,10 +793,13 @@
     "/r/calendar": "SC-149",
     "/c/slots": "SC-153",
     "/c/passport": "SC-067",
-    "/c/career": "SC-162",
+    "/c/career": "SC-164",
     "/c/interview": "SC-099",
     "/r/memory": "SC-133",
-    "/c/memory": "SC-183"
+    "/c/memory": "SC-183",
+    "/c/welcome": "SC-061",
+    "/r/plan": "SC-119",
+    "/c/growth": "SC-162"
   },
   "design_refs": {
     "SC-117": "Direction review: /x/{a,b,c}/home + captures/directions",
@@ -668,5 +815,11 @@
     "SC-170": "Direction review: /x/{a,b,c}/career (feedback)",
     "SC-171": "Direction review: /x/{a,b,c}/career (progress)",
     "SC-173": "Direction review: /x/{a,b,c}/career (practice → passport)"
-  }
+  },
+  "d_native_routes": [
+    "/r/home",
+    "/r/plan",
+    "/c/welcome",
+    "/c/career"
+  ]
 }

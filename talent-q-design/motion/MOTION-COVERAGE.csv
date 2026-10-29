@@ -6,16 +6,16 @@ MO-004,Q speaks,voice:audio-out,Voice/video,Captions,RESEARCHED,,,
 MO-005,Q interrupted,voice:interrupted,Voice/video,State text,RESEARCHED,,,
 MO-006,Q disconnected,transport:lost,Any run,Connection lost banner,PROTOTYPED,/r/sourcing,Shown in captures/video/F1-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
 MO-007,Q reconnected,transport:restored,Any run,Connected message,PROTOTYPED,/r/sourcing,Shown in captures/video/F1-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
-MO-008,Task plan grows,plan:created,Q planner,Static checklist,RESEARCHED,,,
+MO-008,Task plan grows,plan:created,Q planner,Static checklist,PROTOTYPED,/r/plan,captures/journeys/f6-*,Plan graph appears after the clarifying answer; tasks unblock column by column as dependencies finish (real task events).
 MO-009,Parallel agents start,task:spawned,Run explorer,Task list,PROTOTYPED,/r/sourcing,,Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet.
 MO-010,Research source found,source:retrieved,Research explorer,Source list update,PROTOTYPED,/r/sourcing,Shown in captures/video/F1-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
 MO-011,First candidate arrives,candidate:retrieved,Explore Talent,Instant card,PROTOTYPED,/r/sourcing,Shown in captures/video/F1-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
-MO-012,Candidate evidence loaded,evidence:ready,Candidate deep profile,Evidence text,RESEARCHED,,,
+MO-012,Candidate evidence loaded,evidence:ready,Candidate deep profile,Evidence text,PROTOTYPED,/r/plan,captures/journeys/f6-*,Findings arrive one by one as the evidence agent finishes each check.
 MO-013,Candidate comparison morph,compare:changed,Compare candidates,Direct table redraw,RESEARCHED,,,
 MO-014,Job preference filter,filter:changed,Explore Jobs,Direct redraw,RESEARCHED,,,
 MO-015,Mandate wording revised,mandate:patched,Mandate builder,Text diff,PROTOTYPED,/r/mandate,Shown in captures/video/F1-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
-MO-016,Uploaded file accepted,file:received,Uploader,Percentage text,RESEARCHED,,,
-MO-017,Uploaded file parsed,document:parsed,CV intake,Summary list,RESEARCHED,,,
+MO-016,Uploaded file accepted,file:received,Uploader,Percentage text,PROTOTYPED,/c/welcome,captures/journeys/f2-*,File accepted: agent 1 advances when each page is read; unreadable scan stops it with a broken-bowl Q mark.
+MO-017,Uploaded file parsed,document:parsed,CV intake,Summary list,PROTOTYPED,/c/welcome,captures/journeys/f2-*,Parsed: skeleton gives way to claims only after all four parse stages finish.
 MO-018,Question plan appears,interview:plan-ready,Interview plan,Question list,RESEARCHED,,,
 MO-019,Question asked,interview:question-start,Interview room,Full question text,PROTOTYPED,/c/interview,Shown in captures/video/F5-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
 MO-020,Clarification added,interview:probe,Interview room,Probe label,PROTOTYPED,/c/interview,Shown in captures/video/F5-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
@@ -35,7 +35,7 @@ MO-033,Safe browser preview,preview:loaded,Project preview,Link and screenshot,R
 MO-034,Download scanned,scan:passed,File vault,Verified file state,RESEARCHED,,,
 MO-035,Agent budget warning,budget:threshold,Q planner,Warning text,RESEARCHED,,,
 MO-036,Model/provider error,run:failed,Run explorer,Error explanation,PROTOTYPED,/r/calendar,Shown in captures/video/F1-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
-MO-037,Onboarding handoff to explore,onboarding:complete,Candidate onboarding,Direct navigation,RESEARCHED,,,
+MO-037,Onboarding handoff to explore,onboarding:complete,Candidate onboarding,Direct navigation,PROTOTYPED,/c/welcome,captures/journeys/f2-*,Done step hands off to the career atlas or Passport.
 MO-038,Desktop-mobile narrative transition,demo:viewport-change,Demo film,Screenshots,RESEARCHED,,,
 MO-039,Policy rule update,policy:published,Policy studio,Revalidation list,PROTOTYPED,/r/setup,,Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet.
 MO-040,Candidate application status,application:updated,Applications,Stage text,RESEARCHED,,,
@@ -46,12 +46,12 @@ MO-044,Calendar conflict found,schedule:conflict,Booking,"Time unavailable, sele
 MO-045,Provider booking confirmed,schedule:provider_ack,Booking,Booked and calendar details,PROTOTYPED,/c/slots,Shown in captures/video/F3-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
 MO-046,Invite delivery status,outreach:receipt,Inbox,Clear message status,RESEARCHED,,,
 MO-047,Reschedule completed,schedule:rescheduled,Scheduling,Time changed label,PROTOTYPED,/c/slots,,Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet.
-MO-048,J7 career path explored,career:path_selected,Career map,Linear roadmap,RESEARCHED,,,
-MO-049,J7 gap evidence expanded,career:gap_open,Gap view,Expandable details,RESEARCHED,,,
+MO-048,J7 career path explored,career:path_selected,Career map,Linear roadmap,PROTOTYPED,/c/career,captures/journeys/j7-*,Atlas/bands: selection and role sheet open; family collapse/expand at 48 occupations.
+MO-049,J7 gap evidence expanded,career:gap_open,Gap view,Expandable details,PROTOTYPED,/c/career,captures/journeys/j7-*,Evidence expands in place (proves / does not prove).
 MO-050,J7 practice feedback arrived,practice:feedback_ready,Practice,Plain feedback sections,PROTOTYPED,/c/interview,Shown in captures/video/F4-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
-MO-051,J7 comparable growth trend,career:progress_loaded,Career progress,Table of attempts,RESEARCHED,,,
+MO-051,J7 comparable growth trend,career:progress_loaded,Career progress,Table of attempts,PROTOTYPED,/c/career,captures/journeys/j7-*,Progress small multiples: line joins assessed attempts only; new assessed point appears after review.
 MO-052,J7 evidence sharing approved,evidence:share_approved,Evidence Passport,Sharing status text,PROTOTYPED,/c/interview,Shown in captures/video/F4-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
-MO-053,Memory retrieved with provenance,memory:retrieved,Q memory,Source/last confirmed,RESEARCHED,,,
+MO-053,Memory retrieved with provenance,memory:retrieved,Q memory,Source/last confirmed,PROTOTYPED,/r/plan,captures/journeys/f6-*,Context chips (with source) appear above Q’s reply before it is used.
 MO-054,Memory corrected and invalidated,memory:correction_ack,Q memory,Corrected/versioned,PROTOTYPED,/r/memory,Shown in captures/video/F7-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
 MO-055,Q run resumed from checkpoint,run:resume,Q progress,Resuming from saved state,PROTOTYPED,/r/sourcing,Shown in captures/video/F1-*.mp4,Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do.
 MO-056,Q conflicting evidence,memory:conflict,Q memory,Text comparison,RESEARCHED,,,

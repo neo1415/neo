@@ -4,3 +4,4 @@ export * from './memory';
 export * from './scheduling';
 export * from './talent';
 export * from './artifact';
+export * from './workspace';

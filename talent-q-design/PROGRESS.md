@@ -2,22 +2,32 @@
 
 Updated 27 Oct 2026. Measured counts are in `COVERAGE-SUMMARY.md`; this file says what is done and what to do next, in order.
 
-## Current gate: design direction (27 Oct, founder feedback)
+## Milestone: Batch 1 (29 Oct): Direction D is the design system
 
-The founder rejected Nocturne as too dashboard-like. Three working directions (A, B, C) were built on the same three experiences. The founder approved none of them unchanged and asked for a fourth, **D · Living Intelligence Workspace**, unifying their strengths. D is built (`src/directions/d/`). **No further screens are designed until the founder chooses among A, B, C and D.**
-- D evidence: `captures/directions/screens/d-*` (desktop and phone, full interaction paths, via `qa/scripts/direction-d.mjs`); four films `captures/directions/d-{hiring,career}-{desktop,phone}.mp4`; axe-core 0 violations in 22 scans (`qa/scripts/axe-direction-d.mjs`).
-- D critique, improvements over A, B and C, and the trade-offs that remain: end of `decisions/DIRECTION-REVIEW.md`.
-- Prototypes: `#/x` in the app; published privately at https://claude.ai/artifact/G8kYmDwwdE4b3jUeTTC9Dd
-- Critique and scores: `decisions/DIRECTION-REVIEW.md`. Process: `qa/DESIGN-REVIEW-PROCESS.md`
-- Evidence: `captures/directions/` (A–C: 41 screenshots and 6 motion previews; D: see above). Captions sit in a band below the UI.
-- Audits: `qa/RECORDING-ISSUES-AUDIT.md`, `DESIGN-SKILL-AUDIT.md` (rebuilt from transcript evidence)
+The founder approved Direction D. It is now the product's system (`prototype/src/ds/`, `design-system/DIRECTION-D-SYSTEM.md`).
 
-**After the choice, in order:**
-1. Rebuild the tokens and components in the chosen direction (if D: promote `src/directions/d/kit.tsx` and `d.css` to the app's design system) (`design-elevation` and `design-review` skills).
-2. Apply the new system to the 12 working screens, keeping their state, scheduling, memory and evidence logic.
-3. Re-record F1, F3, F4, F5, F7 and F8 with the band-caption pipeline.
-4. Build onboarding (SC-061–066) and the planner and multi-agent view (SC-119, SC-131, SC-132), then record F2 and F6.
-5. Continue the remaining 126 unrepresented screen concepts in journey batches, each going through both review gates.
+| | Status |
+|---|---|
+| **Designed and prototyped** | <ul><li>D tokens, with a warmer candidate variant</li><li>The Q mark with 8 moods</li><li>A resizable and collapsible thread\|canvas workspace</li><li>Product navigation: workspace switcher, rail, command palette, phone tabs with More</li><li>The legacy bridge for the original screens</li><li>Q home rebuilt natively in D</li><li>Candidate onboarding SC-061–066, with three tracks, CV failure and recovery, and claims-not-evidence</li><li>The multi-agent planner SC-119/131/132, with clarify, context and policy recall, a DAG plan, agent lanes, integration outage and recovery, pause and resume across sessions, and a handoff approval queue</li><li>The J7 workspace: three personas; desktop atlas and phone distance bands; role sheet; development plan; progress (assessed attempts only); record ladder; goal change and archive; illustrative openings</li></ul> |
+| **Integrated** (shared typed state across screens) | <ul><li>Unchanged: the original hiring flow, scheduling, memory and evidence logic, now inside the D shell</li><li>The new journeys use their own typed simulated services (`services/agents.ts`, `services/profile.ts`, the J7 store). Wiring them into the shared world is the first task of batch 2</li></ul> |
+| **Verified** | None. axe passes 0/42 scans, but the manual keyboard and screen-reader pass is outstanding |
+| **Evidence** | <ul><li>`captures/batch1/` (screens)</li><li>`captures/journeys/` (F2, F6 and J7 films, desktop and phone)</li><li>`qa/BATCH-1-REVIEW.md`</li><li>`contracts/Q-WORKSPACE-CONTRACT.md` (what the real Q runtime must emit; view choice in the prototype is scripted)</li></ul> |
+| **Register** | <ul><li>Screens: 70 of 183 represented (16 unique routes, 54 states or sections), 113 not yet represented, 0 integrations, 0 verified</li><li>Motions: 37 of 57 prototyped</li><li>Vision groups: unchanged this batch</li></ul> |
+
+## Batch plan for the remaining 113 concepts (journeys × shared components)
+
+Each batch ships runnable D-native interfaces, states (loading, empty, success, failure, recovery), phone layouts, screenshots, an axe run and a register update.
+
+| Batch | Journey | Concepts | Shared components it adds |
+|---|---|---|---|
+| **2** | Recruiter workspace, native | <ul><li>Rebuild mandate, sourcing, compare, outreach and calendar as thread\|canvas</li><li>Wire onboarding, J7 and the planner into the shared world</li><li>SC-030–033, 037, 038, 042–044, 046</li></ul> | Candidate quickview, deep profile, search scope selector, saved search |
+| **3** | Pipeline, communications and offers | SC-050–060, 148, 156, 157, 159 | Pipeline board, conversation inbox, templates, reminder queue |
+| **4** | Candidate jobs and applications | SC-079–094, 075, 082, 083 | Job card, mutual-fit view, application timeline, CV and letter builders |
+| **5** | Evidence and verification | SC-068–072, 076, 077, 182 | Uploader, credential vault, verification request, conflict reconciliation |
+| **6** | Interviews and assessments | SC-095–097, 102–116, 172, 175 | Question bank, plan builder, live rooms, copilot, assessment players, accommodations, appeals |
+| **7** | Q artifacts and tools | SC-124–130, 134, 136 | Chart and map result, document editor, diagram, video, secure browser, link viewer, download, notification preferences, research sources |
+| **8** | Organisation, agency and admin | SC-015–017, 020–026, 137–146 | Team and roles, templates, integrations, billing, compliance, audit, model inspector, bias dashboard |
+| **9** | Public site and entry | SC-001–013 | Landing, how it works, trust, auth, work mode, Q personalisation |
 
 ## Done
 

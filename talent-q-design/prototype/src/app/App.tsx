@@ -20,6 +20,10 @@ import { Interview } from '../screens/Interview';
 import { Memory } from '../screens/Memory';
 import { Gallery } from '../screens/Gallery';
 import { Directions } from '../directions';
+import { AppShell } from '../ds/AppShell';
+import { Planner } from '../journeys/planner/Planner';
+import { Onboarding } from '../journeys/onboarding/Onboarding';
+import { J7 } from '../journeys/career/Career';
 
 const RECRUITER = [
   { to: '/r/home', label: 'Q' },
@@ -54,6 +58,14 @@ const ROUTES: Record<string, () => ReactNode> = {
   '/c/slots': () => <SlotPicker />,
   '/c/interview': () => <Interview />,
   '/c/memory': () => <Memory viewer="candidate" />,
+  '/c/growth': () => <Career />,
+};
+/** Routes built natively in Direction D (they render their own thread and canvas). */
+const D_ROUTES: Record<string, () => ReactNode> = {
+  '/r/plan': () => <Planner />,
+  '/r/home': () => <QHome />,
+  '/c/welcome': () => <Onboarding />,
+  '/c/career': () => <J7 />,
 };
 
 export function App() {
@@ -68,6 +80,19 @@ export function App() {
   const navMatch = (to: string) => path === to || (to === '/r/mandate' && path === '/r/sourcing');
 
   if (path === '/x' || path.startsWith('/x/')) return <MotionConfig reducedMotion="user"><Directions path={path} /></MotionConfig>;
+  // Product routes live in the Direction D shell. Screens built before D render on paper through the legacy
+  // bridge (same state, scheduling, memory and evidence logic) until each is rebuilt natively.
+  if (side) {
+    const d = D_ROUTES[path];
+    return (
+      <MotionConfig reducedMotion="user">
+        <AppShell path={path}>
+          {d ? d() : <div className="ds-legacy" style={{ minHeight: '100vh' }}>{screen()}</div>}
+        </AppShell>
+        <ToastHost />
+      </MotionConfig>
+    );
+  }
 
   return (
     <MotionConfig reducedMotion="user">

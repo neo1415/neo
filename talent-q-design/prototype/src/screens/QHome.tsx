@@ -1,12 +1,14 @@
-// P1 · SC-117 Q home workspace + SC-118 composer. One home: Q's voice on the dark side, what needs you on paper.
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+// P1 · SC-117 Q home workspace + SC-118 composer. Direction D: the conversation is Q's ink thread (with the
+// multimodal composer); what needs you and what Q is doing is the paper canvas. Logic unchanged from P1.
+import { useState, useSyncExternalStore } from 'react';
 import { TERMINAL_STATUSES } from '@contracts';
 import { allRuns, onRuns, useNamedRun, useRun } from '../mock/runtime';
 import { getWorld, now, uid, update, useWorld } from '../mock/world';
-import { QPresence, type QState } from '../q/QPresence';
 import { startIntake } from '../q/scripts';
 import { fmt } from '../q/slots';
-import { Arrive, Composer, Label, MeSays, QSays, RunSteps, Sim } from '../ui/kit';
+import { Arrive, Composer, Label, RunSteps, Sim } from '../ui/kit';
+import { Canvas, Split, Thread, type Entry } from '../ds/Workspace';
+import { moodOf } from '../ds/QMark';
 import { Link, navigate } from '../ui/router';
 
 function useActiveRuns() {
@@ -23,11 +25,8 @@ export function QHome() {
   const waitingCount = pending.length + (slotsToSend ? 1 : 0) + (counter ? 1 : 0);
   const sourcingId = useNamedRun('sourcing');
   const sourcing = useRun(sourcingId, w.network);
-  const progress = sourcing.steps.length ? sourcing.steps.reduce((a, s) => a + (s.total ? s.done / s.total : s.result === 'DONE' ? 1 : 0), 0) / Math.max(5, sourcing.steps.length) : 0;
-  const qState: QState = w.network === 'offline' ? 'offline' : active.length ? 'working' : waitingCount ? 'waiting' : 'idle';
-  const end = useRef<HTMLDivElement>(null);
   const [typing, setTyping] = useState(false);
-  useEffect(() => { end.current?.scrollIntoView({ block: 'end', behavior: 'smooth' }); }, [w.chat.recruiter.length]);
+  const [narrowOpen, setNarrowOpen] = useState(false);
 
   const headline = waitingCount ? `${waitingCount === 1 ? 'One thing needs' : `${waitingCount} things need`} your yes.`
     : active.length ? 'I’m working. Nothing needs you yet.'
@@ -55,78 +54,64 @@ export function QHome() {
 
   const booked = w.scheduling && ['BOOKED', 'REMINDERS'].includes(w.scheduling.state) ? w.scheduling.slots.find((s) => s.slotId === w.scheduling!.chosenSlotId) : null;
 
+  const entries: Entry[] = [
+    { id: 'hello', who: 'q', text: `Good morning, Ada. ${headline} I work on Kora Pay’s hiring in the background and only bring you what needs a decision.`,
+      chips: w.chat.recruiter.length ? undefined : [{ label: w.mandate.status === 'DRAFT' ? 'I need a senior backend engineer for payments' : 'Who should I talk to first?', go: true, on: () => onSend(w.mandate.status === 'DRAFT' ? 'I need a senior backend engineer for payments' : 'Who should I talk to first?') }, { label: 'Plan a whole hire with agents', on: () => navigate('/r/plan') }] },
+    ...w.chat.recruiter.map((m): Entry => m.who === 'me' ? { id: m.id, who: 'me', text: m.text } : {
+      id: m.id, who: 'q', text: m.text, used: m.used?.map((u) => u.label), chips: m.link ? [{ label: m.link.label, go: true, on: () => navigate(m.link!.to) }] : undefined,
+    }),
+  ];
+  const agents = sourcingId && !sourcing.completed ? sourcing.steps.filter((x) => x.total).map((x) => ({ label: x.label, done: x.done ?? 0, total: x.total ?? 1 })) : [];
+  const mood = moodOf({ offline: w.network === 'offline', agents, waiting: waitingCount > 0 });
+
   return (
-    <main className="split">
-      <section className="split-conv" aria-labelledby="home-h">
-        <div className="stack gap-6" style={{ paddingTop: 16 }}>
-          <QPresence state={qState} size={64} progress={progress} />
-          <div className="stack gap-3">
-            <span className="t-label q-text">{qState === 'waiting' ? 'Q · waiting on you' : qState === 'working' ? 'Q · working' : qState === 'offline' ? 'Q · offline' : 'Q · ready'}</span>
-            <h1 id="home-h" className="t-display">{headline}</h1>
-            <p className="muted measure">Good morning, Ada. I work on Kora Pay’s hiring in the background and only bring you what needs a decision.</p>
-          </div>
-        </div>
-        <div className="stack gap-6 grow" aria-label="Conversation with Q" role="log">
-          {w.chat.recruiter.map((m) => m.who === 'me' ? <MeSays key={m.id} text={m.text} /> : (
-            <Arrive key={m.id}>
-              <div className="stack gap-2">
-                <QSays text={m.text} used={m.used} />
-                {m.link && <Link to={m.link.to} className="btn btn-secondary btn-compact" style={{ alignSelf: 'flex-start', marginLeft: 17 }}>{m.link.label}</Link>}
-              </div>
-            </Arrive>
-          ))}
-          {typing && <p className="t-caption" aria-live="polite" style={{ marginLeft: 17 }}>Q is replying…</p>}
-          <div ref={end} />
-        </div>
-        <Composer onSend={onSend} suggestion={w.mandate.status === 'DRAFT' ? 'I need a senior backend engineer for payments' : 'Who should I talk to first?'} />
-      </section>
-
-      <section className="split-art paper" aria-label="What needs you and what Q is doing">
-        <div className="stack gap-10" style={{ maxWidth: 760 }}>
-          <div className="stack gap-4">
-            <Label as="h2">Needs you · {waitingCount}</Label>
-            {waitingCount === 0 && <p className="muted">Nothing is waiting on you. When Q needs a yes, it appears here first.</p>}
-            {pending.map((p) => (
-              <Arrive key={p.proposalId}>
-                <article className="moment" data-state="waiting">
-                  <div className="row between wrap gap-2"><h3 className="t-title" style={{ fontSize: 18 }}>{p.summary}</h3><span className="t-label">Approve each send · email</span></div>
-                  <p className="moment-quote">{p.preview.split('\n\n').slice(0, 2).join('\n\n')}</p>
-                  <div className="moment-actions"><Link to="/r/outreach" className="btn btn-primary">Review and approve</Link></div>
-                </article>
-              </Arrive>
-            ))}
-            {slotsToSend && (
-              <article className="moment"><h3 className="t-title" style={{ fontSize: 18 }}>Send {w.scheduling!.slots.length} interview times to Tobi</h3><p className="muted">Calculated from your remembered hours and Seyi’s busy times.</p><div className="moment-actions"><Link to="/r/calendar" className="btn btn-primary">Review times</Link></div></article>
-            )}
-            {counter && (
-              <article className="moment"><h3 className="t-title" style={{ fontSize: 18 }}>Tobi suggested another time</h3><p className="moment-quote">“{w.scheduling!.counterProposal?.text}”</p><div className="moment-actions"><Link to="/r/calendar" className="btn btn-primary">Review</Link></div></article>
-            )}
-          </div>
-
-          <div className="stack gap-4">
-            <Label as="h2">Q is working on</Label>
-            {active.length === 0 && <p className="muted">Nothing running.{w.mandate.status === 'DRAFT' ? ' Tell Q who you need to start.' : ''}</p>}
-            {sourcingId && !sourcing.completed && sourcing.steps.length > 0 && (
-              <div className="stack gap-3"><Link to="/r/sourcing" className="t-title" style={{ fontSize: 18, color: 'inherit' }}>{sourcing.title || 'Sourcing'}</Link><RunSteps steps={sourcing.steps} /></div>
-            )}
-            {sourcing.completed && <p>Sourcing finished: {w.mandate.shortlist.length} people to compare. <Link to="/r/compare">Open the comparison</Link></p>}
-          </div>
-
-          <div className="stack gap-3">
-            <Label as="h2">Coming up</Label>
-            {booked ? (
-              <p className="row gap-3 wrap"><span className="t-mono">{fmt(booked.start, 'Africa/Lagos', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false })}</span><span>Interview with Tobi Adeyemi and Seyi Balogun</span><Sim>Simulated receipt</Sim></p>
-            ) : <p className="muted">No interviews booked yet.</p>}
-          </div>
-
-          <div className="stack gap-3">
-            <Label as="h2">Recently</Label>
-            {w.activity.length === 0 ? <p className="muted">Q’s actions and your approvals will be listed here, newest first.</p> : (
-              <ul className="stack gap-2">{w.activity.slice(0, 5).map((a, i) => <li key={i} className="row gap-3"><span className="t-mono subtle" style={{ width: 52 }}>{new Date(a.at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span><span><strong style={{ fontWeight: 500 }}>{a.actor}</strong> · {a.text}</span></li>)}</ul>
-            )}
-          </div>
-        </div>
-      </section>
-    </main>
+    <Split id="home"
+      thread={<Thread title="Q home" entries={entries} onSend={onSend} agents={agents} mood={mood} typing={typing} placeholder="Ask Q, or tell it what to do"
+        composer={<Composer onSend={onSend} suggestion={w.mandate.status === 'DRAFT' ? 'I need a senior backend engineer for payments' : 'Who should I talk to first?'} />} />}
+      canvas={
+        <Canvas title={headline} kicker="Q · your day" open={narrowOpen} onClose={() => setNarrowOpen(false)} qLine={entries[entries.length - 1]?.text}>
+          <section className="ds-sheet ds-legacy" aria-label="What needs you and what Q is doing" style={{ display: 'grid', gap: 28, maxWidth: 820 }}>
+            <div className="stack gap-4">
+              <Label as="h2">Needs you · {waitingCount}</Label>
+              {waitingCount === 0 && <p className="muted">Nothing is waiting on you. When Q needs a yes, it appears here first.</p>}
+              {pending.map((p) => (
+                <Arrive key={p.proposalId}>
+                  <article className="moment" data-state="waiting">
+                    <div className="row between wrap gap-2"><h3 className="t-title" style={{ fontSize: 18 }}>{p.summary}</h3><span className="t-label">Approve each send · email</span></div>
+                    <p className="moment-quote">{p.preview.split('\n\n').slice(0, 2).join('\n\n')}</p>
+                    <div className="moment-actions"><Link to="/r/outreach" className="btn btn-primary">Review and approve</Link></div>
+                  </article>
+                </Arrive>
+              ))}
+              {slotsToSend && (
+                <article className="moment"><h3 className="t-title" style={{ fontSize: 18 }}>Send {w.scheduling!.slots.length} interview times to Tobi</h3><p className="muted">Calculated from your remembered hours and Seyi’s busy times.</p><div className="moment-actions"><Link to="/r/calendar" className="btn btn-primary">Review times</Link></div></article>
+              )}
+              {counter && (
+                <article className="moment"><h3 className="t-title" style={{ fontSize: 18 }}>Tobi suggested another time</h3><p className="moment-quote">“{w.scheduling!.counterProposal?.text}”</p><div className="moment-actions"><Link to="/r/calendar" className="btn btn-primary">Review</Link></div></article>
+              )}
+            </div>
+            <div className="stack gap-4">
+              <Label as="h2">Q is working on</Label>
+              {active.length === 0 && <p className="muted">Nothing running.{w.mandate.status === 'DRAFT' ? ' Tell Q who you need to start.' : ''} <Link to="/r/plan">Plans and agents</Link> shows multi-step work.</p>}
+              {sourcingId && !sourcing.completed && sourcing.steps.length > 0 && (
+                <div className="stack gap-3"><Link to="/r/sourcing" className="t-title" style={{ fontSize: 18, color: 'inherit' }}>{sourcing.title || 'Sourcing'}</Link><RunSteps steps={sourcing.steps} /></div>
+              )}
+              {sourcing.completed && <p>Sourcing finished: {w.mandate.shortlist.length} people to compare. <Link to="/r/compare">Open the comparison</Link></p>}
+            </div>
+            <div className="stack gap-3">
+              <Label as="h2">Coming up</Label>
+              {booked ? (
+                <p className="row gap-3 wrap"><span className="t-mono">{fmt(booked.start, 'Africa/Lagos', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false })}</span><span>Interview with Tobi Adeyemi and Seyi Balogun</span><Sim>Simulated receipt</Sim></p>
+              ) : <p className="muted">No interviews booked yet.</p>}
+            </div>
+            <div className="stack gap-3">
+              <Label as="h2">Recently</Label>
+              {w.activity.length === 0 ? <p className="muted">Q’s actions and your approvals will be listed here, newest first.</p> : (
+                <ul className="stack gap-2">{w.activity.slice(0, 5).map((a, i) => <li key={i} className="row gap-3"><span className="t-mono subtle" style={{ width: 52 }}>{new Date(a.at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</span><span><strong style={{ fontWeight: 500 }}>{a.actor}</strong> · {a.text}</span></li>)}</ul>
+              )}
+            </div>
+          </section>
+        </Canvas>
+      } />
   );
 }
