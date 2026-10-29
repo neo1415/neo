@@ -1,0 +1,1238 @@
+[
+ {
+  "journey": "R1",
+  "said": "its called Crumb & Co, a bakery in Ikeja",
+  "verified": "Q creates the org in conversation",
+  "source": "qa/scripts/journeys/R1.mjs:55"
+ },
+ {
+  "journey": "R1",
+  "said": "honestly the queue gets so long, i cant serve custmers and bake at the same time",
+  "verified": "Q hears two jobs and asks which matters more",
+  "source": "qa/scripts/journeys/R1.mjs:58"
+ },
+ {
+  "journey": "R1",
+  "said": "the serving one, i can do the baking myself",
+  "verified": "Q proposes a role from vague talk (shop assistant)",
+  "source": "qa/scripts/journeys/R1.mjs:60"
+ },
+ {
+  "journey": "R1",
+  "said": "full time pls",
+  "verified": "Q asks about pay in plain words",
+  "source": "qa/scripts/journeys/R1.mjs:62"
+ },
+ {
+  "journey": "R1",
+  "said": "maybe 80k",
+  "verified": "draft brief created as a DRAFT mandate",
+  "source": "qa/scripts/journeys/R1.mjs:64"
+ },
+ {
+  "journey": "R1",
+  "said": "sorry whats a mandate?",
+  "verified": "[info] explains “mandate” in plain words",
+  "source": "qa/scripts/journeys/R1.mjs:70"
+ },
+ {
+  "journey": "R1",
+  "said": "actually what i really need is someone to do my books, part time. the money side is a mess",
+  "verified": "[mind] role re-planned to part-time bookkeeper as v2",
+  "source": "qa/scripts/journeys/R1.mjs:74"
+ },
+ {
+  "journey": "R1",
+  "said": "oh no undo that",
+  "verified": "Q confirms what will be undone",
+  "source": "qa/scripts/journeys/R1.mjs:95"
+ },
+ {
+  "journey": "R1",
+  "said": "hi im back, where was i?",
+  "verified": "[recover] Q resumes from where she stopped",
+  "source": "qa/scripts/journeys/R1.mjs:106"
+ },
+ {
+  "journey": "R1",
+  "said": "yes go ahead and look for people",
+  "verified": "simulated search finds bookkeepers only",
+  "source": "qa/scripts/journeys/R1.mjs:117"
+ },
+ {
+  "journey": "R1",
+  "said": "shortlist kemi and yusuf",
+  "verified": "shortlist by name",
+  "source": "qa/scripts/journeys/R1.mjs:123"
+ },
+ {
+  "journey": "R1",
+  "said": "can i meet them next week?",
+  "verified": "Q proposes times and asks for approval",
+  "source": "qa/scripts/journeys/R1.mjs:128"
+ },
+ {
+  "journey": "R2",
+  "said": "wat does a senior backend enginer actually do",
+  "verified": "role research in plain words",
+  "source": "qa/scripts/journeys/R2.mjs:51"
+ },
+ {
+  "journey": "R2",
+  "said": "compare tobi and zara on payments and Go",
+  "verified": "compare by criteria navigates",
+  "source": "qa/scripts/journeys/R2.mjs:55"
+ },
+ {
+  "journey": "R2",
+  "said": "actualy add postgres too",
+  "verified": "[mind] criteria changed mid-comparison",
+  "source": "qa/scripts/journeys/R2.mjs:62"
+ },
+ {
+  "journey": "R2",
+  "said": "why do you say tobi is stronger?? thats not fair",
+  "verified": "[mind] challenge: Q shows reasoning and evidence",
+  "source": "qa/scripts/journeys/R2.mjs:66"
+ },
+ {
+  "journey": "R2",
+  "said": "tobis go library doesnt count as production go",
+  "verified": "[mind] Q accepts the correction",
+  "source": "qa/scripts/journeys/R2.mjs:70"
+ },
+ {
+  "journey": "R2",
+  "said": "weigh them equaly",
+  "verified": "weighting changed by typing",
+  "source": "qa/scripts/journeys/R2.mjs:72"
+ },
+ {
+  "journey": "R2",
+  "said": "Show me everything about Tobi",
+  "verified": "profile opens from Q",
+  "source": "qa/scripts/journeys/R2.mjs:77"
+ },
+ {
+  "journey": "R2",
+  "said": "github seems down, try again pls",
+  "verified": "[info] retry #1 still down, said honestly",
+  "source": "qa/scripts/journeys/R2.mjs:88"
+ },
+ {
+  "journey": "R2",
+  "said": "go back to the comparison",
+  "verified": "go back restores the comparison exactly",
+  "source": "qa/scripts/journeys/R2.mjs:99"
+ },
+ {
+  "journey": "R2",
+  "said": "draft an interview invitation for him",
+  "verified": "draft invitation handled (hire-c skill) without breaking R2",
+  "source": "qa/scripts/journeys/R2.mjs:101"
+ },
+ {
+  "journey": "R2",
+  "said": "add kunle",
+  "verified": "[info] CV vs evidence: unknown separated from weak",
+  "source": "qa/scripts/journeys/R2.mjs:108"
+ },
+ {
+  "journey": "R2",
+  "said": "kunle has an amazing cv tho, why is he ranked low",
+  "verified": "[info] CV vs evidence: unknown separated from weak",
+  "source": "qa/scripts/journeys/R2.mjs:109"
+ },
+ {
+  "journey": "R2",
+  "said": "compare on evidence from the last year only",
+  "verified": "[mind] last-year filter on, notes rewritten",
+  "source": "qa/scripts/journeys/R2.mjs:114"
+ },
+ {
+  "journey": "R2",
+  "said": "whats going on with kunles dispute",
+  "verified": "[info] Q explains the dispute",
+  "source": "qa/scripts/journeys/R2.mjs:125"
+ },
+ {
+  "journey": "R2",
+  "said": "open a review for kunle's assessment",
+  "verified": "review needs approval",
+  "source": "qa/scripts/journeys/R2.mjs:127"
+ },
+ {
+  "journey": "R2",
+  "said": "compare kunle and tobi on go",
+  "verified": "[info] disputed result excluded from comparison",
+  "source": "qa/scripts/journeys/R2.mjs:131"
+ },
+ {
+  "journey": "R2",
+  "said": "how should i test postgres for zara",
+  "verified": "assessment recommended with reasons",
+  "source": "qa/scripts/journeys/R2.mjs:137"
+ },
+ {
+  "journey": "R2",
+  "said": "what should i ask ife in the intervew",
+  "verified": "interview questions from evidence gaps",
+  "source": "qa/scripts/journeys/R2.mjs:139"
+ },
+ {
+  "journey": "R2",
+  "said": "start the interview with ife",
+  "verified": "copilot started",
+  "source": "qa/scripts/journeys/R2.mjs:143"
+ },
+ {
+  "journey": "R2",
+  "said": "note: she helped with incidents, kind of handled the on call stuff",
+  "verified": "vague answer flagged with follow-ups",
+  "source": "qa/scripts/journeys/R2.mjs:145"
+ },
+ {
+  "journey": "R2",
+  "said": "note: she led the march outage, rolled back after 12 minutes and wrote the postmortem herself",
+  "verified": "specific answer accepted",
+  "source": "qa/scripts/journeys/R2.mjs:148"
+ },
+ {
+  "journey": "R2",
+  "said": "mark on-call strong",
+  "verified": "Q drafts feedback from notes",
+  "source": "qa/scripts/journeys/R2.mjs:150"
+ },
+ {
+  "journey": "R2",
+  "said": "mark payments some",
+  "verified": "Q drafts feedback from notes",
+  "source": "qa/scripts/journeys/R2.mjs:151"
+ },
+ {
+  "journey": "R2",
+  "said": "draft my feedback",
+  "verified": "Q drafts feedback from notes",
+  "source": "qa/scripts/journeys/R2.mjs:152"
+ },
+ {
+  "journey": "R2",
+  "said": "submit my feedback",
+  "verified": "submit needs approval",
+  "source": "qa/scripts/journeys/R2.mjs:157"
+ },
+ {
+  "journey": "R3",
+  "said": "can u draft an intervew invitation for him",
+  "verified": "Ada: ",
+  "source": "qa/scripts/journeys/R3.mjs:68"
+ },
+ {
+  "journey": "R3",
+  "said": "Change it to Friday and make the tone more friendly",
+  "verified": "Edit in place: Friday + friendlier, shows v1 → v2 diff",
+  "source": "qa/scripts/journeys/R3.mjs:71"
+ },
+ {
+  "journey": "R3",
+  "said": "Send it",
+  "verified": "After approval: SENT_SIMULATED with a ",
+  "source": "qa/scripts/journeys/R3.mjs:74"
+ },
+ {
+  "journey": "R3",
+  "said": "just send zaras invite pls",
+  "verified": "Curveball [recover]: sending an unapproved draft → checks first, nothing sent",
+  "source": "qa/scripts/journeys/R3.mjs:88"
+ },
+ {
+  "journey": "R3",
+  "said": "find a time for Kunle with Seyi and Musa next week",
+  "verified": "Find a time with Seyi (Lagos) and Musa (London): overlap with both zones",
+  "source": "qa/scripts/journeys/R3.mjs:109"
+ },
+ {
+  "journey": "R3",
+  "said": "hold the first one",
+  "verified": "Hold the first slot",
+  "source": "qa/scripts/journeys/R3.mjs:112"
+ },
+ {
+  "journey": "R3",
+  "said": "draft the invite for kunle",
+  "verified": "Draft uses the held time",
+  "source": "qa/scripts/journeys/R3.mjs:116"
+ },
+ {
+  "journey": "R3",
+  "said": "send it",
+  "verified": "Curveball [info]: slot taken after proposing → noticed, nothing sent, new time offered",
+  "source": "qa/scripts/journeys/R3.mjs:118"
+ },
+ {
+  "journey": "R3",
+  "said": "move Ife to interveiw",
+  "verified": "Move Ife to Interview by typing",
+  "source": "qa/scripts/journeys/R3.mjs:128"
+ },
+ {
+  "journey": "R3",
+  "said": "oops undo that",
+  "verified": "Curveball [mind]: undo the move",
+  "source": "qa/scripts/journeys/R3.mjs:131"
+ },
+ {
+  "journey": "R3",
+  "said": "reject ife",
+  "verified": "Rejection asks for a job-related reason",
+  "source": "qa/scripts/journeys/R3.mjs:135"
+ },
+ {
+  "journey": "R3",
+  "said": "she is too old for us",
+  "verified": "Curveball [info]: non-job-related reason refused",
+  "source": "qa/scripts/journeys/R3.mjs:137"
+ },
+ {
+  "journey": "R3",
+  "said": "Another candidate was a closer fit for the role",
+  "verified": "Rejected with internal reason + kind draft for approval (reason not in message)",
+  "source": "qa/scripts/journeys/R3.mjs:139"
+ },
+ {
+  "journey": "R3",
+  "said": "swap musa for bayo on tobis panel",
+  "verified": "Seyi swaps the panel; holds re-validated",
+  "source": "qa/scripts/journeys/R3.mjs:146"
+ },
+ {
+  "journey": "R3",
+  "said": "send ifes message",
+  "verified": "Seyi (hiring manager) can’t send: routed to approval queue",
+  "source": "qa/scripts/journeys/R3.mjs:148"
+ },
+ {
+  "journey": "R3",
+  "said": "sorry cant make that time, can we move it to thursday afternoon?",
+  "verified": "Zara: Q prepares a reschedule request and asks before sending",
+  "source": "qa/scripts/journeys/R3.mjs:160"
+ },
+ {
+  "journey": "R3",
+  "said": "find a new time for zara",
+  "verified": "New time respects Zara’s Thursday afternoon",
+  "source": "qa/scripts/journeys/R3.mjs:168"
+ },
+ {
+  "journey": "R3",
+  "said": "ok send it",
+  "verified": "Reschedule sent; event back to invited at the new time",
+  "source": "qa/scripts/journeys/R3.mjs:171"
+ },
+ {
+  "journey": "R3",
+  "said": "make musa a recruiter",
+  "verified": "Admin changes a role by typing",
+  "source": "qa/scripts/journeys/R3.mjs:183"
+ },
+ {
+  "journey": "R3",
+  "said": "undo",
+  "verified": "Role change undone",
+  "source": "qa/scripts/journeys/R3.mjs:186"
+ },
+ {
+  "journey": "R3",
+  "said": "draft an interview invite for ife",
+  "verified": "Won’t invite someone marked not progressing",
+  "source": "qa/scripts/journeys/R3.mjs:190"
+ },
+ {
+  "journey": "R3",
+  "said": "seyi make me a viewer",
+  "verified": "Permission: hiring manager can’t change roles",
+  "source": "qa/scripts/journeys/R3.mjs:196"
+ },
+ {
+  "journey": "R3",
+  "said": "make bayo an admin",
+  "verified": "Permission: hiring manager can’t change roles",
+  "source": "qa/scripts/journeys/R3.mjs:198"
+ },
+ {
+  "journey": "R4",
+  "said": "what happened to the ops search?",
+  "verified": "3 curveball [mind] interrupt: ",
+  "source": "qa/scripts/journeys/R4.mjs:72"
+ },
+ {
+  "journey": "R4",
+  "said": "stop the medlink search, kora is urgent",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:78"
+ },
+ {
+  "journey": "R4",
+  "said": "retry it",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:88"
+ },
+ {
+  "journey": "R4",
+  "said": "run the kora backend search again and tell me whats new",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:96"
+ },
+ {
+  "journey": "R4",
+  "said": "show medlinks candidates on the kora report",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:106"
+ },
+ {
+  "journey": "R4",
+  "said": "put the top 3 from the ops pool in front of kora",
+  "verified": "7 submittal by typing: top 5 from the payments pool, consent checked per person",
+  "source": "qa/scripts/journeys/R4.mjs:111"
+ },
+ {
+  "journey": "R4",
+  "said": "put the top 5 from the payments pool in front of kora",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:117"
+ },
+ {
+  "journey": "R4",
+  "said": "simulate halima withdrawing consent",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:126"
+ },
+ {
+  "journey": "R4",
+  "said": "actually only the top 3",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:137"
+ },
+ {
+  "journey": "R4",
+  "said": "yes send it",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:139"
+ },
+ {
+  "journey": "R4",
+  "said": "launch the kora payments campaign",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:147"
+ },
+ {
+  "journey": "R4",
+  "said": "yes",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:149"
+ },
+ {
+  "journey": "R4",
+  "said": "launch the medlink campaign",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:156"
+ },
+ {
+  "journey": "R4",
+  "said": "upload the signed medlink brief",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:158"
+ },
+ {
+  "journey": "R4",
+  "said": "resume medlink",
+  "verified": "12 curveball [info] conflicting requirements: Kora on-site vs Medlink remote",
+  "source": "qa/scripts/journeys/R4.mjs:165"
+ },
+ {
+  "journey": "R4",
+  "said": "any conflicts between the clients?",
+  "verified": "13 collaboration note @mentioning Tunde",
+  "source": "qa/scripts/journeys/R4.mjs:171"
+ },
+ {
+  "journey": "R4",
+  "said": "tell tunde to check femis references before friday",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:177"
+ },
+ {
+  "journey": "R4",
+  "said": "draft the kora report",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:185"
+ },
+ {
+  "journey": "R4",
+  "said": "share the kora report",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:194"
+ },
+ {
+  "journey": "R4",
+  "said": "open the confidential kora backend role",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:203"
+ },
+ {
+  "journey": "R4",
+  "said": "put the top 3 from the payments pool in front of kora",
+  "verified": "16 Dele grants access; Tunde can now open the record",
+  "source": "qa/scripts/journeys/R4.mjs:210"
+ },
+ {
+  "journey": "R4",
+  "said": "let tunde see it",
+  "verified": null,
+  "source": "qa/scripts/journeys/R4.mjs:217"
+ },
+ {
+  "journey": "R5",
+  "said": "I need a senior backend engineer for payments",
+  "verified": "Kora intake starts the Senior Backend brief from Q",
+  "source": "qa/scripts/journeys/R5.mjs:51"
+ },
+ {
+  "journey": "R5",
+  "said": "hybrid lagos",
+  "verified": "answers applied to the brief",
+  "source": "qa/scripts/journeys/R5.mjs:54"
+ },
+ {
+  "journey": "R5",
+  "said": "payments reconcilation",
+  "verified": "answers applied to the brief",
+  "source": "qa/scripts/journeys/R5.mjs:55"
+ },
+ {
+  "journey": "R5",
+  "said": "aprove the payouts brief",
+  "verified": "approval asked with the exact version",
+  "source": "qa/scripts/journeys/R5.mjs:66"
+ },
+ {
+  "journey": "R5",
+  "said": "ok find people for payouts",
+  "verified": "search for Payouts runs (Kora pool)",
+  "source": "qa/scripts/journeys/R5.mjs:70"
+ },
+ {
+  "journey": "R5",
+  "said": "only seniors pls",
+  "verified": "only seniors applied and visible",
+  "source": "qa/scripts/journeys/R5.mjs:75"
+ },
+ {
+  "journey": "R5",
+  "said": "why are there no juniors??",
+  "verified": "[mind] Q points out the contradiction and asks which to keep",
+  "source": "qa/scripts/journeys/R5.mjs:78"
+ },
+ {
+  "journey": "R5",
+  "said": "ok include them",
+  "verified": "his choice is applied (juniors back, by level)",
+  "source": "qa/scripts/journeys/R5.mjs:81"
+ },
+ {
+  "journey": "R5",
+  "said": "i want someone really senior but cheap",
+  "verified": "[mind] senior-but-cheap trade-off named",
+  "source": "qa/scripts/journeys/R5.mjs:84"
+ },
+ {
+  "journey": "R5",
+  "said": "send tobi an offer today",
+  "verified": "[recover] offer refused, names who can",
+  "source": "qa/scripts/journeys/R5.mjs:89"
+ },
+ {
+  "journey": "R5",
+  "said": "change the policy so we dont need a panel of two",
+  "verified": "policy change refused, admin named",
+  "source": "qa/scripts/journeys/R5.mjs:95"
+ },
+ {
+  "journey": "R5",
+  "said": "just send it to all of them now",
+  "verified": "[recover] bulk send prepared as drafts, nothing sent",
+  "source": "qa/scripts/journeys/R5.mjs:97"
+ },
+ {
+  "journey": "R5",
+  "said": "only men under 30 for this one",
+  "verified": "[info] non-job criterion declined",
+  "source": "qa/scripts/journeys/R5.mjs:102"
+ },
+ {
+  "journey": "R5",
+  "said": "ok and nobody who graduated before 2015",
+  "verified": "age proxy declined too",
+  "source": "qa/scripts/journeys/R5.mjs:109"
+ },
+ {
+  "journey": "R5",
+  "said": "thats wrong, i never said remote is fine",
+  "verified": "Q shows what it remembered and its source",
+  "source": "qa/scripts/journeys/R5.mjs:115"
+ },
+ {
+  "journey": "R5",
+  "said": "hybrid, lagos office 3 days a week. fully remote is not ok",
+  "verified": "memory corrected, old one superseded",
+  "source": "qa/scripts/journeys/R5.mjs:118"
+ },
+ {
+  "journey": "R5",
+  "said": "is kunle really 6 yrs experiance? his github looks way newer",
+  "verified": "[info] both sources shown, none picked silently",
+  "source": "qa/scripts/journeys/R5.mjs:130"
+ },
+ {
+  "journey": "R5",
+  "said": "who chnaged the pannel?",
+  "verified": "who changed the panel → Ngozi, with when",
+  "source": "qa/scripts/journeys/R5.mjs:140"
+ },
+ {
+  "journey": "R5",
+  "said": "wat did u do yesterday",
+  "verified": "what did you do yesterday → Q’s own actions",
+  "source": "qa/scripts/journeys/R5.mjs:145"
+ },
+ {
+  "journey": "T1",
+  "said": "hi, i just finished uni and i dont really know how to make a profile",
+  "verified": "Q starts a guided profile and asks one small question",
+  "source": "qa/scripts/journeys/T1.mjs:55"
+ },
+ {
+  "journey": "T1",
+  "said": "can i upload my cv instead? i only have a photo of it on my phone",
+  "verified": "Q offers sample files to upload",
+  "source": "qa/scripts/journeys/T1.mjs:60"
+ },
+ {
+  "journey": "T1",
+  "said": "i dont know what to write tbh",
+  "verified": "Curveball [info]: Q asks a smaller, concrete question",
+  "source": "qa/scripts/journeys/T1.mjs:71"
+ },
+ {
+  "journey": "T1",
+  "said": "economics at UNN, i finished this year 2026",
+  "verified": "Study saved in her words",
+  "source": "qa/scripts/journeys/T1.mjs:73"
+ },
+ {
+  "journey": "T1",
+  "said": "i dont know what to write, i only did school stuff",
+  "verified": "Small questions about school projects",
+  "source": "qa/scripts/journeys/T1.mjs:75"
+ },
+ {
+  "journey": "T1",
+  "said": "my final year project was on food prices in ogbete market, i did a survey of traders and analysed it in excel",
+  "verified": "Project kept as a claim, Q asks for a rough number",
+  "source": "qa/scripts/journeys/T1.mjs:77"
+ },
+ {
+  "journey": "T1",
+  "said": "about 120 traders",
+  "verified": "Detail added to the project, in her words",
+  "source": "qa/scripts/journeys/T1.mjs:79"
+ },
+ {
+  "journey": "T1",
+  "said": "i have never had a job tho, is that a problem??",
+  "verified": "Curveball [info]: no work history is fine; Q never invents a job",
+  "source": "qa/scripts/journeys/T1.mjs:84"
+ },
+ {
+  "journey": "T1",
+  "said": "i was treasurer for the economics students association, kept the budget of 350k and the monthly accounts",
+  "verified": "Volunteering saved as a claim",
+  "source": "qa/scripts/journeys/T1.mjs:86"
+ },
+ {
+  "journey": "T1",
+  "said": "can i skip this one",
+  "verified": "Curveball [mind]: skipping allowed; Q remembers without nagging",
+  "source": "qa/scripts/journeys/T1.mjs:90"
+ },
+ {
+  "journey": "T1",
+  "said": "actually can i just fill a form instead, typing is easier",
+  "verified": "Switches to the short form",
+  "source": "qa/scripts/journeys/T1.mjs:94"
+ },
+ {
+  "journey": "T1",
+  "said": "oh yes 2026 sorry",
+  "verified": "Q fixes it, saves the form and carries on",
+  "source": "qa/scripts/journeys/T1.mjs:104"
+ },
+ {
+  "journey": "T1",
+  "said": "not sure yet, maybe something with numbers",
+  "verified": "Profile complete; claims sync to her private Passport",
+  "source": "qa/scripts/journeys/T1.mjs:107"
+ },
+ {
+  "journey": "T1",
+  "said": "what jobs could i do with economics and what i have",
+  "verified": "Career atlas opens; claims shown as mentioned, not proven",
+  "source": "qa/scripts/journeys/T1.mjs:117"
+ },
+ {
+  "journey": "T1",
+  "said": "what skills do i actually have",
+  "verified": "Skills exploration: mentioned vs shown",
+  "source": "qa/scripts/journeys/T1.mjs:120"
+ },
+ {
+  "journey": "T1",
+  "said": "quiz me on spreadsheets",
+  "verified": "Practice question (private)",
+  "source": "qa/scripts/journeys/T1.mjs:123"
+ },
+ {
+  "journey": "T1",
+  "said": "b",
+  "verified": "Practice is not proof; map unchanged",
+  "source": "qa/scripts/journeys/T1.mjs:125"
+ },
+ {
+  "journey": "T1",
+  "said": "ok show me entry level jobs that fit me",
+  "verified": "Matches from real listings, as claims not promises",
+  "source": "qa/scripts/journeys/T1.mjs:129"
+ },
+ {
+  "journey": "T1",
+  "said": "why does the tinda graduate data assistant job fit me",
+  "verified": "Need-by-need explanation with her own words",
+  "source": "qa/scripts/journeys/T1.mjs:133"
+ },
+ {
+  "journey": "T1",
+  "said": "can i practise for an intervew pls",
+  "verified": "Rehearsal question from her own project; practice is private",
+  "source": "qa/scripts/journeys/T1.mjs:137"
+ },
+ {
+  "journey": "T1",
+  "said": "we did a survey of the traders and saw that prices went up a lot",
+  "verified": "Feedback without scoring; not evidence",
+  "source": "qa/scripts/journeys/T1.mjs:139"
+ },
+ {
+  "journey": "T1",
+  "said": "can u help me write my cv",
+  "verified": "CV draft only from her words",
+  "source": "qa/scripts/journeys/T1.mjs:146"
+ },
+ {
+  "journey": "T1",
+  "said": "can you add that i did an internship at a bank and i know python, so it looks better",
+  "verified": "Curveball [info]: Q refuses to fabricate an internship or Python",
+  "source": "qa/scripts/journeys/T1.mjs:149"
+ },
+ {
+  "journey": "T1",
+  "said": "ok fair. but i actually did a free python course on coursera last year",
+  "verified": "Her own statement is added as a claim",
+  "source": "qa/scripts/journeys/T1.mjs:152"
+ },
+ {
+  "journey": "T1",
+  "said": "ok redo my cv with that pls",
+  "verified": "CV redrafted with her new claim",
+  "source": "qa/scripts/journeys/T1.mjs:154"
+ },
+ {
+  "journey": "T1",
+  "said": "ok apply for the tinda graduate data assistant job",
+  "verified": "Apply asks for approval and says what is shared",
+  "source": "qa/scripts/journeys/T1.mjs:161"
+ },
+ {
+  "journey": "T1",
+  "said": "go back",
+  "verified": "Curveball [recover]: “go back” returns to the previous page",
+  "source": "qa/scripts/journeys/T1.mjs:172"
+ },
+ {
+  "journey": "T2",
+  "said": "hey, ive been in sales 4 yrs and i want to get out of sales into product, like product manager. where could i go",
+  "verified": "Discovery: atlas opens from sales, goal is Associate PM",
+  "source": "qa/scripts/journeys/T2.mjs:48"
+ },
+ {
+  "journey": "T2",
+  "said": "what from my sales job actualy transfers",
+  "verified": "Transferable skills come from the verified sales evidence",
+  "source": "qa/scripts/journeys/T2.mjs:53"
+ },
+ {
+  "journey": "T2",
+  "said": "show me evidence vs gaps for product manager",
+  "verified": "Evidence vs gaps, competency by competency",
+  "source": "qa/scripts/journeys/T2.mjs:59"
+ },
+ {
+  "journey": "T2",
+  "said": "ok make me a plan",
+  "verified": "Plan with practice, work sample and learning steps",
+  "source": "qa/scripts/journeys/T2.mjs:63"
+ },
+ {
+  "journey": "T2",
+  "said": "i finished the discovery notes thing",
+  "verified": "Progress: a practice step is marked done (private)",
+  "source": "qa/scripts/journeys/T2.mjs:65"
+ },
+ {
+  "journey": "T2",
+  "said": "im halfway through the spreadsheet course btw",
+  "verified": "Progress: the learning step is half done",
+  "source": "qa/scripts/journeys/T2.mjs:67"
+ },
+ {
+  "journey": "T2",
+  "said": "actually i think business analyst suits me better than PM, can we switch",
+  "verified": "Curveball [mind]: goal changes to BA, PM archived",
+  "source": "qa/scripts/journeys/T2.mjs:72"
+ },
+ {
+  "journey": "T2",
+  "said": "undo",
+  "verified": "Curveball [recover]: undo restores the PM goal",
+  "source": "qa/scripts/journeys/T2.mjs:77"
+ },
+ {
+  "journey": "T2",
+  "said": "no wait, BA is right. make business analyst my goal again",
+  "verified": "Goal back to BA, with the same carried-over progress",
+  "source": "qa/scripts/journeys/T2.mjs:80"
+ },
+ {
+  "journey": "T2",
+  "said": "i dont agree i need the spreadsheet course, i build excel trackers every week at work",
+  "verified": "Curveball [mind]: Q shows its reasoning before changing anything",
+  "source": "qa/scripts/journeys/T2.mjs:84"
+ },
+ {
+  "journey": "T2",
+  "said": "swap it for a work sample",
+  "verified": "Q adjusts on request: course swapped for a tracker work sample",
+  "source": "qa/scripts/journeys/T2.mjs:86"
+ },
+ {
+  "journey": "T2",
+  "said": "quiz me on process mapping",
+  "verified": "Practice question (private)",
+  "source": "qa/scripts/journeys/T2.mjs:92"
+ },
+ {
+  "journey": "T2",
+  "said": "b, map the steps first",
+  "verified": "Correct, but practice is not proof; employers see the same as before",
+  "source": "qa/scripts/journeys/T2.mjs:94"
+ },
+ {
+  "journey": "T2",
+  "said": "nice so add that to my profile so medlink can see i can do it",
+  "verified": "Curveball [info]: Q refuses to treat practice as proof",
+  "source": "qa/scripts/journeys/T2.mjs:96"
+ },
+ {
+  "journey": "T2",
+  "said": "ok i did the process map of our order to delivery flow at bole, submit it for review",
+  "verified": "Work sample assessed (simulated reviewer): level 2, map moves",
+  "source": "qa/scripts/journeys/T2.mjs:102"
+ },
+ {
+  "journey": "T2",
+  "said": "i'll improve the map by saturday",
+  "verified": "Q notes his commitment, once",
+  "source": "qa/scripts/journeys/T2.mjs:107"
+ },
+ {
+  "journey": "T2",
+  "said": "simulate 3 weeks later",
+  "verified": "Demo clock moves three weeks (simulated)",
+  "source": "qa/scripts/journeys/T2.mjs:111"
+ },
+ {
+  "journey": "T2",
+  "said": "hi im back, what changed since i was last here",
+  "verified": "Q summarises what changed and what is stale",
+  "source": "qa/scripts/journeys/T2.mjs:117"
+ },
+ {
+  "journey": "T2",
+  "said": "i improved the process map, reassess it",
+  "verified": "Reassessment on the same rubric: level 2 → 3",
+  "source": "qa/scripts/journeys/T2.mjs:122"
+ },
+ {
+  "journey": "T2",
+  "said": "how am i progressing",
+  "verified": "Progress view shows the comparable rise",
+  "source": "qa/scripts/journeys/T2.mjs:125"
+ },
+ {
+  "journey": "T2",
+  "said": "any jobs for me now?",
+  "verified": "Openings: Medlink BA and Tinda APM, with gaps and history",
+  "source": "qa/scripts/journeys/T2.mjs:130"
+ },
+ {
+  "journey": "T2",
+  "said": "what can employers see about me",
+  "verified": "Privacy: J7 is private; nothing visible by default",
+  "source": "qa/scripts/journeys/T2.mjs:135"
+ },
+ {
+  "journey": "T2",
+  "said": "share my process map with medlink",
+  "verified": "Share needs his approval",
+  "source": "qa/scripts/journeys/T2.mjs:137"
+ },
+ {
+  "journey": "T3",
+  "said": "can u uplaod a work sample, the payouts design doc",
+  "verified": "Q starts an upload from natural language",
+  "source": "qa/scripts/journeys/T3.mjs:45"
+ },
+ {
+  "journey": "T3",
+  "said": "open my applications",
+  "verified": "Retry resumes from 60% while on another page",
+  "source": "qa/scripts/journeys/T3.mjs:51"
+ },
+ {
+  "journey": "T3",
+  "said": "pls retry the upload",
+  "verified": "Retry resumes from 60% while on another page",
+  "source": "qa/scripts/journeys/T3.mjs:52"
+ },
+ {
+  "journey": "T3",
+  "said": "go back",
+  "verified": "Upload finished and item is in the Passport (private)",
+  "source": "qa/scripts/journeys/T3.mjs:57"
+ },
+ {
+  "journey": "T3",
+  "said": "whats happening with my aws certificate?? its been pending forever",
+  "verified": "Q explains pending is not failed",
+  "source": "qa/scripts/journeys/T3.mjs:62"
+ },
+ {
+  "journey": "T3",
+  "said": "check the aws cert again pls",
+  "verified": "Curveball [info]: issuer unreachable, still PENDING",
+  "source": "qa/scripts/journeys/T3.mjs:64"
+ },
+ {
+  "journey": "T3",
+  "said": "ok check my aws cert again",
+  "verified": "Second check: issuer cannot confirm → FAILED",
+  "source": "qa/scripts/journeys/T3.mjs:66"
+ },
+ {
+  "journey": "T3",
+  "said": "my aws cert failed, what do i do now??",
+  "verified": "Q gives concrete next steps",
+  "source": "qa/scripts/journeys/T3.mjs:71"
+ },
+ {
+  "journey": "T3",
+  "said": "can you send kora the original fraud doc, its fine honestly",
+  "verified": "Curveball [info]: Q refuses to share the confidential original",
+  "source": "qa/scripts/journeys/T3.mjs:77"
+ },
+ {
+  "journey": "T3",
+  "said": "ugh just send it anyway nobody will know",
+  "verified": "Refuses again when pushed, without blame",
+  "source": "qa/scripts/journeys/T3.mjs:80"
+ },
+ {
+  "journey": "T3",
+  "said": "ok fine make the redacted summary",
+  "verified": "Redacted summary created (redactedOf the original)",
+  "source": "qa/scripts/journeys/T3.mjs:82"
+ },
+ {
+  "journey": "T3",
+  "said": "what does talentbridge see of my stuff",
+  "verified": "“What Talentbridge sees” preview",
+  "source": "qa/scripts/journeys/T3.mjs:91"
+ },
+ {
+  "journey": "T3",
+  "said": "stop talentbridge seeing my code",
+  "verified": "Revocation needs approval and lists the code items",
+  "source": "qa/scripts/journeys/T3.mjs:94"
+ },
+ {
+  "journey": "T3",
+  "said": "actually undo that",
+  "verified": "Curveball [mind]: undo re-shares",
+  "source": "qa/scripts/journeys/T3.mjs:100"
+ },
+ {
+  "journey": "T3",
+  "said": "no wait, stop talentbridge seeing my code. for real this time",
+  "verified": "Revoked again",
+  "source": "qa/scripts/journeys/T3.mjs:103"
+ },
+ {
+  "journey": "T3",
+  "said": "how do you describe me to employers",
+  "verified": "Q shows its summary with the basis for each line",
+  "source": "qa/scripts/journeys/T3.mjs:123"
+ },
+ {
+  "journey": "T3",
+  "said": "thats not fair, i led the payouts team of 4 at Lumen for 2 yrs",
+  "verified": "Curveball [mind]: Q shows its basis and corrects the summary",
+  "source": "qa/scripts/journeys/T3.mjs:125"
+ },
+ {
+  "journey": "T3",
+  "said": "let agencies find me too",
+  "verified": "Discovery back to verified employers only",
+  "source": "qa/scripts/journeys/T3.mjs:130"
+ },
+ {
+  "journey": "T3",
+  "said": "hmm actually no. stop agencies finding me",
+  "verified": "Discovery back to verified employers only",
+  "source": "qa/scripts/journeys/T3.mjs:132"
+ },
+ {
+  "journey": "T3",
+  "said": "help me prepare for my medlink intervew",
+  "verified": "Prep for the booked Medlink interview",
+  "source": "qa/scripts/journeys/T3.mjs:138"
+ },
+ {
+  "journey": "T4",
+  "said": "where do i start pls",
+  "verified": "Q: ",
+  "source": "qa/scripts/journeys/T4.mjs:85"
+ },
+ {
+  "journey": "T4",
+  "said": "what is a passport here?",
+  "verified": "Explains ",
+  "source": "qa/scripts/journeys/T4.mjs:89"
+ },
+ {
+  "journey": "T4",
+  "said": "still dont get it",
+  "verified": "Rephrases when still unclear",
+  "source": "qa/scripts/journeys/T4.mjs:91"
+ },
+ {
+  "journey": "T4",
+  "said": "wat does evidence mean",
+  "verified": "Explains ",
+  "source": "qa/scripts/journeys/T4.mjs:93"
+ },
+ {
+  "journey": "T4",
+  "said": "whats safeguarding??",
+  "verified": "Explains a care-sector term (safeguarding)",
+  "source": "qa/scripts/journeys/T4.mjs:95"
+ },
+ {
+  "journey": "T4",
+  "said": "ok got it",
+  "verified": "Q closes the explanation when she understands",
+  "source": "qa/scripts/journeys/T4.mjs:97"
+ },
+ {
+  "journey": "T4",
+  "said": "dont understand",
+  "verified": "“dont understand” on a step explains the step simply",
+  "source": "qa/scripts/journeys/T4.mjs:99"
+ },
+ {
+  "journey": "T4",
+  "said": "my mic not working",
+  "verified": "Q: ",
+  "source": "qa/scripts/journeys/T4.mjs:119"
+ },
+ {
+  "journey": "T4",
+  "said": "can i use the form instead",
+  "verified": "Q switches to the simple form on request",
+  "source": "qa/scripts/journeys/T4.mjs:121"
+ },
+ {
+  "journey": "T4",
+  "said": "try again pls",
+  "verified": "Q: ",
+  "source": "qa/scripts/journeys/T4.mjs:140"
+ },
+ {
+  "journey": "T4",
+  "said": "internet is so slow here",
+  "verified": "Q turns on lite mode; bigger targets, no picture",
+  "source": "qa/scripts/journeys/T4.mjs:176"
+ },
+ {
+  "journey": "T4",
+  "said": "when is my intervew",
+  "verified": "Q knows when the interview is",
+  "source": "qa/scripts/journeys/T4.mjs:184"
+ },
+ {
+  "journey": "T4",
+  "said": "can i practise for it first",
+  "verified": "Q opens private practice",
+  "source": "qa/scripts/journeys/T4.mjs:186"
+ },
+ {
+  "journey": "T4",
+  "said": "pls repeat",
+  "verified": "“pls repeat” repeats the question",
+  "source": "qa/scripts/journeys/T4.mjs:189"
+ },
+ {
+  "journey": "T4",
+  "said": "dont understand the question",
+  "verified": "“dont understand” gives simpler words on the canvas",
+  "source": "qa/scripts/journeys/T4.mjs:191"
+ },
+ {
+  "journey": "T4",
+  "said": "ok start the real interview now",
+  "verified": "Q opens the real interview and says what the employer sees",
+  "source": "qa/scripts/journeys/T4.mjs:229"
+ },
+ {
+  "journey": "T4",
+  "said": "where was i",
+  "verified": "Q: ",
+  "source": "qa/scripts/journeys/T4.mjs:236"
+ },
+ {
+  "journey": "T4",
+  "said": "submit my answers",
+  "verified": "Sending needs explicit approval",
+  "source": "qa/scripts/journeys/T4.mjs:246"
+ },
+ {
+  "journey": "T5",
+  "said": "is rivers logistics even legit? feels dodgy",
+  "verified": "Q explains signals and their limits",
+  "source": "qa/scripts/journeys/T5.mjs:45"
+ },
+ {
+  "journey": "T5",
+  "said": "ok show me only verified jobs",
+  "verified": "Verified filter hides the unverified employer",
+  "source": "qa/scripts/journeys/T5.mjs:47"
+ },
+ {
+  "journey": "T5",
+  "said": "why is kora a match for me tho",
+  "verified": "Match explained with the evidence used",
+  "source": "qa/scripts/journeys/T5.mjs:54"
+ },
+ {
+  "journey": "T5",
+  "said": "thats wrong, i built mobile money payouts at fleetline for 2 years",
+  "verified": "Curveball [mind]: challenge recorded as “you told me”, not proof",
+  "source": "qa/scripts/journeys/T5.mjs:56"
+ },
+ {
+  "journey": "T5",
+  "said": "any tips for my kora aplication?",
+  "verified": "Advice offered (includes a cover note)",
+  "source": "qa/scripts/journeys/T5.mjs:63"
+ },
+ {
+  "journey": "T5",
+  "said": "no. im not writing a cover letter, they are pointless. stop suggesting that",
+  "verified": "Curveball [mind]: Q accepts and remembers",
+  "source": "qa/scripts/journeys/T5.mjs:65"
+ },
+ {
+  "journey": "T5",
+  "said": "ok any other tips for kora",
+  "verified": "Declined advice is not repeated",
+  "source": "qa/scripts/journeys/T5.mjs:67"
+ },
+ {
+  "journey": "T5",
+  "said": "apply to the harbour freight job pls",
+  "verified": "Application started, nothing sent until confirmed",
+  "source": "qa/scripts/journeys/T5.mjs:71"
+ },
+ {
+  "journey": "T5",
+  "said": "open my applications",
+  "verified": "Curveball [recover]: back on the job, closed banner and choices kept",
+  "source": "qa/scripts/journeys/T5.mjs:77"
+ },
+ {
+  "journey": "T5",
+  "said": "go back",
+  "verified": "Curveball [recover]: back on the job, closed banner and choices kept",
+  "source": "qa/scripts/journeys/T5.mjs:78"
+ },
+ {
+  "journey": "T5",
+  "said": "send it anyway",
+  "verified": "Nothing is submitted to a closed listing",
+  "source": "qa/scripts/journeys/T5.mjs:81"
+ },
+ {
+  "journey": "T5",
+  "said": "show me similar jobs that are still open",
+  "verified": "Similar open jobs offered",
+  "source": "qa/scripts/journeys/T5.mjs:86"
+ },
+ {
+  "journey": "T5",
+  "said": "has rivers replied to me?? its been ages",
+  "verified": "Curveball [info]: honest status, no blame",
+  "source": "qa/scripts/journeys/T5.mjs:90"
+ },
+ {
+  "journey": "T5",
+  "said": "did kora reply yet",
+  "verified": "“Viewed” means only that",
+  "source": "qa/scripts/journeys/T5.mjs:100"
+ },
+ {
+  "journey": "T5",
+  "said": "too many emails. only email me weekly and stop texting me",
+  "verified": "Curveball [mind]: notifications changed through Q",
+  "source": "qa/scripts/journeys/T5.mjs:105"
+ },
+ {
+  "journey": "T5",
+  "said": "pls forget that im looking to leave my job",
+  "verified": "Deletion plan: what goes and what can’t",
+  "source": "qa/scripts/journeys/T5.mjs:113"
+ },
+ {
+  "journey": "T5",
+  "said": "can u help me prep for interviews",
+  "verified": "Prep without promising an interview",
+  "source": "qa/scripts/journeys/T5.mjs:122"
+ }
+]
