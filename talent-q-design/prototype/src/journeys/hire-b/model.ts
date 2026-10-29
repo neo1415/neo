@@ -5,6 +5,7 @@ import type { Evidence, Requirement } from '@contracts';
 import { actorOf, canSeeCandidate, simNow, visibleEvidence, type World } from '../../mock/world';
 import type { Interview } from '../../state/domain';
 import { hireB, type Level, type Rating } from '../../state/areas/hire-b';
+import { rubricWeights } from '../rubric/model';
 
 export const KORA_ROLE = 'm_backend';
 export const reqsOf = (w: World): Requirement[] => w.mandate.requirements;
@@ -105,11 +106,33 @@ export function cellFor(w: World, pid: string, reqId: string, o: Opts = {}): Cel
   return { level, items };
 }
 
-export type Weighting = 'Q' | 'EQUAL';
+/** RUBRIC: the weights of the rubric version in force for the role (AD-B-05, AD-E-09), or, with no approved rubric,
+ *  equal must-haves (labelled as a placeholder). EQUAL: the recruiter turned the rubric weights off. ('Q' is the
+ *  pre-rubric value some saved views still hold; it now means RUBRIC.) */
+export type Weighting = 'RUBRIC' | 'EQUAL' | 'Q';
 export interface CompareView { people: string[]; criteria: string[]; lastYear: boolean; weighting: Weighting; open?: { pid: string; reqId: string } | null; last?: Snapshot | null }
-export const defaultView = (w: World): CompareView => ({ people: rolePeople(w), criteria: reqsOf(w).map((r) => r.reqId), lastYear: false, weighting: 'Q', open: null });
-/** Q's own judgement: payments is the hardest requirement to find, so it counts 1.5× unless Ada says otherwise. */
-export const weightOf = (w: World, reqId: string, mode: Weighting) => { const r = reqsOf(w).find((x) => x.reqId === reqId); const base = r?.mustHave ? 2 : 1; return mode === 'Q' && reqId === 'r1' ? base * 1.5 : base; };
+export const defaultView = (w: World): CompareView => ({ people: rolePeople(w), criteria: reqsOf(w).map((r) => r.reqId), lastYear: false, weighting: 'RUBRIC', open: null });
+export const roleRubric = (w: World) => rubricWeights(w, KORA_ROLE);
+/** True when the approved rubric's weights are being used. */
+export const usesRubric = (w: World, mode: Weighting) => mode !== 'EQUAL' && !!roleRubric(w);
+/** Equal must-haves: a must-have counts twice a nice-to-have. Rubric: the criterion weight from the version in force. */
+export const weightOf = (w: World, reqId: string, mode: Weighting) => {
+  const r = reqsOf(w).find((x) => x.reqId === reqId); const base = r?.mustHave ? 2 : 1;
+  const rw = mode === 'EQUAL' ? null : roleRubric(w);
+  return rw ? rw.weights[reqId] ?? 0 : base;
+};
+/** The requirements that carry weight in this view (a requirement left out of the rubric isn't ranked on). */
+export const weighted = (w: World, v: CompareView) => v.criteria.filter((r) => weightOf(w, r, v.weighting) > 0);
+const dayOf = (s: string) => new Date(s).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+/** One sentence on where the weights come from (the margin note, Q's replies, the switch's help). */
+export function weightingNote(w: World, v: Pick<CompareView, 'weighting' | 'criteria'>): string {
+  const rw = roleRubric(w);
+  if (!rw) return 'No approved rubric for this role yet, so must-haves count the same (twice a nice-to-have). That’s a placeholder, not Kora’s judgement: approve a rubric to set the weights.';
+  const by = w.actors.find((a) => a.id === rw.by)?.first ?? 'your team';
+  if (v.weighting === 'EQUAL') return `You turned the rubric weights off, so must-haves count the same. Rubric v${rw.v} (approved by ${by}) is unchanged.`;
+  const out = v.criteria.filter((r) => rw.weights[r] === undefined).map((r) => reqLabel(w, r));
+  return `Weights from rubric v${rw.v}, approved by ${by} on ${dayOf(rw.at)}: ${v.criteria.filter((r) => rw.weights[r]).map((r) => `${shortLabel(w, r)} ${rw.weights[r]}`).join(', ')}.${out.length ? ` ${out.join(' and ')} ${out.length === 1 ? 'isn’t' : 'aren’t'} in the rubric, so ${out.length === 1 ? 'it doesn’t' : 'they don’t'} count in the order.` : ''}`;
+}
 
 /** People in Kora's Senior Backend pipeline who are still in the process. */
 export const rolePeople = (w: World) => w.pipeline.filter((p) => p.mandateId === KORA_ROLE && !['REJECTED', 'WITHDRAWN'].includes(p.stage)).map((p) => p.personId).filter((id, i, a) => a.indexOf(id) === i && canSeeCandidate(w, id, 'org_kora'));
@@ -140,7 +163,7 @@ export function readingOf(w: World, v: CompareView): string[] {
   else if (a) out.push(`${fn(a.pid)} has the strongest evidence on what you chose${strongest(a.pid).length ? `, checked at the source for ${strongest(a.pid).join(' and ')}` : ''}.${b ? ` ${fn(b.pid)} is next${a.score - b.score < 2 ? ', and close' : ''}.` : ''}`);
   const nobody = v.criteria.filter((r) => v.people.every((p) => ['none', 'claim'].includes(cellFor(w, p, r, v).level)));
   if (nobody.length) out.push(`Nobody has shown ${nobody.map((r) => reqLabel(w, r)).join(' or ')} yet. That’s a question for the interview, not a reason to rule anyone out.`);
-  if (v.weighting === 'Q' && v.criteria.includes('r1')) out.push('I count payments 1.5× because it’s the hardest to find. That’s my judgement, not your role brief; say “weigh them equally” to remove it.');
+  out.push(weightingNote(w, v));
   const claims = v.people.filter((p) => v.criteria.some((r) => cellFor(w, p, r, v).level === 'claim'));
   if (claims.length) out.push(`${claims.map(fn).reduce((acc, x, k, a) => (k === 0 ? x : `${acc}${k === a.length - 1 ? ' and ' : ', '}${x}`), '')} ${claims.length === 1 ? 'has' : 'have'} CV claims with nothing behind them yet. Unknown isn’t the same as weak.`);
   const review = v.people.filter((p) => v.criteria.some((r) => cellFor(w, p, r, v).items.some((i) => i.excluded === 'review')));
@@ -263,7 +286,7 @@ export function describeChange(w: World, a: CompareView, b: CompareView): string
   if (added.length) out.push(`added ${join(added)}`);
   if (removed.length) out.push(`took out ${join(removed)}`);
   if (a.lastYear !== b.lastYear) out.push(b.lastYear ? 'kept evidence from the last year only' : 'brought back older evidence');
-  if (a.weighting !== b.weighting) out.push(b.weighting === 'EQUAL' ? 'weighed the must-haves equally' : 'put Q’s extra weight on payments back');
+  if ((a.weighting === 'EQUAL') !== (b.weighting === 'EQUAL')) out.push(b.weighting === 'EQUAL' ? 'weighed the must-haves equally' : 'put the rubric weights back');
   if (!out.length) return null;
   return `You ${join(out)}`;
 }

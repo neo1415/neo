@@ -23,6 +23,8 @@ import {
   allowed, mandateHidden, mandateOf, mandatePeople, messageFor, mustHavesShown, notesFor, peopleFor, personName, pipelineFor, poolsFor, PRIORITY, ranked, removedMembers, runsFor, searchesFor, setFocus, submittalsFor, today, hiddenMembers,
   phaseOf, PHASE_LABEL, PHASE_ORDER, UNIT, SLOTS, type RunPhase } from './model';
 import { needsYou } from '../../q/skills/agency';
+import { CP, parentOfOutreach } from '../campaigns/model';
+import { campaignsFor as hiringCampaignsFor } from '../../state/areas/campaigns';
 
 const doOp = (op: string, args: Record<string, unknown> = {}, label = op) => void runAction({ label, act: { t: 'do', op, args } });
 const ask = (text: string) => void sendToQ(text);
@@ -293,6 +295,7 @@ export function Clients({ id }: { id?: string } = {}) {
           <li><span>{plural(new Set(people.map((p) => p.personId)).size, 'person', 'people')} in progress</span></li>
           <li><span>{plural(poolsFor(w, c).length, 'talent pool')}, {plural(searchesFor(w, c).length, 'saved search', 'saved searches')}</span><Link className="ds-btn" to={AP.pools}>Talent pools</Link></li>
           <li><span>{plural(submittalsFor(w, c).length, 'submittal')}</span><Link className="ds-btn" to={AP.submittals}>Submittals</Link></li>
+          <li><span>{plural(hiringCampaignsFor(w, 'org_tb', c).filter((k) => k.status !== 'ARCHIVED').length, 'hiring campaign')}</span><Link className="ds-btn" to={CP.list}>Hiring campaigns</Link></li>
         </ul>
       </section>
       <Say items={[`who is in the ${clientShort(w, c).toLowerCase()} pipeline`, 'any conflicts between clients?']} />
@@ -473,6 +476,7 @@ export function Campaigns() {
   return (
     <Frame title={`${clientShort(w, focus)}: ${plural(list.length, 'campaign')}`} kicker="Outreach campaigns" here={AP.campaigns}>
       <div className="ds-banner" role="note"><Glyph k="full" /><span><b>You approve each campaign once</b> ({org.delegation === 'APPROVED_CAMPAIGN' ? 'Talentbridge’s “approved campaign” setting' : `setting: ${org.delegation.toLowerCase()}`}): who it goes to, what it says and its limits. Q then sends within those limits without asking for each message, and stops at any limit.</span><span /></div>
+      <p className="t14 cp-parent">Outreach campaigns message one talent pool about one role. To see {clientShort(w, focus)}’s roles, people and decisions together, open its <Link to={CP.list}>hiring campaigns</Link>.</p>
       {!list.length && <Empty title={`No campaigns for ${clientName(w, focus)}.`}>Ask Q to draft one for a pool.</Empty>}
       {list.map((c) => {
         const pool = agency(w).pools.find((p) => p.id === c.poolId)!;
@@ -483,6 +487,8 @@ export function Campaigns() {
           <section key={c.id} className="ds-sheet agency-camp" aria-labelledby={`cp-${c.id}`}>
             <div className="agency-row"><h2 id={`cp-${c.id}`} className="t19">{c.name}</h2><span className="ds-tag" data-k={c.status === 'RUNNING' ? 'busy' : c.status === 'DONE' ? 'ok' : undefined}>{CAMP_STATUS[c.status]}</span></div>
             <p className="t14 muted">To the {pool.name} pool · for {mandateOf(w, c.mandateId)?.title}</p>
+            {/* Hiring vs outreach (addendum §D, AD-D-04): this outreach run is a child of a role; the role sits in a hiring campaign. */}
+            {(() => { const parent = parentOfOutreach(w, c.mandateId); return <p className="t14 cp-parent">{parent ? <>Part of the hiring campaign <Link to={CP.one(parent.id)}>{parent.name}</Link></> : <>This role isn’t in a hiring campaign yet. <Link to={CP.list}>Hiring campaigns</Link></>}</p>; })()}
             <dl className="agency-facts">
               <div><dt>Per run</dt><dd className="num">{c.limits.perRun}</dd></div><div><dt>Per day</dt><dd className="num">{c.limits.perDay}</dd></div><div><dt>Words per message</dt><dd className="num">≤ {c.limits.maxWords}</dd></div><div><dt>Follow-ups</dt><dd className="num">{c.limits.followUps}</dd></div>
             </dl>

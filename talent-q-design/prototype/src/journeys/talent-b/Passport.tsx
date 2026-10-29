@@ -17,6 +17,9 @@ import { useRoute, navigate } from '../../ui/router';
 import { CELL_LABEL, KIND, VER, cellOf, cellOn, discoveryOf, isCode, myEvidence, orgName, passportStats, reachOf, redactedOf, summaryFor, tb, verOf, viewerOrgs, checkRunning, type Cell } from './logic';
 import { SeenBy, UploadRow, VerTag } from './ui';
 import type { UploadKind } from '../../state/areas/talent-b';
+// MEDIA (audit addendum §F): video and voice evidence lives in the Proof view, not on a second evidence page.
+import { MediaSection } from '../media/Candidate';
+import { media as mediaArea } from '../../state/areas/media';
 
 type Tab = 'items' | 'sharing' | 'summary' | 'discovery';
 const act = (op: string, args: Record<string, unknown> = {}) => void runAction({ label: op, act: { t: 'do', op, args } });
@@ -33,7 +36,7 @@ export function PassportPage() {
   const q = query.toString();
   useEffect(() => {
     const t = query.get('tab') as Tab | null, v = query.get('as'), i = query.get('item');
-    if (v) { setAs(v); setTab('sharing'); } else if (i) { setItem(i); setTab('items'); } else if (t) setTab(t);
+    if (v) { setAs(v); setTab('sharing'); } else if (i) { setItem(i); setTab('items'); } else if (query.get('media')) setTab('items'); else if (t) setTab(t);
   }, [q]); // eslint-disable-line react-hooks/exhaustive-deps
   const items = myEvidence(w, pid);
   const offline = w.network === 'offline';
@@ -122,6 +125,7 @@ function Items({ items, pid, first, item, setItem }: { items: Evidence[]; pid: s
           <button type="button" className="ds-btn" onClick={() => up('CERTIFICATE')}>Upload a certificate</button>
           <button type="button" className="ds-btn" onClick={() => up('WORK_SAMPLE')}>Upload a work sample</button>
           <button type="button" className="ds-btn" aria-expanded={showLink} onClick={() => setShowLink(!showLink)}>Add a link</button>
+          <button type="button" className="ds-btn" onClick={() => act('media.start')}>Add a video or voice</button>
         </div>
         {showLink && (
           <form className="tb-linkform" onSubmit={(e) => { e.preventDefault(); if (!/^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(link.trim())) { setLinkErr('That doesn’t look like a web address. Try something like github.com/yourname/project.'); return; } setLinkErr(''); up('LINK', link.trim()); setLink(''); setShowLink(false); }}>
@@ -133,6 +137,7 @@ function Items({ items, pid, first, item, setItem }: { items: Evidence[]; pid: s
         {ups.length > 0 && <div className="tb-stack" aria-label="Uploads in progress">{ups.map((u) => <UploadRow key={u.id} u={u} onRetry={() => act('tb.upload.retry', { id: u.id })} onCancel={() => act('tb.upload.cancel', { id: u.id })} />)}</div>}
         <details className="t14 tb-demo"><summary className="muted">Demo settings</summary><SwitchRow label="Drop the connection at 60%" help="For trying out a failed upload and resuming it." on={drop} onChange={setDrop} /></details>
       </section>
+      <MediaSection pid={pid} />
 
       {items.filter((e) => verOf(e) === 'FAILED').map((e) => <div key={e.evidenceId} className="ds-banner" data-k="risk" role="status"><span aria-hidden="true">✕</span><span><b>{e.title}: check failed.</b> The issuer couldn’t confirm it. It’s usually a typo or an expired record, and it’s fixable.</span><button type="button" className="ds-btn" onClick={() => setItem(e.evidenceId)}>See what to do</button></div>)}
 
@@ -227,6 +232,7 @@ function Sharing({ items, pid, as, setAs }: { items: Evidence[]; pid: string; as
   const toggle = (e: Evidence, o: string, c: Cell) => act(cellOn(c) ? 'tb.revoke' : 'tb.share', { ids: [e.evidenceId], org: o });
   const cellBtn = (e: Evidence, o: string) => {
     const c = cellOf(w, e, o); const on = cellOn(c);
+    if (mediaArea(w)?.items.some((m) => m.evidenceId === e.evidenceId) && c !== 'WITHDRAWN') return <button type="button" className="tb-cell" data-c={c} aria-label={`Choose which parts of “${e.title}” ${orgName(w, o)} sees`} onClick={() => navigate('/c/passport?media=parts')}>{on ? <Glyph k="full" size={12} /> : <span aria-hidden="true" className="tb-plus">+</span>}{on ? 'Some parts' : 'Choose parts'}</button>;
     if (c === 'LOCKED' || c === 'WITHDRAWN' || c === 'PUBLIC_UNSEEN') return <span className="tb-cell" data-c={c}>{c === 'LOCKED' ? <span aria-hidden="true">🔒</span> : null}{CELL_LABEL[c]}</span>;
     return <button type="button" className="tb-cell" data-c={c} aria-pressed={on} aria-label={`${on ? `End ${orgName(w, o)}’s access to` : `Share with ${orgName(w, o)}:`} ${e.title}`} onClick={() => toggle(e, o, c)}>{on ? <Glyph k="full" size={12} /> : <span aria-hidden="true" className="tb-plus">+</span>}{on ? CELL_LABEL[c] : c === 'REVOKED' ? 'Access ended' : 'Share'}</button>;
   };

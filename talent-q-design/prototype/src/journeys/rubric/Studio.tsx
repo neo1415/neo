@@ -11,12 +11,14 @@ import { Canvas, useNarrow } from '../../ds/Workspace';
 import { Glyph } from '../../ds/Glyph';
 import { arrive, DUR, EASE } from '../../ds/motion';
 import { Link } from '../../ui/router';
+import { OrgOnly } from '../../routes/guard';
 import { runAction } from '../../q/core/engine';
 import { approvedVersion, draftVersion, meta, rubricFor } from '../../state/areas/rubrics';
 import { campaignOf } from '../../state/areas/campaigns';
 import { actorName, affectedBy, baseOf, card, diff, firstOf, fmtDay, indexLine, KIND_WORD, list, roleOf, scored, screen } from './model';
 import './ops';
 import './rubric.css';
+import './refs';
 
 const op = (name: string, args: Record<string, unknown>) => void runAction({ label: name, act: { t: 'do', op: name, args } });
 const say = (text: string) => void runAction({ label: text, act: { t: 'say', text } });
@@ -67,9 +69,11 @@ export function Studio({ id }: { id: string }) {
   const affected = editing ? affectedBy(w, id) : [];
   const notice = editing && ver.changeNotice && affected.length ? ver.changeNotice : null;
   const share = (c: RubricCriterion, list: RubricCriterion[]) => { const t = list.filter(scored).reduce((s, x) => s + x.weight, 0); return t ? Math.round((100 * c.weight) / t) : 0; };
-  const ids = [...ver.criteria.map((c) => c.id), ...qCrit.filter((c) => !ver.criteria.some((x) => x.id === c.id)).map((c) => c.id)];
+  // Scored criteria get the side-by-side treatment; gates and the candidate's side are a compact panel (critique F2).
+  const ids = [...ver.criteria.filter(scored).map((c) => c.id), ...qCrit.filter((c) => scored(c) && !ver.criteria.some((x) => x.id === c.id)).map((c) => c.id)];
+  const unscored = ver.criteria.filter((c) => !scored(c));
   const canApprove = me.role && ['OWNER', 'ADMIN', 'RECRUITER'].includes(me.role);
-  const lede = editing
+  const lede = notice ? `v${ver.v} changes how people are scored, and ${list(affected.map((p) => firstOf(w, p)))} ${affected.length === 1 ? 'was' : 'were'} rated on v${base?.v}. Choose how to handle that before it takes effect.` : editing
     ? (versions.length === 1 ? `I drafted ${ver.criteria.filter(scored).length} scored criteria from the brief${prop?.leftOut.length ? ` and left out ${list(prop.leftOut.map((x) => x.label.toLowerCase()))} until it’s defined` : ''}. Change anything, then approve to freeze it as v${ver.v}.` : `Draft v${ver.v}, changed from v${base?.v}. ${changes.length ? `${changes.length} change${changes.length === 1 ? '' : 's'} so far.` : 'No changes yet.'}`)
     : `v${ver.v} is ${ver.state === 'APPROVED' ? (ver === inForce ? 'in force and frozen' : 'approved for the next round') : 'superseded'}. Approved by ${firstOf(w, ver.approvedBy ?? ver.by)} on ${fmtDay(ver.at)}.`;
 
@@ -84,13 +88,19 @@ export function Studio({ id }: { id: string }) {
       </div>}>
       <p className="voice rb-lede" style={{ margin: 0 }}><span className="rb-lede-q" aria-hidden="true" />{lede}</p>
 
+      {editing && (
+        <div className="rb-sticky" role="region" aria-label="Approve this draft">
+          <span className="t14"><b>Draft v{ver.v}</b> · {changes.length ? `${changes.length} change${changes.length === 1 ? '' : 's'}${base ? ` from v${base.v}` : ' to Q’s proposal'}` : base ? `no changes from v${base.v}` : 'Q’s proposal, unchanged'}</span>
+          <button type="button" className="ds-btn primary" disabled={!canApprove || (!!base && !changes.length)} onClick={() => op('rb.approve', { mandateId: id })}>{affected.length ? `Approve v${ver.v}…` : `Approve v${ver.v}`}</button>
+        </div>
+      )}
+
       {versions.length > 1 && (
         <div className="rb-vers" role="group" aria-label="Rubric versions">
           {versions.map((v) => <button key={v.v} type="button" className="ds-filter" aria-pressed={v.v === ver.v} onClick={() => setPick(v.v)}>v{v.v} · {v.state === 'Q_PROPOSED' ? 'draft' : v.state === 'APPROVED' ? (v === inForce ? 'in force' : 'next round') : 'superseded'}</button>)}
         </div>
       )}
 
-      <div className="ds-banner rb-valid" role="note"><Glyph k="unclear" /><span><b>Not a validated test.</b> These weights, minimums and the index are a prototype starting point. Before they inform hiring decisions they need a job analysis with people who do the work, and monitoring for adverse impact. A person reviews every consequential decision.</span><span /></div>
 
       <AnimatePresence initial={false}>
         {notice && (
@@ -113,6 +123,8 @@ export function Studio({ id }: { id: string }) {
         )}
       </AnimatePresence>
 
+      <div className="ds-banner rb-valid" role="note"><Glyph k="unclear" /><span><b>Not a validated test.</b> These weights, minimums and the index are a prototype starting point. Before they inform hiring decisions they need a job analysis with people who do the work, and monitoring for adverse impact. A person reviews every consequential decision.</span><span /></div>
+
       <section className="ds-sheet rb-grid" aria-labelledby="rb-w">
         <div className="rb-row"><h2 id="rb-w" className="voice t24" style={{ margin: 0 }}>How much each part counts</h2><span className="t14 muted">Share of the index</span></div>
         <ul className="rb-shares">
@@ -123,7 +135,7 @@ export function Studio({ id }: { id: string }) {
               <span className="rb-share-v num">{s}%<span className="muted"> · w{c.weight}</span></span>
             </li>); })}
         </ul>
-        <p className="t14 muted" style={{ margin: 0 }}>Not in the index: {ver.criteria.filter((c) => !scored(c)).map((c) => `${c.label} (${c.kind === 'ELIGIBILITY' ? 'a gate, met or not met' : c.kind === 'COMPATIBILITY' ? 'the candidate’s side, reported separately' : 'weight 0'})`).join('; ') || 'nothing'}.</p>
+        <p className="t14 muted" style={{ margin: 0 }}>Not in the index: {unscored.map((c) => c.label).join('; ') || 'nothing'} (see “Conditions and the candidate’s side”). A minimum flags a person for a human review; it never rejects anyone automatically.</p>
       </section>
 
       <section className="rb-grid" aria-labelledby="rb-c">
@@ -140,7 +152,7 @@ export function Studio({ id }: { id: string }) {
             const mine = ver.criteria.find((c) => c.id === cid); const q = qCrit.find((c) => c.id === cid);
             return (
               <li key={cid} className="rb-crit ds-sheet" data-removed={!mine ? '1' : undefined}>
-                {(!narrow || side === 'q') && <Column w={w} label="Q proposed" c={q} other={mine} gone={!q ? 'Not in Q’s proposal: you added it.' : undefined} />}
+                {(!narrow || side === 'q') && <Column w={w} label="Q proposed" c={q} other={mine} compact={!narrow && !!mine} gone={!q ? 'Not in Q’s proposal: you added it.' : undefined} />}
                 {(!narrow || side === 'you') && (mine
                   ? <Column w={w} label={editing ? 'Your version' : `v${ver.v}`} c={mine} other={q} editable={editing} mandateId={id} />
                   : <div className="rb-col rb-col-gone"><span className="lab">{editing ? 'Your version' : `v${ver.v}`}</span><p className="t14" style={{ margin: 0 }}>You removed “{q?.label}”.</p>{editing && <button type="button" className="ds-btn quiet" onClick={() => op('rb.add', { mandateId: id, words: q?.label ?? '' })}>Put it back</button>}</div>)}
@@ -148,6 +160,17 @@ export function Studio({ id }: { id: string }) {
             );
           })}
         </ol>
+        {unscored.length > 0 && (
+          <div className="ds-sheet rb-grid rb-unscored" aria-labelledby="rb-u">
+            <h3 id="rb-u" className="rb-ch" style={{ fontSize: 17 }}>Conditions and the candidate’s side (not scored)</h3>
+            <ul className="rb-rows">{unscored.map((c) => (
+              <li key={c.id}><div className="rb-row"><b>{c.label}</b><span className="rb-kind t14">{KIND_WORD[c.kind]}</span></div>
+                <p className="t14" style={{ margin: 0 }}>{c.why}</p>
+                <p className="t14 muted" style={{ margin: 0 }}>How: {c.method}. Ask: “{c.questions[0]}”</p>
+                {editing && <div><button type="button" className="ds-btn quiet rb-remove" onClick={() => op('rb.remove', { mandateId: id, cid: c.id })}>Remove {c.label.toLowerCase()}</button></div>}
+              </li>))}</ul>
+          </div>
+        )}
         {editing && (
           <div className="ds-sheet rb-add rb-grid">
             <label htmlFor="rb-add" className="lab">Add a criterion</label>
@@ -210,7 +233,7 @@ export function Studio({ id }: { id: string }) {
 }
 
 /** One side of a criterion: Q's proposal or your (editable) version. Differences from the other side are marked. */
-function Column({ w, label, c, other, editable, mandateId, gone }: { w: World; label: string; c?: RubricCriterion; other?: RubricCriterion; editable?: boolean; mandateId?: string; gone?: string }) {
+function Column({ w, label, c, other, editable, mandateId, gone, compact }: { w: World; label: string; c?: RubricCriterion; other?: RubricCriterion; editable?: boolean; mandateId?: string; gone?: string; compact?: boolean }) {
   const [editLv, setEditLv] = useState(false);
   if (!c) return <div className="rb-col rb-col-gone"><span className="lab">{label}</span><p className="t14 muted" style={{ margin: 0 }}>{gone}</p></div>;
   const req = c.requirementId ? roleOf(w, mandateId ?? 'm_backend')?.reqs.find((r) => r.reqId === c.requirementId) : undefined;
@@ -238,7 +261,8 @@ function Column({ w, label, c, other, editable, mandateId, gone }: { w: World; l
           ) : <b data-diff={dm ? '1' : undefined}>{c.kind === 'ELIGIBILITY' ? 'Must be met' : c.minimum !== undefined ? `Level ${c.minimum}` : 'None'}</b>}
         </div>
       </div>
-      {scored(c) && c.minimum !== undefined && <p className="t14 muted" style={{ margin: 0 }}>Below the minimum flags the person for a human review; it never rejects anyone automatically.</p>}
+      {compact && <CompactQ c={c} other={other!} />}
+      {!compact && <>
       <div className="rb-anchors-h"><span className="lab">What each level looks like</span>{editable && <button type="button" className="rb-link t14" aria-expanded={editLv} onClick={() => setEditLv(!editLv)}>{editLv ? 'Done' : 'Edit levels'}</button>}</div>
       <ol className="rb-anchors" start={0}>
         {c.anchors.map((a, i) => (
@@ -258,6 +282,27 @@ function Column({ w, label, c, other, editable, mandateId, gone }: { w: World; l
       <p className="t14 rb-why"><span className="rb-q">Why it’s job-related</span> {c.why}</p>
       <p className="t14 muted" style={{ margin: 0 }}>{req ? `Source: brief requirement “${req.label}”` : c.kind === 'ELIGIBILITY' || c.kind === 'COMPATIBILITY' ? 'Source: the role’s conditions' : 'Source: added by the recruiter (not on the brief)'}{c.escoRef ? ` · ${c.escoRef}` : ''}</p>
       {editable && <div><button type="button" className="ds-btn quiet rb-remove" onClick={() => set('rb.remove', {})}>Remove {c.label.toLowerCase()}</button></div>}
+      </>}
     </div>
   );
+}
+
+/** Q's side when your version sits beside it: only what differs, so nothing is read twice (critique F1). */
+function CompactQ({ c, other }: { c: RubricCriterion; other: RubricCriterion }) {
+  const lv = c.anchors.map((a, i) => ({ a, i })).filter((x) => other.anchors[x.i] !== x.a);
+  const same = c.weight === other.weight && (c.minimum ?? null) === (other.minimum ?? null) && !lv.length && c.label === other.label;
+  return (
+    <div className="rb-grid" style={{ gap: 8 }}>
+      {same ? <p className="t14 rb-same" style={{ margin: 0 }}><Glyph k="verified" size={14} /> Your version matches Q’s proposal.</p>
+        : <p className="t14" style={{ margin: 0 }}><span className="rb-q">You changed</span>{[c.weight !== other.weight ? `weight (Q proposed ${c.weight})` : '', (c.minimum ?? null) !== (other.minimum ?? null) ? `minimum (Q proposed ${c.minimum ?? 'none'})` : '', lv.length ? `${lv.length} level description${lv.length === 1 ? '' : 's'}` : '', c.label !== other.label ? 'the name' : ''].filter(Boolean).join(', ')}.</p>}
+      {lv.length > 0 && <ol className="rb-anchors">{lv.map((x) => <li key={x.i}><span className="rb-lv num" aria-hidden="true">{x.i}</span><span><span className="sr">Level {x.i}, as Q proposed: </span>{x.a}</span></li>)}</ol>}
+      <p className="t14 rb-why"><span className="rb-q">Why Q proposed it</span> {c.why}</p>
+    </div>
+  );
+}
+
+/** Route wrapper: the studio is guarded by the role's own organisation (tenant isolation). */
+export function StudioRoute({ id }: { id: string }) {
+  const org = useWorld((x) => roleOf(x, id)?.orgId ?? 'org_kora');
+  return <OrgOnly orgId={org} what="Evaluation rubric"><Studio key={id} id={id} /></OrgOnly>;
 }

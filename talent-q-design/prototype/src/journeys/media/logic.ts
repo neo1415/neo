@@ -14,6 +14,8 @@ import { appendQ, registerOp } from '../../q/core/engine';
 import { media, visibleSegments, type MediaState } from '../../state/areas/media';
 import { approvedVersion, rubricFor, rubrics } from '../../state/areas/rubrics';
 import { KEY_MOMENTS, SAMPLE, SEGMENTS, TRANSCRIPT, type Topic } from '../../state/seeds/media';
+// Overrides and disputes go through the RUBRIC area's own operations (one audit trail, one undo, one Rating record).
+import { dispute as rbDispute, overrideRating as rbOverride, resolveDispute as rbResolve } from '../rubric/ops';
 
 // ---------------- small helpers ----------------
 export const mx = (w: World): Required<MediaState> => {
@@ -151,6 +153,7 @@ function tick() {
       } else if (m.state === 'PAUSED' && d.network !== 'offline' && x.notes[m.id]?.kind === 'PAUSED') {
         m.state = 'UPLOADING'; const done = p?.done ?? 0;
         x.notes[m.id] = { kind: 'PAUSED', text: `Back online: carried on from part ${done + 1} of ${p?.total ?? SAMPLE.parts}. The ${done} parts already sent weren’t sent again.` };
+        appendQ(d, m.ownerId, { who: 'q', kind: 'notice', engine: 'rules', text: `Back online. Your upload carried on from part ${done + 1} of ${p?.total ?? SAMPLE.parts}; nothing was sent twice.` });
         emit(d, 'system', 'media.upload.resumed', PSCOPE(m.ownerId), `Upload of “${m.title}” resumed from part ${done + 1}.`);
       } else if (m.state === 'FETCHING' && d.network !== 'offline' && p) {
         p.done += 1;
@@ -307,9 +310,8 @@ export const ratingFor = (w: World, r: MediaReview, criterionId: string) => rubr
 export function overrideRating(w: World, r: MediaReview, criterionId: string, to: number, reason: string, actor: Actor) {
   const rt = ratingFor(w, r, criterionId); if (!rt || !reason.trim()) return null;
   const from = rt.rating;
-  rt.override = { from, reason: reason.trim(), by: actor.id, at: now() }; rt.rating = Math.max(0, Math.min(4, Math.round(to))) as Rating['rating'];
-  rt.source = 'REVIEWER'; rt.reviewed = true; rt.by = actor.id; rt.at = now();
-  emit(w, actor.id, 'rubric.rating.override', `ORG:${r.orgId}`, `${actor.name} changed a rating from ${from} to ${rt.rating}: “${reason.trim()}”.`, { ratingId: rt.id, criterionId, from, to: rt.rating });
+  const res = rbOverride(w, actor, rt.id, to, reason);
+  if (res && 'say' in res) return null;
   return { from, to: rt.rating };
 }
 export function markReviewed(w: World, r: MediaReview, actor: Actor) {
@@ -320,7 +322,7 @@ export function markReviewed(w: World, r: MediaReview, actor: Actor) {
 export function dispute(w: World, r: MediaReview, criterionId: string, text: string, actor: Actor) {
   r.state = 'DISPUTED';
   const rt = ratingFor(w, r, criterionId);
-  if (rt) rt.dispute = { by: actor.id, text, state: 'OPEN', at: now() };
+  if (rt) rbDispute(w, actor, rt.id, text);
   (r as MediaReview & { disputes?: { criterionId: string; text: string; at: string; state: 'OPEN' | 'RESOLVED' }[] }).disputes = [...((r as MediaReview & { disputes?: unknown[] }).disputes as never[] ?? []), { criterionId, text, at: now(), state: 'OPEN' }];
   emit(w, actor.id, 'media.review.disputed', `SHARED:${r.orgId}:${r.personId}`, `${actor.name} asked for a correction to one finding in the video report.`, { reviewId: r.id, criterionId });
 }
@@ -337,7 +339,7 @@ export function reportView(w: World, r: MediaReview) {
 }
 /** The video's own coverage of the rubric: weight of criteria it speaks to over all job criteria (not an index). */
 export function videoCoverage(crit: Crit[], shown: string[]) {
-  const job = crit.filter((c) => c.kind !== 'COMPATIBILITY');
+  const job = crit.filter((c) => c.kind !== 'COMPATIBILITY' && c.weight > 0);
   const all = job.reduce((a, c) => a + c.weight, 0); const got = job.filter((c) => shown.includes(c.id)).reduce((a, c) => a + c.weight, 0);
   return { pct: all ? Math.round((100 * got) / all) : 0, n: job.filter((c) => shown.includes(c.id)).length, of: job.length };
 }
@@ -386,8 +388,10 @@ registerOp('media.offerInterview', (w, a) => { const s = mx(w); const pid = Stri
 registerOp('media.reviewed', (w, a, actor) => { const r = mx(w).reviews.find((x) => x.id === a.id); if (!r) return; markReviewed(w, r, actor); return { say: 'Marked as reviewed by you. Q’s proposed ratings on the scorecard now show as reviewed.' }; });
 registerOp('media.override', (w, a, actor) => { const r = mx(w).reviews.find((x) => x.id === a.id); if (!r) return; const o = overrideRating(w, r, String(a.crit), Number(a.to), String(a.reason ?? ''), actor); return o ? { say: `Changed from ${o.from} to ${o.to}, with your reason recorded in the audit log.` } : { say: 'A reason is needed to change a rating.' }; });
 registerOp('media.dispute', (w, a, actor) => { const r = mx(w).reviews.find((x) => x.id === a.id); if (!r) return; dispute(w, r, String(a.crit), String(a.text), actor); return { say: `Sent to ${orgName(w, r.orgId)} as a correction request. Until someone there looks at it, the finding is marked “disputed”.` }; });
-registerOp('media.resolve', (w, a, actor) => { const r = mx(w).reviews.find((x) => x.id === a.id); if (!r) return; disputesOf(r).forEach((d) => { d.state = 'RESOLVED'; }); const rs = rubrics(w); rs?.ratings.filter((x) => x.personId === r.personId && x.dispute?.state === 'OPEN').forEach((x) => { x.dispute!.state = 'RESOLVED'; }); r.state = 'HUMAN_REVIEWED'; r.reviewedBy = actor.id; emit(w, actor.id, 'media.review.dispute_resolved', `SHARED:${r.orgId}:${r.personId}`, `${actor.name} looked at the correction request and resolved it.`); });
+registerOp('media.resolve', (w, a, actor) => { const r = mx(w).reviews.find((x) => x.id === a.id); if (!r) return; disputesOf(r).forEach((d) => { d.state = 'RESOLVED'; }); for (const f of r.findings) { const rt = ratingFor(w, r, f.criterionId); if (rt?.dispute?.state === 'OPEN') rbResolve(w, actor, rt.id, 'looked at the moments again'); } r.state = 'HUMAN_REVIEWED'; r.reviewedBy = actor.id; emit(w, actor.id, 'media.review.dispute_resolved', `SHARED:${r.orgId}:${r.personId}`, `${actor.name} looked at the correction request and resolved it.`); });
 registerOp('media.rebuild', (w, a) => { const r = ensureReview(w, String(a.media), String(a.org), { v: Number(a.v) }); return r ? { say: `Prepared a report on rubric v${r.v}. The earlier report stays on its own version.` } : undefined; });
+registerOp('media.unreview', (w, a) => { const r = mx(w).reviews.find((x) => x.id === a.id); if (!r) return; r.state = 'Q_DRAFT'; r.reviewedBy = undefined; for (const f of r.findings) { const rt = ratingFor(w, r, f.criterionId); if (rt && !rt.override) rt.reviewed = false; } });
+registerOp('media.ensure', (w, a) => { ensureReview(w, String(a.media), String(a.org)); });
 registerOp('media.seen', (w, a, actor) => { const s = mx(w); const seen = (s.seen[actor.id] ??= []); if (!seen.includes(String(a.id))) seen.push(String(a.id)); });
 
 // ---------------- QA hook (tests only; not a product surface) ----------------

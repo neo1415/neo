@@ -30,7 +30,8 @@ export function MediaSection({ pid }: { pid: string }) {
   const ref = useRef<HTMLElement>(null);
   const focus = query.get('media');
   useEffect(() => { if (focus) ref.current?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }, [focus]);
-  const adding = items.some((m) => m.state === 'CONSENT');
+  // One recording at a time: the add button hides while one is still being set up, so there's never a second draft.
+  const adding = items.some((m) => !['READY', 'REVOKED'].includes(m.state));
   return (
     <section ref={ref} id="passport-media" className="ds-sheet tb-stack mv" aria-labelledby="mv-h">
       <div className="tb-row-between">
@@ -52,6 +53,12 @@ function Item({ m, pid }: { m: MediaEvidence; pid: string }) {
   return <Revoked m={m} />;
 }
 
+/** Where the person is in the four steps (goal-gradient): done steps ticked, the current one bold. */
+function Steps({ at }: { at: number }) {
+  const names = ['Consent', 'Recording', 'Check', 'Share'];
+  return <ol className="mv-steps lab" aria-label={`Step ${at} of 4`}>{names.map((n, i) => <li key={n} aria-current={i + 1 === at || (at === 3 && i === 3) ? 'step' : undefined}>{i + 1} {n}{i + 1 < at ? ' ✓' : ''}</li>)}</ol>;
+}
+
 // ---------------- 1 · Consent before any processing ----------------
 function Consent({ m, pid }: { m: MediaEvidence; pid: string }) {
   const w = useWorld((x) => x);
@@ -68,7 +75,7 @@ function Consent({ m, pid }: { m: MediaEvidence; pid: string }) {
   const ok = practice || who.length > 0;
   return (
     <div className="mv-panel tb-stack" aria-labelledby="mv-consent-h">
-      <div className="mv-steps lab" aria-label="Step 1 of 4">1 Consent · 2 Recording · 3 Check · 4 Share</div>
+      <Steps at={1} />
       <h3 id="mv-consent-h" className="tb-title">Before Q looks at anything</h3>
       <p className="t14" style={{ margin: 0 }}>Nothing is uploaded, fetched or transcribed until you agree. You can change this later.</p>
       <fieldset className="mv-field"><legend className="lab">Who can see it</legend>
@@ -79,20 +86,20 @@ function Consent({ m, pid }: { m: MediaEvidence; pid: string }) {
         <p className="t14 muted" style={{ margin: 0 }}>Public preview on your profile isn’t available yet. You’ll pick which parts each organisation sees after you’ve checked the transcript.</p>
       </fieldset>
       {!practice && <fieldset className="mv-field"><legend className="lab">What it’s for</legend>
-        <div className="mv-opts">{purposes.map((p) => <button key={p} type="button" className="ds-opt" aria-pressed={purpose === p} onClick={() => setPurpose(p)}><span className="mv-check" aria-hidden="true">{purpose === p ? '●' : ''}</span><span>{p}</span></button>)}</div>
+        <div className="mv-opts">{purposes.map((p) => <button key={p} type="button" className="ds-opt" aria-pressed={purpose === p} onClick={() => setPurpose(p)}><span className="mv-check" data-radio aria-hidden="true">{purpose === p ? '●' : ''}</span><span>{p}</span></button>)}</div>
       </fieldset>}
       <fieldset className="mv-field"><legend className="lab">How long</legend>
         <div className="mv-seg3" role="group" aria-label="How long they can see it">{[30, 90, 180].map((d) => <button key={d} type="button" aria-pressed={days === d} onClick={() => setDays(d)}>{d} days{d === 90 ? ' (usual)' : ''}</button>)}</div>
         <p className="t14 muted" style={{ margin: 0 }}>Until {until}. After that, access ends by itself.</p>
       </fieldset>
       <div className="mv-will">
-        <div><h4 className="lab">What Q will do</h4><ul className="t14">
+        <div><h4 className="lab">What Q will do</h4><ul className="t14" data-k="will">
           <li>Transcribe what you say, once, and show it to you to correct</li>
           <li>Find the moments that show your work, with their times</li>
           <li>Match them to what the role asks for, so a person can check each one</li>
           <li>Show you exactly what {practice ? 'it would look like' : who.length ? list(who.map((o) => orgName(w, o))) : 'they'} {practice ? '' : 'will '}see before anything is shared</li>
         </ul></div>
-        <div><h4 className="lab">What Q won’t do</h4><ul className="t14">
+        <div><h4 className="lab">What Q won’t do</h4><ul className="t14" data-k="wont">
           <li>Judge your face, voice, accent or appearance</li>
           <li>Guess how confident, honest or likeable you are, or your personality</li>
           <li>Guess your age, gender, race or any disability</li>
@@ -112,15 +119,15 @@ function Consent({ m, pid }: { m: MediaEvidence; pid: string }) {
 function Alternatives({ orgs }: { orgs: string[] }) {
   if (!orgs.length) return null;
   return (
-    <details className="mv-alt t14">
-      <summary><b>Prefer not to record?</b> <span className="muted">A written walkthrough counts the same.</span></summary>
+    <div className="mv-alt t14" role="group" aria-label="Alternatives to recording">
+      <p style={{ margin: 0 }}><b>Prefer not to record?</b> A written walkthrough counts the same.</p>
       <div className="tb-actions">
         <button type="button" className="ds-btn" onClick={() => act('media.alternative', { kind: 'TEXT', orgs })}>Write it instead</button>
         <button type="button" className="ds-btn" onClick={() => act('media.alternative', { kind: 'FORM', orgs })}>Ask for a short form</button>
         <button type="button" className="ds-btn" onClick={() => act('media.alternative', { kind: 'ADJUSTMENT', orgs })}>Ask for an adjustment</button>
       </div>
       <p className="muted" style={{ margin: 0 }}>You don’t need to give a reason. Q tells them only what you choose here.</p>
-    </details>
+    </div>
   );
 }
 
@@ -134,13 +141,13 @@ function Source({ m, pid }: { m: MediaEvidence; pid: string }) {
   const drop = ms(w).dropAt != null;
   return (
     <div className="mv-panel tb-stack" aria-labelledby="mv-src-h">
-      <div className="mv-steps lab">1 Consent ✓ · <b>2 Recording</b> · 3 Check · 4 Share</div>
+      <Steps at={2} />
       <h3 id="mv-src-h" className="tb-title">Choose the recording</h3>
       <p className="t14 muted" style={{ margin: 0 }}>{m.consent?.orgs.length ? `For ${list(m.consent.orgs.map((o) => orgName(w, o)))}, until ${fmtDate(m.consent.expires!)}.` : 'Private practice: only you.'}</p>
       {note && (m.state === 'UNSAFE_LINK' || m.state === 'FETCH_FAILED') && (
         <div className="ds-banner" data-k={m.state === 'UNSAFE_LINK' ? 'warn' : 'risk'} role="alert">
           <span aria-hidden="true">{m.state === 'UNSAFE_LINK' ? '⚠' : '✕'}</span>
-          <span><b>{m.state === 'UNSAFE_LINK' ? 'I didn’t open that link.' : 'I couldn’t get the video.'}</b> {note.text}{m.link && <span className="mv-link num"> {m.link}</span>}</span><span />
+          <span><b>{m.state === 'UNSAFE_LINK' ? 'I didn’t open that link.' : 'I couldn’t get the video.'}</b> {note.text}{m.link && <span className="mv-link num"> {m.link}</span>}</span><button type="button" className="ds-btn" onClick={() => act('media.source', { id: m.id, source: 'UPLOAD' })}>Upload the file instead</button>
         </div>
       )}
       <div className="mv-opts mv-src">
@@ -170,16 +177,16 @@ function Ingest({ m }: { m: MediaEvidence }) {
   const note = ms(w).notes?.[m.id];
   const p = m.progress ?? { done: 0, total: 1 };
   const pct = Math.round((100 * p.done) / p.total);
-  const label = m.state === 'UPLOADING' ? `Uploading · part ${Math.min(p.done + 1, p.total)} of ${p.total}` : m.state === 'PAUSED' ? `Paused at ${pct}%` : m.state === 'FETCHING' ? 'Fetching the video from your link' : 'Transcribing';
+  const label = m.state === 'UPLOADING' ? `Uploading · part ${Math.min(p.done + 1, p.total)} of ${p.total}` : m.state === 'PAUSED' ? `Paused · ${p.done} of ${p.total} parts sent` : m.state === 'FETCHING' ? 'Fetching the video from your link' : 'Transcribing';
   return (
     <div className="mv-panel tb-stack" aria-labelledby="mv-ing-h" data-state={m.state}>
-      <div className="mv-steps lab">1 Consent ✓ · <b>2 Recording</b> · 3 Check · 4 Share</div>
+      <Steps at={2} />
       <div className="tb-row-between"><h3 id="mv-ing-h" className="tb-title">{m.title}</h3><span className="ds-sim">{m.state === 'TRANSCRIBING' ? 'Simulated transcription' : m.state === 'FETCHING' ? 'Simulated fetch' : 'Simulated upload'}</span></div>
       <div className="tb-row-between"><b className="t14" aria-live="polite">{label}</b><span className="t14 muted num">{m.state === 'TRANSCRIBING' ? 'A few seconds' : `${pct}%`}</span></div>
       <div className="mv-bar" data-state={m.state} role="progressbar" aria-label={label} aria-valuemin={0} aria-valuemax={100} aria-valuenow={m.state === 'TRANSCRIBING' ? undefined : pct}>
         {m.state === 'TRANSCRIBING' ? <i className="mv-indet" /> : Array.from({ length: p.total }, (_, k) => <i key={k} data-done={k < p.done || undefined} />)}
       </div>
-      {m.state === 'PAUSED' && <div className="ds-banner" data-k="warn" role="status"><span aria-hidden="true">⏸</span><span><b>The connection dropped.</b> {note?.text ?? 'It carries on from the same part when you reconnect.'}</span>{w.network === 'offline' ? <span /> : <button type="button" className="ds-btn" onClick={() => act('media.resume', { id: m.id })}>Resume from {pct}%</button>}</div>}
+      {m.state === 'PAUSED' && <div className="ds-banner" data-k="warn" role="status"><span aria-hidden="true">⏸</span><span><b>The connection dropped. Nothing is lost.</b> {w.network === 'offline' ? `It carries on from part ${p.done + 1} by itself when you’re back online.` : `You’re back online: carry on from part ${p.done + 1}.`}</span>{w.network === 'offline' ? <span /> : <button type="button" className="ds-btn" onClick={() => act('media.resume', { id: m.id })}>Resume from {pct}%</button>}</div>}
       {m.state === 'UPLOADING' && note?.kind === 'PAUSED' && /Back online/.test(note.text) && <p className="t14" role="status" style={{ margin: 0 }}>{note.text}</p>}
       {m.state === 'TRANSCRIBING' && <p className="t14 muted" style={{ margin: 0 }}>Only you will see the transcript until you choose what to share. I’ll tell you when it’s ready to check.</p>}
     </div>
@@ -194,7 +201,7 @@ function SelfReview({ m }: { m: MediaEvidence }) {
   const anyShared = m.segments.some((s) => s.sharedWith.length);
   return (
     <div className="mv-panel tb-stack" aria-labelledby="mv-rev-h">
-      <div className="mv-steps lab">1 Consent ✓ · 2 Recording ✓ · <b>3 Check · 4 Share</b></div>
+      <Steps at={3} />
       <div className="tb-row-between"><h3 id="mv-rev-h" className="tb-title">Check it before anyone sees it</h3><span className="ds-tag" data-k="busy">Only you can see this</span></div>
       <Transcript m={m} />
       {orgs.length > 0 && <Parts m={m} />}
@@ -271,7 +278,7 @@ function Parts({ m }: { m: MediaEvidence }) {
                   const on = s.sharedWith.includes(o);
                   const k = `${s.id}:${o}`;
                   if (conf && !on && confirm === k) return <span key={o} className="mv-confirm"><span className="t14">Share this confidential part with {orgName(w, o)}?</span><button type="button" className="ds-btn danger" onClick={() => { void act('media.part', { id: m.id, seg: s.id, org: o, on: true }); setConfirm(null); }}>Share anyway</button><button type="button" className="ds-btn quiet" onClick={() => setConfirm(null)}>Keep it private</button></span>;
-                  return <button key={o} type="button" className="mv-toggle" aria-pressed={on} aria-label={`${on ? 'Stop sharing' : 'Share'} “${s.label}” with ${orgName(w, o)}`} onClick={() => (conf && !on ? setConfirm(k) : act('media.part', { id: m.id, seg: s.id, org: o, on: !on }))}><span aria-hidden="true">{on ? '✓' : '+'}</span>{orgName(w, o)}: {on ? 'sees this' : 'doesn’t see this'}</button>;
+                  return <button key={o} type="button" className="mv-toggle" aria-pressed={on} aria-label={`${on ? 'Stop sharing' : 'Share'} “${s.label}” with ${orgName(w, o)}`} onClick={() => (conf && !on ? setConfirm(k) : act('media.part', { id: m.id, seg: s.id, org: o, on: !on }))}><span aria-hidden="true">{on ? '✓' : '+'}</span>{orgName(w, o)} · {on ? 'Shared' : 'Not shared'}</button>;
                 })}
               </div>
             </li>
@@ -292,13 +299,13 @@ function Preview({ m, as, setAs, orgs }: { m: MediaEvidence; as: string; setAs: 
   const secs = allowed.reduce((a, s) => a + s.tEnd - s.t, 0);
   return (
     <section className="mv-sub" aria-labelledby={`mv-pv-${m.id}`} id={`mv-preview-${m.id}`}>
-      <div className="tb-row-between"><h4 id={`mv-pv-${m.id}`} className="mv-h4">What {orgName(w, as)} will see</h4>
+      <div className="tb-row-between"><h4 id={`mv-pv-${m.id}`} className="mv-h4">What {orgName(w, as)} {ready ? 'sees' : 'will see'}</h4>
         {orgs.length > 1 && <div className="tb-filters" role="group" aria-label="Preview as">{orgs.map((o) => <button key={o} type="button" className="ds-filter" aria-pressed={as === o} onClick={() => setAs(o)}>{orgName(w, o)}</button>)}</div>}
       </div>
       {allowed.length ? (
         <>
           <p className="t14" style={{ margin: 0 }}><b className="num">{allowed.length} of {m.segments.length}</b> parts, <span className="num">{fmt(secs)}</span> of {fmt(m.duration)}: {allowed.map((s) => s.label.replace(' (confidential)', '')).join(' and ')}. Their transcript, and Q’s findings matched to the role. {ready ? `Until ${fmtDate(m.consent!.expires!)}.` : 'Nothing is shared until you press Share.'}</p>
-          <Player m={vm} allowed={allowed} pb={pb} viewer={orgName(w, as)} />
+          <div className="mv-cand-player"><Player m={vm} allowed={allowed} pb={pb} viewer={orgName(w, as)} /></div>
           <p className="t14 muted" style={{ margin: 0 }}>{NO_INFERENCE}: {orgName(w, as)}’s report only uses what you said and showed.</p>
         </>
       ) : <p className="t14" style={{ margin: 0 }}>Nothing yet. {orgName(w, as)} won’t see this video at all.</p>}

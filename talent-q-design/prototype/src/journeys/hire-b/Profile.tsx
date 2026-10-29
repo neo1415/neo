@@ -19,6 +19,10 @@ import { Ledger } from './Ledger';
 import { PROJECTS } from './projects';
 import { ProjectViewer } from './ProjectViewer';
 import { KIND, LevelMark, ORIGIN, VerTag, fmtDate, verOf } from './ui';
+import { PageIndex } from '../../ds/PageIndex';
+import { Scorecard } from '../rubric/Scorecard';
+import { roleIndex } from '../../state/areas/rubrics';
+import { studioPath } from '../rubric/model';
 
 const IN_WORDS: Record<string, string> = { r1: 'payments', r2: 'Go', r3: 'Postgres', r4: 'on-call leadership', r5: 'mentoring' };
 const list = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
@@ -89,6 +93,10 @@ export function Profile({ id }: { id: string }) {
   const conf = items.filter((e) => e.confidential);
   const goTo = (eid: string) => document.getElementById(`ev-${eid}`)?.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   const preview = (eid: string) => { setViewSel(eid); requestAnimationFrame(() => document.getElementById('pv-h')?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })); };
+  const rIdx = roleIndex(w, KORA_ROLE, id);
+  // History: audited events about this person that the viewer's organisation may see (newest first).
+  const hist = w.events.filter((e) => (e.data as { personId?: string } | undefined)?.personId === id && (e.scope === `ORG:${org}` || e.scope === `SHARED:${org}:${id}`)).slice(-12).reverse();
+  void studioPath;
   const stageIdx = pipe ? STAGES.indexOf(pipe.stage as typeof STAGES[number]) : -1;
 
   const evItem = (e: Evidence) => (
@@ -120,6 +128,8 @@ export function Profile({ id }: { id: string }) {
       </div>}>
       {/* Q's reading of the evidence leads the page; the person's name is the title (critique F4). */}
       <p className="voice hire-b-lede" style={{ margin: 0 }}><span className="hire-b-lede-q" aria-hidden="true" />{lede}</p>
+      {/* AD-B-03: the profile is long on phones (about nine screens), so it gets a sticky in-page index. */}
+      <PageIndex items={[{ id: 'pf-fit', label: 'Fit' }, { id: 'pf-score', label: 'Scorecard' }, { id: 'pf-ev', label: 'Evidence' }, { id: 'pf-q', label: 'Interview' }, { id: 'pf-hist', label: 'History' }]} />
       {w.network === 'offline' && <div className="ds-banner" data-k="warn" role="status"><Glyph k="unclear" /><span>You’re offline. This is what was loaded; new sharing changes will appear when you reconnect.</span><span /></div>}
       {fresh.length > 0 && (
         <div className="ds-banner" role="status"><Glyph k="verified" /><span><b>New since you last looked ({fmtDate(prev!.at)}):</b> {fresh.map(([eid, v]) => `${items.find((e) => e.evidenceId === eid)?.title ?? 'an item'} (${v === 'VERIFIED' ? 'verified' : v.toLowerCase().replace('_', ' ')})`).join('; ')}.</span><span /></div>
@@ -150,9 +160,9 @@ export function Profile({ id }: { id: string }) {
         </div>
       </section>
 
-      <section className="ds-sheet hire-b-grid" aria-labelledby="pf-fit">
-        <div className="hire-b-row"><h2 id="pf-fit" className="voice t24" style={{ margin: 0 }}>Against the Senior Backend brief</h2><Link className="t14" to="/r/compare">Compare with others</Link></div>
-        <Ledger w={w} v={{ people: [id], criteria: reqs.map((r) => r.reqId), lastYear: false, weighting: 'Q' }} ranked={false} bare noKey />
+      <section id="pf-fit" className="ds-sheet hire-b-grid" aria-labelledby="pf-fit-h">
+        <div className="hire-b-row"><h2 id="pf-fit-h" className="voice t24" style={{ margin: 0 }}>Against the Senior Backend brief</h2><Link className="t14" to="/r/compare">Compare with others</Link></div>
+        <Ledger w={w} v={{ people: [id], criteria: reqs.map((r) => r.reqId), lastYear: false, weighting: 'RUBRIC' }} ranked={false} bare noKey />
         <ul className="hire-b-fit">
           {cells.map(({ r, c }) => { const a = assessFor(w, id, r.reqId); const live = c.items.filter((i) => !i.excluded); return (
             <li key={r.reqId}>
@@ -167,8 +177,14 @@ export function Profile({ id }: { id: string }) {
         </ul>
       </section>
 
-      <section className="ds-sheet hire-b-grid" aria-labelledby="pf-ev">
-        <div className="hire-b-row"><h2 id="pf-ev" className="voice t24" style={{ margin: 0 }}>Shared with {orgName}</h2><span className="t14 muted">{items.length} item{items.length === 1 ? '' : 's'}</span></div>
+      <section id="pf-score" className="ds-sheet hire-b-grid" aria-labelledby="pf-score-h">
+        <div className="hire-b-row"><h2 id="pf-score-h" className="voice t24" style={{ margin: 0 }}>Scorecard</h2><span className="t14 muted">{rIdx.v ? `Rubric v${rIdx.v}` : 'No rubric yet'}</span></div>
+        <p className="t14 muted" style={{ margin: 0 }}>The fit above says how strong the proof is. The scorecard rates the level that proof shows, against the rubric’s anchors. They’re separate signals.</p>
+        <Scorecard personId={id} mandateId={KORA_ROLE} orgId={org} />
+      </section>
+
+      <section id="pf-ev" className="ds-sheet hire-b-grid" aria-labelledby="pf-ev-h">
+        <div className="hire-b-row"><h2 id="pf-ev-h" className="voice t24" style={{ margin: 0 }}>Shared with {orgName}</h2><span className="t14 muted">{items.length} item{items.length === 1 ? '' : 's'}</span></div>
         <p className="t14 muted" style={{ margin: 0 }}>Only what {first} chose to share with {orgName}. Private items, practice and anything they took back are never shown or counted.</p>
         {revoked > 0 && <p className="t14" role="status" style={{ margin: 0 }}><Glyph k="none" size={14} /> {first} ended {orgName}’s access to {revoked === 1 ? 'an item' : `${revoked} items`} they’d shared. Q no longer uses {revoked === 1 ? 'it' : 'them'}.</p>}
         {items.length === 0 && <div className="hire-b-empty"><Glyph k="none" /><div><b>{first} hasn’t shared anything with you yet.</b><p className="t14 muted" style={{ margin: 0 }}>Ask about their work in conversation instead of assuming.</p></div></div>}
@@ -179,14 +195,19 @@ export function Profile({ id }: { id: string }) {
 
       <ProjectViewer items={items} first={first} sel={viewSel} onSel={setViewSel} />
 
-      <section className="ds-sheet hire-b-grid" aria-labelledby="pf-q">
-        <h2 id="pf-q" className="voice t24" style={{ margin: 0 }}>Questions Q would ask {first}</h2>
+      <section id="pf-q" className="ds-sheet hire-b-grid" aria-labelledby="pf-q-h">
+        <h2 id="pf-q-h" className="voice t24" style={{ margin: 0 }}>Questions Q would ask {first}</h2>
         <p className="t14 muted" style={{ margin: 0 }}>Built from the evidence above: must-haves first, the least-shown first. Checked things are only there to go deeper.</p>
         <ol className="hire-b-qlist">{qs.map((q) => <li key={q.id}><span className="hire-b-qtags"><span className="hire-b-qreq">{reqs.find((r) => r.reqId === q.reqId)?.label}</span><span className="hire-b-qwhy" data-l={q.level}><Glyph k={q.level === 'verified' ? 'verified' : q.level === 'none' ? 'none' : q.level === 'claim' ? 'unclear' : q.level === 'partial' ? 'partial' : 'full'} size={12} />{WHY_TAG[q.level]}</span></span><span className="hire-b-qtext">{q.text}</span></li>)}</ol>
         <div className="ds-actions">
           {iv && <button type="button" className="ds-btn primary" onClick={() => void runAction({ label: 'Keep', act: { t: 'do', op: 'hb.plan.keep', args: { id: iv.id, questions: questionsFor(w, id) } } })}>Use these in the interview</button>}
           <button type="button" className="ds-btn" onClick={() => void runAction({ label: 'More', act: { t: 'say', text: `what should I ask ${first} in the interview` } })}>Ask Q for more</button>
         </div>
+      </section>
+      <section id="pf-hist" className="ds-sheet hire-b-grid" aria-labelledby="pf-hist-h">
+        <h2 id="pf-hist-h" className="voice t24" style={{ margin: 0 }}>History</h2>
+        {hist.length ? <ol className="hire-b-hist">{hist.map((e) => <li key={e.id}><span className="t14 muted num">{fmtDate(e.at)}</span><span className="t14">{e.text}</span></li>)}</ol>
+          : <p className="t14 muted" style={{ margin: 0 }}>Nothing recorded about {first} yet. Ratings, overrides, reviews and pipeline moves appear here.</p>}
       </section>
     </Canvas>
   );

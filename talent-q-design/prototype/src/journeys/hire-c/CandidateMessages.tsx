@@ -13,6 +13,10 @@ import { runAction, useViewState } from '../../q/core/engine';
 import type { CalEvent, Msg } from '../../state/domain';
 import { addDays, city, evStatusLabel, LAGOS, nameOf, nextWeek, offsetOf, tDay, tLong, tTime } from './lib';
 import { SlotPicker } from '../../screens/SlotPicker';
+import { ConfirmButton } from '../../ds/ConfirmButton';
+import { mail } from '../../state/areas/mail';
+import { candidateStatus } from '../contact/logic';
+import './email.css';
 
 const visible = (m: Msg, pid: string) => m.from === pid ? m.status !== 'DISCARDED' : m.status === 'SENT_SIMULATED' || m.status === 'RECEIVED';
 export function candidateThreads(w: World, pid: string) {
@@ -74,7 +78,15 @@ function CandidateThread({ orgId, threadId, msgs, onBack }: { orgId: string; thr
   const w = useWorld((x) => x);
   const a = actorOf(w); const pid = a.personId!; const org = orgOf(w, orgId)!;
   const [text, setText] = useState('');
-  const job = w.jobs.find((j) => j.orgId === orgId && w.applications.some((ap) => ap.jobId === j.id && ap.personId === pid));
+  const t = w.threads.find((x) => x.id === threadId);
+  const job = w.jobs.find((j) => j.orgId === orgId && w.applications.some((ap) => ap.jobId === j.id && ap.personId === pid)) ?? w.jobs.find((j) => j.mandateId && j.mandateId === t?.mandateId);
+  const st = t ? candidateStatus(w, t, pid) : undefined;
+  const lastTheirs = [...msgs].reverse().find((m) => m.from !== pid);
+  const myMail = mail(w).mailboxes.find((m) => m.owner === pid && m.state === 'CONNECTED');
+  const canEmail = !!myMail && lastTheirs?.channel === 'EMAIL';
+  const [via, setVia] = useState<'IN_APP' | 'EMAIL'>('IN_APP');
+  const [subj, setSubj] = useState('');
+  const closed = t?.state === 'BLOCKED' || t?.state === 'REPORTED' || t?.state === 'CONSENT_REVOKED' || w.consents[pid]?.withdrawnFrom.includes(orgId);
   const last = msgs[msgs.length - 1];
   const waiting = last.from === pid ? Math.floor((simNow(w).getTime() - new Date(last.at).getTime()) / 864e5) : -1;
   const events = w.calendar.filter((e) => e.personId === pid && e.orgId === orgId && ACTIVE.includes(e.status));
@@ -87,9 +99,19 @@ function CandidateThread({ orgId, threadId, msgs, onBack }: { orgId: string; thr
         <div style={{ display: 'grid', gap: 2, minWidth: 0 }}>
           <h2 className="voice t24" style={{ margin: 0 }}>{org.name}</h2>
           <span className="t14 muted">{job ? job.title : 'Your application'} · {city(LAGOS)}</span>
-          <span className="hc-tags">{verified(w, orgId) ? <span className="ds-tag" data-k="ok" title="Email domain and company registry checked">✓ Verified employer</span> : <span className="ds-tag" data-k="warn">This employer isn’t verified yet</span>}{job && <span className="ds-tag">{job.signals.replies}</span>}</span>
+          <span className="hc-tags">{verified(w, orgId) ? <span className="ds-tag" data-k="ok" title="Email domain and company registry checked">✓ Verified employer</span> : <span className="ds-tag" data-k="warn">This employer isn’t verified yet</span>}{job && <span className="ds-tag">{job.signals.replies}</span>}{st && <span className="ds-tag" data-k={st.tone}>{st.label}</span>}</span>
         </div>
       </header>
+      {st && t && (
+        <div className="em-file">
+          <span className="t14" style={{ flex: '1 1 260px' }}>{t.initiatedBy === 'CANDIDATE' ? 'You started this conversation. ' : ''}{st.can}</span>
+          <span className="em-tactions">
+            {t.state === 'MUTED' ? <button type="button" className="hc-more" onClick={() => void runAction({ label: 'Unmute', act: { t: 'do', op: 'contact.thread', args: { threadId: t.id, action: 'unmute' } } })}>Unmute</button>
+              : !closed && <button type="button" className="hc-more" onClick={() => void runAction({ label: 'Mute', act: { t: 'do', op: 'contact.thread', args: { threadId: t.id, action: 'mute' } } })}>Mute</button>}
+            {!w.consents[pid]?.withdrawnFrom.includes(orgId) && <ConfirmButton className="hc-more" label={`Stop ${org.name} contacting me`} question={`Stop ${org.name} contacting you? Emails already sent can’t be unsent.`} yes="Stop contact" onConfirm={() => void runAction({ label: 'Withdraw', act: { t: 'do', op: 'contact.thread', args: { threadId: t.id, action: 'withdrawConsent' } } })} />}
+          </span>
+        </div>
+      )}
       {events.map((e) => <InterviewCard key={e.id} e={e} threadId={threadId} />)}
       <ol className="hc-msgs hc-chat" aria-label="Messages, oldest first">
         <AnimatePresence initial={false}>
@@ -99,17 +121,26 @@ function CandidateThread({ orgId, threadId, msgs, onBack }: { orgId: string; thr
               {!mine && !verified(w, orgId) && <span className="ds-tag hc-unver" data-k="warn">This employer isn’t verified yet</span>}
               {m.subject && !mine && <p className="hc-subj">{m.subject}</p>}
               <div className="hc-body">{m.body}</div>
-              {mine && <span className="hc-sent t14">{m.status === 'QUEUED_OFFLINE' ? '◷ Waiting to send' : <>✓ Sent <span className="ds-sim">Simulated send</span></>}</span>}
+              {mine && <span className="hc-sent t14">{m.status === 'QUEUED_OFFLINE' ? '◷ Waiting to send' : <>✓ {m.channel === 'EMAIL' ? `Sent by email${m.senderId ? ` from ${mail(w).mailboxes.find((x) => x.id === m.senderId)?.address}` : ''} · accepted by Google` : 'Sent in Talent Q'}{t && mail(w).seen[t.id] && m === msgs.filter((x) => x.from === pid).pop() && !msgs.some((x) => x.from !== pid && x.at > m.at) ? ` · seen by ${org.name}` : ''} <span className="ds-sim">Simulated send</span></>}</span>}
+              {!mine && m.channel === 'EMAIL' && <span className="t14 muted">By email</span>}
             </motion.li>); })}
         </AnimatePresence>
       </ol>
       {waiting >= 0 && <p className="hc-reassure" role="status">{org.name} hasn’t replied yet{waiting > 0 ? ` (${waiting} day${waiting === 1 ? '' : 's'})` : ''}. That’s normal, and it isn’t about you. We can’t say when they’ll reply; you’ll see it here as soon as they do.</p>}
-      <form className="hc-reply hc-creply" onSubmit={(ev) => { ev.preventDefault(); if (!text.trim()) return; void runAction({ label: 'Send', act: { t: 'do', op: 'hire-c.c.send', args: { orgId, threadId, kind: 'REPLY', body: text.trim() } } }); setText(''); }}>
+      {closed ? <p className="hc-reassure" role="status">{st?.can}</p> : (
+      <form className="hc-reply hc-creply" onSubmit={(ev) => { ev.preventDefault(); if (!text.trim()) return; if (via === 'EMAIL') void runAction({ label: 'Send by email', act: { t: 'do', op: 'contact.emailReply', args: { threadId, body: `${text.trim()}\n\n${a.first}`, subject: subj.trim() || `Re: ${lastTheirs?.subject ?? 'your message'}` } } }); else void runAction({ label: 'Send', act: { t: 'do', op: 'hire-c.c.send', args: { orgId, threadId, kind: 'REPLY', body: text.trim() } } }); setText(''); }}>
+        {canEmail && (
+          <div className="em-seg" role="group" aria-label="Reply by">
+            <button type="button" aria-pressed={via === 'IN_APP'} onClick={() => setVia('IN_APP')}>In Talent Q</button>
+            <button type="button" aria-pressed={via === 'EMAIL'} onClick={() => { setVia('EMAIL'); if (!subj) setSubj(`Re: ${lastTheirs?.subject ?? ''}`); }}>By email</button>
+          </div>
+        )}
+        {via === 'EMAIL' && canEmail && <div className="ds-field"><label htmlFor="c-subj">Subject <span className="muted">· from {myMail!.address}, send only</span></label><input id="c-subj" className="ds-input" value={subj} onChange={(e) => setSubj(e.target.value)} /></div>}
         <div className="ds-field"><label htmlFor="c-reply">Write to {org.name}</label>
           <textarea id="c-reply" className="ds-input hc-textarea" rows={3} value={text} onChange={(e) => setText(e.target.value)} placeholder="In your own words. Q can help if you’d like." /></div>
         {!text && <div className="hc-starters" role="group" aria-label="Start with">{starters.map((s) => <button key={s} type="button" className="ds-filter" onClick={() => setText(s)}>{s}</button>)}</div>}
-        <div className="ds-actions"><button type="submit" className="ds-btn primary" disabled={!text.trim()}>{w.network === 'offline' ? 'Save and send when online' : 'Send'}</button><span className="t14 muted">Only {org.name} sees this.</span></div>
-      </form>
+        <div className="ds-actions"><button type="submit" className="ds-btn primary" disabled={!text.trim()}>{w.network === 'offline' ? 'Save and send when online' : via === 'EMAIL' ? 'Send by email' : 'Send'}</button><span className="t14 muted">Only {org.name} sees this.</span></div>
+      </form>)}
     </motion.section>
   );
 }

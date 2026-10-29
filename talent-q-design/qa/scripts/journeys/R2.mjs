@@ -65,7 +65,8 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   // 4. [mind] Ada challenges Q; Q shows its reasoning, then accepts a correction.
   await ask('why do you say tobi is stronger?? thats not fair');
   const why = await lastQ();
-  step(v, '[mind] challenge: Q shows reasoning and evidence', /exactly what I used/.test(why) && /1\.5×/.test(why));
+  // Rubric pass (AD-B-05): the fixed 1.5x payments rule is gone; Q now says where the weights come from (no approved rubric in R2's world, so equal must-haves, labelled).
+  step(v, '[mind] challenge: Q shows reasoning and evidence', /exactly what I used/.test(why) && /No approved rubric for this role yet/.test(why));
   await shot('challenge');
   await ask('tobis go library doesnt count as production go');
   step(v, '[mind] Q accepts the correction', /Accepted/.test(await lastQ()) && /your correction/.test(await canvasText()));

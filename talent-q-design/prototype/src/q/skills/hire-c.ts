@@ -23,7 +23,7 @@ const frame = (intent: string, slots: Record<string, string>, awaiting?: string)
 
 // ---------------- Who is "him"? ----------------
 /** People named in the turn, including possessives ("zara's", "tobis"). */
-function peopleIn(c: QCtx) {
+export function peopleIn(c: QCtx) {
   const ws = c.norm.replace(/[,.?!]/g, ' ').split(/\s+/).map((x) => x.replace(/'?s$/, '')).filter(Boolean);
   const colleagues = new Set(orgMembers(c.w, c.actor.orgId).map((a) => a.first.toLowerCase()));
   const first = (pid: string) => personOf(c.w, pid)?.name.split(' ')[0].toLowerCase() ?? '';
@@ -39,7 +39,7 @@ function peopleIn(c: QCtx) {
   return out;
 }
 /** The last person in context: the profile on screen, the last profile visited, or the last person discussed. */
-function contextPerson(c: QCtx): { id?: string; why?: string } {
+export function contextPerson(c: QCtx): { id?: string; why?: string } {
   const here = c.route.match(/\/people\/(p_\w+)/)?.[1];
   if (here) return { id: here, why: 'the profile you’re looking at' };
   const cands: { id: string; at: string; why: string }[] = [];
@@ -66,7 +66,7 @@ function usedFor(w: World, a: Actor, msgId: string) {
   const p = personOf(w, d.personId)!; out.push(`${p.name.split(' ')[0]}: ${city(p.timezone)} time`);
   void a; return out;
 }
-function postDraft(w: World, a: Actor, msgId: string, lead: string) {
+export function postDraft(w: World, a: Actor, msgId: string, lead: string) {
   const d = hc(w).drafts[msgId]; if (!d) return;
   const first = firstOf(w, d.personId);
   post(w, a, { kind: 'reply', text: lead, used: usedFor(w, a, msgId), ref: { type: 'hire-c.draft', id: `${msgId}@${latestV(d).v}` },
@@ -74,7 +74,7 @@ function postDraft(w: World, a: Actor, msgId: string, lead: string) {
     actions: [{ label: 'Send it', primary: true, act: { t: 'say', text: 'send it' } }, { label: 'Make it friendlier', act: { t: 'say', text: 'make it a bit friendlier' } }, { label: 'Open in messages', act: { t: 'do', op: 'hire-c.openMsg', args: { msgId } } }, ...(d.kind === 'INVITE' ? [{ label: `Find other times for ${first}`, act: { t: 'say' as const, text: `find other times for ${first}` } }] : [])] });
   w.q.frames[a.id] = frame('hire-c.draft', { msgId }, 'edit');
 }
-function describeSlot(w: World, d: { slot?: { start: string }; panel: string[]; personId: string }) {
+export function describeSlot(w: World, d: { slot?: { start: string }; panel: string[]; personId: string }) {
   if (!d.slot) return 'no time yet';
   const abroad = [...d.panel, d.personId].filter((id) => tzOf(w, id) !== LAGOS && tzOf(w, id) !== 'Africa/Accra' ? true : tzOf(w, id) === 'Africa/Accra');
   const extra = abroad.map((id) => `${tTime(d.slot!.start, tzOf(w, id))} for ${firstOf(w, id)} in ${city(tzOf(w, id))}`);
@@ -82,7 +82,7 @@ function describeSlot(w: World, d: { slot?: { start: string }; panel: string[]; 
 }
 
 /** Run the checks and tell the person the outcome, with fixes or an approval request. */
-function checkAndPost(w: World, a: Actor, msgId: string, lead = '') {
+export function checkAndPost(w: World, a: Actor, msgId: string, lead = '') {
   const d = hc(w).drafts[msgId]; if (!d) return;
   const { checks, pass, queuedForApproval } = checkDraft(w, a, msgId);
   const first = firstOf(w, d.personId); const v = latestV(d).v;
@@ -255,14 +255,14 @@ if (typeof window !== 'undefined') {
 // ---------------- Drafting ----------------
 const DRAFT_VERB = /\b(draft|write|compose|prepare|put together|create|do)\b/;
 const DRAFT_OBJ = /\b(invit\w*|invite|message|email|e-mail|note|follow ?-?up|rejection|reply|response|letter|text|sms)\b/;
-function kindFrom(norm: string, w: World, personId: string, orgId?: string): DraftKind {
+export function kindFrom(norm: string, w: World, personId: string, orgId?: string): DraftKind {
   if (/\b(reject\w*|declin\w*|turn (him|her|them) down|not progressing|unsuccessful)\b/.test(norm)) return 'REJECTION';
   if (/\b(follow ?-?up|chase|nudge|remind\w*)\b/.test(norm)) return 'FOLLOW_UP';
   if (/\b(reschedul\w*|new time|move (the|her|his|their) interview)\b/.test(norm) && w.calendar.some((e) => e.personId === personId && e.orgId === orgId && e.status !== 'CANCELLED' && e.status !== 'HOLD')) return 'RESCHEDULE';
   if (/\b(reply|respond|response|answer)\b/.test(norm)) return 'REPLY';
   return 'INVITE';
 }
-function draftFlow(c: QCtx, personId: string, kind: DraftKind, why?: string): QReply {
+export function draftFlow(c: QCtx, personId: string, kind: DraftKind, why?: string): QReply {
   const a = c.actor; const w = c.w; const p = personOf(w, personId)!; const first = p.name.split(' ')[0];
   if (!['OWNER', 'ADMIN', 'RECRUITER', 'HIRING_MANAGER'].includes(a.role ?? 'VIEWER')) return { msgs: [{ kind: 'refusal', text: `As ${ROLE_LABEL[a.role ?? 'VIEWER'].toLowerCase()} you can’t write to candidates from ${orgOf(w, a.orgId)?.name}. A recruiter or admin can.` }] };
   if (w.consents[personId]?.withdrawnFrom.includes(a.orgId!)) return { msgs: [{ kind: 'refusal', text: `${first} withdrew consent for ${orgOf(w, a.orgId)?.name} to contact them, so I won’t draft anything to them.` }] };

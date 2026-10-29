@@ -5,13 +5,13 @@ import { useWorld } from '../../mock/world';
 import { registerRef } from '../../q/refs';
 import { Glyph } from '../../ds/Glyph';
 import type { Level } from '../../state/areas/hire-b';
-import { cellFor, firstName, GLYPH_OF, LEVEL_VALUE, LEVEL_WORD, questionsFor, reqLabel, shortLabel, weightOf, type CompareView } from './model';
+import { cellFor, firstName, GLYPH_OF, LEVEL_VALUE, LEVEL_WORD, questionsFor, reqLabel, shortLabel, usesRubric, weightOf, type CompareView } from './model';
 import { Ledger } from './Ledger';
 
 const parse = <T,>(s: string): T | null => { try { return JSON.parse(s) as T; } catch { return null; } };
 type ViewId = { p: string[]; c: string[]; y?: boolean; q?: boolean };
-export const viewId = (v: CompareView) => JSON.stringify({ p: v.people, c: v.criteria, y: v.lastYear || undefined, q: v.weighting === 'Q' || undefined });
-const toView = (x: ViewId): CompareView => ({ people: x.p, criteria: x.c, lastYear: !!x.y, weighting: x.q ? 'Q' : 'EQUAL' });
+export const viewId = (v: CompareView) => JSON.stringify({ p: v.people, c: v.criteria, y: v.lastYear || undefined, q: v.weighting !== 'EQUAL' || undefined });
+const toView = (x: ViewId): CompareView => ({ people: x.p, criteria: x.c, lastYear: !!x.y, weighting: x.q ? 'RUBRIC' : 'EQUAL' });
 
 function LedgerCard({ id }: { id: string }) {
   const w = useWorld((x) => x);
@@ -21,7 +21,7 @@ function LedgerCard({ id }: { id: string }) {
   if (!people.length || !v.criteria.length) return null;
   return (
     <div className="hire-b-qcard" role="group" aria-label="The comparison, as a ledger">
-      <div className="hire-b-qcard-head"><span className="lab">Who to talk to first</span><span className="t14 muted">{v.lastYear ? 'Last year only · ' : ''}{v.weighting === 'Q' ? 'Q’s weighting' : 'Must-haves equal'}</span></div>
+      <div className="hire-b-qcard-head"><span className="lab">Who to talk to first</span><span className="t14 muted">{v.lastYear ? 'Last year only · ' : ''}{usesRubric(w, v.weighting) ? 'Rubric weights' : 'Must-haves equal'}</span></div>
       <Ledger w={w} v={{ ...v, people }} compact />
     </div>
   );
@@ -40,7 +40,7 @@ function ReasonCard({ id }: { id: string }) {
         <thead><tr><th scope="col">Requirement</th><th scope="col">{fa}</th><th scope="col">{fb}</th></tr></thead>
         <tbody>{v.criteria.map((r) => { const ca = cellFor(w, x.a, r, v), cb = cellFor(w, x.b, r, v); const d = LEVEL_VALUE[ca.level] - LEVEL_VALUE[cb.level]; return (
           <tr key={r}>
-            <th scope="row">{shortLabel(w, r)}{weightOf(w, r, v.weighting) > 2 && <span className="hire-b-lcol-x"> 1.5×</span>}<span className="hire-b-qahead">{d === 0 ? 'level' : `${d > 0 ? fa : fb} ahead`}</span></th>
+            <th scope="row">{shortLabel(w, r)}{usesRubric(w, v.weighting) && <span className="hire-b-lcol-x"> w{weightOf(w, r, v.weighting)}</span>}<span className="hire-b-qahead">{d === 0 ? 'level' : `${d > 0 ? fa : fb} ahead`}</span></th>
             <td data-ahead={d > 0 ? '1' : undefined}><Mark l={ca.level} />{ca.correction && <span className="t14 muted"> (your correction)</span>}</td>
             <td data-ahead={d < 0 ? '1' : undefined}><Mark l={cb.level} />{cb.correction && <span className="t14 muted"> (your correction)</span>}</td>
           </tr>); })}</tbody>

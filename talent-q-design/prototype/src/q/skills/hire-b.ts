@@ -8,7 +8,7 @@ import type { Actor, QAction } from '../../state/domain';
 import { registerSkill } from '../core/engine';
 import type { QCtx, QReply } from '../core/types';
 import { hireB, type Level, type Rating } from '../../state/areas/hire-b';
-import { ASSESS, KORA_ROLE, LEVEL_WORD, assessFor, cellFor, criteriaIn, disputedEvidence, firstName, followUpsFor, isVague, koraInterviews, nameOf, peopleIn, personInFocus, questionsFor, rank, readingOf, reqLabel, reqsOf, rolePeople, viewerOrg, type CompareView } from '../../journeys/hire-b/model';
+import { ASSESS, KORA_ROLE, LEVEL_WORD, assessFor, cellFor, criteriaIn, disputedEvidence, firstName, followUpsFor, isVague, koraInterviews, nameOf, peopleIn, personInFocus, questionsFor, rank, readingOf, reqLabel, reqsOf, roleRubric, rolePeople, usesRubric, viewerOrg, weightingNote, type CompareView } from '../../journeys/hire-b/model';
 import { addCorrection, cmpView, finishInterview, ghRetry, live, setCmp, startInterview } from '../../journeys/hire-b/ops';
 import { PROJECTS } from '../../journeys/hire-b/projects';
 import { viewId } from '../../journeys/hire-b/refs';
@@ -27,7 +27,7 @@ const COMPARE = /\b(compare|compared|comparing|comparison|versus|vs|side by side
 const LASTYEAR = /\b(last|past) (year|12 months|twelve months)\b|\brecent (evidence|stuff|work|things)\b|\bonly recent\b/;
 const ALLDATES = /\b(any date|all dates|all evidence|older evidence too|include old\w*|not just (the )?last year)\b/;
 const EQUAL = /\b(weigh|weight|count)\w*\b.*\b(equal|equally|equaly|equel|same|evenly)\b|\bnot (count|weigh)\w* (it |payments? )?more\b|\bno extra weight\b|\bstop (weighting|weighing)\b/;
-const QWEIGHT = /\b(your|q'?s) (weighting|weights)\b.*\b(back|again|restore)\b|\bput (the|your) weight\w* back\b/;
+const QWEIGHT = /\b(your|q'?s|the rubric'?s?|rubric) (weighting|weights)\b.*\b(back|again|restore|on)\b|\bput (the|your|rubric) (rubric )?weight\w* back\b|\buse the rubric( weights)?\b/;
 const ADD = /\b(add|also|include|plus|and also)\b/;
 const DROP = /\b(drop|remove|without|exclude|leave out|take out|ignore|not)\b/;
 const ONLY = /\b(only|just|instead|switch to|change to|focus on)\b/;
@@ -56,7 +56,7 @@ function comparePatch(c: QCtx): { patch: Partial<CompareView>; said: string[] } 
   if (ALLDATES.test(c.norm)) { patch.lastYear = false; said.push('using evidence of any date'); }
   else if (LASTYEAR.test(c.norm)) { patch.lastYear = true; said.push('using evidence from the last year only'); }
   if (EQUAL.test(c.norm)) { patch.weighting = 'EQUAL'; said.push('with every must-have weighed equally'); }
-  else if (QWEIGHT.test(c.norm)) { patch.weighting = 'Q'; said.push('with my weighting back on'); }
+  else if (QWEIGHT.test(c.norm)) { patch.weighting = 'RUBRIC'; said.push(roleRubric(c.w) ? `with the rubric v${roleRubric(c.w)!.v} weights back on` : 'with equal must-haves (there’s no approved rubric yet)'); }
   if (!said.length && isCompare) { said.push('as you left it'); }
   if (!said.length) return null;
   patch.open = null;
@@ -86,7 +86,7 @@ registerSkill({
     return {
       msgs: [{ kind: 'reply', text: `Comparing ${p.said.join(', ')}.${changed} ${notes[0] ?? ''}`.replace(/\s+/g, ' ').trim(),
         ref: after.people.length && after.criteria.length ? { type: 'hb.ledger', id: viewId({ ...after, people: after.people.filter((x) => rolePeople(c.w).includes(x)) }) } : undefined,
-        used: ['Senior Backend brief v1', `${after.people.reduce((n, pid) => n + visibleEvidence(c.w, pid, viewerOrg(c.w)).length, 0)} shared evidence items`, ...(after.weighting === 'Q' && after.criteria.includes('r1') ? ['My weighting: payments 1.5×'] : [])],
+        used: ['Senior Backend brief v1', `${after.people.reduce((n, pid) => n + visibleEvidence(c.w, pid, viewerOrg(c.w)).length, 0)} shared evidence items`, usesRubric(c.w, after.weighting) ? `Rubric v${roleRubric(c.w)!.v} weights` : 'Equal must-haves (no rubric weights)'],
         why: 'Rule-based reading of what each person shared with Kora; I never use private or withdrawn items.',
         actions: [{ label: 'Why this order?', act: { t: 'say', text: 'why is that the order' } }, ...(after.lastYear ? [] : [{ label: 'Last year only', act: { t: 'say', text: 'only evidence from the last year' } } as QAction])] }],
       effects: (w, a) => setCmp(w, a.id, p.patch),
@@ -113,17 +113,15 @@ registerSkill({
     const a = named[0] ?? rk[0]?.pid; const b = named[1] ?? rk.find((r) => r.pid !== a)?.pid;
     if (!a || !b) return { msgs: [{ kind: 'reply', text: 'There’s only one person in the comparison, so I haven’t ranked anyone. Add someone and I’ll show my reasoning.' }] };
     const eq = rank(c.w, { ...v, weighting: 'EQUAL' });
-    const weightLine = v.weighting === 'Q' && v.criteria.includes('r1')
-      ? `One part is my judgement, not your brief: I count payments 1.5× because it’s the hardest to find. Without that, the order is ${eq.map((r) => fn(c.w, r.pid)).join(', then ')}.`
-      : 'Every must-have counts the same here; nice-to-haves count half.';
+    const weightLine = `${weightingNote(c.w, v)}${usesRubric(c.w, v.weighting) ? ` With must-haves equal instead, the order would be ${eq.map((r) => fn(c.w, r.pid)).join(', then ')}.` : ''}`;
     const isFair = /\bnot fair|unfair|biased\b/.test(c.norm);
     return {
       msgs: [{ kind: 'reply', text: `${isFair ? 'Fair challenge. ' : ''}Here’s exactly what I used, only from what each of them shared with Kora. ${weightLine} I don’t use CVs, schools, names or anything personal. If I’ve read something wrong, tell me (for example “Tobi’s Go library shouldn’t count as production”) and I’ll correct it and show what changes.`,
         ref: { type: 'hb.reason', id: JSON.stringify({ ...JSON.parse(viewId(v)), a, b }) },
-        used: ['Senior Backend brief v1', 'Shared evidence only', ...(v.weighting === 'Q' ? ['My weighting (an inference)'] : [])],
-        why: 'Strength levels: verified 3, evidenced 2, partial 1, claimed or not shown 0; must-haves count double.',
+        used: ['Senior Backend brief v1', 'Shared evidence only', usesRubric(c.w, v.weighting) ? `Rubric v${roleRubric(c.w)!.v} weights (approved by a person)` : 'Equal must-haves (placeholder)'],
+        why: `Strength levels: verified 3, evidenced 2, partial 1, claimed or not shown 0 (unknown, not weak). ${usesRubric(c.w, v.weighting) ? 'Each requirement counts by its weight in the approved rubric.' : 'Must-haves count double until a rubric is approved.'}`,
         actions: [
-          ...(v.weighting === 'Q' ? [{ label: 'Weigh must-haves equally', primary: true, act: { t: 'say', text: 'weigh the must-haves equally' } } as QAction] : []),
+          ...(usesRubric(c.w, v.weighting) ? [{ label: 'Weigh must-haves equally', primary: true, act: { t: 'say', text: 'weigh the must-haves equally' } } as QAction] : [{ label: 'Set weights in a rubric', act: { t: 'nav', to: '/r/roles/m_backend/rubric' } } as QAction]),
           { label: `${fn(c.w, a)}’s Go library isn’t production`, act: { t: 'say', text: `${fn(c.w, a).toLowerCase()}'s go library does not count as production go` } },
           ...(c.route === '/r/compare' ? [] : [{ label: 'Open the comparison', act: { t: 'nav', to: '/r/compare' } } as QAction]),
         ] }],

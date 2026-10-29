@@ -6,6 +6,8 @@ import { simNow, type World } from '../../mock/world';
 import type { Actor } from '../../state/domain';
 import { hc } from '../../state/areas/hire-c';
 import { CAN_SEND, firstOf, IS_ADMIN, KIND_LABEL, LAGOS, listNames, tDay, tTime } from '../../journeys/hire-c/lib';
+import { canRead, isSuppressed, mail } from '../../state/areas/mail';
+import { FOLLOW_CAP, followUpsUsed, replyMailbox } from '../../journeys/hire-c/email';
 
 const days = (w: World, at: string) => Math.floor((simNow(w).getTime() - new Date(at).getTime()) / 864e5);
 const ago = (n: number) => (n <= 0 ? 'today' : n === 1 ? 'yesterday' : `${n} days ago`);
@@ -42,11 +44,18 @@ registerRule({
       const open = w.threads.some((t) => t.orgId === a.orgId && t.personId === pid && t.messages.some((m) => m.status === 'DRAFT' || m.status === 'AWAITING_APPROVAL'));
       const n = days(w, last.at); const first = firstOf(w, pid);
       const soon = w.calendar.some((e) => e.personId === pid && e.orgId === a.orgId && e.status === 'INVITED' && new Date(e.start).getTime() - simNow(w).getTime() < 3 * 864e5);
-      if (last.from !== pid && (n >= 2 || (n >= 1 && soon)) && (last.from === a.id || IS_ADMIN.includes(a.role ?? 'VIEWER')) && !open) {
+      // Follow-up suggestion (E01-16): from thread state, capped per conversation, snoozable and dismissable, and
+      // honest about what Q can't see (a send-only mailbox).
+      const th = w.threads.find((t) => t.orgId === a.orgId && t.personId === pid && t.messages.includes(last))!;
+      const snoozed = (mail(w).snoozed[th.id] ?? '') > new Date().toISOString();
+      const dismissed = mail(w).followUps.some((f) => f.threadId === th.id && f.state === 'CANCELLED');
+      const used = followUpsUsed(w, th.id);
+      if (last.from !== pid && (n >= 2 || (n >= 1 && soon)) && (last.from === a.id || IS_ADMIN.includes(a.role ?? 'VIEWER')) && !open && !snoozed && !dismissed && used < FOLLOW_CAP && !isSuppressed(w, a.orgId!, pid) && last.delivery !== 'BOUNCED') {
         const ev = w.calendar.find((e) => e.personId === pid && e.orgId === a.orgId && e.status === 'INVITED');
-        out.push({ subject: `out:${last.id}`, text: `${first} hasn’t replied to the message sent ${tDay(last.at, LAGOS)} (${ago(n)}).${ev ? ` The interview on ${tDay(ev.start, LAGOS)} at ${tTime(ev.start, LAGOS)} is still unconfirmed.` : ''} Shall I draft a short follow-up?`,
-          why: `From the message log: sent ${tDay(last.at, LAGOS)} by ${last.channel === 'SMS' ? 'text' : last.channel === 'EMAIL' ? 'email' : 'Talent Q'}, no reply since${ev ? ', and the calendar invite is still “invited”, not “confirmed”' : ''}.`,
-          actions: [{ label: 'Draft a follow-up', primary: true, act: { t: 'say' as const, text: `draft a follow up to ${first}` } }] });
+        const mb = replyMailbox(w, th); const blind = mb && !canRead(mb);
+        out.push({ subject: `out:${last.id}`, text: `${first} hasn’t replied to the message sent ${tDay(last.at, LAGOS)} (${ago(n)}).${ev ? ` The interview on ${tDay(ev.start, LAGOS)} at ${tTime(ev.start, LAGOS)} is still unconfirmed.` : ''}${blind ? ` I can only see replies in Talent Q: ${mb!.address} is send-only, so ${first} may have answered there.` : ''} Shall I draft a polite reminder?`,
+          why: `From the message log: sent ${tDay(last.at, LAGOS)} by ${last.channel === 'SMS' ? 'text' : last.channel === 'EMAIL' ? `email${last.acceptedAt ? ' (accepted by the provider, which isn’t proof it was read)' : ''}` : 'Talent Q'}, no reply since${ev ? ', and the calendar invite is still “invited”, not “confirmed”' : ''}. Reminders used for this conversation: ${used} of ${FOLLOW_CAP}. Nothing is sent without your approval.`,
+          actions: [{ label: 'Draft a follow-up', primary: true, act: { t: 'say' as const, text: `draft a follow up to ${first}` } }, { label: 'Snooze 2 days', act: { t: 'do' as const, op: 'email.snooze', args: { threadId: th.id } } }, { label: 'Don’t suggest again', act: { t: 'do' as const, op: 'email.followup.dismiss', args: { threadId: th.id } } }] });
       }
       if (last.from === pid && n >= 1 && !open && (IS_ADMIN.includes(a.role ?? 'VIEWER') || last.to === a.id)) {
         out.push({ subject: `in:${last.id}`, text: `${first} wrote to Kora ${ago(n)} and hasn’t had a reply: “${last.body.slice(0, 80)}${last.body.length > 80 ? '…' : ''}”`,
@@ -91,4 +100,28 @@ registerRule({
     const q = w.threads.flatMap((t) => t.messages).filter((m) => m.status === 'QUEUED_OFFLINE' && (m.approvedBy === a.id || m.from === a.id || m.from === a.personId));
     return q.length ? [{ subject: 'queued', text: `${q.length} message${q.length === 1 ? ' is' : 's are'} queued while you’re offline. Nothing has been sent; ${q.length === 1 ? 'it goes' : 'they go'} when you reconnect.`, why: 'The connection is off (simulated), so sends wait in the outbox.', actions: [] }] : [];
   },
+});
+
+// A reply arrived by email with a changed subject: one notice per reply until a person confirms the match (E01-12).
+registerRule({
+  id: 'email.match', side: 'recruiter', priority: 'high',
+  evaluate: (w, a) => {
+    if (!canAct(a)) return [];
+    return w.threads.filter((t) => t.orgId === a.orgId).flatMap((t) => t.messages.filter((m) => m.inbound?.subjectChanged && m.inbound.matchedBy !== 'USER_CONFIRMED' && canRead(mail(w).mailboxes.find((x) => x.id === m.inbound?.mailbox))).map((m) => ({
+      subject: `match:${m.id}`, text: `${firstOf(w, t.personId)} replied by email with a different subject (“${m.subject}”). Is it about the same conversation?`,
+      why: 'I matched it by the email thread and sender, but the subject changed, so I won’t attach it or act on it until you confirm.',
+      actions: [{ label: 'Yes, it’s this thread', primary: true, act: { t: 'do' as const, op: 'email.match', args: { msgId: m.id, ok: true } } }, { label: 'Keep it separate', act: { t: 'do' as const, op: 'email.match', args: { msgId: m.id, ok: false } } }],
+    })));
+  },
+});
+
+// A mailbox the person sends from has expired: say so once, with the reconnect (E01-23).
+registerRule({
+  id: 'email.expired', side: 'recruiter', priority: 'high',
+  evaluate: (w, a) => mail(w).mailboxes.filter((m) => m.state === 'EXPIRED' && m.sendAs.includes(a.id)).map((m) => {
+    const waiting = w.threads.flatMap((t) => t.messages).filter((x) => x.senderId === m.id && x.delivery === 'FAILED').length;
+    return { subject: `expired:${m.id}`, text: `${m.address} needs you to sign in again; nothing sends from it until then.${waiting ? ` ${waiting} approved email${waiting === 1 ? ' is' : 's are'} waiting, unchanged.` : ''}`,
+      why: `${m.provider === 'GOOGLE' ? 'Google' : 'Microsoft'} reported the sign-in as expired (simulated). Drafts, approvals and idempotency keys are kept.`,
+      actions: [{ label: 'Reconnect', primary: true, act: { t: 'do' as const, op: 'email.reconnect', args: { mailboxId: m.id } } }] };
+  }),
 });

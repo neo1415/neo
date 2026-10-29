@@ -6,6 +6,7 @@
 import { simNow, type World } from '../../mock/world';
 import type { Actor } from '../../state/domain';
 import { registerRule } from '../core/proactive';
+import { campaignsFor } from '../../state/areas/campaigns';
 import { readA } from '../../state/areas/hire-a';
 import { band, can, curV, dayLabel, ensureSeeded, isFounder, lastAt, naira, needsSeed, orgMandates, ROLES, hoursText } from '../../journeys/hire-a/model';
 
@@ -65,5 +66,24 @@ registerRule({
     if (!w.pipeline.some((e) => e.personId === 'p_kunle' && (e.mandateId === 'm_backend' || e.mandateId === 'm_payouts') && e.stage !== 'REJECTED')) return [];
     return [{ subject: 'p_kunle', text: 'Kunle Bakare’s CV and his GitHub disagree about his experience (6 years against about 2).', why: 'Both sources are shared with Kora Pay and give different numbers. Q hasn’t picked one.',
       actions: [{ label: 'Show me both', primary: true, act: { t: 'say', text: 'how many years has kunle really got' } }] }];
+  },
+});
+
+// Hiring campaigns (addendum §D): a campaign's deadline is near and one of its roles is still a draft brief, so nothing
+// is searched for it yet. Shown to the campaign owner. The subject is the brief version, the same subject as
+// 'hire-a.draft-stale', so one decision (dismiss, later) covers both and the brief never gets two cards.
+registerRule({
+  id: 'hire-a.campaign-draft', side: 'recruiter', priority: 'normal',
+  evaluate: (w: World, a: Actor) => {
+    const t = simNow(w).getTime();
+    return campaignsFor(w, a.orgId ?? '').filter((c) => c.owner === a.id && c.status === 'ACTIVE' && c.deadline && new Date(`${c.deadline}T23:59:00+01:00`).getTime() - t < 10 * 864e5).flatMap((c) =>
+      orgMandates(w, a).filter((m) => c.roles.includes(m.id) && m.status === 'DRAFT').map((m) => {
+        const days = Math.ceil((new Date(`${c.deadline}T23:59:00+01:00`).getTime() - t) / 864e5);
+        const waits = w.actors.find((x) => x.orgId === a.orgId && new RegExp(`for ${x.first}’s approval`).test(m.versions[m.versions.length - 1].note));
+        return { subject: `${m.id}:v${curV(m)}`,
+          text: `“${c.name}” is due in ${days} days, and the ${m.title} brief is still a draft${waits ? ` waiting for ${waits.first}` : ''}.`,
+          why: `You own the campaign. Nothing is searched for a role until its brief is approved, and the campaign’s deadline is ${dayLabel(`${c.deadline}T12:00:00+01:00`, a.timezone)}.`,
+          actions: [{ label: 'Open the campaign', primary: true, act: { t: 'nav', to: `/r/campaigns/${c.id}` } }, { label: 'Review the brief', act: { t: 'nav', to: `/r/roles/${m.id}` } }] };
+      }));
   },
 });

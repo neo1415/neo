@@ -461,22 +461,6 @@ registerSkill({
   },
 });
 
-// ---------- Messages to an employer (drafted; sent only on approval; shown in /c/messages) ----------
-registerSkill({
-  id: 'tb.message', side: 'candidate',
-  match: (c) => (cand(c) && /\b(message|write to|email|contact|ask|tell)\b/.test(c.norm) && (orgIn(c.norm) || /\bngozi\b|the recruiter/.test(c.norm)) && !/(follow ?up|chase|see|sees|share|stop|withdraw|apply)/.test(c.norm) ? 0.83 : 0),
-  handle: (c) => {
-    const org = orgIn(c.norm) ?? 'org_kora';
-    const about = c.text.replace(/^.*?\b(about|asking|ask (them|her|him)?|that)\b\s*/i, '').trim();
-    const body = `Hello, ${about && about.length < 160 && about !== c.text ? `I wanted to ask ${about.replace(/[?.!]*$/, '')}.` : 'I wanted to check in about my application.'} Thank you, ${c.actor.first}`;
-    return { msgs: [reply(`Here’s a draft to ${orgName(c.w, org)}. I won’t send it without your yes: “${body}”`, { kind: 'approval', actions: [{ label: 'Send (simulated)', primary: true, act: { t: 'do', op: 'tb.msg.send', args: { org, body } } }, { label: 'Open messages', act: { t: 'nav', to: '/c/messages' } }, { label: 'Don’t send', act: { t: 'say', text: 'keep it' } }] })] };
-  },
-});
-registerOp('tb.msg.send', (w, a, actor) => {
-  const org = String(a.org); const pid = actor.personId!;
-  let t = w.threads.find((x) => x.orgId === org && x.personId === pid);
-  if (!t) { t = { id: uid('t'), orgId: org, personId: pid, messages: [] }; w.threads.push(t); }
-  t.messages.push({ id: uid('msg'), from: pid, to: org, body: String(a.body), at: now(), status: 'SENT_SIMULATED', approvedBy: actor.id, receipt: uid('sim'), channel: 'IN_APP' });
-  emit(w, actor.id, 'message.sent', `SHARED:${org}:${pid}`, `${actor.name} sent a message (simulated).`);
-  return { say: `Sent (simulated) to ${orgName(w, org)}. It’s in your messages.` };
-});
+// ---------- Messages to an employer ----------
+// Moved to q/skills/email.ts (contact.ask, contact.briefing, contact.emailReply; op tb.msg.send kept there): the
+// employer's contact policy is shown before drafting, and the send goes through the same policy check (audit §C).

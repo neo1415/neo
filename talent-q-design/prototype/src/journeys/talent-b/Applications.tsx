@@ -6,6 +6,7 @@ import { Canvas } from '../../ds/Workspace';
 import { runAction } from '../../q/core/engine';
 import { Link, navigate } from '../../ui/router';
 import { APP_K as K, APP_LABEL, appExplain, evById, fmtDate, tb } from './logic';
+import { CandidateRatings } from '../rubric/CandidateRatings'; // rubric builder: the person's own ratings (AD-E-14)
 
 const act = (op: string, args: Record<string, unknown> = {}) => void runAction({ label: op, act: { t: 'do', op, args } });
 const say = (text: string) => void runAction({ label: text, act: { t: 'say', text } });
@@ -59,6 +60,7 @@ export function ApplicationsPage() {
           })}
         </ul>
       )}
+      <CandidateRatings />
       <details className="ds-sheet tb-details">
         <summary><b>What each status means</b></summary>
         <ul className="t14">

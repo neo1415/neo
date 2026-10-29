@@ -73,7 +73,9 @@ export interface RoleMessages { threads: Thread[]; awaitingReply: Thread[]; toAp
 export function messagesFor(w: World, viewerOrg: string, roleId: string | null, campaignId: string): RoleMessages {
   const threads = w.threads.filter((t) => t.orgId === viewerOrg && canSeeCandidate(w, t.personId, viewerOrg) && (roleId ? t.mandateId === roleId : t.campaignId === campaignId && !t.mandateId));
   const live = (t: Thread) => t.messages.filter((m) => m.status !== 'DISCARDED');
-  const awaitingReply = threads.filter((t) => { const ms = live(t); const l = ms[ms.length - 1]; return l && fromCandidate(t, l) && !['CLOSED', 'BLOCKED', 'MUTED'].includes(t.state ?? ''); });
+  // Waiting for a reply = the person's latest message about this role (across their threads) is theirs.
+  const latestFor = (pid: string) => threads.filter((t) => t.personId === pid).flatMap((t) => live(t).map((m) => ({ t, m }))).sort((x, y) => y.m.at.localeCompare(x.m.at))[0];
+  const awaitingReply = threads.filter((t) => { const l = latestFor(t.personId); return l && l.t.id === t.id && fromCandidate(t, l.m) && !['CLOSED', 'BLOCKED', 'MUTED'].includes(t.state ?? ''); });
   const toApprove = threads.flatMap((t) => t.messages).filter((m) => m.status === 'AWAITING_APPROVAL').length;
   const all = threads.flatMap((t) => live(t).map((m) => ({ t, m }))).sort((x, y) => y.m.at.localeCompare(x.m.at));
   const l = all[0];
@@ -109,23 +111,23 @@ export function nextActions(w: World, c: HiringCampaign): NextAction[] {
       const named = members.find((x) => new RegExp(`for ${x.first}’s approval`).test(note));
       const who = r.legacy ? [r.owner] : named ? [named.id] : members.filter((x) => x.role && BRIEF_APPROVERS.includes(x.role) && x.id !== r.createdBy).map((x) => x.id);
       out.push({ id: `${rid}:brief`, kind: 'BRIEF', roleId: rid, text: `Approve the “${short}” brief${named ? `: waiting for ${named.first}` : ''}`, who, approval: true, go: { label: 'Review the brief', to: r.legacy ? '/r/mandate' : r.href } });
-      continue;
     }
     const rub = rubricFor(w, rid);
-    if (rub?.versions.some((v) => v.state === 'Q_PROPOSED')) out.push({ id: `${rid}:rubric`, kind: 'RUBRIC', roleId: rid, text: `Approve the rubric Q proposed for ${short}`, who: [r.owner], approval: true, go: { label: 'Review the rubric', to: `/r/roles/${rid}/rubric` } });
+    if (r.status === 'DRAFT') { /* rubric and search wait for an approved brief; messages and interviews below still count */ }
+    else if (rub?.versions.some((v) => v.state === 'Q_PROPOSED')) out.push({ id: `${rid}:rubric`, kind: 'RUBRIC', roleId: rid, text: `Approve the rubric Q proposed for ${short}`, who: [r.owner], approval: true, go: { label: 'Review the rubric', to: `/r/roles/${rid}/rubric` } });
     else if (!approvedVersion(w, rid) && !r.clientOrgId) out.push({ id: `${rid}:norubric`, kind: 'RUBRIC', roleId: rid, text: `Agree how ${short} candidates are assessed (no rubric yet)`, who: [r.owner], approval: false, go: { label: 'Start a rubric', to: `/r/roles/${rid}/rubric` } });
     const mm = messagesFor(w, org, rid, c.id);
     const toApprove = mm.threads.flatMap((t) => t.messages.filter((m) => m.status === 'AWAITING_APPROVAL').map((m) => ({ t, m })));
-    for (const { t, m } of toApprove) out.push({ id: `${m.id}:approve`, kind: 'MESSAGE', roleId: rid, text: `Approve the message to ${first(w, t.personId)} (${short})`, who: members.filter((x) => x.role && SEND_APPROVERS.includes(x.role)).map((x) => x.id), approval: true, go: { label: 'Open the message', op: { name: 'campaigns.thread', args: { pid: t.personId } } } });
-    for (const t of mm.awaitingReply) out.push({ id: `${t.id}:reply`, kind: 'REPLY', roleId: rid, text: `${first(w, t.personId)} wrote about ${short}${t.initiatedBy === 'CANDIDATE' ? ' (they started the conversation)' : ''}: reply`, who: [r.owner], approval: false, go: { label: 'Open the thread', op: { name: 'campaigns.thread', args: { pid: t.personId } } } });
+    for (const { t, m } of toApprove) out.push({ id: `${t.id}:${m.id}:approve`, kind: 'MESSAGE', roleId: rid, text: `Approve the message to ${first(w, t.personId)} (${short})`, who: members.filter((x) => x.role && SEND_APPROVERS.includes(x.role)).map((x) => x.id), approval: true, go: { label: `Open ${first(w, t.personId)}’s message`, op: { name: 'campaigns.thread', args: { pid: t.personId } } } });
+    for (const t of mm.awaitingReply.filter((x, i, all) => all.findIndex((y) => y.personId === x.personId) === i)) out.push({ id: `${t.id}:reply`, kind: 'REPLY', roleId: rid, text: `${first(w, t.personId)} wrote about ${short}${t.initiatedBy === 'CANDIDATE' ? ' (they started the conversation)' : ''}: reply`, who: [r.owner], approval: false, go: { label: `Reply to ${first(w, t.personId)}`, op: { name: 'campaigns.thread', args: { pid: t.personId } } } });
     const ivs: Interview[] = w.interviews.filter((i) => i.mandateId === rid && i.orgId === org && canSeeCandidate(w, i.personId, org));
     for (const i of ivs.filter((x) => x.status === 'PLANNING')) out.push({ id: `${i.id}:plan`, kind: 'SCHEDULE', roleId: rid, text: `Arrange ${first(w, i.personId)}’s interview (${short})`, who: [r.owner], approval: false, go: { label: 'Open interviews', to: `/r/interviews/${i.id}` } });
     for (const i of ivs.filter((x) => x.status === 'DONE')) for (const p of i.panel.filter((pid) => !i.feedback.some((f) => f.by === pid))) out.push({ id: `${i.id}:fb:${p}`, kind: 'FEEDBACK', roleId: rid, text: `Feedback on ${first(w, i.personId)}’s interview is missing from ${first(w, p)}`, who: [p], approval: false, go: { label: 'Open the interview', to: `/r/interviews/${i.id}` } });
     const sc = stageCounts(w, rid, org);
-    if (!sc.people.length && !sc.hidden && !r.clientOrgId) out.push({ id: `${rid}:search`, kind: 'SEARCH', roleId: rid, text: `Nobody is on ${short} yet: find people`, who: [r.owner], approval: false, go: { label: 'Find people', to: r.href } });
+    if (r.status !== 'DRAFT' && !sc.people.length && !sc.hidden && !r.clientOrgId) out.push({ id: `${rid}:search`, kind: 'SEARCH', roleId: rid, text: `Nobody is on ${short} yet: find people`, who: [r.owner], approval: false, go: { label: 'Find people', to: r.href } });
   }
   const unfiled = messagesFor(w, org, null, c.id);
-  for (const t of unfiled.threads) out.push({ id: `${t.id}:file`, kind: 'UNFILED', text: `${first(w, t.personId)}’s message is in this campaign but not filed to a role`, who: [c.owner], approval: false, go: { label: 'Open the thread', op: { name: 'campaigns.thread', args: { pid: t.personId } } } });
+  for (const t of unfiled.threads) out.push({ id: `${t.id}:file`, kind: 'UNFILED', text: `${first(w, t.personId)}’s message is in this campaign but not filed to a role`, who: [c.owner], approval: false, go: { label: `File ${first(w, t.personId)}’s message`, op: { name: 'campaigns.thread', args: { pid: t.personId } } } });
   return out;
 }
 export const forMe = (acts: NextAction[], a: Actor) => acts.filter((x) => x.who.includes(a.id));
@@ -182,8 +184,8 @@ export function dueText(w: World, iso?: string) {
 export type Result = { ok: true; text: string; id?: string } | { ok: false; code: 'CONFLICT' | 'CLOSED' | 'CLIENT' | 'MISSING' | 'PERM' | 'ALREADY' | 'ARCHIVED'; text: string; other?: HiringCampaign };
 export const canManage = (a: Actor) => !!a.role && ['OWNER', 'ADMIN', 'RECRUITER', 'HIRING_MANAGER'].includes(a.role);
 
-export function createCampaign(w: World, a: Actor, name: string, clientOrgId?: string, goal = ''): HiringCampaign {
-  const c: HiringCampaign = { id: uid('c'), orgId: a.orgId!, clientOrgId, name, goal, owner: a.id, status: 'ACTIVE', createdAt: simNow(w).toISOString().slice(0, 10), createdBy: a.id, roles: [], savedFilters: [] };
+export function createCampaign(w: World, a: Actor, name: string, clientOrgId?: string, goal = '', id = uid('c')): HiringCampaign {
+  const c: HiringCampaign = { id, orgId: a.orgId!, clientOrgId, name, goal, owner: a.id, status: 'ACTIVE', createdAt: simNow(w).toISOString().slice(0, 10), createdBy: a.id, roles: [], savedFilters: [] };
   campaignsMut(w).list.push(c);
   emit(w, a.id, 'campaign.created', scopeFor(c), `${a.name} created the hiring campaign “${name}”${clientOrgId ? ` for ${orgOf(w, clientOrgId)?.name}` : ''}.`, { campaignId: c.id });
   return c;
@@ -243,6 +245,7 @@ export function campaignIn(w: World, a: Actor, norm: string, includeArchived = t
 const ROLE_STOP = new Set(['engineer', 'the', 'role', 'lead', 'and', 'via', 'agency', 'kora', 'pay', 'medlink', 'health']);
 /** The requisition named in `norm`: distinctive title words count most (payouts, senior, support, ios). */
 export function roleIn(w: World, reqs: Req[], norm: string): Req | undefined {
+  void w;
   const said = new Set(norm.toLowerCase().split(/[^a-z0-9]+/));
   const scored = reqs.map((r) => {
     const ts = r.title.toLowerCase().split(/[^a-z0-9]+/).filter((t) => t.length > 1 && !ROLE_STOP.has(t));

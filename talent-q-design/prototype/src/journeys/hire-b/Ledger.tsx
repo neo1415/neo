@@ -1,6 +1,6 @@
 // The evidence ledger (R2): one row per person, one block per requirement. Block width is how much the
-// requirement counts (must-haves twice a nice-to-have; Q's extra weight on payments is visible as a wider
-// block), block shade is how strong the evidence is (one ink hue, light to dark: dataviz ordinal ramp,
+// requirement counts (the approved rubric's weight for that requirement, or equal must-haves when no rubric is
+// approved: AD-B-05 replaced the old fixed 1.5x payments rule), block shade is how strong the evidence is (one ink hue, light to dark: dataviz ordinal ramp,
 // validated: #b9b1a3 / #5d5648 / #16140f on #fffdf8). Nothing relies on shade alone: every block carries a
 // glyph, a word where it fits, an accessible name, and the table below the chart repeats every value.
 // Motion (MO-013 comparison morph): rows re-order with a layout animation and block widths ease when the
@@ -11,7 +11,7 @@ import { Glyph } from '../../ds/Glyph';
 import { Link } from '../../ui/router';
 import { DUR, EASE } from '../../ds/motion';
 import type { Level } from '../../state/areas/hire-b';
-import { cellFor, firstName, GLYPH_OF, LEVEL_WORD, nameOf, rank, reqLabel, shortLabel, weightOf, type Change, type CompareView } from './model';
+import { cellFor, firstName, GLYPH_OF, LEVEL_WORD, nameOf, rank, reqLabel, roleRubric, shortLabel, usesRubric, weighted, weightOf, type Change, type CompareView } from './model';
 
 const WORD: Record<Level, string> = { verified: 'Verified', evidenced: 'Shown', partial: 'Partial', claim: 'Claimed', none: 'Not shown' };
 const ORD = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
@@ -22,7 +22,9 @@ export function Ledger({ w, v, change, onCell, compact, linkNames = true, ranked
   /** One person, no name column (the profile's own summary strip). */ bare?: boolean; noKey?: boolean;
 }) {
   const rows = ranked ? rank(w, v) : v.people.map((pid) => ({ pid }));
-  const crit = v.criteria;
+  // A requirement the approved rubric leaves out carries no weight, so it has no block (the margin says so).
+  const crit = weighted(w, v).length ? weighted(w, v) : v.criteria;
+  const rub = usesRubric(w, v.weighting);
   const weights = crit.map((r) => weightOf(w, r, v.weighting));
   const changed = new Set(change?.cells.map((c) => `${c.pid}:${c.reqId}`) ?? []);
   const moved = (pid: string) => {
@@ -36,7 +38,7 @@ export function Ledger({ w, v, change, onCell, compact, linkNames = true, ranked
         <span className="hire-b-lstrip">
           {crit.map((r, i) => (
             <motion.span key={r} layout="position" className="hire-b-lcol" style={{ flexGrow: weights[i] }} animate={{ flexGrow: weights[i] }} transition={morph}>
-              <span className="hire-b-lcol-name">{shortLabel(w, r)}</span>{weights[i] > 2 && <span className="hire-b-lcol-x">1.5×</span>}
+              <span className="hire-b-lcol-name">{shortLabel(w, r)}</span>{rub && !compact && <span className="hire-b-lcol-x"> weight {weights[i]}</span>}
             </motion.span>
           ))}
         </span>
@@ -71,19 +73,19 @@ export function Ledger({ w, v, change, onCell, compact, linkNames = true, ranked
             </span>
           </motion.li>); })}
       </ol>
-      {!noKey && <LedgerKey compact={compact} weighted={v.weighting === 'Q' && crit.includes('r1')} />}
+      {!noKey && <LedgerKey compact={compact} note={rub ? `weights from rubric v${roleRubric(w)!.v}` : v.weighting === 'EQUAL' ? 'you set must-haves to count the same' : 'no approved rubric yet, so must-haves count the same, twice a nice-to-have'} />}
     </div>
   );
 }
 
-export function LedgerKey({ compact, weighted }: { compact?: boolean; weighted?: boolean }) {
+export function LedgerKey({ compact, note }: { compact?: boolean; note?: string }) {
   const lv: Level[] = ['verified', 'evidenced', 'partial', 'claim', 'none'];
   return (
     <div className="hire-b-lkey">
       <ul aria-label="What the shades mean">
         {lv.map((l) => <li key={l}><span className="hire-b-sw" data-l={l} aria-hidden="true" />{compact ? WORD[l] : LEVEL_WORD[l]}</li>)}
       </ul>
-      {!compact && <p className="t14 muted" style={{ margin: 0 }}>Wider blocks count for more: must-haves count twice a nice-to-have{weighted ? ', and Q counts payments 1.5× because it’s the hardest to find' : ''}. Claimed and not shown count nothing, and that means unknown, not weak.</p>}
+      {!compact && <p className="t14 muted" style={{ margin: 0 }}>Wider blocks count for more{note ? `: ${note}` : ''}. Claimed and not shown count nothing, and that means unknown, not weak.</p>}
     </div>
   );
 }

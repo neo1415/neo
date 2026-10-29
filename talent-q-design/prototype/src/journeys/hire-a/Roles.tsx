@@ -16,6 +16,9 @@ import { STAGE_LABEL } from '../../state/domain';
 import { activeLevel, actorName, band, can, curV, dayLabel, ensureSeeded, hoursText, isVerified, LEVEL_LABEL, naira, orgMandates, payText, POOL, levelOf, postedJob, ROLE_LABEL, whoCan } from './model';
 import { doOp, evidenceGlyph, LimitsPanel, openQ, PayRange, say, StatusTag } from './ui';
 import { CONFLICTS } from '../../q/skills/hire-a';
+import { campaignOf, campaignsFor } from '../../state/areas/campaigns';
+import { reqOf } from '../campaigns/model';
+import '../campaigns/campaigns.css';
 
 /** The one next thing for a role, in plain words (shown on the list so nobody has to open each role). */
 function nextFor(w: World, m: MandateX, me: string): string {
@@ -23,6 +26,7 @@ function nextFor(w: World, m: MandateX, me: string): string {
   const sl = w.pipeline.filter((e) => e.mandateId === m.id && e.stage === 'SHORTLISTED').length;
   if (m.status === 'DRAFT') { const by = m.versions[m.versions.length - 1].by; return by === me ? 'Next: approve it, or ask Q to change it' : `Waiting for approval · last change by ${actorName(w, by).split(' ')[0]}`; }
   if (m.status === 'INTERVIEWING') return 'Interviews under way';
+  if (m.status === 'CLOSED' || m.status === 'FILLED') return m.status === 'FILLED' ? 'Filled' : 'Closed · not hiring';
   if (!found) return 'Next: find people';
   return `${found} found · ${sl} shortlisted${postedJob(w, m.id) ? ' · posted' : ''}`;
 }
@@ -33,7 +37,7 @@ export function RolesList() {
   const a = actorOf(w);
   const org = w.orgs.find((o) => o.id === a.orgId);
   const ms = orgMandates(w, a).sort((x, y) => (y.versions[y.versions.length - 1]?.at ?? '').localeCompare(x.versions[x.versions.length - 1]?.at ?? ''));
-  const drafts = ms.filter((m) => m.status === 'DRAFT').length;
+  const drafts = ms.filter((m) => m.status === 'DRAFT').length + (a.orgId === 'org_kora' && w.mandate.status === 'DRAFT' ? 1 : 0);
   if (!org) return (
     <Canvas title="No roles yet" kicker="Roles" open onClose={openQ}>
       <section className="ds-sheet hire-a-empty">
@@ -43,31 +47,78 @@ export function RolesList() {
       </section>
     </Canvas>
   );
+  // Group by hiring campaign (addendum §D): the role points to its campaign; the campaign never copies the role.
+  const legacy = a.orgId === 'org_kora' ? reqOf(w, w.mandate.mandateId) : undefined;
+  type Row = { id: string; m?: MandateX; r: NonNullable<ReturnType<typeof reqOf>> };
+  const rows: Row[] = [...(legacy ? [{ id: legacy.id, r: legacy }] : []), ...ms.map((m) => ({ id: m.id, m, r: reqOf(w, m.id)! })).filter((x) => x.r)];
+  const camps = campaignsFor(w, a.orgId!).filter((c) => c.status !== 'ARCHIVED');
+  const groups = [...camps.map((c) => ({ c, rows: rows.filter((x) => c.roles.includes(x.id)) })).filter((g) => g.rows.length),
+    { c: undefined, rows: rows.filter((x) => !camps.some((c) => c.roles.includes(x.id))) }].filter((g) => g.rows.length);
   return (
     <Canvas title="Roles" kicker={org.name} open onClose={openQ}
-      aside={ms.length ? <span className="hire-a-summary">{drafts > 0 && <span className="ds-tag" data-k="busy">{drafts} waiting for approval</span>}<span className="ds-tag num">{`${ms.length} ${ms.length === 1 ? "role" : "roles"}`}</span></span> : undefined}>
-      {!ms.length ? (
+      aside={rows.length ? <span className="hire-a-summary">{drafts > 0 && <span className="ds-tag" data-k="busy">{drafts} waiting for approval</span>}<span className="ds-tag num">{`${rows.length} ${rows.length === 1 ? "role" : "roles"}`}</span></span> : undefined}>
+      {!rows.length ? (
         <section className="ds-sheet hire-a-empty">
           <h2 className="voice t24" style={{ margin: 0 }}>No roles yet</h2>
           <p style={{ margin: 0 }}>Tell Q who you need, or just what you need help with. It drafts the role with you; nothing is posted until you approve.</p>
           <button type="button" className="ds-btn primary" onClick={() => say('I need to hire someone')}>Start a role with Q</button>
         </section>
-      ) : (
-        <ul className="ds-sheet hire-a-rows" aria-label={`Roles at ${org.name}`}>
-          {ms.map((m) => (
-            <li key={m.id}>
-              <Link to={`/r/roles/${m.id}`} className="hire-a-rowlink">
-                <span style={{ display: 'grid', gap: 4, minWidth: 0 }}>
-                  <span className="voice t24">{m.title}</span>
-                  <span className="meta">{m.location} · {payText(m)} · changed {dayLabel(m.versions[m.versions.length - 1].at, a.timezone)}</span>
-                </span>
-                <span className="side"><StatusTag m={m} /><span className="next">{nextFor(w, m, a.id)}</span></span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-      <p className="t14 muted" style={{ margin: 0 }}>Only {org.name}’s roles. Other organisations’ roles and candidates are never shown here.</p>
+      ) : groups.map((g) => (
+        <section key={g.c?.id ?? 'none'} className="cp-group" aria-labelledby={`rg-${g.c?.id ?? 'none'}`}>
+          {(camps.length > 0 || g.c) && <div className="cp-group-head">
+            <h2 id={`rg-${g.c?.id ?? 'none'}`} className="lab">{g.c ? <>Campaign · <Link to={`/r/campaigns/${g.c.id}`}>{g.c.name}</Link></> : 'Not in a campaign'}</h2>
+            {g.c ? <span className="t14 muted">Owner {actorName(w, g.c.owner).split(' ')[0]}{g.c.deadline ? ` · due ${dayLabel(g.c.deadline, a.timezone)}` : ''}</span> : null}
+          </div>}
+          <ul className="ds-sheet hire-a-rows" aria-label={g.c ? `Roles in ${g.c.name}` : `Roles at ${org.name} not in a campaign`}>
+            {g.rows.map(({ id, m, r }) => (
+              <li key={id}>
+                <Link to={`/r/roles/${id}`} className="hire-a-rowlink">
+                  <span style={{ display: 'grid', gap: 4, minWidth: 0 }}>
+                    <span className="voice t24">{r.title}</span>
+                    <span className="meta">{m ? `${m.location} · ${payText(m)} · changed ${dayLabel(m.versions[m.versions.length - 1].at, a.timezone)}` : `${w.mandate.location} · ${w.mandate.payBand} · v${w.mandate.version}`}</span>
+                  </span>
+                  <span className="side">{m ? <StatusTag m={m} /> : <span className="ds-tag" data-k={w.mandate.status === 'DRAFT' ? 'busy' : 'ok'}><span className="num">v{w.mandate.version}</span> · {w.mandate.status === 'DRAFT' ? 'Draft' : 'Approved'}</span>}<span className="next">{m ? nextFor(w, m, a.id) : legacyNext(w)}</span></span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+      <p className="t14 muted" style={{ margin: 0 }}>Only {org.name}’s roles. Other organisations’ roles and candidates are never shown here.{camps.length ? <> Roles are grouped by <Link to="/r/campaigns">hiring campaign</Link>.</> : null}</p>
+    </Canvas>
+  );
+}
+/** Senior Backend lives in the original brief screen (w.mandate); its next step reads from the same pipeline. */
+function legacyNext(w: World) {
+  if (w.mandate.status === 'DRAFT') return 'Next: approve the brief';
+  const sl = w.pipeline.filter((e) => e.mandateId === w.mandate.mandateId && e.stage === 'SHORTLISTED').length;
+  const iv = w.interviews.filter((i) => i.mandateId === w.mandate.mandateId && i.status !== 'CANCELLED').length;
+  return `${sl} shortlisted${iv ? ` · ${iv} interviews` : ''}`;
+}
+
+/** The legacy Senior Backend brief, summarised here so /r/roles/m_backend works; the full brief stays at /r/mandate. */
+function LegacyRole() {
+  const w = useWorld((x) => x);
+  const a = actorOf(w);
+  const md = w.mandate; const c = campaignOf(w, md.mandateId, a.orgId);
+  return (
+    <Canvas title={md.title} kicker={<>Role brief · Kora Pay</>} aside={<span className="ds-tag" data-k={md.status === 'DRAFT' ? 'busy' : 'ok'}><span className="num">v{md.version}</span> · {md.status === 'DRAFT' ? 'Draft' : 'Approved'}</span>} open onClose={openQ}>
+      {c && <p className="t14" style={{ margin: 0 }}>Part of the <Link to={`/r/campaigns/${c.id}`}>{c.name}</Link> campaign.</p>}
+      <div className="hire-a-brief">
+        <section className="ds-sheet" aria-labelledby="lb-plain" style={{ display: 'grid', gap: 14 }}>
+          <h2 id="lb-plain" className="lab" style={{ margin: 0 }}>In plain words</h2>
+          <dl className="hire-a-facts"><div><dt>Where</dt><dd>{md.location} · {md.workMode.toLowerCase()}</dd></div><div><dt>Pay</dt><dd>{md.payBand}</dd></div><div><dt>Team</dt><dd>{md.team}</dd></div></dl>
+        </section>
+        <section className="ds-sheet" aria-labelledby="lb-req" style={{ display: 'grid', gap: 10 }}>
+          <h2 id="lb-req" className="lab" style={{ margin: 0 }}>What they must be able to show</h2>
+          <ol className="hire-a-reqs">{md.requirements.map((r) => <li key={r.reqId}><span><b>{r.label}</b><span className="t14 muted" style={{ display: 'block' }}>{r.plain}</span></span><span className="ds-tag" data-k={r.mustHave ? 'ok' : undefined}>{r.mustHave ? 'Must have' : 'Nice to have'}</span></li>)}</ol>
+        </section>
+        <div className="ds-actions">
+          <Link to="/r/mandate" className="ds-btn primary">Open the full brief</Link>
+          <Link to={`/r/roles/${md.mandateId}/rubric`} className="ds-btn">Assessment rubric</Link>
+          <Link to="/r/compare" className="ds-btn">Compare the shortlist</Link>
+        </div>
+      </div>
     </Canvas>
   );
 }
@@ -82,6 +133,7 @@ export function RoleDetail({ id }: { id: string }) {
   useEffect(() => { setVer(null); }, [id]);
   const m = w.mandates.find((x) => x.id === id);
   const gone = readA(w).discarded[id];
+  if (!m && id === w.mandate.mandateId && a.orgId === 'org_kora') return <LegacyRole />;
   if (!m && gone && gone.orgId === a.orgId) return (
     <Canvas title="This draft was discarded" kicker="Role brief" open onClose={openQ}>
       <section className="ds-sheet hire-a-empty" role="status">
@@ -100,6 +152,7 @@ export function RoleDetail({ id }: { id: string }) {
   return (
     <Canvas title={m.title} kicker={<>Role brief · {w.orgs.find((o) => o.id === m.orgId)?.name}</>} aside={<StatusTag m={m} />} views={views} view={view} setView={(v) => { setVer(null); setView(v); }} open onClose={openQ}
       qLine={m.status === 'DRAFT' ? `Draft v${curV(m)}: approve it when it looks right, or tell me what to change.` : `v${curV(m)} is approved.`}>
+      {(() => { const c = campaignOf(w, m.id, a.orgId); return c ? <p className="t14" style={{ margin: 0 }}>Part of the <Link to={`/r/campaigns/${c.id}`}>{c.name}</Link> campaign.</p> : null; })()}
       {view === 'brief' && <Brief w={w} m={m} ver={ver} clearVer={() => setVer(null)} />}
       {view === 'people' && <People w={w} m={m} />}
       {view === 'versions' && <Versions w={w} m={m} open={(v) => { setVer(v); setView('brief'); }} />}

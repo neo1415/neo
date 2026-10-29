@@ -9,7 +9,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { actorOf, orgOf, personOf, update, useWorld, type World } from '../../mock/world';
-import type { Actor, HiringCampaign } from '../../state/domain';
+import type { Actor, HiringCampaign, Msg } from '../../state/domain';
 import { STAGES, STAGE_LABEL } from '../../state/domain';
 import { Canvas, useNarrow } from '../../ds/Workspace';
 import { Glyph } from '../../ds/Glyph';
@@ -98,7 +98,10 @@ export function CampaignsList() {
       qLine={mine ? `${plural(mine, 'thing')} across your campaigns need${mine === 1 ? 's' : ''} you.` : 'Nothing in your campaigns needs you right now.'}
       aside={<button type="button" className="ds-btn primary" onClick={() => { prefillQ(agencyMode ? `Create a hiring campaign for ${clientName(w, lens!)} called ` : 'Create a campaign called '); openQ(); }}>New campaign</button>}>
       {agencyMode && <ClientSwitch w={w} a={a} focus={lens!} />}
-      <p className="cp-lede">A hiring campaign groups roles so you can see their people, messages and decisions together. {agencyMode ? <>Outreach to a talent pool is separate: it runs under a role, in <Link to={AP.campaigns}>Outreach campaigns</Link>.</> : 'Each role stays the one place its brief, people and messages live.'}</p>
+      <div className="cp-head">
+        <p className="cp-lede"><span className="cp-q" aria-hidden="true">◆</span> {active.length ? `${plural(active.length, 'active campaign')} · ${mine ? `${plural(mine, 'thing')} need${mine === 1 ? 's' : ''} you` : 'nothing needs you right now'}.` : 'No active campaigns.'}</p>
+        <p className="t14 muted">A hiring campaign groups roles so their people, messages and decisions sit together; each role stays the one place its brief and people live. {agencyMode ? <>Outreach to a talent pool is separate: it runs under one role, in <Link to={AP.campaigns}>Outreach campaigns</Link>.</> : null}</p>
+      </div>
       {!active.length && (
         <section className="ds-sheet cp-empty" role="status">
           <b>{agencyMode ? `No hiring campaigns for ${clientName(w, lens!)} yet.` : 'No campaigns yet.'}</b>
@@ -136,7 +139,7 @@ function CampaignCard({ w, a, c }: { w: World; a: Actor; c: HiringCampaign }) {
       {c.roles.length ? (
         <ul className="cp-card-roles" aria-label={`Roles in ${c.name}`}>
           {c.roles.map((rid) => { const r = reqOf(w, rid); if (!r) return null; const sc = stageCounts(w, rid, a.orgId!); return (
-            <li key={rid}><span className="cp-role-name">{r.title}</span><span className="t14 muted num">{r.status === 'DRAFT' ? 'Brief in draft' : `${sc.inPlay} in play${sc.counts.INTERVIEW ? ` · ${sc.counts.INTERVIEW} at interview` : ''}`}</span></li>
+            <li key={rid}><span className="cp-role-name">{r.title}</span><span className="t14 muted num">{`${sc.inPlay} in play${sc.counts.INTERVIEW ? ` · ${sc.counts.INTERVIEW} at interview` : ''}${sc.hidden ? ` · ${sc.hidden} not shown` : ''}${r.status === 'DRAFT' ? ' · brief in draft' : ''}`}</span></li>
           ); })}
         </ul>
       ) : <p className="t14">No roles yet.</p>}
@@ -192,6 +195,7 @@ function Overview({ w, a, c }: { w: World; a: Actor; c: HiringCampaign }) {
         <p className="cp-lede"><span className="cp-q" aria-hidden="true">◆</span> {lede}</p>
         <p className="t14 muted">{c.goal ? `${c.goal}. ` : ''}Owner {nameOf(w, c.owner)}. <Link to={CP.list}>All campaigns</Link></p>
       </div>
+      {agencyMode && <ClientSwitch w={w} a={a} focus={c.clientOrgId ?? lensOf(w, a)!} />}
       {archived && <div className="ds-banner" role="status"><Glyph k="partial" /><span><b>This campaign is archived.</b> Nothing was closed or sent: the roles, their people and messages are unchanged.</span>{canManage(a) ? <button type="button" className="ds-btn primary" onClick={() => doOp('Re-open', 'campaigns.reopen', { id: c.id })}>Re-open</button> : <span />}</div>}
       <PageIndex items={index} label="Sections of this campaign" />
 
@@ -212,8 +216,11 @@ function Overview({ w, a, c }: { w: World; a: Actor; c: HiringCampaign }) {
       </section>
 
       <Board w={w} a={a} c={c} narrow={narrow} />
-      <Scorecards w={w} a={a} c={c} roles={roles} />
-      <Messages w={w} a={a} c={c} roles={roles} />
+      {agencyMode ? (
+        <section id="cp-scores" className="ds-sheet cp-sec" aria-labelledby="cp-scores-h"><h2 id="cp-scores-h" className="t19">Scorecards by role</h2>
+          <p className="t14">{orgOf(w, c.clientOrgId)?.name} assesses candidates against its own rubrics. Those scorecards belong to the client and aren’t shared with Talentbridge, so none are shown here.</p></section>
+      ) : <Scorecards w={w} a={a} c={c} roles={roles} />}
+      <Messages w={w} a={a} c={c} roles={roles} agencyMode={agencyMode} />
       {agencyMode && (
         <section id="cp-out" className="ds-sheet cp-sec" aria-labelledby="cp-out-h">
           <div className="cp-sec-head"><h2 id="cp-out-h" className="t19">Outreach runs <span className="num muted">{outreach.length}</span></h2><Link to={AP.campaigns} className="t14">All outreach</Link></div>
@@ -276,6 +283,11 @@ function AddRole({ w, a, c }: { w: World; a: Actor; c: HiringCampaign }) {
   );
 }
 
+/** Employers open the profile; agency staff see the name only (profiles live in the client's workspace). */
+function PersonName({ w, a, pid }: { w: World; a: Actor; pid: string }) {
+  const n = personOf(w, pid)?.name ?? pid;
+  return isAgencyActor(w, a) ? <b>{n}</b> : <Link to={`/r/people/${pid}`}><b>{n}</b></Link>;
+}
 // ---------------- Cross-role board with saved filters ----------------
 const BUILTIN = ['all', 'multi', 'reply', 'stage:INTERVIEW', 'assessed'];
 function Board({ w, a, c, narrow }: { w: World; a: Actor; c: HiringCampaign; narrow: boolean }) {
@@ -303,7 +315,7 @@ function Board({ w, a, c, narrow }: { w: World; a: Actor; c: HiringCampaign; nar
         : !shown.length ? <p className="t14" role="status">No one matches “{FILTER_LABEL(q, w)}”. <button type="button" className="ds-linkbtn" onClick={() => setQ('all')}>Show everyone</button></p>
           : narrow ? (
             <ul className="cp-board-cards" aria-label="People across roles">
-              {shown.map((r) => <motion.li key={r.personId} {...arrive}><Link to={`/r/people/${r.personId}`}><b>{personOf(w, r.personId)?.name}</b></Link>
+              {shown.map((r) => <motion.li key={r.personId} {...arrive}><PersonName w={w} a={a} pid={r.personId} />
                 <ul>{roles.filter((x) => r.cells[x.id]).map((x) => <li key={x.id}><span className="t14">{x.title}</span><span className="ds-tag" data-stage={r.cells[x.id]}>{STAGE_LABEL[r.cells[x.id]!]}</span></li>)}</ul>
                 {(r.multi || r.awaiting) && <span className="t14 muted">{[r.multi && 'On two roles', r.awaiting && 'Waiting for your reply'].filter(Boolean).join(' · ')}</span>}</motion.li>)}
             </ul>
@@ -312,7 +324,7 @@ function Board({ w, a, c, narrow }: { w: World; a: Actor; c: HiringCampaign; nar
               <caption className="sr">People in {c.name}, by role and stage</caption>
               <thead><tr><th scope="col">Person</th>{roles.map((x) => <th key={x.id} scope="col">{x.title}</th>)}<th scope="col">Note</th></tr></thead>
               <tbody>{shown.map((r) => <tr key={r.personId}>
-                <th scope="row"><Link to={`/r/people/${r.personId}`}>{personOf(w, r.personId)?.name}</Link></th>
+                <th scope="row"><PersonName w={w} a={a} pid={r.personId} /></th>
                 {roles.map((x) => <td key={x.id}>{r.cells[x.id] ? <span className="ds-tag" data-stage={r.cells[x.id]}>{STAGE_LABEL[r.cells[x.id]!]}</span> : <span className="muted" aria-label="Not on this role">·</span>}</td>)}
                 <td className="t14 muted">{[r.multi && 'On two roles', r.awaiting && 'Waiting for your reply'].filter(Boolean).join(' · ')}</td>
               </tr>)}</tbody>
@@ -352,32 +364,43 @@ function Scorecards({ w, a, c, roles }: { w: World; a: Actor; c: HiringCampaign;
 }
 
 // ---------------- Messages by role (from the one correspondence store) ----------------
-function Messages({ w, a, c, roles }: { w: World; a: Actor; c: HiringCampaign; roles: Req[] }) {
+function Messages({ w, a, c, roles, agencyMode }: { w: World; a: Actor; c: HiringCampaign; roles: Req[]; agencyMode: boolean }) {
   const groups: { key: string; title: string; m: ReturnType<typeof messagesFor> }[] = [
     ...roles.map((r) => ({ key: r.id, title: r.title, m: messagesFor(w, a.orgId!, r.id, c.id) })),
     { key: 'unfiled', title: 'In this campaign, not filed to a role', m: messagesFor(w, a.orgId!, null, c.id) },
   ].filter((g) => g.key !== 'unfiled' || g.m.threads.length);
-  const total = groups.reduce((n, g) => n + g.m.threads.length, 0);
+  const total = groups.reduce((n, g) => n + new Set(g.m.threads.map((t) => t.personId)).size, 0);
   return (
     <section id="cp-msgs" className="ds-sheet cp-sec" aria-labelledby="cp-msgs-h">
-      <div className="cp-sec-head"><h2 id="cp-msgs-h" className="t19">Messages by role <span className="num muted">{total}</span></h2><Link to="/r/messages" className="t14">All messages</Link></div>
+      <div className="cp-sec-head"><h2 id="cp-msgs-h" className="t19">Messages by role <span className="num muted">{total}</span></h2>{!agencyMode && <Link to="/r/messages" className="t14">All messages</Link>}</div>
       {!roles.length && <p className="t14">No roles, so no messages yet.</p>}
       <ul className="cp-msgs">{groups.map((g) => (
         <li key={g.key}>
-          <div className="cp-role-head"><b>{g.title}</b><span className="t14 muted num">{plural(g.m.threads.length, 'conversation')}{g.m.awaitingReply.length ? ` · ${g.m.awaitingReply.length} waiting for a reply` : ''}{g.m.toApprove ? ` · ${g.m.toApprove} to approve` : ''}</span></div>
-          {g.m.threads.length ? <ul className="cp-threads">{g.m.threads.slice(0, 4).map((t) => { const l = t.messages.filter((m) => m.status !== 'DISCARDED').slice(-1)[0]; const theirs = l?.from === t.personId; return (
-            <li key={t.id}><button type="button" className="cp-thread" onClick={() => doOp('Open thread', 'campaigns.thread', { pid: t.personId })}>
-              <span><b>{personOf(w, t.personId)?.name}</b>{t.initiatedBy === 'CANDIDATE' && <span className="ds-tag">They wrote first</span>}</span>
-              <span className="t14 muted cp-ellip">{theirs ? '' : 'You: '}{l?.body.replace(/\s+/g, ' ').slice(0, 90)}</span>
-              <span className="t14 num muted">{l ? dayText(l.at) : ''}{theirs ? ' · needs a reply' : ''}</span>
+          <div className="cp-role-head"><b>{g.title}</b><span className="t14 muted num">{plural(new Set(g.m.threads.map((t) => t.personId)).size, 'person', 'people')}{g.m.awaitingReply.length ? ` · ${new Set(g.m.awaitingReply.map((t) => t.personId)).size} waiting for a reply` : ''}{g.m.toApprove ? ` · ${g.m.toApprove} to approve` : ''}</span></div>
+          {g.m.threads.length ? <ul className="cp-threads">{byPerson(g.m.threads).slice(0, 4).map(({ pid, l, them, n }) => (
+            <li key={pid}><button type="button" className="cp-thread" onClick={() => doOp('Open thread', 'campaigns.thread', { pid })}>
+              <span><b>{personOf(w, pid)?.name}</b>{them && <span className="ds-tag">They wrote first</span>}{n > 1 && <span className="t14 muted num">{n} conversations</span>}</span>
+              <span className="t14 muted cp-ellip">{l.from === pid ? '' : 'You: '}{l.body.replace(/\s+/g, ' ').slice(0, 90)}</span>
+              <span className="t14 num muted">{dayText(l.at)}{l.from === pid ? ' · needs a reply' : ''}</span>
             </button></li>
-          ); })}</ul> : <p className="t14 muted">No conversations for this role yet.</p>}
+          ))}</ul> : <p className="t14 muted">No conversations for this role yet.</p>}
         </li>
       ))}</ul>
     </section>
   );
 }
 
+/** One row per person (their conversations about this role merged), latest message first, like the messages hub. */
+function byPerson(threads: ReturnType<typeof messagesFor>['threads']) {
+  const m = new Map<string, { pid: string; l: Msg; them: boolean; n: number }>();
+  for (const t of threads) {
+    const l = t.messages.filter((x) => x.status !== 'DISCARDED').slice(-1)[0]; if (!l) continue;
+    const cur = m.get(t.personId);
+    if (!cur) m.set(t.personId, { pid: t.personId, l, them: t.initiatedBy === 'CANDIDATE', n: 1 });
+    else { cur.n++; cur.them ||= t.initiatedBy === 'CANDIDATE'; if (l.at > cur.l.at) cur.l = l; }
+  }
+  return [...m.values()].sort((x, y) => y.l.at.localeCompare(x.l.at));
+}
 // ---------------- History, archive and re-open ----------------
 function History({ w, a, c }: { w: World; a: Actor; c: HiringCampaign }) {
   const h = historyOf(w, c);
@@ -408,7 +431,7 @@ export function CampaignRef({ id }: { id: string }): JSX.Element | null {
     <div className="cp-ref" aria-label={`Campaign ${c.name}`}>
       <span className="cp-ref-head"><span className="lab">{c.status === 'ARCHIVED' ? 'Archived campaign' : 'Hiring campaign'}</span><span className="num t14">{dueText(w, c.deadline)}</span></span>
       <b>{c.name}</b>
-      {c.roles.length ? <ul>{c.roles.map((rid) => { const r = reqOf(w, rid); if (!r) return null; const sc = stageCounts(w, rid, a.orgId!); return <li key={rid}><span>{r.title}</span><span className="num">{r.status === 'DRAFT' ? 'brief in draft' : `${sc.inPlay} in play${sc.counts.INTERVIEW ? `, ${sc.counts.INTERVIEW} at interview` : ''}`}</span></li>; })}</ul> : <span className="t14">No roles yet.</span>}
+      {c.roles.length ? <ul>{c.roles.map((rid) => { const r = reqOf(w, rid); if (!r) return null; const sc = stageCounts(w, rid, a.orgId!); return <li key={rid}><span>{r.title}</span><span className="num">{`${sc.inPlay} in play${sc.counts.INTERVIEW ? `, ${sc.counts.INTERVIEW} at interview` : ''}${r.status === 'DRAFT' ? ', brief in draft' : ''}`}</span></li>; })}</ul> : <span className="t14">No roles yet.</span>}
       {mine.length > 0 && <span className="t14">Needs you: {mine.slice(0, 3).map((x) => x.text.replace(/: (reply|find people)$/, '')).join('; ')}{mine.length > 3 ? `; and ${mine.length - 3} more` : ''}.</span>}
     </div>
   );

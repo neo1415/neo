@@ -1,3 +1,4 @@
+// Moved from src/screens/Compare.tsx into hire-b (rubric pass) so the weighting can come from the approved rubric.
 // SC-041 Compare candidates, SC-039 Evidence inspector, SC-040 Role-fit explanation (rebuilt for R2, design pass).
 // Requirement by requirement, never one score. The page reads top to bottom as: the finding (title) → what you
 // chose (one filter row) → what changed since your last change → the ledger (chart) with Q's margin notes →
@@ -5,17 +6,19 @@
 // clicking or by telling Q; both go through the same op, so "what changed" is recorded either way.
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useWorld } from '../mock/world';
-import { useViewState, runAction } from '../q/core/engine';
-import { Canvas } from '../ds/Workspace';
-import { Glyph } from '../ds/Glyph';
-import { arrive } from '../ds/motion';
-import { SwitchRow } from '../ds/Switch';
-import { Link } from '../ui/router';
-import { cellFor, changesSince, defaultView, firstName, headline, LEVEL_WORD, nameOf, readingOf, reqsOf, rolePeople, shortLabel, weightOf, type CompareView } from '../journeys/hire-b/model';
-import { Ledger } from '../journeys/hire-b/Ledger';
-import { LevelMark, VerTag, fmtDate, verOf } from '../journeys/hire-b/ui';
-import '../journeys/hire-b/ops';
+import { useWorld } from '../../mock/world';
+import { useViewState, runAction } from '../../q/core/engine';
+import { Canvas } from '../../ds/Workspace';
+import { Glyph } from '../../ds/Glyph';
+import { arrive } from '../../ds/motion';
+import { SwitchRow } from '../../ds/Switch';
+import { Link } from '../../ui/router';
+import { cellFor, changesSince, defaultView, firstName, headline, KORA_ROLE, LEVEL_WORD, nameOf, readingOf, reqsOf, roleRubric, rolePeople, shortLabel, usesRubric, weightOf, type CompareView } from './model';
+import { Ledger } from './Ledger';
+import { LevelMark, VerTag, fmtDate, verOf } from './ui';
+import './ops';
+import { roleIndex } from '../../state/areas/rubrics';
+import { indexLine, studioPath } from '../rubric/model';
 
 const toggle = (xs: string[], x: string) => (xs.includes(x) ? xs.filter((y) => y !== x) : [...xs, x]);
 
@@ -44,7 +47,8 @@ export function Compare() {
     </Canvas>
   );
   const ready = people.length > 0 && crit.length > 0;
-  const summary = `${people.length} ${people.length === 1 ? 'person' : 'people'} · ${crit.length} requirement${crit.length === 1 ? '' : 's'}${v.lastYear ? ' · last year only' : ''} · ${v.weighting === 'EQUAL' ? 'must-haves equal' : 'Q’s weighting'}`;
+  const rub = roleRubric(w);
+  const summary = `${people.length} ${people.length === 1 ? 'person' : 'people'} · ${crit.length} requirement${crit.length === 1 ? '' : 's'}${v.lastYear ? ' · last year only' : ''} · ${usesRubric(w, v.weighting) ? `rubric v${rub!.v} weights` : 'must-haves equal'}`;
 
   return (
     <Canvas title={headline(w, view)} kicker="Senior Backend Engineer · comparison" open onClose={() => {}} qLine={notes[0]}
@@ -67,7 +71,7 @@ export function Compare() {
           </div>
           <div className="hire-b-switches">
             <SwitchRow label="Evidence from the last year only" help="Leaves out anything older than a year." on={v.lastYear} onChange={(on) => set({ lastYear: on })} />
-            <SwitchRow label="Weigh must-haves equally" help="Removes Q’s extra weight on payments." on={v.weighting === 'EQUAL'} onChange={(on) => set({ weighting: on ? 'EQUAL' : 'Q' })} />
+            <SwitchRow label="Weigh must-haves equally" help={rub ? `Turns off the rubric v${rub.v} weights for this view. The rubric itself doesn’t change.` : 'Already on: there’s no approved rubric for this role yet.'} on={v.weighting === 'EQUAL' || !rub} onChange={(on) => set({ weighting: on ? 'EQUAL' : 'RUBRIC' })} />
           </div>
         </div>
       </section>
@@ -92,8 +96,19 @@ export function Compare() {
             <aside className="hire-b-margin" aria-labelledby="cmp-q" aria-live="polite">
               <h3 id="cmp-q" className="lab hire-b-q" style={{ margin: 0 }}>Q’s notes</h3>
               <ul className="hire-b-list t14">{notes.map((n) => <li key={n}><span className="hire-b-dia" aria-hidden="true" />{n}</li>)}</ul>
+              <p className="t14" style={{ margin: 0 }}><Link to={studioPath(KORA_ROLE)}>{rub ? `Open rubric v${rub.v}` : 'Set weights in a rubric'}</Link></p>
             </aside>
           </div>
+        </section>
+      )}
+
+      {ready && rub && (
+        <section className="ds-sheet hire-b-grid" aria-labelledby="cmp-sc">
+          <div className="hire-b-row"><h2 id="cmp-sc" className="voice t24" style={{ margin: 0 }}>Scorecards on rubric v{rub.v}</h2><span className="t14 muted">Index only with coverage</span></div>
+          {people.some((p) => roleIndex(w, KORA_ROLE, p, rub.v).index !== null)
+            ? <ul className="hire-b-list t14">{people.map((p) => { const i = roleIndex(w, KORA_ROLE, p, rub.v); return <li key={p}><span className="hire-b-dia" aria-hidden="true" /><span><Link to={`/r/people/${p}`}>{nameOf(w, p)}</Link>: {i.index === null ? 'not rated yet' : `${indexLine(i)} · ${i.reviewed} of ${i.observed} rating${i.observed === 1 ? '' : 's'} reviewed by a person`}</span></li>; })}</ul>
+            : <p className="t14" style={{ margin: 0 }}>Nobody has been rated against rubric v{rub.v} yet. Open a profile and ask Q to rate from shared evidence, or add a walkthrough review.</p>}
+          <p className="t14 muted" style={{ margin: 0 }}>The ledger above ranks shared evidence; the index rates it against the rubric’s anchors. Unknown criteria aren’t counted as zero, so a high index at low coverage isn’t a strong result. Not a validated test.</p>
         </section>
       )}
 
@@ -128,7 +143,7 @@ export function Compare() {
               <tbody>
                 {crit.map((r) => (
                   <tr key={r.reqId}>
-                    <th scope="row"><span className="hire-b-grid" style={{ gap: 2 }}><span>{r.label}</span><span className="t14 muted">{r.mustHave ? 'Must have' : 'Nice to have'}{weightOf(w, r.reqId, v.weighting) > 2 ? ' · counts 1.5×' : ''}</span></span></th>
+                    <th scope="row"><span className="hire-b-grid" style={{ gap: 2 }}><span>{r.label}</span><span className="t14 muted">{r.mustHave ? 'Must have' : 'Nice to have'}{usesRubric(w, v.weighting) ? (weightOf(w, r.reqId, v.weighting) ? ` · rubric weight ${weightOf(w, r.reqId, v.weighting)}` : ' · not in the rubric') : ''}</span></span></th>
                     {people.map((p) => { const c = cellFor(w, p, r.reqId, view); const sel = v.open?.pid === p && v.open.reqId === r.reqId; return (
                       <td key={p}>
                         <button type="button" className="hire-b-cell" aria-pressed={sel} aria-label={`${nameOf(w, p)}, ${r.label}: ${LEVEL_WORD[c.level]}. Show where this comes from`} onClick={() => set({ open: sel ? null : { pid: p, reqId: r.reqId } })}>

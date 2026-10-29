@@ -6,7 +6,7 @@ import type { World } from '../../mock/world';
 export type GuideCheck = 'PAY_BAND' | 'PANEL_TWO' | 'APPROVE_EACH' | 'JOB_RELATED' | 'HOURS' | 'NONE';
 export interface Guide { id: string; text: string; source: string; check: GuideCheck; on: boolean; v: number; by: string; at: string; used: number; lastUsed?: string }
 
-export type DraftKind = 'INVITE' | 'RESCHEDULE' | 'FOLLOW_UP' | 'REJECTION' | 'REPLY' | 'AVAILABILITY' | 'CONFIRMATION';
+export type DraftKind = 'INVITE' | 'RESCHEDULE' | 'FOLLOW_UP' | 'REJECTION' | 'REPLY' | 'AVAILABILITY' | 'CONFIRMATION' | 'EVIDENCE_REQUEST';
 export type Tone = 'neutral' | 'friendlier' | 'formal' | 'shorter';
 export interface DraftVersion { v: number; at: string; by: string; subject: string; body: string; note: string; manual?: boolean; slot?: { start: string; end: string }; tone?: Tone; panel?: string[] }
 export interface Check { id: string; group: 'Approval' | 'Sender' | 'Candidate' | 'Calendar' | 'Guidelines' | 'Consent'; label: string; ok: boolean; warn?: boolean; detail: string; fix?: { label: string; op: string; args: Record<string, unknown> } }

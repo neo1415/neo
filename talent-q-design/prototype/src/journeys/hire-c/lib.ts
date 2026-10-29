@@ -193,7 +193,7 @@ export function currentDraft(w: World, actor: Actor, frameMsg?: string, personId
   return list.sort((a, b) => latestV(b).at.localeCompare(latestV(a).at))[0];
 }
 
-export function compose(w: World, d: Pick<DraftMeta, 'kind' | 'tone' | 'slot' | 'panel' | 'mandateId' | 'personId' | 'orgId' | 'by'> & { options?: DraftMeta['options'] }): { subject: string; body: string } {
+export function compose(w: World, d: Pick<DraftMeta, 'kind' | 'tone' | 'slot' | 'panel' | 'mandateId' | 'personId' | 'orgId' | 'by'> & { options?: DraftMeta['options']; reason?: string }): { subject: string; body: string } {
   const p = personOf(w, d.personId)!; const first = p.name.split(' ')[0]; const tz = p.timezone;
   const org = orgOf(w, d.orgId)?.name ?? 'our team'; const title = mandateTitle(w, d.mandateId);
   const sender = w.actors.find((a) => a.id === d.by) ?? actorOf(w);
@@ -231,6 +231,11 @@ export function compose(w: World, d: Pick<DraftMeta, 'kind' | 'tone' | 'slot' | 
     parts.push(`Thank you for your interest in the ${title} role at ${org}. The next step is a 45-minute video interview with ${panel}.`);
     parts.push('Could you reply with two or three times that suit you this week or next? We’ll confirm one, in your time zone.');
     if (bandLine) parts.push(bandLine);
+  } else if (d.kind === 'EVIDENCE_REQUEST') {
+    const topic = d.reason || 'something you’ve built';
+    subject = `A request: a walkthrough of ${topic}`;
+    parts.push(`Thank you for your interest in the ${title} role. Could you share a short walkthrough video (around 5 minutes) of ${topic}? It helps us see how you work, in your own words.`);
+    parts.push('You choose exactly what we see, in your Evidence Passport: you can share only some parts, set an expiry, or send a written walkthrough instead. Please leave out anything confidential to a client or employer.');
   } else if (d.kind === 'CONFIRMATION') {
     subject = `Confirmed: ${title} interview at ${org}`;
     parts.push(`Thank you for confirming. Your interview is booked for ${d.slot ? one(d.slot.start) : 'the time you chose'}, by video, with ${panel}. The calendar invitation follows separately.`);
@@ -249,7 +254,7 @@ export function compose(w: World, d: Pick<DraftMeta, 'kind' | 'tone' | 'slot' | 
   return { subject, body: parts.join('\n\n') };
 }
 
-export const KIND_LABEL: Record<DraftKind, string> = { INVITE: 'interview invitation', RESCHEDULE: 'new interview time', FOLLOW_UP: 'follow-up', REJECTION: 'decision message', REPLY: 'reply', AVAILABILITY: 'next-step email', CONFIRMATION: 'confirmation' };
+export const KIND_LABEL: Record<DraftKind, string> = { INVITE: 'interview invitation', RESCHEDULE: 'new interview time', FOLLOW_UP: 'follow-up', REJECTION: 'decision message', REPLY: 'reply', AVAILABILITY: 'next-step email', CONFIRMATION: 'confirmation', EVIDENCE_REQUEST: 'request for a work sample' };
 
 /** Create a draft (status DRAFT) in the person's thread. Returns the message id. */
 export function createDraft(w: World, actor: Actor, o: { id?: string; personId: string; kind: DraftKind; tone?: Tone; slot?: { start: string; end: string }; panel?: string[]; mandateId?: string; reason?: string; eventId?: string; options?: { start: string; end: string }[]; channel?: Msg['channel']; senderId?: string; batchId?: string; template?: string; threadId?: string }) {
@@ -389,6 +394,8 @@ export function checkDraft(w: World, actor: Actor, msgId: string) {
     w.scenarios.slotTakenAfterProposal = false;
     emit(w, who, 'calendar.changed', `ORG:${d.orgId}`, `${nameOf(w, who)}’s calendar became busy at ${tDay(d.slot.start, LAGOS)} ${tTime(d.slot.start, LAGOS)} (simulated).`);
   }
+  // Drafts made before a sender existed (or by other areas) get the drafter's default sender, shown in the checks.
+  if (f0.m.channel === 'EMAIL' && !f0.m.senderId) { const by = w.actors.find((x) => x.id === d.by) ?? actor; f0.m.senderId = defaultSender(w, by, d.orgId, d.mandateId)?.id; }
   const checks = runChecks(w, actor, msgId);
   d.checks = checks; d.checkedAt = now(); d.checkedV = latestV(d).v;
   const others = checks.filter((c) => c.id !== 'role');

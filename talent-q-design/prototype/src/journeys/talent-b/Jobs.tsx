@@ -10,6 +10,7 @@ import { prefillQ } from '../../q/QThread';
 import { Link, navigate, useRoute } from '../../ui/router';
 import { APP_LABEL, NEED_GLYPH, NEED_LABEL, adviceFor, fitLine, matchFor, mutualFit, orgName, signalsOf, tb, verifiedEmployer, evById, KIND } from './logic';
 import { VerTag } from './ui';
+import { JobContact } from '../contact/JobContact';
 
 /** Location and work mode without repeating each other (“Remote · remote”). */
 const where = (loc: string, mode: string) => (loc.toLowerCase().includes(mode.toLowerCase()) ? loc : `${loc} · ${mode.toLowerCase()}`);
@@ -128,6 +129,9 @@ export function JobDetailPage({ id }: { id: string }) {
       <ul className="tb-facts" aria-label="About this job">
         <li>{where(job.location, job.workMode)}</li><li className="num">{job.pay}</li><li>Posted {new Date(job.posted).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</li><li><Signals job={job} compact /></li>
       </ul>
+
+      {/* Role briefing and contact card (audit addendum §C, owned by journeys/contact). */}
+      <JobContact job={job} />
 
       {applying && (
         <section className="ds-sheet tb-stack tb-apply" aria-labelledby="tb-ap-h">

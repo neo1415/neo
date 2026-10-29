@@ -12,6 +12,8 @@ import { Team } from '../journeys/hire-c/Team';
 import { Setup } from '../journeys/hire-c/Setup';
 import { Calendar } from '../journeys/hire-c/Calendar';
 import '../journeys/hire-c/refs';
+import '../journeys/hire-c/ReplyIntel';
+import { EmailSettings } from '../journeys/hire-c/EmailSettings';
 import '../styles/hire-c.css';
 
 registerRoute({ path: '/r/pipeline', side: 'recruiter', label: 'the pipeline', render: () => <Pipeline />, nav: { group: 'Hiring', label: 'Pipeline', icon: 'measures', tab: true, order: 11, orgKind: 'EMPLOYER' } });
@@ -24,3 +26,5 @@ registerRoute({ path: '/r/setup/handbook', side: 'recruiter', label: 'handbook i
 registerRoute({ path: '/r/outreach', side: 'recruiter', label: 'the outbox', render: () => <Outbox /> });
 registerRoute({ path: '/c/messages', side: 'candidate', label: 'messages', render: () => <CandidateMessages />, nav: { group: 'Work', label: 'Messages', icon: 'mail', order: 33 } });
 registerRoute({ path: '/c/slots', side: 'candidate', label: 'interview times', render: () => <CandidateSlots />, nav: { group: 'Interviews', label: 'Pick a time', icon: 'calendar', order: 43 } });
+// Connected email (addendum E-01): accounts, consent, reconnect, policy and automations. Both sides; Settings links here.
+registerRoute({ path: '/settings/email', side: 'both', label: 'email settings', render: () => <EmailSettings /> });

@@ -3,6 +3,9 @@ import { registerRule } from '../core/proactive';
 import { visibleEvidence } from '../../mock/world';
 import { hireB } from '../../state/areas/hire-b';
 import { firstName, koraInterviews, viewerOrg, visibleIds } from '../../journeys/hire-b/model';
+import { rubrics, draftVersion } from '../../state/areas/rubrics';
+import { approvalNeeds } from '../../journeys/rubric/ops';
+import { firstOf as rbFirst, studioPath } from '../../journeys/rubric/model';
 
 // "Tobi uploaded a new verified certificate since you last looked."
 registerRule({
@@ -49,4 +52,34 @@ registerRule({
     why: 'You ended the interview and I drafted feedback from your notes. The panel can’t decide until it’s submitted.',
     actions: [{ label: 'Review and submit', primary: true, act: { t: 'nav' as const, to: `/r/interviews/${i.id}` } }],
   })),
+});
+
+// ---------- Evaluation rubric (audit addendum §E) ----------
+
+// "Tobi asked for a correction to a rating." Grounded in an open dispute on a rating in this organisation.
+registerRule({
+  id: 'rubric.dispute', side: 'recruiter', priority: 'high',
+  evaluate: (w, actor) => rubrics(w).ratings.filter((r) => r.dispute?.state === 'OPEN' && rubrics(w).list.some((x) => x.id === r.rubricId && x.orgId === actor.orgId)).map((r) => {
+    const rub = rubrics(w).list.find((x) => x.id === r.rubricId)!; const c = rub.versions.find((v) => v.v === r.v)?.criteria.find((x) => x.id === r.criterionId);
+    return {
+      subject: r.id,
+      text: `${rbFirst(w, r.personId)} asked for a correction to their ${c?.label ?? 'rating'} (${r.rating} of 4 on rubric v${r.v}).`,
+      why: `${rbFirst(w, r.personId)} wrote: “${r.dispute!.text.slice(0, 90)}”. A person should look before this rating informs any decision.`,
+      actions: [{ label: 'Open the scorecard', primary: true, act: { t: 'nav' as const, to: `/r/people/${r.personId}` } }],
+    };
+  }),
+});
+
+// "Your rubric change is waiting on a decision." Only when a draft with a material change has people rated on the old version.
+registerRule({
+  id: 'rubric.notice-pending', side: 'recruiter', priority: 'normal',
+  evaluate: (w, actor) => rubrics(w).list.filter((x) => x.orgId === actor.orgId && draftVersion(w, x.mandateId)?.changeNotice).flatMap((x) => {
+    const n = approvalNeeds(w, x.mandateId); if (!n.affected.length || !n.draft) return [];
+    return [{
+      subject: `${x.id}:v${n.draft.v}`,
+      text: `Rubric v${n.draft.v} is waiting on your decision: ${n.affected.map((p) => rbFirst(w, p)).join(' and ')} ${n.affected.length === 1 ? 'was' : 'were'} rated on v${n.base?.v}.`,
+      why: 'You tried to approve a change that alters how people are scored after some were already rated. It needs notice and a principled choice before it takes effect.',
+      actions: [{ label: 'Notify and reassess', primary: true, act: { t: 'say' as const, text: 'notify and reassess' } }, { label: `Keep v${n.base?.v} for this round`, act: { t: 'say' as const, text: `keep v${n.base?.v} for this round` } }, { label: 'Open the rubric', act: { t: 'nav' as const, to: studioPath(x.mandateId) } }],
+    }];
+  }),
 });
