@@ -15,7 +15,7 @@ import {
   addDays, approveAndSend, checkDraft, CAN_SEND, createDraft, currentDraft, entryFor, findMsg, findSlots, firstOf, guidesOf, KIND_LABEL, LAGOS, latestV, listNames, mandateTitle, nameOf, nextWeek, parseTime, resolveDays, reviseDraft, tDay, tTime, defaultPanel, finalizeSend,
 } from '../../journeys/hire-c/lib';
 import {
-  acceptedLine, addressOf, approvalValid, attachmentOptions, automationRun, bookProposed, confirmMatch, contentHash, defaultSender, disconnect, extractTime, looksLikeInstruction, pendingMatch, providerSend, receiveEmail, reconnect, replyMailbox, setFailNext, scopeWord,
+  acceptedLine, addressOf, approvalValid, attachmentOptions, automationRun, bookProposed, confirmMatch, contentHash, defaultSender, disconnect, extractTime, looksLikeInstruction, pendingMatch, providerSend, receiveEmail, reconnect, replyMailboxFor, setFailNext, scopeWord,
 } from '../../journeys/hire-c/email';
 import { checkAndPost, contextPerson, draftFlow, kindFrom, peopleIn, postDraft } from './hire-c';
 import { answerFromBriefing, contactState, draftQuestion, mmss, sendContact } from '../../journeys/contact/logic';
@@ -478,7 +478,7 @@ registerSkill({
     const w = c.w; const a = c.actor; const pid = peopleIn(c)[0]; const first = firstOf(w, pid);
     const t = w.threads.filter((x) => x.orgId === a.orgId && x.personId === pid).sort((x, y) => (y.messages[y.messages.length - 1]?.at ?? '').localeCompare(x.messages[x.messages.length - 1]?.at ?? ''))[0];
     if (!t) return { msgs: [{ kind: 'reply', text: `${orgOf(w, a.orgId)?.name} hasn’t been in touch with ${first}.` }] };
-    const mb = replyMailbox(w, t);
+    const mb = replyMailboxFor(w, a.orgId!, pid);
     const theirs = t.messages.filter((m) => m.from === pid);
     const lastOut = [...t.messages].reverse().find((m) => m.from !== pid && m.status === 'SENT_SIMULATED');
     const repliedAfter = theirs.some((m) => !lastOut || m.at > lastOut.at);

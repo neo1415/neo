@@ -29,7 +29,7 @@ page(AP.pools, 'talent pools', () => <Pools />, nav('Talent pools', 'people', 12
 page(AP.searches, 'saved searches', () => <Searches />);
 page(AP.compare, 'the pool comparison', () => <Compare />);
 page(AP.submittals, 'submittals', () => <Submittals />, nav('Submittals', 'approvals', 13));
-page(AP.campaigns, 'campaigns', () => <Campaigns />, nav('Campaigns', 'mail', 14));
+page(AP.campaigns, 'campaigns', () => <Campaigns />, nav('Outreach', 'mail', 14));
 page(AP.agents, 'agents', () => <Agents />, nav('Agents', 'agents', 15, true));
 page(AP.reports, 'client reports', () => <Reports />, nav('Client reports', 'measures', 16));
 

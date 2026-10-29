@@ -9,7 +9,7 @@ const { chromium } = require('/opt/node-tools/node_modules/playwright/index.js')
 const BASE = (process.env.BASE || 'http://localhost:5191').replace(/\/$/, '');
 const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '../../../captures/cx/contact'); mkdirSync(OUT, { recursive: true });
 const results = []; const errors = [];
-const step = (name, ok, info = '') => { results.push({ name, ok }); console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${info ? ` — ${String(info).slice(0, 200)}` : ''}`); };
+const step = (name, ok, info = '') => { results.push({ name, ok }); console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${info ? ` — ${String(info).replace(/\s+/g, ' ').slice(0, 200)}` : ''}`); };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let nav = 0;
 async function asActor(page, id, route) {

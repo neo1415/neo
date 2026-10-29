@@ -2,7 +2,7 @@
 
 Routes: `/r/campaigns`, `/r/campaigns/:id`, plus the Roles page grouped by campaign (`/r/roles`, `/r/roles/m_backend`),
 the hiring-vs-outreach lines on `/r/agency/campaigns` and Q's campaign card. Captures: `captures/review/after/{desktop,phone}/campaigns_*.png`;
-feature states `captures/cx/campaigns/`. `qa/scripts/features/campaigns.mjs` covers desktop and phone (55 checks). No page scrolls sideways at 390 px.
+feature states `captures/cx/campaigns/`. `qa/scripts/features/campaigns.mjs` covers desktop and phone (58 checks). No page scrolls sideways at 390 px.
 
 ## Skills invoked (Skill tool) → screen → change
 - **design-skills:design-critique** → every campaign screen, rendered, then fixed (defects below). Information order follows the
@@ -38,6 +38,10 @@ feature states `captures/cx/campaigns/`. `qa/scripts/features/campaigns.mjs` cov
 5. List lede was explanation in display type → Q's reading leads; the explanation is a quiet line.
 6. Duplicate chips ("Open the thread" ×2) in Q's reply → per-person labels, de-duplicated.
 7. Phone: board filters took three rows → one row that scrolls inside itself; board becomes one card per person.
+8. (Lead review) The rubric studio wasn't reachable from a role → role detail (`/r/roles/:id`, incl. legacy Senior Backend) has a
+   "Rubric v1 in force" / "Rubric: agree how to assess" action, and every role row and scorecard in a campaign links to `/r/roles/:id/rubric`.
+9. (Lead review) The campaign-deadline card fired 7 weeks out and crowded R2's certificate card → it fires only within 10 days of
+   the deadline, normal priority, and shares the brief's subject with `hire-a.draft-stale` (one card per thing).
 
 ## Pairs (`captures/review/pairs/campaigns/`)
 - 01: Q4 overview, desktop. Duplicate Zara rows and a missing reply action → one row per person; reply to Tobi in Needs you.

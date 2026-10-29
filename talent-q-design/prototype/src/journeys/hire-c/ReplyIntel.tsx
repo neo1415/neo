@@ -12,7 +12,7 @@ import { hc } from '../../state/areas/hire-c';
 import { canRead, mail, mailboxOf, PROVIDER_NAME } from '../../state/areas/mail';
 import type { Msg, Thread } from '../../state/domain';
 import { findMsg, firstOf, LAGOS, nameOf, tDay, tTime } from './lib';
-import { deliveryView, extractTime, looksLikeInstruction, pendingMatch, replyMailbox } from './email';
+import { deliveryView, extractTime, looksLikeInstruction, pendingMatch, replyMailboxFor } from './email';
 import './email.css';
 
 const go = (label: string, op: string, args: Record<string, unknown>) => void runAction({ label, act: { t: 'do', op, args } });
@@ -63,7 +63,7 @@ export function ReplyCard({ t, m, compact }: { t: Thread; m: Msg; compact?: bool
 /** "Q can't see replies" panel for a send-only (or expired) mailbox. Shows no data it doesn't have. */
 export function ReadScope({ t }: { t: Thread }) {
   const w = useWorld((x) => x);
-  const mb = replyMailbox(w, t);
+  const mb = replyMailboxFor(w, t.orgId, t.personId);
   if (!mb || canRead(mb)) return null;
   return (
     <p className="em-scope" role="note"><b>Q can’t see email replies to {mb.address}.</b> {mb.state === 'EXPIRED' ? `The ${PROVIDER_NAME[mb.provider]} sign-in expired.` : 'It’s connected send-only.'} {firstOf(w, t.personId)} may have replied there; check that inbox. Replies in Talent Q still show here. <a href="#/settings/email">Email settings</a></p>

@@ -171,6 +171,11 @@ const INSTRUCTION = /\b(ignore (all |any )?(previous|prior) instructions|forward
 export const looksLikeInstruction = (s: string) => INSTRUCTION.test(s);
 /** The organisation mailbox that would receive an email reply on this thread (the last one we sent from). */
 export function replyMailbox(w: World, t: Thread) { const out = [...t.messages].reverse().find((m) => m.from !== t.personId && m.channel === 'EMAIL' && m.senderId); return mailboxOf(w, out?.senderId); }
+/** Across all of a person's threads with an organisation: the mailbox of the newest email we sent them. */
+export function replyMailboxFor(w: World, orgId: string, personId: string) {
+  const out = w.threads.filter((t) => t.orgId === orgId && t.personId === personId).flatMap((t) => t.messages).filter((m) => m.from !== personId && m.channel === 'EMAIL' && m.senderId && m.status === 'SENT_SIMULATED').sort((a, b) => a.at.localeCompare(b.at)).pop();
+  return mailboxOf(w, out?.senderId);
+}
 export function readableInbound(w: World, m: Msg) { return !m.inbound?.mailbox || canRead(mailboxOf(w, m.inbound.mailbox)) || m.inbound.matchedBy === 'USER_CONFIRMED'; }
 export const pendingMatch = (m: Msg) => !!m.inbound && m.inbound.subjectChanged === true && m.inbound.matchedBy !== 'USER_CONFIRMED';
 

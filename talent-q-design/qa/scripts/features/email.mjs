@@ -238,10 +238,10 @@ try {
   // ---- R4: client sender and paused automation ----
   await asActor(page, 'u_dele', '/settings/email');
   step('R4: client sender listed separately, for Kora Pay only', /Client senders/.test(await canvas(page)) && /kora-hiring@talentbridge\.example/.test(await canvas(page)));
-  r = await ask(page, 'pause the kora reminders');
+  await ask(page, 'pause the kora reminders'); r = await lastQ(page, 3);
   w = await world(page);
-  step('R4: client’s reminder automation paused at once', w.areas.mail.automations[0].state === 'PAUSED' && /Paused/.test(r), r);
-  r = await ask(page, 'run the reminders now');
+  step('R4: client’s reminder automation paused at once', w.areas.mail.automations[0].state === 'PAUSED' && /Paused “/.test(r), r);
+  await ask(page, 'run the reminders now'); r = await lastQ(page, 3);
   step('R4: paused automation is obeyed (nothing sent)', /Nothing sent/.test(r) && /paused/.test(r), r);
   r = await ask(page, 'email Dayo about the kora role');
   w = await world(page);

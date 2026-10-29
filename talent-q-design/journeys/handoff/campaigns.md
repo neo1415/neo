@@ -63,6 +63,10 @@ one discussed (`q.ui[actor|campaigns].focus`), so "archive it" works. **Agency d
 "hiring campaign", a hiring campaign's name or the `/r/campaigns` pages; otherwise the outreach skills (`agency.campaign`) own it.
 **PROD ≠ SIM:** regex understanding becomes an LLM calling these tools with the same gates and refusals.
 
+**Proactive** (`hire-a.campaign-draft`, normal priority): to the campaign owner, only within 10 days of the deadline, when a role in
+the campaign still has a draft brief. Subject = the brief version, shared with `hire-a.draft-stale`, so one dismissal covers both.
+**Opener** (`routes/campaigns.tsx`): on campaign pages Q's first line names the first action that needs the reader.
+
 ## 7. Read models and caching
 - `stageCounts(role, viewerOrg)`, `messagesFor(role | unfiled)`, `scorecard(role, people)`, `nextActions(campaign)`, `board(campaign)` in `model.ts`.
 - Next-action rules (ordered): brief draft (who it waits on, from the version note) · rubric proposed / none · messages awaiting approval ·

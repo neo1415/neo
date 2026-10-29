@@ -7,7 +7,7 @@ import type { Actor } from '../../state/domain';
 import { hc } from '../../state/areas/hire-c';
 import { CAN_SEND, firstOf, IS_ADMIN, KIND_LABEL, LAGOS, listNames, tDay, tTime } from '../../journeys/hire-c/lib';
 import { canRead, isSuppressed, mail } from '../../state/areas/mail';
-import { FOLLOW_CAP, followUpsUsed, replyMailbox } from '../../journeys/hire-c/email';
+import { FOLLOW_CAP, followUpsUsed, replyMailboxFor } from '../../journeys/hire-c/email';
 
 const days = (w: World, at: string) => Math.floor((simNow(w).getTime() - new Date(at).getTime()) / 864e5);
 const ago = (n: number) => (n <= 0 ? 'today' : n === 1 ? 'yesterday' : `${n} days ago`);
@@ -52,7 +52,7 @@ registerRule({
       const used = followUpsUsed(w, th.id);
       if (last.from !== pid && (n >= 2 || (n >= 1 && soon)) && (last.from === a.id || IS_ADMIN.includes(a.role ?? 'VIEWER')) && !open && !snoozed && !dismissed && used < FOLLOW_CAP && !isSuppressed(w, a.orgId!, pid) && last.delivery !== 'BOUNCED') {
         const ev = w.calendar.find((e) => e.personId === pid && e.orgId === a.orgId && e.status === 'INVITED');
-        const mb = replyMailbox(w, th); const blind = mb && !canRead(mb);
+        const mb = replyMailboxFor(w, a.orgId!, pid); const blind = mb && !canRead(mb);
         out.push({ subject: `out:${last.id}`, text: `${first} hasn’t replied to the message sent ${tDay(last.at, LAGOS)} (${ago(n)}).${ev ? ` The interview on ${tDay(ev.start, LAGOS)} at ${tTime(ev.start, LAGOS)} is still unconfirmed.` : ''}${blind ? ` I can only see replies in Talent Q: ${mb!.address} is send-only, so ${first} may have answered there.` : ''} Shall I draft a polite reminder?`,
           why: `From the message log: sent ${tDay(last.at, LAGOS)} by ${last.channel === 'SMS' ? 'text' : last.channel === 'EMAIL' ? `email${last.acceptedAt ? ' (accepted by the provider, which isn’t proof it was read)' : ''}` : 'Talent Q'}, no reply since${ev ? ', and the calendar invite is still “invited”, not “confirmed”' : ''}. Reminders used for this conversation: ${used} of ${FOLLOW_CAP}. Nothing is sent without your approval.`,
           actions: [{ label: 'Draft a follow-up', primary: true, act: { t: 'say' as const, text: `draft a follow up to ${first}` } }, { label: 'Snooze 2 days', act: { t: 'do' as const, op: 'email.snooze', args: { threadId: th.id } } }, { label: 'Don’t suggest again', act: { t: 'do' as const, op: 'email.followup.dismiss', args: { threadId: th.id } } }] });

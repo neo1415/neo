@@ -10,7 +10,7 @@ import { CampaignPage, CampaignRef, CampaignsList } from '../journeys/campaigns/
 import { accessTo, forMe, nextActions, visibleCampaigns } from '../journeys/campaigns/model';
 
 registerRoute({ path: '/r/campaigns', side: 'recruiter', label: 'hiring campaigns', render: () => <CampaignsList />,
-  nav: { group: 'Hiring', label: 'Campaigns', icon: 'atlas', order: 10, orgKind: 'EMPLOYER' } });
+  nav: { group: 'Hiring', label: 'Campaigns', icon: 'atlas', order: 10 } }); // hiring campaigns for employers and agencies (agency outreach is "Outreach")
 registerRoute({ path: '/r/campaigns/:id', side: 'recruiter', label: 'a hiring campaign', render: (p) => <CampaignPage id={p.id} /> });
 registerRef('campaigns.card', CampaignRef);
 

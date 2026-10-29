@@ -139,7 +139,7 @@ export function Composer({ msgId, m }: { msgId: string; m: Msg }) {
         </>
       )}
       {checked && <ChecksList msgId={msgId} />}
-      {!old && !failed && !scheduled && (
+      {!old && (!failed || dirty) && !scheduled && (
         <div className="ds-actions hc-actionbar">
           {dirty ? <button type="button" className="ds-btn primary" onClick={() => go('Save', 'email.save', { msgId, body: text, subject, cc, bcc })}>Save as v{(latest?.v ?? 1) + 1}</button>
             : ready && canSend ? <button type="button" className="ds-btn primary" onClick={() => go('Approve and send', 'hire-c.approve', { msgId, v: latest?.v })}>Approve and send v{latest?.v}</button>
