@@ -1,0 +1,322 @@
+<title>Talent Q Design Review</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,380;9..144,480&family=Inter+Tight:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column for the story, widening to full width for the image work (pairs, screens, motion).
+   Palette and type are Talent Q's own Direction D: paper, ink, and gold kept for Q. */
+:root {
+  --paper: #f5f1e8; --sheet: #fffdf8; --line: #dcd2bf; --line-2: #ece5d6;
+  --ink: #16140f; --ink-2: #5d5648; --ink-3: #8f887b;
+  --gold: #b8892a; --gold-soft: #f0d39533;
+  --risk: #a33a2b; --ok: #2f6b3a;
+  --night: #1c1a17; --on-night: #ece6da;
+  --voice: 'Fraunces', Georgia, serif; --ui: 'Inter Tight', system-ui, -apple-system, sans-serif; --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --gut: max(16px, env(safe-area-inset-left, 0px));
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #121110; --sheet: #1c1a17; --line: #34302a; --line-2: #24211d;
+  --ink: #ece6da; --ink-2: #c9c1b2; --ink-3: #8f887b;
+  --gold: #e3c27d; --gold-soft: #e3c27d22; --risk: #e78d7f; --ok: #93c39c;
+  --night: #24211d; --on-night: #ece6da; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #121110; --sheet: #1c1a17; --line: #34302a; --line-2: #24211d;
+  --ink: #ece6da; --ink-2: #c9c1b2; --ink-3: #8f887b;
+  --gold: #e3c27d; --gold-soft: #e3c27d22; --risk: #e78d7f; --ok: #93c39c;
+  --night: #24211d; --on-night: #ece6da; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 400 16px/1.55 var(--ui); -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.read { max-width: 720px; }
+h1, h2, h3 { font-family: var(--voice); font-weight: 380; letter-spacing: -0.01em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(34px, 5.2vw, 56px); line-height: 1.06; }
+h2 { font-size: clamp(26px, 3.4vw, 36px); line-height: 1.12; }
+h3 { font-size: 21px; line-height: 1.25; }
+p { margin: 0; }
+.lab { font: 500 11.5px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+.lead { font-family: var(--voice); font-size: clamp(19px, 2.2vw, 22px); line-height: 1.45; color: var(--ink); }
+.muted { color: var(--ink-2); }
+a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+section { padding-block: 56px; border-top: 1px solid var(--line); }
+.sec-head { display: grid; gap: 10px; margin-bottom: 28px; }
+
+/* header */
+header { padding-block: 44px 48px; display: grid; gap: 22px; }
+.mark { display: flex; align-items: center; gap: 10px; }
+.qmark { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--gold); position: relative; flex: none; }
+.qmark::after { content: ""; position: absolute; width: 9px; height: 2px; background: var(--gold); right: -5px; bottom: 1px; transform: rotate(45deg); }
+.btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--ink); font: 500 15px var(--ui); text-decoration: none; color: var(--ink); background: transparent; cursor: pointer; }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn:hover { background: var(--line-2); } .btn.primary:hover { background: var(--ink-2); }
+
+/* who to open as */
+.people { display: grid; grid-template-columns: repeat(auto-fill, minmax(214px, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.person { display: grid; grid-template-columns: 44px 1fr; gap: 2px 10px; padding: 14px 4px; border-bottom: 1px solid var(--line); text-decoration: none; align-items: baseline; }
+.person:hover .pn { text-decoration: underline; }
+.person .j { font: 500 12px var(--mono); color: var(--ink-3); grid-row: span 2; }
+.person .pn { font-weight: 600; } .person .pr { font-size: 13.5px; color: var(--ink-2); grid-column: 2; }
+
+/* what changed everywhere */
+.changes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px 36px; }
+.change { display: grid; gap: 6px; align-content: start; }
+.change b { font-weight: 600; }
+.change p { color: var(--ink-2); font-size: 15px; }
+
+/* tabs */
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 26px; }
+.tab { min-height: 38px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--sheet); color: var(--ink); font: 500 14px var(--ui); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.tab .n { font: 500 11.5px var(--mono); color: var(--ink-3); }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.tab[aria-selected="true"] .n { color: var(--paper); opacity: .7; }
+
+/* pairs */
+.area-intro { display: grid; gap: 4px; margin-bottom: 22px; }
+.pairs { display: grid; gap: 44px; }
+.pair { display: grid; gap: 14px; }
+.pair-cap { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: baseline; max-width: 820px; }
+.pair-cap .num { font: 500 12px var(--mono); color: var(--ink-3); }
+.shots { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+.pair.phone .shots { grid-template-columns: repeat(2, minmax(0, 300px)); }
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+figcaption { display: flex; align-items: center; gap: 8px; }
+.tag { font: 500 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink-2); }
+.tag.after { border-color: var(--ink); color: var(--ink); }
+.frame { display: block; width: 100%; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--sheet); cursor: zoom-in; padding: 0; position: relative; max-height: 640px; }
+.pair.phone .frame { max-height: 620px; border-radius: 18px; }
+.frame img { display: block; width: 100%; height: auto; }
+.frame::after { content: ""; position: absolute; inset: auto 0 0; height: 48px; background: linear-gradient(transparent, var(--sheet)); pointer-events: none; opacity: .9; }
+.frame.before img { filter: saturate(.85); opacity: .92; }
+
+/* motion */
+.clips { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); gap: 30px 24px; }
+.clip { display: grid; gap: 10px; align-content: start; }
+.clip video { width: 100%; border-radius: 10px; border: 1px solid var(--line); background: var(--night); display: block; aspect-ratio: 16/10; object-fit: contain; }
+.clip.phone video { aspect-ratio: 390/600; object-fit: cover; object-position: top; }
+.clip p { font-size: 15px; color: var(--ink-2); }
+.clip .meta { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+
+/* screens */
+.tools { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; margin-bottom: 22px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--sheet); }
+.seg button { min-height: 34px; padding: 0 14px; border: 0; border-radius: 999px; background: transparent; color: var(--ink-2); font: 500 14px var(--ui); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { min-height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink-2); font: 500 13px var(--ui); cursor: pointer; }
+.chip[aria-pressed="true"] { border-color: var(--ink); color: var(--ink); background: var(--sheet); }
+.grid { display: grid; gap: 22px 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
+.grid.phone { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.scr { display: grid; gap: 7px; align-content: start; min-width: 0; }
+.scr .frame { max-height: none; } .scr .frame::after { display: none; }
+.grid.phone .scr .frame { border-radius: 14px; }
+.scr .who { font-size: 13.5px; display: flex; gap: 6px; flex-wrap: wrap; align-items: baseline; }
+.scr .who b { font-weight: 600; } .scr code { font: 400 12px var(--mono); color: var(--ink-3); overflow-wrap: anywhere; }
+.scr a.open { font-size: 13px; color: var(--ink-2); }
+
+/* weaknesses */
+.weak { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 36px 48px; }
+.weak ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 0; counter-reset: w; }
+.weak li { display: grid; grid-template-columns: 30px 1fr; gap: 4px 8px; padding: 14px 0; border-top: 1px solid var(--line); counter-increment: w; }
+.weak li::before { content: counter(w, decimal-leading-zero); font: 500 12px/1.9 var(--mono); color: var(--ink-3); }
+.weak li > div { display: grid; gap: 3px; } .weak li span { font-size: 14.5px; color: var(--ink-2); }
+.fixed li::before { content: "✓"; color: var(--ok); font-size: 14px; }
+
+/* decisions */
+.dec { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr)); gap: 16px; }
+.dcard { background: var(--sheet); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 8px; align-content: start; }
+.dcard p { font-size: 15px; color: var(--ink-2); }
+
+footer { padding-block: 44px 64px; border-top: 1px solid var(--line); display: grid; gap: 14px; }
+
+/* lightbox */
+dialog { border: 0; padding: 0; background: transparent; max-width: min(1320px, 96vw); max-height: 94vh; width: 100%; }
+dialog::backdrop { background: #0d0c0be6; }
+.lb { display: grid; gap: 10px; }
+.lb-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: #ece6da; font: 500 13px var(--ui); }
+.lb-bar button { min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid #ece6da66; background: #1c1a17; color: #ece6da; font: 500 14px var(--ui); cursor: pointer; }
+.lb-img { overflow: auto; max-height: calc(94vh - 56px); border-radius: 10px; background: #fffdf8; }
+.lb-img img { display: block; width: 100%; height: auto; margin: 0 auto; }
+.lb-img.phone img { max-width: 430px; }
+
+@media (max-width: 640px) {
+  section { padding-block: 40px; }
+  .shots, .pair.phone .shots { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .frame, .pair.phone .frame { max-height: 420px; }
+  .grid.phone { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="mark"><span class="qmark" aria-hidden="true"></span><span class="lab">Talent Q · design review · 29 October 2026</span></div>
+    <div class="read" style="display:grid;gap:18px">
+      <h1>The redesign, before any films are recorded</h1>
+      <p class="lead">Every page in the ten journeys went through a design pass: critique against usability principles, an interaction review and a motion review, done page by page. Below is what changed, side by side, plus short motion clips, every screen as it stands now, and what is still weak.</p>
+      <p class="muted">The prototype runs here in full. Everything in it is simulated: no real messages, bookings or checks. Open it as any of the ten people below; each link starts on that person’s first page.</p>
+    </div>
+    <div class="btns">
+      <a class="btn primary" href="app/index.html#/" target="_blank" rel="noopener">Open the prototype</a>
+      <a class="btn" href="#pairs">Before and after</a>
+      <a class="btn" href="#motion">Motion</a>
+    </div>
+    <nav class="people" aria-label="Open the prototype as" id="people"></nav>
+  </header>
+
+  <section aria-labelledby="h-shared">
+    <div class="sec-head read"><span class="lab">Across every page</span><h2 id="h-shared">What changed in the shared layer</h2>
+      <p class="muted">These fixes live in the components every journey uses, so each one improved dozens of screens at once.</p></div>
+    <div class="changes">
+      <div class="change"><b>Pages arrive, they don’t pop</b><p>One motion vocabulary (durations and easing as tokens) for page arrival, Q’s replies and cards. Lite mode and reduced-motion turn it off, and no animation ever blocks a click.</p></div>
+      <div class="change"><b>Q’s cards read at a glance</b><p>Suggestions, approvals and drafts share one structure: what Q noticed or made, the action, then a quiet footer with “Why am I seeing this?”, Later and Dismiss. One card shows at a time; the rest wait one tap away.</p></div>
+      <div class="change"><b>Status is a tag, not a title</b><p>Headers carry one line of context and a title. States like Draft, Verified or Waiting moved into tags and stage strips, so titles say what the page is.</p></div>
+      <div class="change"><b>Lists became sheets of rows</b><p>Floating card walls were replaced by one surface with whole-row links and a “next” line, which scans faster and fits a phone.</p></div>
+      <div class="change"><b>Settings are real switches</b><p>On/off choices use one accessible switch row with the state in words. Choices with several options stay as segmented buttons.</p></div>
+      <div class="change"><b>Phones first, not phones later</b><p>Tabs wrap instead of hiding, banners stack their action under the text, the Ask Q bar and tab bar never cover content, and Q’s replies are set larger on small screens.</p></div>
+      <div class="change"><b>Privacy holds everywhere</b><p>Pages are guarded by organisation, not hidden from the menu. Hidden people are counted, never named. Q refuses without revealing whether anything exists.</p></div>
+      <div class="change"><b>Nothing depends on a browser dialog</b><p>Reset, cancelling a plan and cancelling an agent now confirm in place, so they work inside this page too.</p></div>
+    </div>
+  </section>
+
+  <section id="pairs" aria-labelledby="h-pairs">
+    <div class="sec-head read"><span class="lab">Before and after · same screen, same size</span><h2 id="h-pairs">What the design pass changed, journey by journey</h2>
+      <p class="muted">Left is the screen before the pass, right is now. Select a screenshot to see it full length.</p></div>
+    <div class="tabs" role="tablist" aria-label="Journeys" id="area-tabs"></div>
+    <div id="area-panel" role="tabpanel"></div>
+  </section>
+
+  <section id="motion" aria-labelledby="h-motion">
+    <div class="sec-head read"><span class="lab">Motion · recorded from the prototype</span><h2 id="h-motion">How it moves when people use it</h2>
+      <p class="muted">Short clips of the interactions that matter most, recorded live: typed to Q the way a person would, at real speed.</p></div>
+    <div class="clips" id="clips"></div>
+  </section>
+
+  <section id="screens" aria-labelledby="h-screens">
+    <div class="sec-head read"><span class="lab">Every screen now · final build</span><h2 id="h-screens">All pages, as each person sees them</h2>
+      <p class="muted">Captured from the final build at desktop (1440 px) and phone (390 px) widths, opened as the person who uses each page.</p></div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Device"><button type="button" data-vp="desktop" aria-pressed="true">Desktop</button><button type="button" data-vp="phone" aria-pressed="false">Phone</button></div>
+      <div class="chips" id="person-chips" role="group" aria-label="Person"></div>
+    </div>
+    <div class="grid" id="screen-grid"></div>
+  </section>
+
+  <section aria-labelledby="h-weak">
+    <div class="sec-head read"><span class="lab">Still weak · most important first</span><h2 id="h-weak">What isn’t good enough yet</h2>
+      <p class="muted">Each area’s designer listed what they couldn’t fix. Some were shared problems and are now fixed; the rest are below.</p></div>
+    <div class="weak">
+      <div><h3 style="margin-bottom:12px">Design</h3><ol>
+        <li><div><b>Long pages on phones</b><span>Tobi’s profile runs to about nine screens, and on long interview questions the answer box starts below the fold. A sticky in-page index and a sticky answer bar would fix both.</span></div></li>
+        <li><div><b>Page header crowding</b><span>With long titles, the header’s actions drop to a second row; on a phone, a job’s Save button sits above the content instead of beside the title.</span></div></li>
+        <li><div><b>Q’s longer replies on phones</b><span>Fraunces at 18 px reads well in short lines but long answers get heavy. Long replies should summarise first and fold the rest.</span></div></li>
+        <li><div><b>Q can repeat the page</b><span>On Grace’s home, the Q card and the page both say her interview is tomorrow. Q should stay quiet about what the page already shows.</span></div></li>
+        <li><div><b>Agency at scale</b><span>Agent rows are long on phones, there’s no summary mode for ten or more agents, and the client switcher won’t work past about eight clients.</span></div></li>
+        <li><div><b>Pipeline filters on phones</b><span>Role filters wrap to three rows at 390 px. A select would be tighter.</span></div></li>
+        <li><div><b>Career atlas density</b><span>At 48 occupations the radial labels crowd. The list view is the fallback, but the map should cluster.</span></div></li>
+        <li><div><b>Roles list “next” line</b><span>It’s text only. A small stage track per role would scan faster.</span></div></li>
+      </ol></div>
+      <div><h3 style="margin-bottom:12px">Behaviour and product</h3><ol>
+        <li><div><b>Weighting is fixed</b><span>Q weighs must-haves 1.5× and explains it, but Ada can only turn that off, not set her own weights. This waits on decision D4.</span></div></li>
+        <li><div><b>Interview copilot timing</b><span>It doesn’t track time per question, and its question rail duplicates Previous/Next on desktop.</span></div></li>
+        <li><div><b>Practice tips repeat</b><span>Tips are rule-based and feel the same across questions. A real model would vary them.</span></div></li>
+        <li><div><b>Handbook rules are guidance</b><span>Rules from an uploaded handbook are cited, not machine-checked. Classifying them is production work.</span></div></li>
+        <li><div><b>Agency registration has no screen</b><span>How a candidate registers with an agency and what they consent to is still seed data (decision D2).</span></div></li>
+        <li><div><b>The intake brief has no versions view</b><span>Kora’s intake page edits the older mandate record, so unlike Funmi’s briefs it has no version history.</span></div></li>
+      </ol></div>
+      <div><h3 style="margin-bottom:12px">Fixed during review</h3><ol class="fixed">
+        <li><div><b>Duplicate Q cards</b><span>Two areas noticed the same interview and both showed a card. Now one card per subject, and dismissing it covers both.</span></div></li>
+        <li><div><b>Card stacks pushing the conversation away</b><span>Q now shows its most urgent card and folds the rest.</span></div></li>
+        <li><div><b>Reset and cancel did nothing when embedded</b><span>They used browser dialogs, which this viewer blocks. They now confirm in place.</span></div></li>
+        <li><div><b>Offline banner squeezed on phones</b><span>Its action now sits under the text.</span></div></li>
+        <li><div><b>Settings sent you to the wrong place</b><span>“Change who can find you” now opens the Passport’s search tab directly.</span></div></li>
+      </ol></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-dec">
+    <div class="sec-head read"><span class="lab">Your decisions · now in the product</span><h2 id="h-dec">What you decided, and where to see it</h2></div>
+    <div class="dec">
+      <div class="dcard"><span class="lab">D1 · Discovery</span><h3>Findable by anyone, with limits for the unverified</h3><p>The default is that any organisation can find a candidate. Until verified, an organisation can send 3 messages a week, labelled as unverified, and can’t run campaigns, make submittals or see contact details. Open as <a href="app/index.html#/r/home?as=u_funmi" target="_blank" rel="noopener">Funmi</a> to see it.</p></div>
+      <div class="dcard"><span class="lab">D3 · Verification</span><h3>No posting until the business is verified</h3><p>Funmi can draft and approve a brief and search straight away. Posting asks for her business registration number first; a wrong number fails honestly and every attempt is in the audit log.</p></div>
+      <div class="dcard"><span class="lab">D6 · Skills and jobs</span><h3>ESCO, on the ILO’s ISCO-08 codes</h3><p>The open European classification of about 3,000 occupations and 13,900 skills, linked to each other. The career atlas, matching and job tags use it in production; local job titles map onto it.</p></div>
+      <div class="dcard"><span class="lab">D8 · Language</span><h3>English now, built to translate</h3><p>Every string goes through a message catalogue and dates and money use locale formatting, so adding a language is translation, not rework.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="read" style="display:grid;gap:12px">
+      <span class="lab">Next</span>
+      <h2>Your review, then the films</h2>
+      <p class="muted">Tell me what you’d change, by screen or by journey. Once you’re happy with how it looks and moves, I’ll record the full demonstration films (desktop and phone, with chapters) from this exact build.</p>
+    </div>
+  </footer>
+</div>
+
+<dialog id="lb" aria-label="Screenshot">
+  <div class="lb"><div class="lb-bar"><span id="lb-title"></span><button type="button" id="lb-close">Close</button></div><div class="lb-img" id="lb-img"></div></div>
+</dialog>
+
+<script>
+const DATA = /*__DATA__*/null;
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+const appLink = (who, route) => `app/index.html#${route}?as=${who}`;
+
+// open as
+const START = [['R1','u_funmi','Funmi','Founder with no recruiting words','/r/home'],['R2','u_ada','Ada','Compares evidence, interviews','/r/compare'],['R3','u_ngozi','Ngozi','Messages, calendar, pipeline','/r/messages'],['R4','u_dele','Dele','Agency, two clients','/r/home'],['R5','u_bayo','Bayo','Hiring manager','/r/home'],['T1','p_amaka','Amaka','First profile, no CV','/c/welcome'],['T2','p_chidi','Chidi','Career change','/c/career'],['T3','p_tobi','Tobi','Evidence Passport and jobs','/c/passport'],['T4','p_grace','Grace','Interview on a slow phone','/c/start'],['T5','p_zara','Zara','Privacy and deletion','/settings']];
+$('#people').innerHTML = START.map(([j, id, n, r, route]) => `<a class="person" href="${appLink(id, route)}" target="_blank" rel="noopener"><span class="j">${j}</span><span class="pn">${n}</span><span class="pr">${r}</span></a>`).join('');
+
+// lightbox
+const lb = $('#lb');
+function openShot(src, title, phone) {
+  $('#lb-title').textContent = title;
+  $('#lb-img').className = 'lb-img' + (phone ? ' phone' : '');
+  $('#lb-img').innerHTML = `<img src="${src}" alt="${esc(title)}">`;
+  $('#lb-img').scrollTop = 0;
+  if (lb.showModal) lb.showModal(); else lb.setAttribute('open', '');
+}
+$('#lb-close').onclick = () => lb.close();
+lb.addEventListener('click', (e) => { if (e.target === lb) lb.close(); });
+document.addEventListener('click', (e) => { const b = e.target.closest('[data-full]'); if (b) openShot(b.dataset.full, b.dataset.title, b.dataset.phone === '1'); });
+
+// pairs
+const tabs = $('#area-tabs');
+tabs.innerHTML = DATA.areas.map((a, i) => `<button type="button" class="tab" role="tab" id="t-${a.key}" aria-selected="false" data-i="${i}"><span class="n">${a.journeys}</span>${esc(a.title)}</button>`).join('');
+function showArea(i) {
+  const a = DATA.areas[i];
+  tabs.querySelectorAll('.tab').forEach((t, k) => t.setAttribute('aria-selected', String(k === i)));
+  $('#area-panel').setAttribute('aria-labelledby', `t-${a.key}`);
+  $('#area-panel').innerHTML = `<div class="area-intro"><h3>${esc(a.title)}</h3><p class="muted">${esc(a.who)}</p></div><div class="pairs">${a.pairs.map((p) => {
+    const shot = (side) => { const src = `pairs/${a.key}/${p.n}-${side}.webp`; const [w, h] = p.size[side];
+      return `<figure><figcaption><span class="tag ${side}">${side === 'before' ? 'Before' : 'After'}</span></figcaption><button type="button" class="frame ${side}" data-full="${src}" data-title="${esc(a.title)} · ${p.n} · ${side}" data-phone="${p.phone ? 1 : 0}" aria-label="${side === 'before' ? 'Before' : 'After'}: open full length"><img src="${src}" width="${w}" height="${h}" loading="lazy" decoding="async" alt="${side === 'before' ? 'Before' : 'After'}: ${esc(p.text)}"></button></figure>`; };
+    return `<article class="pair ${p.phone ? 'phone' : ''}"><div class="pair-cap"><span class="num">${p.n}</span><p>${esc(p.text)}</p></div><div class="shots">${shot('before')}${shot('after')}</div></article>`;
+  }).join('')}</div>`;
+  store.set('tq.review.area', String(i));
+}
+tabs.addEventListener('click', (e) => { const t = e.target.closest('.tab'); if (t) showArea(+t.dataset.i); });
+tabs.addEventListener('keydown', (e) => { if (!['ArrowRight', 'ArrowLeft'].includes(e.key)) return; const all = [...tabs.querySelectorAll('.tab')]; const i = all.indexOf(document.activeElement); if (i < 0) return; const n = (i + (e.key === 'ArrowRight' ? 1 : all.length - 1)) % all.length; all[n].focus(); showArea(n); });
+const savedArea = +(store.get('tq.review.area') ?? 0);
+showArea(savedArea >= 0 && savedArea < DATA.areas.length ? savedArea : 0);
+
+// motion
+$('#clips').innerHTML = DATA.motion.map((c) => `<article class="clip ${c.phone ? 'phone' : ''}"><video src="motion/${c.id}.mp4" poster="motion/${c.id}.jpg" controls muted playsinline preload="none" aria-label="${esc(c.title)}"></video><div class="meta"><h3>${esc(c.title)}</h3><span class="lab">${c.journey}${c.phone ? ' · phone' : ''}</span></div><p>${esc(c.text)}</p><a class="muted" style="font-size:13.5px" href="${appLink(c.as, c.route)}" target="_blank" rel="noopener">Try it in the prototype</a></article>`).join('');
+
+// screens
+let vp = 'desktop', who = 'all';
+const order = ['u_funmi', 'u_ada', 'u_bayo', 'u_dele', 'p_amaka', 'p_chidi', 'p_tobi', 'p_grace', 'p_zara', 'public'];
+$('#person-chips').innerHTML = [['all', 'Everyone']].concat(order.map((p) => [p, `${DATA.people[p][1]} · ${DATA.people[p][0]}`])).map(([k, l]) => `<button type="button" class="chip" data-who="${k}" aria-pressed="${k === 'all'}">${esc(l)}</button>`).join('');
+function drawScreens() {
+  const list = DATA.screens.filter((s) => s.vp === vp && (who === 'all' || s.person === who)).sort((a, b) => order.indexOf(a.person) - order.indexOf(b.person));
+  const g = $('#screen-grid'); g.className = 'grid' + (vp === 'phone' ? ' phone' : '');
+  g.innerHTML = list.length ? list.map((s) => { const p = DATA.people[s.person]; const [w, h] = s.thumb;
+    return `<div class="scr"><button type="button" class="frame" data-full="screens/${s.vp}/${s.id}.webp" data-title="${esc(p[1])} · ${esc(s.route)}" data-phone="${s.vp === 'phone' ? 1 : 0}" aria-label="${esc(p[1])}, ${esc(s.route)}: open full length"><img src="screens/${s.vp}/${s.id}.t.webp" width="${w}" height="${h}" loading="lazy" decoding="async" alt=""></button><div class="who"><b>${esc(p[1])}</b><code>${esc(s.route)}</code></div>${s.person !== 'public' ? `<a class="open" href="${appLink(s.person, s.route)}" target="_blank" rel="noopener">Open this page</a>` : ''}</div>`; }).join('')
+    : '<p class="muted">The screen captures are still uploading. Reload in a minute.</p>';
+}
+document.querySelector('.seg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; vp = b.dataset.vp; document.querySelectorAll('.seg button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); drawScreens(); });
+$('#person-chips').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; who = b.dataset.who; document.querySelectorAll('#person-chips .chip').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); drawScreens(); });
+drawScreens();
+</script>
