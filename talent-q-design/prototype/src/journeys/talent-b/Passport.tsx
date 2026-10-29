@@ -310,6 +310,7 @@ function Discovery({ pid }: { pid: string }) {
   const yes = reach.filter((r) => r.sees); const no = reach.filter((r) => !r.sees);
   const offOrg = d.hideFrom.filter((x) => !w.orgs.some((o) => o.id === x));
   const opts = [
+    ['ANYONE', 'Anyone looking to hire', 'Any employer or agency on Talent Q. New businesses that aren’t verified yet can find you too, but they can only send a few messages a week, can’t post jobs, and every message from them says they aren’t verified.'],
     ['VERIFIED_EMPLOYERS', 'Checked employers only', 'Employers whose web domain and business registration we’ve both checked. Agencies can’t find you.'],
     ['EMPLOYERS_AND_AGENCIES', 'Employers and agencies', 'Any employer or recruitment agency whose web domain we’ve checked, including employers whose registration isn’t confirmed yet.'],
     ['NOBODY', 'Nobody', 'You won’t appear in search. You can still apply, and anyone you’ve shared with keeps what you shared.'],

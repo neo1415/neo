@@ -272,3 +272,4 @@
   .ds-views button { border: 1px solid var(--rule-2); border-radius: 999px; min-height: 40px; padding: 6px 12px; }
   .ds-views button[aria-pressed='true'] { background: var(--ink); color: var(--paper); border-color: var(--ink); box-shadow: none; }
 }
+.ds-canvas-head > :last-child:not(:first-child) { margin-left: auto; } /* actions stay end-aligned when they wrap under a long title */

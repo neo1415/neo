@@ -179,9 +179,11 @@ export const simNow = (w: World) => new Date(new Date(w.session.now).getTime() +
 
 /** What an organisation may see of a person's Passport: shared items only, never practice, never revoked. */
 // ---------------- Candidate privacy: one policy for search, profiles, Q's tools, caches and artifacts ----------------
-type DiscoveryRule = { who: 'ANYONE_VERIFIED' | 'VERIFIED_EMPLOYERS' | 'NOBODY'; hideFrom: string[] };
+/** ANYONE (default, founder decision D1): any organisation, verified or not — unverified ones are limited by orgLimits.
+ *  EMPLOYERS_AND_AGENCIES: organisations with a verified domain. VERIFIED_EMPLOYERS: fully checked employers only. */
+type DiscoveryRule = { who: 'ANYONE' | 'EMPLOYERS_AND_AGENCIES' | 'VERIFIED_EMPLOYERS' | 'NOBODY'; hideFrom: string[] };
 /** The candidate's discovery rule (set on their Passport; default: verified employers only, no agencies). */
-export const discoveryRule = (w: World, pid: string): DiscoveryRule => (w.areas['talent-b'] as { discovery?: Record<string, DiscoveryRule> } | undefined)?.discovery?.[pid] ?? { who: 'VERIFIED_EMPLOYERS', hideFrom: [] };
+export const discoveryRule = (w: World, pid: string): DiscoveryRule => (w.areas['talent-b'] as { discovery?: Record<string, DiscoveryRule> } | undefined)?.discovery?.[pid] ?? { who: 'ANYONE', hideFrom: [] };
 /** An explicit relationship the candidate created: applied, shared something, or registered with an agency. */
 export function relationshipWith(w: World, pid: string, orgId: string) {
   const c = w.consents[pid];
@@ -194,8 +196,23 @@ export function canDiscover(w: World, pid: string, orgId: string) {
   if (!w.consents[pid]?.discoverable) return false;
   const d = discoveryRule(w, pid); const o = w.orgs.find((x) => x.id === orgId);
   if (!o || d.who === 'NOBODY' || d.hideFrom.includes(orgId)) return false;
-  if (d.who === 'VERIFIED_EMPLOYERS') return o.kind === 'EMPLOYER' && o.verified.domain && o.verified.registry === 'VERIFIED';
-  return o.verified.domain;
+  if (d.who === 'VERIFIED_EMPLOYERS') return o.kind === 'EMPLOYER' && orgVerified(o);
+  if (d.who === 'EMPLOYERS_AND_AGENCIES') return o.verified.domain;
+  return true; // ANYONE
+}
+/** A fully verified organisation: domain and business registration both checked. */
+export const orgVerified = (o: { verified: { domain: boolean; registry: string } }) => o.verified.domain && o.verified.registry === 'VERIFIED';
+/** What an organisation may do until it is verified (founder decisions D1 and D3). One place, so it's easy to change. */
+export const UNVERIFIED_LIMITS = { postRoles: false, outreachPerWeek: 3, campaigns: false, submittals: false, seeContactDetails: false } as const;
+export function orgLimits(w: World, orgId: string) {
+  const o = w.orgs.find((x) => x.id === orgId);
+  if (o && orgVerified(o)) return { verified: true, postRoles: true, outreachPerWeek: Infinity, campaigns: true, submittals: true, seeContactDetails: true };
+  return { verified: false, ...UNVERIFIED_LIMITS };
+}
+/** Outreach messages an organisation has sent in the 7 days before the simulated now. */
+export function outreachThisWeek(w: World, orgId: string) {
+  const since = simNow(w).getTime() - 7 * 864e5;
+  return w.threads.filter((t) => t.orgId === orgId).flatMap((t) => t.messages).filter((m) => m.status === 'SENT_SIMULATED' && w.actors.find((a) => a.id === m.from)?.orgId === orgId && new Date(m.at).getTime() >= since).length;
 }
 /** Whether an organisation may see this person at all. Withdrawn consent always wins. */
 export function canSeeCandidate(w: World, pid: string, orgId: string) {

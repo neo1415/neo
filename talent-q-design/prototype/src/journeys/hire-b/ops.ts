@@ -4,16 +4,22 @@ import { emit, getWorld, now, uid, update, type World } from '../../mock/world';
 import type { Actor, Stage } from '../../state/domain';
 import { pushUndo, qSays, registerOp } from '../../q/core/engine';
 import { hireB, type Level, type Rating } from '../../state/areas/hire-b';
-import { cellFor, defaultView, draftFeedback, firstName, KORA_ROLE, questionsFor, reqLabel, visibleIds, type CompareView } from './model';
+import { cellFor, defaultView, describeChange, shortLabel, snapshot, draftFeedback, firstName, KORA_ROLE, questionsFor, reqLabel, visibleIds, type CompareView } from './model';
 
 const scope = (a: Actor) => (a.orgId ? `ORG:${a.orgId}` : `PERSON:${a.personId}`);
 export const CMP_KEY = (actorId: string) => `${actorId}|/r/compare`;
 export function cmpView(w: World, actorId = w.session.actor): CompareView {
   return { ...defaultView(w), ...((w.q.ui[CMP_KEY(actorId)]?.cmp as Partial<CompareView> | undefined) ?? {}) };
 }
+/** Apply a change to the comparison. Anything that can move the result keeps a snapshot of the result before
+ *  it, so the page can say in plain words what changed (dataviz: the change is shown, not left to memory). */
 export function setCmp(w: World, actorId: string, patch: Partial<CompareView>) {
   const k = CMP_KEY(actorId);
-  (w.q.ui[k] ??= {}).cmp = { ...cmpView(w, actorId), ...patch };
+  const before = cmpView(w, actorId);
+  const after: CompareView = { ...before, ...patch };
+  const label = 'last' in patch ? null : describeChange(w, before, after);
+  if (label) after.last = snapshot(w, before, label);
+  (w.q.ui[k] ??= {}).cmp = after;
 }
 
 // ---------- GitHub (simulated connector) ----------
@@ -43,12 +49,14 @@ registerOp('hb.github.outage', (w) => { const g = hireB(w).github; g.status = 'D
 registerOp('hb.cmp.set', (w, a, actor) => { setCmp(w, actor.id, a as Partial<CompareView>); });
 export function addCorrection(w: World, actor: Actor, pid: string, reqId: string, level: Level, note: string) {
   const id = uid('corr');
+  const v = cmpView(w, actor.id);
+  if (v.people.includes(pid) && v.criteria.includes(reqId)) (w.q.ui[CMP_KEY(actor.id)] ??= {}).cmp = { ...v, last: snapshot(w, v, `You corrected Q’s reading of ${firstName(w, pid)}’s ${shortLabel(w, reqId)}`) };
   hireB(w).corrections.push({ id, personId: pid, reqId, level, note, by: actor.id, at: now() });
   pushUndo(w, actor.id, `your correction to ${firstName(w, pid)}’s ${reqLabel(w, reqId)}`, 'hb.correct.remove', { id });
   emit(w, actor.id, 'q.corrected', scope(actor), `${actor.first} corrected Q’s reading of ${firstName(w, pid)}’s ${reqLabel(w, reqId)}: ${note}`);
 }
 registerOp('hb.correct', (w, a, actor) => { addCorrection(w, actor, String(a.pid), String(a.reqId), a.level as Level, String(a.note)); });
-registerOp('hb.correct.remove', (w, a) => { const s = hireB(w); s.corrections = s.corrections.filter((c) => c.id !== a.id); });
+registerOp('hb.correct.remove', (w, a, actor) => { const s = hireB(w); s.corrections = s.corrections.filter((c) => c.id !== a.id); const v = w.q.ui[CMP_KEY(actor.id)]?.cmp as CompareView | undefined; if (v?.last?.label.startsWith('You corrected')) v.last = null; });
 
 // ---------- Profile: "since you last looked" ----------
 export function markSeen(pid: string) {

@@ -15,7 +15,7 @@ export interface CandMemory {
 }
 export interface Deletion { id: string; personId: string; at: string; what: string; deleted: string[]; kept: string[]; neverShared: boolean }
 export interface Correction { at: string; topic: string; said: string; before: string }
-export interface Discovery { who: 'VERIFIED_EMPLOYERS' | 'EMPLOYERS_AND_AGENCIES' | 'NOBODY'; hideFrom: string[]; showSalary: boolean }
+export interface Discovery { who: 'ANYONE' | 'EMPLOYERS_AND_AGENCIES' | 'VERIFIED_EMPLOYERS' | 'NOBODY'; hideFrom: string[]; showSalary: boolean }
 export interface Followup { appId: string; state: 'SENT_SIMULATED' | 'MOVED_ON'; at: string }
 export interface Applying { jobId: string; shared: string[]; startedMs: number; consent: boolean; note: string; blocked?: string }
 

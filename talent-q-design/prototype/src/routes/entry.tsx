@@ -194,7 +194,7 @@ registerRoute({ path: '/signup', side: 'public', bare: true, label: 'sign up', r
 const findRule = (w: World, pid: string) => {
   if (!w.consents[pid]?.discoverable) return 'Nobody can find you in search. You can still apply, and anyone you’ve shared with keeps what you shared.';
   const r = discoveryRule(w, pid); const hidden = r.hideFrom.map((o) => w.orgs.find((x) => x.id === o)?.name ?? o);
-  const base = r.who === 'NOBODY' ? 'Nobody can find you in search.' : r.who === 'VERIFIED_EMPLOYERS' ? 'Only verified employers can find you. Agencies can’t.' : 'Verified employers and agencies can find you.';
+  const base = r.who === 'NOBODY' ? 'Nobody can find you in search.' : r.who === 'VERIFIED_EMPLOYERS' ? 'Only verified employers can find you. Agencies can’t.' : r.who === 'EMPLOYERS_AND_AGENCIES' ? 'Verified employers and agencies can find you.' : 'Anyone hiring can find you. Businesses that aren’t verified yet can only send a few messages a week.';
   return hidden.length ? `${base} Hidden from ${hidden.join(', ')}.` : base;
 };
 function Settings() {

@@ -2,6 +2,8 @@
 // pages render in a sandboxed frame with scripts, forms and outside requests switched off. Links show
 // their domain before anything opens. Q explains, in plain words, what the work shows and doesn't.
 import { useState } from 'react';
+import { motion } from 'motion/react';
+import { arrive } from '../../ds/motion';
 import type { Evidence } from '@contracts';
 import { runAction } from '../../q/core/engine';
 import { useWorld } from '../../mock/world';
@@ -10,9 +12,11 @@ import { hireB } from '../../state/areas/hire-b';
 import { PROJECTS, domainOf, inertHtml, scriptCount } from './projects';
 import { fmtDate, fmtTime } from './ui';
 
-export function ProjectViewer({ items, first }: { items: Evidence[]; first: string }) {
+export function ProjectViewer({ items, first, sel: selProp, onSel }: { items: Evidence[]; first: string; sel?: string; onSel?: (id: string) => void }) {
   const projects = items.filter((e) => PROJECTS[e.evidenceId] && !e.confidential);
-  const [sel, setSel] = useState(projects[0]?.evidenceId);
+  const [selOwn, setSelOwn] = useState(projects[0]?.evidenceId);
+  const sel = selProp ?? selOwn;
+  const setSel = (id: string) => { setSelOwn(id); onSel?.(id); };
   const [file, setFile] = useState(0);
   const [leaving, setLeaving] = useState<string | null>(null);
   const gh = useWorld((w) => hireB(w).github);
@@ -29,9 +33,9 @@ export function ProjectViewer({ items, first }: { items: Evidence[]; first: stri
   const checking = ghItems.length > 0 && gh.status === 'CHECKING';
   const f = p.files?.[Math.min(file, (p.files?.length ?? 1) - 1)];
   return (
-    <section className="ds-sheet hire-b-grid" aria-labelledby="pv-h">
+    <section className="ds-sheet hire-b-grid hire-b-pv" aria-labelledby="pv-h">
       <div className="hire-b-row">
-        <h2 id="pv-h" className="voice t24" style={{ margin: 0 }}>Project viewer</h2>
+        <h2 id="pv-h" className="voice t24" style={{ margin: 0, scrollMarginTop: 16 }}>Project viewer</h2>
         <span className="ds-tag"><Glyph k="none" size={14} />Read-only · nothing runs</span>
       </div>
       {projects.length > 1 && (
@@ -39,18 +43,21 @@ export function ProjectViewer({ items, first }: { items: Evidence[]; first: stri
           {projects.map((x) => <button key={x.evidenceId} type="button" className="ds-filter" aria-pressed={x.evidenceId === cur.evidenceId} onClick={() => { setSel(x.evidenceId); setFile(0); setLeaving(null); }}>{x.title}</button>)}
         </div>
       )}
-      {down && (
+      {down && p.github && (
         <div className="ds-banner" data-k="warn" role="status">
           <Glyph k="unclear" />
-          <span>{checking ? 'Asking GitHub again…' : <><b>GitHub isn’t responding</b> (simulated outage); here’s what we had cached on {fmtDate(gh.cachedAt)} for {ghItems.map((x) => x.title).join(' and ')}. {gh.tries > 0 && gh.checkedAt ? `Last tried ${fmtTime(gh.checkedAt)}, still no answer. ` : ''}Until it answers, this repository stays unchecked: unknown, not weak.</>}</span>
+          <span>{checking ? 'Asking GitHub again…' : <><b>GitHub isn’t responding</b> (simulated outage), so this is the copy cached on {fmtDate(gh.cachedAt)}. {gh.tries > 0 && gh.checkedAt ? `Last tried ${fmtTime(gh.checkedAt)}, still no answer. ` : ''}Until it answers, it stays unchecked: unknown, not weak.</>}</span>
           <button type="button" className="ds-btn" disabled={checking} onClick={() => void runAction({ label: 'Retry GitHub', act: { t: 'do', op: 'hb.github.retry' } })}>{checking ? 'Retrying…' : 'Retry'}</button>
         </div>
+      )}
+      {down && !p.github && (
+        <p className="t14 hire-b-ghnote" role="status"><Glyph k="unclear" size={14} /><span>GitHub isn’t responding, so {ghItems.map((x) => x.title).join(' and ')} shows the copy cached on {fmtDate(gh.cachedAt)}.</span>{!checking && <button type="button" className="ds-btn quiet hire-b-inline" onClick={() => void runAction({ label: 'Retry GitHub', act: { t: 'do', op: 'hb.github.retry' } })}>Retry</button>}</p>
       )}
       {ghItems.length > 0 && gh.status === 'OK' && <p className="t14 muted" role="status" style={{ margin: 0 }}>GitHub answered {gh.checkedAt ? fmtTime(gh.checkedAt) : ''}. Showing the current copy (simulated).</p>}
       <p className="t14 muted" style={{ margin: 0 }}>{p.where}{p.github ? ` · ${down ? `cached ${fmtDate(gh.cachedAt)}` : 'live copy'}` : ''} · {cur.title}</p>
 
       <div className="hire-b-viewer">
-        <div className="hire-b-frame" aria-busy={checking || undefined}>
+        <motion.div key={`${cur.evidenceId}:${file}:${gh.status}`} {...arrive} className="hire-b-frame" aria-busy={checking || undefined}>
           {checking && p.github ? <div className="ds-skeleton" style={{ height: 220 }} /> : p.kind === 'code' && f ? (
             <>
               {(p.files?.length ?? 0) > 1 && <div className="hire-b-chips" role="group" aria-label="Files">{p.files!.map((x, i) => <button key={x.path} type="button" className="ds-filter" aria-pressed={i === file} onClick={() => setFile(i)}>{x.path}</button>)}</div>}
@@ -62,7 +69,7 @@ export function ProjectViewer({ items, first }: { items: Evidence[]; first: stri
               {scriptCount(p.html) > 0 && <p className="t14 muted" style={{ margin: 0 }}>This page contains {scriptCount(p.html)} script{scriptCount(p.html) > 1 ? 's' : ''}. The viewer switched {scriptCount(p.html) > 1 ? 'them' : 'it'} off; nothing on the page can run.</p>}
             </>
           ) : null}
-        </div>
+        </motion.div>
         <section className="hire-b-explain" aria-label="Q’s explanation">
           <span className="lab hire-b-q">Q explains</span>
           <p className="ds-quote">{p.explain.summary}</p>

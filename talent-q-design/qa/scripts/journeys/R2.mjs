@@ -39,7 +39,8 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   };
   const chip = async (re) => { await openQ(); const c = page.locator('.ds-chip').filter({ hasText: re }).last(); await c.click(); await page.waitForTimeout(500); if (phone) await closeQ(); };
   const go = async (r) => { await page.goto(`${BASE}#${r}`); await page.waitForTimeout(800); await overflow(r); };
-  const pressed = (name) => page.locator('.ds-canvas button.ds-filter', { hasText: name }).first().getAttribute('aria-pressed');
+  // Chips report aria-pressed; on/off settings are switches (shared SwitchRow) and report aria-checked.
+  const pressed = async (name) => { const f = page.locator('.ds-canvas button.ds-filter', { hasText: name }); if (await f.count()) return f.first().getAttribute('aria-pressed'); return page.locator('.ds-canvas').getByRole('switch', { name, includeHidden: true }).first().getAttribute('aria-checked'); };
   const canvasText = () => page.locator('.ds-canvas').first().innerText();
 
   // Fresh world as Ada.

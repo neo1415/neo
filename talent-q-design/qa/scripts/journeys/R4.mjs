@@ -18,7 +18,9 @@ const results = []; const errors = [];
 const MEDLINK_PEOPLE = ['Ruth Akpan', 'Bisi Coker', 'Nneka Okoro', 'Obinna Udeh', 'Chidi Nwosu', 'Amaka Eze'];
 // Privacy (canSeeCandidate): these people never registered with Talentbridge and their discovery rules don't
 // allow agencies, so no agency page or Q reply may name them, even though older pool records include them.
-const HIDDEN_FROM_AGENCY = ['Zara Mensah', 'Chidi Nwosu', 'Amaka Eze'];
+// Founder decision D1: the default discovery rule is ANYONE, so only people who chose stricter rules
+// (Zara: verified employers only) are hidden from the agency.
+const HIDDEN_FROM_AGENCY = ['Zara Mensah'];
 const P = { pools: '/r/agency/pools', searches: '/r/agency/pools/searches', compare: '/r/agency/pools/compare', notes: '/r/agency/clients/notes', docs: '/r/agency/clients/docs', clients: '/r/agency/clients', submittals: '/r/agency/submittals', campaigns: '/r/agency/campaigns', agents: '/r/agency/agents', mandate: (id) => `/r/agency/clients/mandate/${id}` };
 
 for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { width: 390, height: 844 }, 2]].filter(([x]) => ONLY.includes(x))) {
@@ -145,11 +147,11 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
     noHidden(t, 'Kora pools'); expect(/1 more person in this pool isn’t shown/.test(t) && /privacy settings don’t allow agencies/.test(t) && /Talent Q doesn’t say who/.test(t), 'Kora pool: anonymous hidden note');
     await canvas().getByRole('button', { name: 'Medlink Health', exact: true }).click(); await page.waitForTimeout(300);
     t = await canvas().innerText(); noHidden(t, 'Medlink pools');
-    expect(/Operations analysts/.test(t) && /2 more people in this pool aren’t shown/.test(t), 'Medlink ops pool: two hidden, counted');
+    expect(/Operations analysts/.test(t) && /Chidi Nwosu/.test(t) && !/aren’t shown|isn’t shown/.test(t), 'Medlink ops pool: Chidi and Amaka visible under the default rule; nobody hidden');
     expect(/Ruth Akpan/.test(t) && /Bisi Coker/.test(t), 'registered Medlink candidates still shown');
     await shot('10b-pool-hidden-medlink');
     await go(P.searches); t = await canvas().innerText(); noHidden(t, 'Medlink saved searches');
-    await go(P.mandate('m_ops')); t = await canvas().innerText(); noHidden(t, 'Medlink ops mandate'); expect(/2 more people on this mandate aren’t shown/.test(t), 'ops pipeline: hidden counted');
+    await go(P.mandate('m_ops')); t = await canvas().innerText(); noHidden(t, 'Medlink ops mandate'); expect(!/aren’t shown|isn’t shown/.test(t), 'ops pipeline: nobody hidden under the default rule');
     await ask('who is in the medlink pipeline', 900); const r = await lastQ(); noHidden(r, 'Q pipeline reply'); expect(/Ruth Akpan/.test(r), `pipeline reply: ${r.slice(0, 120)}`);
     await closeQ(); await go(P.pools); await canvas().getByRole('button', { name: 'Kora Pay', exact: true }).click(); await page.waitForTimeout(300);
   });

@@ -5,6 +5,7 @@ import { Compare } from '../screens/Compare';
 import { Profile } from '../journeys/hire-b/Profile';
 import { Interviews, InterviewRoom } from '../journeys/hire-b/Interviews';
 import '../journeys/hire-b/ops';
+import '../journeys/hire-b/refs';
 import '../styles/hire-b.css';
 
 registerRoute({ path: '/r/compare', side: 'recruiter', label: 'the comparison', render: () => <OrgOnly orgId="org_kora" what="Kora Pay’s hiring"><Compare /></OrgOnly>, nav: { group: 'Hiring', label: 'Compare', icon: 'people', order: 14, orgKind: 'EMPLOYER', orgIds: ['org_kora'] } });

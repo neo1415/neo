@@ -106,7 +106,7 @@ export function cellFor(w: World, pid: string, reqId: string, o: Opts = {}): Cel
 }
 
 export type Weighting = 'Q' | 'EQUAL';
-export interface CompareView { people: string[]; criteria: string[]; lastYear: boolean; weighting: Weighting; open?: { pid: string; reqId: string } | null }
+export interface CompareView { people: string[]; criteria: string[]; lastYear: boolean; weighting: Weighting; open?: { pid: string; reqId: string } | null; last?: Snapshot | null }
 export const defaultView = (w: World): CompareView => ({ people: rolePeople(w), criteria: reqsOf(w).map((r) => r.reqId), lastYear: false, weighting: 'Q', open: null });
 /** Q's own judgement: payments is the hardest requirement to find, so it counts 1.5× unless Ada says otherwise. */
 export const weightOf = (w: World, reqId: string, mode: Weighting) => { const r = reqsOf(w).find((x) => x.reqId === reqId); const base = r?.mustHave ? 2 : 1; return mode === 'Q' && reqId === 'r1' ? base * 1.5 : base; };
@@ -142,12 +142,12 @@ export function readingOf(w: World, v: CompareView): string[] {
   if (nobody.length) out.push(`Nobody has shown ${nobody.map((r) => reqLabel(w, r)).join(' or ')} yet. That’s a question for the interview, not a reason to rule anyone out.`);
   if (v.weighting === 'Q' && v.criteria.includes('r1')) out.push('I count payments 1.5× because it’s the hardest to find. That’s my judgement, not your role brief; say “weigh them equally” to remove it.');
   const claims = v.people.filter((p) => v.criteria.some((r) => cellFor(w, p, r, v).level === 'claim'));
-  if (claims.length) out.push(`${claims.map(fn).join(' and ')} ${claims.length === 1 ? 'has' : 'have'} CV claims with nothing behind them yet. Unknown isn’t the same as weak.`);
+  if (claims.length) out.push(`${claims.map(fn).reduce((acc, x, k, a) => (k === 0 ? x : `${acc}${k === a.length - 1 ? ' and ' : ', '}${x}`), '')} ${claims.length === 1 ? 'has' : 'have'} CV claims with nothing behind them yet. Unknown isn’t the same as weak.`);
   const review = v.people.filter((p) => v.criteria.some((r) => cellFor(w, p, r, v).items.some((i) => i.excluded === 'review')));
-  if (review.length) out.push(`${review.map(fn).join(' and ')}’s disputed assessment is under review, so I’ve left it out until it’s resolved.`);
-  if (v.lastYear) { const old = v.people.filter((p) => v.criteria.some((r) => cellFor(w, p, r, v).items.some((i) => i.excluded === 'old'))); out.push(old.length ? `Using evidence from the last year only: ${old.map(fn).join(' and ')} lose${old.length === 1 ? 's' : ''} older items.` : 'Using evidence from the last year only. Nobody loses anything on these requirements.'); }
+  if (review.length) out.push(`${review.map(fn).reduce((acc, x, k, a) => (k === 0 ? x : `${acc}${k === a.length - 1 ? ' and ' : ', '}${x}`), '')}’s disputed assessment is under review, so I’ve left it out until it’s resolved.`);
+  if (v.lastYear) { const old = v.people.filter((p) => v.criteria.some((r) => cellFor(w, p, r, v).items.some((i) => i.excluded === 'old'))); out.push(old.length ? `Using evidence from the last year only: ${old.map(fn).reduce((acc, x, k, a) => (k === 0 ? x : `${acc}${k === a.length - 1 ? ' and ' : ', '}${x}`), '')} lose${old.length === 1 ? 's' : ''} older items.` : 'Using evidence from the last year only. Nobody loses anything on these requirements.'); }
   const gh = v.people.filter((p) => visibleEvidence(w, p, viewerOrg(w)).some((e) => isGithub(e) && v.criteria.some((r) => EV_REQ[e.evidenceId]?.some((m) => m.reqId === r))));
-  if (gh.length && hireB(w).github.status !== 'OK') out.push(`GitHub isn’t responding, so ${gh.map(fn).join(' and ')}’s repositories are shown from my cached copy and stay unchecked.`);
+  if (gh.length && hireB(w).github.status !== 'OK') out.push(`GitHub isn’t responding, so ${gh.map(fn).reduce((acc, x, k, a) => (k === 0 ? x : `${acc}${k === a.length - 1 ? ' and ' : ', '}${x}`), '')}’s repositories are shown from my cached copy and stay unchecked.`);
   const corr = hireB(w).corrections.filter((c) => v.people.includes(c.personId) && v.criteria.includes(c.reqId));
   if (corr.length) out.push(`Includes ${corr.length === 1 ? 'your correction' : `${corr.length} corrections`}: ${corr.map((c) => `${fn(c.personId)}, ${reqLabel(w, c.reqId)}`).join('; ')}.`);
   return out;
@@ -228,3 +228,58 @@ export function draftFeedback(w: World, i: Interview, ratings: Record<string, Ra
 
 /** id:verification of everything a person shares with the viewer's org (for "since you last looked"). */
 export const visibleIds = (w: World, pid: string) => visibleEvidence(w, pid, viewerOrg(w)).map((e) => `${e.evidenceId}:${e.verification ?? (e.verified ? 'VERIFIED' : 'UNVERIFIED')}`).sort();
+
+// ---------- Ledger: short labels, headline, and "what changed" snapshots ----------
+/** Short requirement names for the ledger's column heads and Q cards (the full label stays in tables). */
+export const SHORT: Record<string, string> = { r1: 'Payments', r2: 'Go', r3: 'Postgres', r4: 'On-call', r5: 'Mentoring' };
+export const shortLabel = (w: World, id: string) => SHORT[id] ?? reqLabel(w, id).split(' ')[0];
+
+/** The page title: the finding, in one short sentence (dataviz: the title states the finding). */
+export function headline(w: World, v: CompareView): string {
+  if (!v.people.length || !v.criteria.length) return 'Choose who and what to compare';
+  const rk = rank(w, v); const [a, b] = rk; const fn = (p: string) => firstName(w, p);
+  if (!b) return `${fn(a.pid)} on their own: nothing to rank yet`;
+  if (a.score === b.score) return `${fn(a.pid)} and ${fn(b.pid)} are level on what you chose`;
+  return `${fn(a.pid)} has the strongest evidence. ${fn(b.pid)} is ${a.score - b.score < 2 ? 'close behind' : 'next'}`;
+}
+
+export interface Snapshot { label: string; at: string; order: string[]; scores: Record<string, number>; cells: Record<string, Level> }
+export function snapshot(w: World, v: CompareView, label: string): Snapshot {
+  const rk = rank(w, v); const cells: Record<string, Level> = {};
+  for (const p of v.people) for (const r of v.criteria) cells[`${p}:${r}`] = cellFor(w, p, r, v).level;
+  return { label, at: new Date().toISOString(), order: rk.map((r) => r.pid), scores: Object.fromEntries(rk.map((r) => [r.pid, r.score])), cells };
+}
+/** Plain-words description of a change to the comparison's choices (null when nothing that matters changed). */
+export function describeChange(w: World, a: CompareView, b: CompareView): string | null {
+  const out: string[] = []; const fn = (p: string) => firstName(w, p);
+  const join = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
+  const addP = b.people.filter((p) => !a.people.includes(p)), dropP = a.people.filter((p) => !b.people.includes(p));
+  const addC = b.criteria.filter((r) => !a.criteria.includes(r)), dropC = a.criteria.filter((r) => !b.criteria.includes(r));
+  // Same verb, one clause: "You took out Zara, Payments and Postgres".
+  const added = [...(dropP.length ? [] : addP.map(fn)), ...(dropC.length ? [] : addC.map((r) => shortLabel(w, r)))];
+  const removed = [...(addP.length ? [] : dropP.map(fn)), ...(addC.length ? [] : dropC.map((r) => shortLabel(w, r)))];
+  if (addP.length && dropP.length) out.push(`chose ${join(b.people.map(fn))}`);
+  if (addC.length && dropC.length) out.push(`compared on ${join(b.criteria.map((r) => shortLabel(w, r)))} only`);
+  if (added.length) out.push(`added ${join(added)}`);
+  if (removed.length) out.push(`took out ${join(removed)}`);
+  if (a.lastYear !== b.lastYear) out.push(b.lastYear ? 'kept evidence from the last year only' : 'brought back older evidence');
+  if (a.weighting !== b.weighting) out.push(b.weighting === 'EQUAL' ? 'weighed the must-haves equally' : 'put Q’s extra weight on payments back');
+  if (!out.length) return null;
+  return `You ${join(out)}`;
+}
+const ORD = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
+export interface Change { moves: string[]; cells: { pid: string; reqId: string; from: Level; to: Level }[]; margin?: string }
+export function changesSince(w: World, v: CompareView, s: Snapshot): Change {
+  const rk = rank(w, v); const fn = (p: string) => firstName(w, p);
+  const moves: string[] = [];
+  rk.forEach((r, i) => { const j = s.order.indexOf(r.pid); if (j >= 0 && j !== i) moves.push(`${fn(r.pid)} moved ${j > i ? 'up' : 'down'} from ${ORD[j]} to ${ORD[i]}.`); });
+  const cells: Change['cells'] = [];
+  for (const p of v.people) for (const r of v.criteria) { const from = s.cells[`${p}:${r}`]; if (!from) continue; const to = cellFor(w, p, r, v).level; if (from !== to) cells.push({ pid: p, reqId: r, from, to }); }
+  let margin: string | undefined;
+  const [a, b] = rk;
+  if (!moves.length && a && b && s.scores[a.pid] !== undefined && s.scores[b.pid] !== undefined) {
+    const before = s.scores[a.pid] - s.scores[b.pid], after = a.score - b.score;
+    margin = after === before ? `The order didn’t change.` : after === 0 ? `${fn(a.pid)} and ${fn(b.pid)} are now level.` : `The order didn’t change, but ${fn(a.pid)}’s lead over ${fn(b.pid)} ${after < before ? 'narrowed' : 'grew'}.`;
+  }
+  return { moves, cells, margin };
+}

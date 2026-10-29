@@ -8,9 +8,10 @@ import type { Actor, QAction } from '../../state/domain';
 import { registerSkill } from '../core/engine';
 import type { QCtx, QReply } from '../core/types';
 import { hireB, type Level, type Rating } from '../../state/areas/hire-b';
-import { ASSESS, KORA_ROLE, LEVEL_VALUE, LEVEL_WORD, assessFor, cellFor, criteriaIn, disputedEvidence, firstName, followUpsFor, isVague, koraInterviews, nameOf, peopleIn, personInFocus, questionsFor, rank, readingOf, reqLabel, reqsOf, rolePeople, viewerOrg, weightOf, type CompareView } from '../../journeys/hire-b/model';
+import { ASSESS, KORA_ROLE, LEVEL_WORD, assessFor, cellFor, criteriaIn, disputedEvidence, firstName, followUpsFor, isVague, koraInterviews, nameOf, peopleIn, personInFocus, questionsFor, rank, readingOf, reqLabel, reqsOf, rolePeople, viewerOrg, type CompareView } from '../../journeys/hire-b/model';
 import { addCorrection, cmpView, finishInterview, ghRetry, live, setCmp, startInterview } from '../../journeys/hire-b/ops';
 import { PROJECTS } from '../../journeys/hire-b/projects';
+import { viewId } from '../../journeys/hire-b/refs';
 
 const kora = (c: QCtx) => c.actor.orgId === 'org_kora' && c.actor.side === 'recruiter';
 const who = (c: QCtx) => peopleIn(c.norm, c.ents.people).filter((p) => c.w.people.some((x) => x.personId === p));
@@ -84,6 +85,7 @@ registerSkill({
     const changed = ob !== oa ? ` Order changed: before it was ${ob}; now ${oa}.` : after.people.length > 1 ? ` Order: ${oa}${Object.keys(p.patch).length > 1 ? ' (unchanged)' : ''}.` : '';
     return {
       msgs: [{ kind: 'reply', text: `Comparing ${p.said.join(', ')}.${changed} ${notes[0] ?? ''}`.replace(/\s+/g, ' ').trim(),
+        ref: after.people.length && after.criteria.length ? { type: 'hb.ledger', id: viewId({ ...after, people: after.people.filter((x) => rolePeople(c.w).includes(x)) }) } : undefined,
         used: ['Senior Backend brief v1', `${after.people.reduce((n, pid) => n + visibleEvidence(c.w, pid, viewerOrg(c.w)).length, 0)} shared evidence items`, ...(after.weighting === 'Q' && after.criteria.includes('r1') ? ['My weighting: payments 1.5×'] : [])],
         why: 'Rule-based reading of what each person shared with Kora; I never use private or withdrawn items.',
         actions: [{ label: 'Why this order?', act: { t: 'say', text: 'why is that the order' } }, ...(after.lastYear ? [] : [{ label: 'Last year only', act: { t: 'say', text: 'only evidence from the last year' } } as QAction])] }],
@@ -110,19 +112,14 @@ registerSkill({
     const named = who(c).filter((p) => v.people.includes(p));
     const a = named[0] ?? rk[0]?.pid; const b = named[1] ?? rk.find((r) => r.pid !== a)?.pid;
     if (!a || !b) return { msgs: [{ kind: 'reply', text: 'There’s only one person in the comparison, so I haven’t ranked anyone. Add someone and I’ll show my reasoning.' }] };
-    const lines = v.criteria.map((r) => {
-      const ca = cellFor(c.w, a, r, v), cb = cellFor(c.w, b, r, v);
-      const ev = (cell: typeof ca) => cell.correction ? `${cell.correction.note} (your correction)` : cell.items.filter((i) => !i.excluded).map((i) => `${i.note}, ${i.e.verification === 'VERIFIED' ? 'checked' : 'not checked'}`)[0] ?? 'nothing shared';
-      const mark = LEVEL_VALUE[ca.level] > LEVEL_VALUE[cb.level] ? fn(c.w, a) : LEVEL_VALUE[cb.level] > LEVEL_VALUE[ca.level] ? fn(c.w, b) : 'level';
-      return `• ${reqLabel(c.w, r)}${weightOf(c.w, r, v.weighting) > 2 ? ' (I count it 1.5×)' : ''}: ${fn(c.w, a)} ${LEVEL_WORD[ca.level].toLowerCase()} (${ev(ca)}); ${fn(c.w, b)} ${LEVEL_WORD[cb.level].toLowerCase()} (${ev(cb)}). ${mark === 'level' ? 'Level.' : `${mark} ahead.`}`;
-    });
     const eq = rank(c.w, { ...v, weighting: 'EQUAL' });
     const weightLine = v.weighting === 'Q' && v.criteria.includes('r1')
       ? `One part is my judgement, not your brief: I count payments 1.5× because it’s the hardest to find. Without that, the order is ${eq.map((r) => fn(c.w, r.pid)).join(', then ')}.`
       : 'Every must-have counts the same here; nice-to-haves count half.';
     const isFair = /\bnot fair|unfair|biased\b/.test(c.norm);
     return {
-      msgs: [{ kind: 'reply', text: `${isFair ? 'Fair challenge. ' : ''}Here’s exactly what I used, only from what each of them shared with Kora:\n${lines.join('\n')}\n${weightLine} I don’t use CVs, schools, names or anything personal. If I’ve read something wrong, tell me (for example “Tobi’s Go library shouldn’t count as production”) and I’ll correct it and show what changes.`,
+      msgs: [{ kind: 'reply', text: `${isFair ? 'Fair challenge. ' : ''}Here’s exactly what I used, only from what each of them shared with Kora. ${weightLine} I don’t use CVs, schools, names or anything personal. If I’ve read something wrong, tell me (for example “Tobi’s Go library shouldn’t count as production”) and I’ll correct it and show what changes.`,
+        ref: { type: 'hb.reason', id: JSON.stringify({ ...JSON.parse(viewId(v)), a, b }) },
         used: ['Senior Backend brief v1', 'Shared evidence only', ...(v.weighting === 'Q' ? ['My weighting (an inference)'] : [])],
         why: 'Strength levels: verified 3, evidenced 2, partial 1, claimed or not shown 0; must-haves count double.',
         actions: [
@@ -262,10 +259,10 @@ registerSkill({
   handle: (c) => {
     const pid = who(c)[0] ?? personInFocus(c.w, c.route);
     if (!pid) return { msgs: [{ kind: 'question', text: 'Who is the interview with?', actions: rolePeople(c.w).map((p) => ({ label: nameOf(c.w, p), act: { t: 'say', text: `what should I ask ${fn(c.w, p)} in the interview` } })) }] };
-    const qs = questionsFor(c.w, pid).slice(0, 4);
     const iv = ivFor(c.w, pid);
     return {
-      msgs: [{ kind: 'reply', text: `Questions for ${fn(c.w, pid)}, built from what ${fn(c.w, pid)} has and hasn’t shown (unknowns first):\n${qs.map((q, i) => `${i + 1}. ${q.text} (${reqLabel(c.w, q.reqId)}: ${q.why.toLowerCase()})`).join('\n')}\nIf an answer sounds vague during the interview, tell me what they said and I’ll suggest a follow-up.`,
+      msgs: [{ kind: 'reply', text: `Questions for ${fn(c.w, pid)}, built from what ${fn(c.w, pid)} has and hasn’t shown: must-haves first, the least-shown first. If an answer sounds vague during the interview, tell me what they said and I’ll suggest a follow-up.`,
+        ref: { type: 'hb.questions', id: pid },
         used: [`${fn(c.w, pid)}’s shared evidence`, 'Senior Backend brief v1', 'Kora: job-related questions only'],
         actions: iv ? [{ label: 'Use these in the interview', primary: true, act: { t: 'do', op: 'hb.plan.keep', args: { id: iv.id, questions: questionsFor(c.w, pid) } } }] : [{ label: 'Draft an interview invitation', act: { t: 'say', text: `draft an interview invitation for ${fn(c.w, pid)}` } }] }],
     };
@@ -319,14 +316,15 @@ registerSkill({
     if (!NOTE.test(c.norm)) {
       const last = [...l.notes].reverse()[0];
       const fu = followUpsFor(last?.reqId ?? cur.reqId, last?.text ?? '');
-      return { msgs: [{ kind: 'reply', text: `Follow-ups for ${reqLabel(c.w, last?.reqId ?? cur.reqId)}:\n${fu.map((x) => `• ${x}`).join('\n')}` }] };
+      return { msgs: [{ kind: 'reply', text: `Follow-ups for ${reqLabel(c.w, last?.reqId ?? cur.reqId)}:`, ref: { type: 'hb.followups', id: JSON.stringify(fu) } }] };
     }
     const text = c.text.replace(/^\s*(note:?|notes:?|answer:?)\s*/i, '').trim();
     const reqId = criteriaIn(c.norm)[0] ?? cur.reqId;
     const vague = isVague(text);
     const fu = vague ? followUpsFor(reqId, text) : [];
     return {
-      msgs: [{ kind: 'reply', text: vague ? `Noted under ${reqLabel(c.w, reqId)}. That answer sounds general: no specific situation, numbers or personal decision yet. Try:\n${fu.map((x) => `• ${x}`).join('\n')}` : `Noted under ${reqLabel(c.w, reqId)}. That’s specific. How would you rate it?`,
+      msgs: [{ kind: 'reply', text: vague ? `Noted under ${reqLabel(c.w, reqId)}. That answer sounds general: no specific situation, numbers or personal decision yet.` : `Noted under ${reqLabel(c.w, reqId)}. That’s specific. How would you rate it?`,
+        ref: vague ? { type: 'hb.followups', id: JSON.stringify(fu) } : undefined,
         why: vague ? 'Vague = phrases like “helped with”, “we did”, “stuff”, with no example or number. It isn’t a judgement of the person; it means you haven’t heard the evidence yet.' : undefined,
         actions: vague ? [] : (['STRONG', 'SOME', 'NOT_SHOWN'] as Rating[]).map((k) => ({ label: ({ STRONG: 'Strong', SOME: 'Some', NOT_SHOWN: 'Not shown' })[k], act: { t: 'do', op: 'hb.iv.rate', args: { id, reqId, rating: k } } })) }],
       effects: (w) => { live(w, id).notes.push({ id: `n_${Date.now()}`, reqId, text, at: new Date().toISOString(), vague, followups: fu }); void f; },

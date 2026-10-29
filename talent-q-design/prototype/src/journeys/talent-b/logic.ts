@@ -2,7 +2,7 @@
 // simulated uploads and issuer checks, matching with its basis, honest application status, and candidate
 // memory with deletion receipts. Everything mutates the one store; nothing is really uploaded, checked or sent.
 import type { Evidence } from '@contracts';
-import { canDiscover, canSeeCandidate, discoveryRule, emit, getWorld, now, relationshipWith, simNow, uid, update, type World } from '../../mock/world';
+import { canDiscover, orgVerified, canSeeCandidate, discoveryRule, emit, getWorld, now, relationshipWith, simNow, uid, update, type World } from '../../mock/world';
 import type { Actor, Application, Job } from '../../state/domain';
 import { appendQ, pushUndo, registerOp } from '../../q/core/engine';
 import { tb, type CandMemory, type Upload, type UploadKind } from '../../state/areas/talent-b';
@@ -76,7 +76,7 @@ export function reachOf(w: World, pid: string): Reach[] {
     if (c?.withdrawnFrom.includes(o.id)) reason = 'You withdrew your consent, so they see nothing at all.';
     else if (link && search) reason = `${why} They can also find you in search.`;
     else if (link) reason = `${why} Your search setting doesn’t change that.`;
-    else if (search) reason = agency ? 'A checked agency. Your setting lets agencies find you.' : 'A checked employer. They can find you in search.';
+    else if (search) reason = !orgVerified(o) ? 'Not verified yet. They can find you, but can only send a few messages a week and each says they aren’t verified.' : agency ? 'A checked agency. Your setting lets agencies find you.' : 'A checked employer. They can find you in search.';
     else if (!c?.discoverable || rule.who === 'NOBODY') reason = 'Search is off, and you’ve no link with them.';
     else if (hidden) reason = 'You hid your profile from them.';
     else if (rule.who === 'VERIFIED_EMPLOYERS' && agency) reason = 'An agency. Your setting allows employers only.';
@@ -230,7 +230,7 @@ function resolveCheck(w: World, c: { evidenceId: string; personId: string; attem
 }
 
 // ---------------- Discovery ----------------
-export const discoveryOf = (w: World, pid: string) => tb(w).discovery[pid] ?? { who: 'VERIFIED_EMPLOYERS' as const, hideFrom: [], showSalary: false };
+export const discoveryOf = (w: World, pid: string) => tb(w).discovery[pid] ?? { who: 'ANYONE' as const, hideFrom: [], showSalary: false };
 /** Whether an organisation may find this person in search (respects the global switch and per-org hiding). */
 export const discoverableBy = (w: World, pid: string, orgId: string) => canDiscover(w, pid, orgId); // the one policy lives in the store
 registerOp('tb.discovery', (w, a, actor) => {
