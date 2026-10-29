@@ -1,6 +1,21 @@
 # Progress and next tasks
 
-Updated 27 Oct 2026. Measured counts are in `COVERAGE-SUMMARY.md`; this file says what is done and what to do next, in order.
+Updated 29 Oct 2026. Measured counts are in `COVERAGE-SUMMARY.md`; this file says what is done and what to do next, in order.
+
+## Milestone: the complete experience (29 Oct): ten connected journeys on one Q
+
+The founder's "complete experience" directive. Each journey is built, tested with curveballs, and filmed.
+
+| | Status |
+|---|---|
+| **Foundations** | <ul><li>One store (World v4) holds people, organisations, pipeline, messages, calendar, interviews, jobs, applications, consents, profiles, J7 and planners, with typed domain events and private, organisation and shared scopes.</li><li>One global Q conversation per person on every page, by typing or voice.</li><li>Q handles typos and casual speech, asks clarifying questions, explains terms, undoes, and goes back to a page as it was left.</li><li>Messages typed offline are kept and sent on reconnect.</li><li>Q makes proactive suggestions from real state, each with a reason and a later/dismiss choice that it remembers.</li><li>Q declines unfair criteria. Every simulation is labelled.</li><li>Feature areas plug in their own routes, Q skills, proactive rules, seed data and state, so they could be built in parallel.</li></ul> |
+| **Journeys** | <ul><li>R1 Funmi (first-time employer)</li><li>R2 Ada (technical recruiter)</li><li>R3 Ngozi (HR team)</li><li>R4 Dele (agency)</li><li>R5 Bayo (sceptical manager)</li><li>T1 Amaka (graduate)</li><li>T2 Chidi (sales to PM/BA)</li><li>T3 Tobi (specialist)</li><li>T4 Grace (low-bandwidth phone)</li><li>T5 Zara (sceptic)</li></ul>All ten pass together on one build: 607 steps, desktop and phone (`qa/scripts/journeys/run-all.sh`, `qa/results/summary.txt`). Every journey has at least three curveballs. |
+| **Interaction states** | `/gallery/states`: 15 live, replayable specimens covering loading, streaming, failure and retry, offline, permission denied, interrupted and resumed, approval, refusal, undo, suggestions, source conflict, evidence marks and Q moods. |
+| **Review** | <ul><li>106 axe scans, every route as its user, desktop and phone: 0 violations, Q reachable everywhere, no sideways scrolling (`qa/results/axe-all.json`).</li><li>The keyboard review passes (`qa/scripts/review/keyboard.mjs`).</li><li>The screen-reader pass is still outstanding, so nothing is marked VERIFIED.</li></ul> |
+| **Films** | <ul><li>Film A (R1–R5) and Film B (T1–T5), each on desktop and phone, with chapters.</li><li>An indexed library of curveball clips (`captures/films/`).</li><li>Recorded from the tested journeys themselves: every caption is a step the test verified at that moment.</li></ul> |
+| **Easier than by hand** | `qa/Q-VS-MANUAL.md`: six measured tasks. For example, the invitation sequence takes 4 actions with Q versus about 14 over 4 pages by hand. These are counted actions, not a user study. |
+| **Register** | Screens: 132 of 183 represented (54 integrated, 78 prototyped, 0 verified). Vision: 30 of 41. Motions: 34 of 57 prototyped. See `COVERAGE-SUMMARY.md`. |
+| **Known gaps** | <ul><li>Recruiter search doesn't yet apply candidates' stricter visibility choices (`discoverableBy` in `journeys/talent-b/logic.ts`).</li><li>The agency's agents don't show in Q's status line.</li><li>Q is a rule-based simulation; no model gateway is configured.</li><li>51 screens are not yet represented: public site, parts of governance, interviews and Q tools.</li></ul> |
 
 ## Milestone: Batch 1 (29 Oct): Direction D is the design system
 

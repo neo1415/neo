@@ -25,6 +25,7 @@ Correction to the previous version of this file: it credited `design-superpowers
 | 15 | earlier publish of the direction review page | `artifact-design` | single-file review page (logged now; it was invoked but missing from this table) |
 | 16 | Batch 1 (D as the system) | `dataviz` | J7 progress small multiples and phone distance bands: form, marks, key, table view, title states finding, filter row |
 | 17 | Batch 1 | `design-skills:design-critique` | heuristics, excise, IA and posture across the D shell, onboarding, planner, J7 and bridged screens (`qa/BATCH-1-REVIEW.md`) |
+| — | Complete experience (ten journeys) | none invoked | No design skill was invoked in this phase. The Direction D system and the Batch 1 critique and elevation guidance were reused as written. The review was done with scripts, not skills: axe over 106 page scans (`qa/scripts/review/axe-all.mjs`) and a keyboard review (`qa/scripts/review/keyboard.mjs`). The screen-reader pass (for which `design-skills:accessibility-audit` is the natural fit) is still to do. |
 
 **Gap the founder identified, confirmed.** The 12 Nocturne screens were built with only #9 invoked during that phase. That is a likely contributor to their "internal dashboard" quality.
 
