@@ -2,6 +2,22 @@
 
 Updated 29 Oct 2026. Measured counts are in `COVERAGE-SUMMARY.md`; this file says what is done and what to do next, in order.
 
+## Milestone: the founder's addenda (29 Oct, evening): four features, connected email, one connected journey
+
+Sources: `docs/sources/batch-5/` (the design audit and feature addendum, and E-01 connected email). Every requirement is a row in `registry/ADDENDUM-REQUIREMENTS.csv`, with route, status and evidence, so none can drop out.
+
+| | Status |
+|---|---|
+| **Candidate-initiated contact** | Role briefing with chapters and transcript; Q answers with the timestamp; the employer's contact policy shows before any draft; published route only when contact is off; candidate thread states (`/c/jobs/:id`, `/c/messages`). |
+| **Hiring campaigns** | Organisation → campaign → requisitions; campaign overview, cross-role board, scorecards with coverage, archive and re-open; agency client campaigns kept apart; outreach runs are children (`/r/campaigns`). |
+| **Evaluation rubrics** | Q proposes job-related criteria (brief, guidelines, ESCO); the recruiter edits and approves a frozen version; change notice mid-campaign; the comparison uses the rubric's weights; scorecard shows the index **only with coverage**; override with a reason; candidate correction route (`/r/roles/:id/rubric`). |
+| **Video and voice evidence** | Consent first; unsafe links never fetched; resumable upload; one transcription per content hash; per-part sharing; timestamped report mapped to the rubric; "not shown" never zero; no inferences from face, voice, accent or appearance (`/c/passport`, `/r/people/:id/video`). |
+| **Connected email (E-01)** | Google, Microsoft and other business email (simulated); send-only vs send-and-read; sender authority; approval bound to the exact content; truthful statuses ("accepted by Google"); expired sign-in with reconnect and no double send; reply intelligence; follow-ups with caps; refusal to send as someone else (`/settings/email`, `/r/messages`). |
+| **Audit weaknesses fixed** | Q's opening line comes from the page's live state and never repeats a card or the greeting; one card per subject; in-page index on long phone pages; "Go to your answer" in the interview room; role-specific weighting replaces the fixed 1.5× rule. |
+| **Connected journey** | `qa/scripts/journeys/J11.mjs`: 32 steps on desktop and on phone, through all four features and email with six disruptions; passes on the integrated build. |
+| **Handoff** | `handoff/ADDENDUM-HANDOFF.md` (relationships, statecharts, modules M20 and M21, Q tools) plus `journeys/handoff/{email,campaigns,rubric,media}.md`; decisions D16–D19. |
+| **Not done or not claimed** | No live provider, model or transcription. The index is prototype arithmetic, not a validated test. No usability testing with people yet. |
+
 ## Milestone: the design pass (29 Oct): every page reworked with design skills first
 
 After the founder's "you didn't use design skills" feedback, film production stopped and every page was redesigned. The prototype is now treated as the product and design blueprint, not the production app.

@@ -6,7 +6,7 @@
 // once → "send it from the CEO's Gmail" is refused → Tobi replies by email with a new subject → Ada confirms and books.
 // Usage: BASE=http://localhost:4180/ node J11.mjs   [VIDEO_DIR=dir FILM_PACE=ms to record the film]
 import pw from '/opt/node-tools/node_modules/playwright/index.js';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const BASE = (process.env.BASE || 'http://localhost:4180/').replace(/\/?$/, '/');
@@ -22,8 +22,9 @@ async function run(vp) {
   const ctx = await b.newContext({ viewport: phone ? { width: 390, height: 844 } : { width: 1440, height: 900 }, deviceScaleFactor: phone ? 2 : 1, ...(phone ? { isMobile: true, hasTouch: true } : {}), ...(VIDEO ? { recordVideo: { dir: `${VIDEO}/${vp}`, size: phone ? { width: 390, height: 844 } : { width: 1440, height: 900 } } } : {}) });
   const page = await ctx.newPage();
   page.on('pageerror', (e) => errors.push(`${vp}: ${e.message}`));
-  let n = 0;
-  const step = (name, ok, info = '') => { if (!ok) fails++; console.log(`${ok ? 'PASS' : 'FAIL'} [${vp}] ${name}${!ok && info ? ` · ${String(info).replace(/\s+/g, ' ').slice(0, 220)}` : ''}`); };
+  let n = 0; const t0 = Date.now(); const chapters = [];
+  // When recording, each verified step becomes a caption and chapter at the moment it was checked.
+  const step = (name, ok, info = '') => { chapters.push({ t: (Date.now() - t0) / 1000, name, ok }); if (!ok) fails++; console.log(`${ok ? 'PASS' : 'FAIL'} [${vp}] ${name}${!ok && info ? ` · ${String(info).replace(/\s+/g, ' ').slice(0, 220)}` : ''}`); };
   const shot = async (name) => { await sleep(300); await page.screenshot({ path: `${OUT}/${vp}-${String(++n).padStart(2, '0')}-${name}.png` }); if (PACE) await sleep(PACE); };
   const world = () => page.evaluate(() => window.__tqQA.getWorld());
   const lastQ = async () => { const w = await world(); const t = w.q.threads[w.session.actor] ?? []; return [...t].reverse().find((m) => m.who !== 'me')?.text ?? ''; };
@@ -197,6 +198,7 @@ async function run(vp) {
   step('12 Confirmation accepted by Google (simulated)', w.threads.flatMap((t) => t.messages).some((m) => /Confirmed:/.test(m.subject ?? '') && m.delivery === 'ACCEPTED'));
   await shot('booked'); await overflow('messages');
 
+  if (VIDEO) writeFileSync(`${VIDEO}/${vp}-chapters.json`, JSON.stringify(chapters, null, 1));
   await ctx.close(); await b.close();
 }
 
