@@ -197,6 +197,8 @@ function QuestionCard({ pid, k, plain, offline }: { pid: string; k: string; plai
         <motion.h2 key={`${q.id}:${fu ? 'fu' : ''}`} id="iv-q" className="voice talent-c-qtext" initial={still ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: DUR.slow, ease: EASE.enter }}>
           <motion.span key={text} initial={still ? false : { opacity: 0.35 }} animate={{ opacity: 1 }} transition={{ duration: DUR.normal, ease: EASE.enter }}>{text}</motion.span>
         </motion.h2>
+        {/* AD-B-03: on phones a long question pushes the answer below the fold; one tap takes you there and focuses it. */}
+        <button type="button" className="ds-linkbtn talent-c-jump" onClick={() => { const el = document.getElementById('iv-a'); el?.scrollIntoView({ block: 'start', behavior: still ? 'auto' : 'smooth' }); setTimeout(() => document.getElementById(mode === 'FORM' ? 'iv-what' : 'iv-draft')?.focus({ preventScroll: true }), still ? 0 : 350); }}>Go to your answer</button>
         {room.repeats > 0 && !still && <motion.span key={room.repeats} className="talent-c-flash" aria-hidden="true" initial={{ opacity: 0.9 }} animate={{ opacity: 0 }} transition={{ duration: 0.45, ease: EASE.exit }} />}
         {fu && (
           <div className="talent-c-followup">

@@ -277,3 +277,10 @@
 @media (max-width: 480px) { .ds-banner { grid-template-columns: auto 1fr; } .ds-banner > :nth-child(3) { grid-column: 1 / -1; justify-self: start; } } /* banners stack their action under the text on phones */
 .ds-suggest-more { justify-self: start; color: var(--moon-2); font-size: 13.5px; margin-top: -6px; } /* folded suggestions under the top card */
 .ds-confirm { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; } /* in-place confirmation (ConfirmButton) */
+/* PageIndex: quiet link row on desktop; sticky, self-scrolling chip row on phones (never widens the page). */
+.ds-pageindex { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 2px 0; }
+.ds-pageindex::-webkit-scrollbar { display: none; }
+.ds-pageindex a { flex: none; font-size: 13.5px; color: var(--ink-2); text-decoration: none; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--rule); background: var(--sheet); white-space: nowrap; }
+.ds-pageindex a[aria-current="true"] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+@media (max-width: 760px) { .ds-pageindex { position: sticky; top: 0; z-index: 4; background: var(--paper); margin: 0 -16px; padding: 8px 16px; border-bottom: 1px solid var(--rule); } }
+[id] { scroll-margin-top: 64px; }

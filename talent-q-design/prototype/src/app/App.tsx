@@ -13,6 +13,7 @@ import { useWorld, actorOf } from '../mock/world';
 import.meta.glob('../routes/*.tsx', { eager: true });
 import.meta.glob('../q/skills/*.ts', { eager: true });
 import.meta.glob('../q/proactive/*.ts', { eager: true });
+import.meta.glob('../q/openers/*.ts', { eager: true });
 
 export function App() {
   const { path } = useRoute();

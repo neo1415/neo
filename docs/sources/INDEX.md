@@ -38,6 +38,12 @@ Founder documents, saved as they arrive. Originals are kept as uploaded; `text/`
 | `batch-4/Talent_Q_Vision_Addendum_v2.pdf` | Readable PDF copy of the addendum · text: `batch-4/text/Talent_Q_Vision_Addendum_v2.txt` |
 | `batch-4/README_SEND_TO_CLAUDE.md` | Packaging notes and the six priority acceptance samples |
 
+## Batch 5 (29 Oct 2026, after the design review ZIP)
+| File | What it is |
+|---|---|
+| `batch-5/Talent_Q_Design_Audit_and_Feature_Addendum_2026-10-29.md` | Audit of the review ZIP plus four binding features: candidate-initiated contact, hiring campaigns and requisitions, role-specific rubrics with evidence-backed scoring, consented video and voice evidence. Requirements in `talent-q-design/registry/ADDENDUM-REQUIREMENTS.csv` (AD-*) |
+| `batch-5/Talent_Q_Email_and_Correspondence_Addendum_2026-10-29.md` | Addendum E-01, binding: connected email (Google, Microsoft, other business email) and Q-managed correspondence. Requirements E01-* in the same register |
+
 ## Other inputs
 - `neo1415/q` (public), inspected read-only at `build/int-rc` `91a8acb`. Nothing in it is changed.
 - The founder's original 4m33s film is analysed in `07_VIDEO_STORYBOARD_AND_VISUAL_REFERENCE.md`; the film file itself was not uploaded.

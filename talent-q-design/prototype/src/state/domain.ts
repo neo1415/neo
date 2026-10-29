@@ -45,8 +45,112 @@ export const STAGE_LABEL: Record<Stage, string> = { SOURCED: 'Found', SHORTLISTE
 export interface PipelineEntry { mandateId: string; personId: string; stage: Stage; at: string; by: string; note?: string }
 
 export type MsgStatus = 'DRAFT' | 'AWAITING_APPROVAL' | 'QUEUED_OFFLINE' | 'SENT_SIMULATED' | 'RECEIVED' | 'DISCARDED';
-export interface Msg { id: string; from: string; to: string; subject?: string; body: string; at: string; status: MsgStatus; approvedBy?: string; receipt?: string; channel: 'EMAIL' | 'IN_APP' | 'SMS' }
-export interface Thread { id: string; orgId: string; personId: string; mandateId?: string; messages: Msg[] }
+/**
+ * Delivery is a separate axis from approval (addendum E-01 §6, statechart in handoff/ADDENDUM-HANDOFF.md §2):
+ *   APPROVED ─send→ QUEUED ─provider ok→ ACCEPTED ─(provider evidence only)→ DELIVERED
+ *                          └ provider error → FAILED (retryable, e.g. AUTH_EXPIRED) | BOUNCED (final)
+ * "Sent" in the UI means ACCEPTED by the provider, never "received" or "read".
+ */
+export type Delivery = 'QUEUED' | 'ACCEPTED' | 'DELIVERED' | 'BOUNCED' | 'FAILED' | 'CANCELLED';
+export type FailReason = 'AUTH_EXPIRED' | 'DISCONNECTED' | 'SMTP_REJECTED' | 'RATE_LIMITED' | 'SUPPRESSED' | 'BAD_ADDRESS' | 'OFFLINE' | 'MISSING_ATTACHMENT';
+export interface Msg {
+  id: string; from: string; to: string; subject?: string; body: string; at: string; status: MsgStatus; approvedBy?: string; receipt?: string; channel: 'EMAIL' | 'IN_APP' | 'SMS';
+  // ---- Connected email and candidate contact (addenda, 29 Oct). All optional so earlier records stay valid. ----
+  /** MailboxConnection id the message goes out from (email only). Talent Q notices use the service mailbox. */
+  senderId?: string; cc?: string[]; bcc?: string[]; attachments?: { id: string; label: string; artifact?: string }[];
+  /** Hash of recipients + subject + body + attachments at approval. A material edit changes the hash and voids approval. */
+  approvedHash?: string;
+  /** One key per approved draft. A retry after an ambiguous failure reuses it, so the provider sends once. */
+  idempotencyKey?: string;
+  delivery?: Delivery; failReason?: FailReason; providerId?: string; acceptedAt?: string;
+  attempts?: { at: string; result: 'ACCEPTED' | 'FAILED' | 'DUPLICATE_PREVENTED'; reason?: FailReason }[];
+  /** Inbound only: seen with read scope, and how it was matched to this thread. */
+  inbound?: { mailbox?: string; matchedBy: 'PROVIDER_THREAD' | 'SENDER_AND_ROLE' | 'USER_CONFIRMED'; subjectChanged?: boolean };
+}
+/**
+ * Thread lifecycle for candidate-initiated contact (audit addendum §C):
+ *   (draft) → AWAITING_PERMISSION (policy needs the org's ok) → OPEN → REPLIED → CLOSED
+ *   OPEN with no reply in policy window → TIMEOUT (shown honestly, never as rejection)
+ *   either side: MUTED; org: REPORTED → BLOCKED; candidate: CONSENT_REVOKED, APPLICATION_WITHDRAWN
+ */
+export type ThreadState = 'AWAITING_PERMISSION' | 'OPEN' | 'REPLIED' | 'TIMEOUT' | 'CLOSED' | 'MUTED' | 'REPORTED' | 'BLOCKED' | 'CONSENT_REVOKED' | 'APPLICATION_WITHDRAWN';
+export interface Thread {
+  id: string; orgId: string; personId: string; mandateId?: string; messages: Msg[];
+  /** The hiring campaign this thread was routed into (role → campaign is canonical; this is the routing record). */
+  campaignId?: string; initiatedBy?: 'CANDIDATE' | 'ORG'; state?: ThreadState;
+  /** Recommended channel and who chose it (Q recommends; an authorised person may override). */
+  channel?: { current: 'EMAIL' | 'IN_APP' | 'SMS'; reason: string; overriddenBy?: string };
+}
+
+// ---------- Hiring campaigns (audit addendum §D) ----------
+/** Groups requisitions (MandateX / the legacy Senior Backend mandate) for navigation and workload. A role points to its
+ *  campaign via `campaignOf`; the campaign never copies role or candidate data. Outreach campaigns (agency) are separate. */
+export interface HiringCampaign {
+  id: string; orgId: string; clientOrgId?: string; name: string; goal: string; owner: string; deadline?: string;
+  status: 'ACTIVE' | 'PAUSED' | 'ARCHIVED'; createdAt: string; createdBy: string;
+  /** Requisition ids in this campaign (mandate ids). The one place the role→campaign link lives. */
+  roles: string[];
+  savedFilters?: { id: string; label: string; query: string }[];
+}
+
+// ---------- Evaluation rubrics (audit addendum §E) ----------
+export type CriterionKind = 'ELIGIBILITY' | 'SKILL' | 'INTERVIEW' | 'PRACTICAL' | 'COMPATIBILITY';
+export interface RubricCriterion {
+  id: string; label: string; kind: CriterionKind; weight: number; minimum?: number;
+  /** Anchored levels 0–4: what each rating means, in observable terms. */
+  anchors: [string, string, string, string, string];
+  evidenceToInspect: string[]; questions: string[]; method: string;
+  /** Requirement on the brief it comes from, and the taxonomy reference (ESCO skill, D6). */
+  requirementId?: string; escoRef?: string; why: string;
+}
+/** Q_PROPOSED → (edits) → APPROVED (frozen) → SUPERSEDED when a newer version is approved, with a change notice. */
+export interface RubricVersion { v: number; state: 'Q_PROPOSED' | 'APPROVED' | 'SUPERSEDED'; criteria: RubricCriterion[]; at: string; by: string; approvedBy?: string; note: string; changeNotice?: { text: string; affected: string[]; decision?: 'NOTIFY_AND_REASSESS' | 'KEEP_FOR_ROUND' } }
+export interface Rubric { id: string; mandateId: string; orgId: string; versions: RubricVersion[] }
+export interface EvidenceRef { evidenceId: string; t?: number; tEnd?: number; quote?: string }
+/** One rating of one person on one criterion of one rubric version. Q proposes; a person reviews or overrides. */
+export interface Rating {
+  id: string; rubricId: string; v: number; personId: string; criterionId: string;
+  rating: 0 | 1 | 2 | 3 | 4; uncertainty: 'LOW' | 'MEDIUM' | 'HIGH'; refs: EvidenceRef[]; note: string;
+  source: 'Q_PROPOSED' | 'REVIEWER'; by: string; at: string; reviewed: boolean;
+  override?: { from: number; reason: string; by: string; at: string };
+  dispute?: { by: string; text: string; state: 'OPEN' | 'RESOLVED'; at: string };
+}
+
+// ---------- Candidate-authorised media evidence (audit addendum §F) ----------
+/** CONSENT → (UPLOADING | FETCHING) → TRANSCRIBING → REVIEW (candidate checks transcript) → READY; failure states:
+ *  UNSAFE_LINK (never fetched), FETCH_FAILED, PAUSED (upload interrupted, resumable). REVOKED ends sharing. */
+export type MediaState = 'CONSENT' | 'UPLOADING' | 'PAUSED' | 'FETCHING' | 'UNSAFE_LINK' | 'FETCH_FAILED' | 'TRANSCRIBING' | 'REVIEW' | 'READY' | 'REVOKED';
+export interface MediaEvidence {
+  id: string; evidenceId: string; ownerId: string; kind: 'VIDEO' | 'AUDIO';
+  source: 'UPLOAD' | 'LINK' | 'PORTFOLIO' | 'INTERVIEW_RECORDING'; title: string; duration: number; contentHash: string;
+  state: MediaState; progress?: { done: number; total: number };
+  link?: string; transcript: { t: number; text: string; edited?: boolean }[];
+  segments: { id: string; t: number; tEnd: number; label: string; sharedWith: string[] }[];
+  consent?: { at: string; orgs: string[]; purpose: string; expires?: string; alternativeOffered: boolean };
+}
+/** Q's evidence report for one media item against one rubric version. Cached by contentHash + rubric version. */
+export interface MediaReview {
+  id: string; mediaId: string; rubricId: string; v: number; personId: string; orgId: string; cacheKey: string;
+  findings: { criterionId: string; moments: { t: number; tEnd: number; text: string }[]; rating?: 0 | 1 | 2 | 3 | 4; uncertainty: 'LOW' | 'MEDIUM' | 'HIGH'; note: string }[];
+  notShown: string[]; state: 'Q_DRAFT' | 'HUMAN_REVIEWED' | 'DISPUTED'; reviewedBy?: string;
+}
+
+// ---------- Connected email (addendum E-01) ----------
+/** NONE → CONSENT (scopes explained) → CONNECTED (SEND or SEND+READ) → EXPIRED (token) → CONNECTED on reconnect;
+ *  REVOKED by the user or provider. Credentials never live in the store (production: secret storage). */
+export interface MailboxConnection {
+  id: string; owner: string; orgId?: string; clientOrgId?: string; provider: 'GOOGLE' | 'MICROSOFT' | 'OTHER' | 'TALENTQ';
+  address: string; label: string; kind: 'PERSONAL' | 'ORG' | 'SHARED' | 'CLIENT' | 'SERVICE';
+  /** Actors allowed to send as this address (delegation). */
+  sendAs: string[]; scopes: ('SEND' | 'READ')[]; state: 'CONNECTED' | 'EXPIRED' | 'REVOKED'; connectedAt: string; simulated: true;
+}
+export interface ContactPolicy {
+  orgId: string; candidateInitiated: 'OFF' | 'AFTER_APPLYING' | 'BEFORE_APPLYING'; channels: ('IN_APP' | 'EMAIL')[];
+  /** New candidate-initiated threads per candidate per week. */
+  perCandidateWeek: number; publicRoute: string; publicAddress?: string; replyWindowDays: number;
+}
+export interface Suppression { orgId: string; personId?: string; address?: string; reason: string; at: string }
+export interface FollowUpRule { id: string; threadId: string; afterHours: number; state: 'SUGGESTED' | 'SCHEDULED' | 'SENT' | 'CANCELLED'; auto: boolean; cap: number; why: string }
 
 export type EventStatus = 'HOLD' | 'INVITED' | 'CONFIRMED' | 'CANCELLED' | 'RESCHEDULE_REQUESTED';
 export interface CalEvent { id: string; orgId: string; title: string; start: string; end: string; attendees: string[]; status: EventStatus; mandateId?: string; personId?: string; simulated: true }

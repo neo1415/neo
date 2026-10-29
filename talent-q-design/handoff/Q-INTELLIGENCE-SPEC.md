@@ -154,3 +154,20 @@ Contract: `contracts/memory.ts`. It defines layers, truth classes (STATED_BY_USE
   - Run `q-eval-corpus.json` (206 cases across ten journeys) as an intent and outcome regression suite.
   - Add red-team cases for fairness, privacy (cross-tenant requests from R4, discovery restrictions) and prompt injection in uploaded documents.
   - Measure clarification rate, repeated-question rate and correct-refusal rate.
+
+## Page-aware opening (audit addendum §B, AD-B-01/02)
+
+When a person's conversation with Q is empty, Q's first line comes from the page in front of them, not from a script.
+- **Registry.** Each area registers openers for its pages (`q/core/openers.ts`, `q/openers/*.ts`). An opener reads live state and returns candidate openings, each with a `subject`.
+- **Choosing the line.** Q picks the first opening whose subject isn't already a proactive card. Cards use the same subjects (an event id, an evidence id, a thread id), so the card and the line never say the same thing.
+- **Writing rules** (`design-skills:ux-writing`):
+  - one concrete item, about 14 words, one verb-first action;
+  - never repeat the page's heading or greeting;
+  - plain words for founders and candidates.
+- **Proactivity off.** The line is an invitation only, with no observations.
+- **Fallback.** A short invitation, and only when nothing on the page is actionable.
+- **Production.** The same contract applies to the model-backed Q. Openers stay deterministic reads of state (fast and cacheable), and the model may rephrase them but may not invent items.
+
+## Addendum tools
+
+See `handoff/ADDENDUM-HANDOFF.md` §4: mail, campaign, rubric and media tools, with their approval classes. Email and media content is **untrusted input**: it is summarised and quoted, never followed as instructions.

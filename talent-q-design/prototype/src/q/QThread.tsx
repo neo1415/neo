@@ -9,6 +9,7 @@ import { actorOf, useWorld } from '../mock/world';
 import type { QMsg, Suggestion } from '../state/domain';
 import { isThinking, labelFor, onThinking, runAction, sendToQ, useQThread } from './core/engine';
 import { useSuggestions } from './core/proactive';
+import { opening } from './core/openers';
 import { gatewayConfigured } from './core/engine';
 import { refRenderer } from './refs';
 import { arrive } from '../ds/motion';
@@ -61,7 +62,7 @@ export function QThread({ onClose }: { onClose?: () => void }) {
         </AnimatePresence>
         {/* One card at a time keeps the conversation in view; the rest wait one tap away, most urgent first. */}
         {sugg.length > 1 && <button type="button" className="ds-linkbtn ds-suggest-more" aria-expanded={allSugg} onClick={() => setAllSugg(!allSugg)}>{allSugg ? 'Show fewer' : `${Math.min(sugg.length, 3) - 1} more thing${Math.min(sugg.length, 3) > 2 ? 's' : ''} Q noticed`}</button>}
-        {msgs.length === 0 && <Welcome />}
+        {msgs.length === 0 && <Welcome shown={sugg.map((s) => s.subject)} />}
         {msgs.map((m, i) => <Msg key={m.id} m={m} live={!task && i >= lastQIdx - 1 && i >= msgs.length - 3} />)}
         {task && (
           <section aria-label={`Task: ${task.title}`} style={{ display: 'grid', gap: 18 }}>
@@ -76,12 +77,18 @@ export function QThread({ onClose }: { onClose?: () => void }) {
   );
 }
 
-function Welcome() {
-  const a = useWorld((w) => actorOf(w));
-  const text = a.side === 'recruiter'
-    ? (a.orgId ? `Hello ${a.first}. Tell me what you need, in your own words, or ask me about anyone or anything in your hiring.` : `Welcome, ${a.first}. You don’t need to know any recruiting terms. Tell me what’s going on in your business and I’ll help you work out who to hire.`)
-    : `Hello ${a.first}. Tell me what you’re hoping for, or what’s been difficult, and I’ll help from there. You decide what any employer sees.`;
-  return <div className="ds-q"><p className="say">{text}</p></div>;
+function Welcome({ shown }: { shown: string[] }) {
+  // Context-aware opening (AD-B-01): one concrete thing on this page, one action, never the card above it.
+  const w = useWorld((x) => x);
+  const a = actorOf(w);
+  const { path } = useRoute();
+  const o = opening(w, a, path, shown);
+  return (
+    <div className="ds-q">
+      <p className="say">{o.text}</p>
+      {o.action && <div className="ds-next" role="group" aria-label="Suggested next step"><button type="button" className={`ds-chip ${o.action.primary ? 'go' : ''}`} onClick={() => void runAction(o.action!)}>{o.action.label}</button></div>}
+    </div>
+  );
 }
 
 function Msg({ m, live }: { m: QMsg; live: boolean }) {

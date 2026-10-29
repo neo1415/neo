@@ -31,6 +31,8 @@ Each module owns its data; other modules read it through that module's API or ev
 | M16 | **Notifications** | notification preferences, deliveries | Email, SMS and in-app digests, following candidate choices | Settings; R3 reminders |
 | M17 | **Files and verification adapters** | stored files, scan results, verification requests | Chunked upload, malware scan, issuer and registry checks | T3, T4, R1 |
 | M18 | **Events and audit** | the domain event log (append-only, scoped) | The audit log page, "who changed what", event feeds for Q's proactive rules | `emit` / `eventsFor`, `journeys/hire-a/Audit.tsx` |
+| M20 | **Mail connections** (addendum E-01) | mailbox connections, sender identities and delegation, provider cursors | Connect Google, Microsoft and other business email; scopes; the provider adapters behind send, draft, read, events and attachment ports; the Talent Q service sender | `state/areas/mail.ts`, `/settings/email`, `handoff/ADDENDUM-HANDOFF.md` |
+| M21 | **Media analysis** (audit addendum §F) | transcripts per content hash, key moments, media reviews per rubric version | Transcribe once, map moments to rubric criteria, frame review only on demand, a cost-limited queue | `state/areas/media.ts`, `/r/people/:id/video` |
 | M19 | **Web app shell and design system** | none (client) | The Direction D shell, Q presence, the route registry, components, motion tokens | `prototype/src/ds/*`, `design-system/` |
 
 ## 2. Dependencies (build order follows them)
@@ -44,6 +46,8 @@ M1 Identity ──────┼─> M2 Orgs/tenancy ─> M3 AuthZ/privacy ─�
                   │                                         └─> M9 Correspondence ─> M10 Scheduling
 M17 Files/verify ──> M5, M2 (business verification), M4 (CV)
 M16 Notifications <── M9, M10, M12, M15
+M20 Mail connections ──> M9 (send and read ports), under M3 (sender authority)
+M21 Media analysis <── M5, M17; ──> M11 (proposes ratings against the approved rubric version)
 M15 Q runtime: reads everything only through module APIs, under M3; writes only through module tools
 M19 Shell: hosts every page and Q
 ```
@@ -61,8 +65,8 @@ M19 Shell: hosts every page and Q
 | 0. Foundations | Shell, design system, accounts, organisations, roles, events and audit, the authorisation and privacy service with its tests | M19, M1, M2, M18, M3 | Signup, team, settings |
 | 1. Q core | Conversation, page context, navigation tool, artifacts and versions, approvals, undo, memory with sources, proactive triggers | M15 (from the `neo1415/q` audit) | Q present everywhere with real tools |
 | 2. Candidate foundations | Profiles, Passport (uploads, verification, sharing, revocation), jobs and applications | M4, M5, M17, M12 | T1, T3, T5 (core) |
-| 3. Employer hiring loop | Mandates, search and matching, pipeline, correspondence with approvals, scheduling | M6, M7, M8, M9, M10, M16 | R1, R2 (core), R3 |
-| 4. Interviews | Interview room, copilot, adaptive follow-ups, feedback, disputes | M11 | R2, T4 |
+| 3. Employer hiring loop | Mandates and **hiring campaigns**, search and matching, pipeline, correspondence with approvals, **candidate-initiated contact**, **connected email (send-only first)**, scheduling | M6, M7, M8, M9, M10, M16, **M20** | R1, R2 (core), R3 |
+| 4. Interviews and assessment | Interview room, copilot, adaptive follow-ups, feedback, disputes, **rubric studio and evidence-backed scoring**, **media evidence** | M11, **M21** | R2, T4, J11 |
 | 5. Career intelligence | J7 atlas, plans, practice vs proof, reassessment | M13 | T2 |
 | 6. Agency | Clients, pools, campaigns, submittals, concurrent agents, reports | M14 + M15 agents | R4 |
 | 7. Hardening | Fairness and privacy red-team, Q evaluation on `q-eval-corpus.json`, performance targets, accessibility verification (screen reader) | All | R5 and every curveball |

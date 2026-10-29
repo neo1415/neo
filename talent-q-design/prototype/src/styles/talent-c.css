@@ -165,3 +165,6 @@ details.talent-c-who { display: block; border-style: solid; border-color: var(--
 .talent-c-page[data-lite='on'] .talent-c-points li { grid-template-columns: 1fr; }
 .talent-c-page[data-lite='on'] .talent-c-qtools .ds-btn { flex: 1 1 100%; }
 .talent-c-review-h { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+/* AD-B-03: "Go to your answer" only where the answer can fall below the fold (phones). */
+.talent-c-jump { display: none; }
+@media (max-width: 760px) { .talent-c-jump { display: inline-block; margin-top: 4px; font-size: 15px; color: var(--ink); } }
