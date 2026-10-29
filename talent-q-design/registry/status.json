@@ -67,14 +67,14 @@
     "SC-014": {
       "status": "INTEGRATED",
       "route": "/r/setup",
-      "evidence": "captures/screens/p02-setup-1, m-p02-setup",
-      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+      "evidence": "qa/results/R1.log (\"Q creates the org in conversation\"); captures/cx/R3/12-ngozi-setup-desktop, 19-phone-setup; prototype/src/journeys/hire-c/Setup.tsx",
+      "note": "Section of /r/setup: organisation identity, sector, size, city, domain and registry signals. R1 creates the organisation from the conversation in the shared store. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-018": {
       "status": "INTEGRATED",
       "route": "/r/setup",
-      "evidence": "captures/screens/p02-setup-2-policies",
-      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+      "evidence": "prototype/src/journeys/hire-c/Setup.tsx; captures/cx/R3/12-ngozi-setup-desktop; qa/results/R3.log (guideline off changes what Q writes; back on as v3)",
+      "note": "Primary of /r/setup: guidelines added, edited (versioned), switched on/off by admins; each shows whether Q checks it and how often Q used it; Q cites them as \"used\" chips and checks them before sending. Upload lives on /r/setup/handbook. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-027": {
       "status": "INTEGRATED",
@@ -126,51 +126,51 @@
     },
     "SC-149": {
       "status": "INTEGRATED",
-      "route": "/r/calendar",
-      "evidence": "captures/screens/p07-consent, p07-calendar-disconnected",
-      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+      "route": "/r/calendar/connect",
+      "evidence": "captures/screens/p07-consent, p07-calendar-disconnected; prototype/src/screens/CalendarSetup.tsx (legacy bridge)",
+      "note": "Primary of /r/calendar/connect (moved from /r/calendar): free/busy vs event-write scope, health and revoke (simulated). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-147": {
       "status": "INTEGRATED",
-      "route": "/r/calendar",
-      "evidence": "captures/screens/p07-slots (preferences from memory)",
-      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+      "route": "/r/calendar/connect",
+      "evidence": "captures/screens/p07-slots (preferences from memory); prototype/src/screens/CalendarSetup.tsx (legacy bridge)",
+      "note": "Section of /r/calendar/connect (moved from /r/calendar, which is now the team calendar): working hours, buffers and modes. Interview hours from guidelines also show on /r/calendar. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-153": {
       "status": "INTEGRATED",
       "route": "/c/slots",
-      "evidence": "captures/screens/p08-slots, p08-booking-progress, p08-booked, m-p08-slots",
-      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+      "evidence": "captures/cx/R3/10-zara-slots-desktop; qa/results/R3.log (\"Zara confirms on the slot picker → CONFIRMED\"); captures/screens/p08-slots",
+      "note": "Primary of /c/slots: times in her zone, confirm or counter-propose; the earlier slot picker remains in a disclosure on the same page. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-067": {
       "status": "INTEGRATED",
       "route": "/c/passport",
-      "evidence": "captures/screens/p09-passport, p09-passport-kora-view, m-p09-passport",
-      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+      "evidence": "prototype/src/journeys/talent-b/Passport.tsx; captures/cx/T3/d-01-passport; qa/results/T3.log",
+      "note": "Primary of /c/passport: items with check status and who sees each; recruiter pages read the same visibleEvidence(). Keyboard review passed (qa/scripts/review/keyboard.mjs). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-164": {
-      "status": "PROTOTYPED",
+      "status": "INTEGRATED",
       "route": "/c/career",
-      "evidence": "captures/batch1/b1-d-j7-1-atlas, b1-m-j7-1-atlas, j7-6-moved; captures/journeys/j7-*",
-      "note": "Primary of /c/career (J7 workspace): radial atlas on desktop, distance bands on phones, three personas. Was INTEGRATED as the Nocturne graph (now at /c/growth); the D atlas uses its own J7 store until batch 2 wires it to the shared record."
+      "evidence": "prototype/src/journeys/career/Career.tsx, Atlas.tsx, j7.ts; qa/results/T2.log, T1.log; captures/cx/T2/d-01-atlas, T1/d-06-atlas; captures/batch1/b1-d-j7-1-atlas",
+      "note": "Primary of /c/career: radial atlas on desktop, distance bands on phones; reads J7 from the shared store; reviewed work moves occupations closer and /c/growth reads the same state. Keyboard review passed (qa/scripts/review/keyboard.mjs). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-099": {
-      "status": "INTEGRATED",
+      "status": "PROTOTYPED",
       "route": "/c/interview",
-      "evidence": "captures/screens/p11-interview-start, p11-interview-followup",
-      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx; captures/cx/T4; qa/results/T4.log (desktop-03-practice-simpler, phone-13-real-q1)",
+      "note": "Primary of /c/interview, rebuilt as the Direction D room for T4: text answers, \"say it again\" and \"simpler words\" through Q, resume. Downgraded from INTEGRATED: the rebuilt room no longer asks adaptive follow-up questions. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-100": {
       "status": "INTEGRATED",
       "route": "/c/interview",
-      "evidence": "captures/screens/p11-interview-form",
-      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx; captures/cx/T4; qa/results/T4.log (phone-14-real-review, phone-15-sent)",
+      "note": "State of /c/interview: simple form mode, review exactly what the employer sees, explicit approval, simulated send with receipt. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-101": {
-      "status": "INTEGRATED",
+      "status": "PROTOTYPED",
       "route": "/c/interview",
-      "evidence": "captures/screens/p11-interview-voice",
-      "note": "Connected to shared typed state; axe 0 violations (dark/light, 1440/390); manual keyboard + screen-reader pass pending, so not VERIFIED."
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx; captures/cx/T4; qa/results/T4.log (phone-11b-mic-denied); prototype/src/journeys/talent-c/shared.tsx",
+      "note": "State of /c/interview: spoken answers via browser speech recognition with an editable \"what Q heard\" and honest fallback to typing. Downgraded from INTEGRATED: no spoken Q turn-taking or captions in the rebuilt room. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-133": {
       "status": "INTEGRATED",
@@ -204,15 +204,15 @@
     },
     "SC-019": {
       "status": "PROTOTYPED",
-      "route": "/r/setup",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "route": "/r/setup/handbook",
+      "evidence": "prototype/src/screens/OrgSetup.tsx (legacy bridge)",
+      "note": "Primary of /r/setup/handbook: handbook upload, extracted clauses with sources, quarantine of authority-widening text. Legacy screen inside the D shell. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-180": {
       "status": "PROTOTYPED",
       "route": "/r/setup",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/hire-c/Setup.tsx; qa/results/R3.log (\"Kora guideline v3\")",
+      "note": "Section of /r/setup: guideline versions and where Q last used each version. Missing: precedence and overrides, and who approved each version. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-047": {
       "status": "PROTOTYPED",
@@ -229,104 +229,104 @@
     "SC-150": {
       "status": "PROTOTYPED",
       "route": "/r/calendar",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/hire-c/Calendar.tsx; prototype/src/q/skills/hire-c.ts; qa/results/R1.log (\"Q proposes times\"), R3.log",
+      "note": "Section of /r/calendar: Q plans times for a candidate with a panel, inside interview hours. Missing: batching several candidates in one plan on this page. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-151": {
       "status": "PROTOTYPED",
       "route": "/r/calendar",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/hire-c/Calendar.tsx (\"Q's proposed times\"); captures/cx/R3/05-ngozi-overlap-desktop",
+      "note": "Section of /r/calendar: proposed times with each person's local time, hold or use. Missing: per-slot rationale and source freshness. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-154": {
       "status": "PROTOTYPED",
       "route": "/r/calendar",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/hire-c/Calendar.tsx (statuses); prototype/src/screens/CalendarSetup.tsx (receipts, on /r/calendar/connect)",
+      "note": "Section of /r/calendar: hold, invited, confirmed and reschedule-requested statuses. Provider receipts are only in the legacy screen on /r/calendar/connect. All sends, checks and providers are simulated. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-155": {
-      "status": "PROTOTYPED",
+      "status": "INTEGRATED",
       "route": "/r/calendar",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/hire-c/Calendar.tsx (\"Test the hard cases\"); qa/results/R3.log (\"slot taken after proposing → noticed, nothing sent, new time offered\"; offline flush re-checks calendar)",
+      "note": "Section of /r/calendar: a taken slot is noticed at the pre-send check, nothing is sent and a new time is offered. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-161": {
       "status": "PROTOTYPED",
       "route": "/r/calendar",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/hire-c/Calendar.tsx (panel changes); prototype/src/journeys/hire-a/Audit.tsx (\"Interviews and panels\"); qa/results/R5.log (\"who changed the panel → Ngozi\")",
+      "note": "Section of /r/calendar: who changed each panel and when; the full trail is filterable on /r/audit. Missing: provider receipts and recoverability per action. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-152": {
       "status": "PROTOTYPED",
       "route": "/c/slots",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/hire-c/CandidateMessages.tsx (CandidateSlots, InterviewCard); captures/cx/R3/10-zara-slots-desktop",
+      "note": "State of /c/slots: the invitation in her own zone with confirm or ask for another time; channel choices live in /settings. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-160": {
       "status": "PROTOTYPED",
       "route": "/c/slots",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/hire-c/CandidateMessages.tsx; prototype/src/q/proactive/hire-c.ts (hire-c.reschedule); qa/results/R3.log (reschedule requested, new time sent, confirmed)",
+      "note": "State of /c/slots: ask for another time with preferred days; recruiter is told and re-proposes. Missing: candidate cancel and provider offline/denied fallbacks. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-073": {
       "status": "PROTOTYPED",
       "route": "/c/passport",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/talent-b/Passport.tsx (\"Who sees what\"); captures/cx/T3/d-07-matrix, d-06-revoked-viewas; qa/results/T3.log",
+      "note": "Section of /c/passport: item × organisation matrix, share and end access (with approval and undo); Talentbridge loses access live. Missing: expiry dates on shares. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-074": {
-      "status": "PROTOTYPED",
+      "status": "INTEGRATED",
       "route": "/c/passport",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/talent-b/Passport.tsx (\"Preview what each organisation sees\"); captures/cx/T3/d-05-viewas-talentbridge; qa/results/T3.log",
+      "note": "Section of /c/passport: per-organisation \"what X sees\", built from the same visibleEvidence() the recruiter pages read. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-078": {
       "status": "PROTOTYPED",
-      "route": "/c/passport",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "route": "/c/memory",
+      "evidence": "prototype/src/journeys/talent-b/Memory.tsx; captures/cx/T5/d-08-memory-receipt; qa/results/T5.log (deletion plan, receipt)",
+      "note": "State of /c/memory: deletion plan with what can't be deleted (audit record) and receipts; employers who had it are told it was withdrawn. Missing: export / portability. (The earlier Passport screen that showed this is no longer routed.) axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-098": {
       "status": "PROTOTYPED",
       "route": "/c/interview",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx; captures/cx/T4; qa/results/T4.log",
+      "note": "State of /c/interview: practice or real interview; answer by typing, speaking or a simple form, switchable without losing words. Missing: video and an accommodation request. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-105": {
-      "status": "PROTOTYPED",
+      "status": "INTEGRATED",
       "route": "/c/interview",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx; captures/cx/T4; qa/results/T4.log (phone-11-interview-offline)",
+      "note": "State of /c/interview: connection drop pauses, the answer is kept on the phone, reconnect resumes at the same question; leaving mid-question and \"where was I\" also verified. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-168": {
       "status": "PROTOTYPED",
       "route": "/c/interview",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx; captures/cx/T4; qa/results/T4.log (phone-12-practice-done)",
+      "note": "State of /c/interview: private practice with simple simulated tips afterwards; never counts as proof. Missing: adaptive follow-ups and live coaching during the answer. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-170": {
       "status": "PROTOTYPED",
-      "route": "/c/interview",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet. Also in J7: rubric feedback per criterion."
+      "route": "/c/career",
+      "evidence": "prototype/src/journeys/career/Career.tsx (rubric per criterion); captures/cx/T2/d-07-assessed, d-10-progress; qa/results/T2.log",
+      "note": "Section of /c/career: rubric feedback on a reviewed work sample and a comparable reassessment. Missing: stated uncertainty. Moved from /c/interview, whose rebuilt room gives only simple tips. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-173": {
-      "status": "PROTOTYPED",
-      "route": "/c/interview",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "status": "INTEGRATED",
+      "route": "/c/career",
+      "evidence": "prototype/src/q/skills/talent-a.ts (ta.share.do / ta.share.undo); captures/cx/T2/d-12-record; qa/results/T2.log (\"Share needs his approval… Medlink sees only the assessed map\")",
+      "note": "Section of /c/career: practice stays private; only assessed work can be shared, after explicit approval and undoable. Moved from /c/interview. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-165": {
-      "status": "PROTOTYPED",
+      "status": "INTEGRATED",
       "route": "/c/career",
-      "evidence": "captures/batch1/b1-*-j7-2-role",
-      "note": "Role sheet: each competency, evidence proves / does not prove, practise entry point."
+      "evidence": "prototype/src/journeys/career/Career.tsx, Atlas.tsx, j7.ts; qa/results/T2.log, T1.log; captures/cx/T2/d-02-transferable, T1/d-07-skills",
+      "note": "Section of /c/career: competency by competency, mentioned (claim) vs shown vs not yet shown, with what evidence proves and does not prove. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-176": {
       "status": "PROTOTYPED",
-      "route": "/c/career",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "route": "/c/growth",
+      "evidence": "prototype/src/screens/Career.tsx (download)",
+      "note": "Section of /c/growth: \"Download my plan\" as plain text under 2 KB from the same J7 state. Moved from /c/career, where it is not offered. Missing: offline notes and continuity. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-179": {
       "status": "PROTOTYPED",
@@ -335,10 +335,10 @@
       "note": "Implemented as a state or section of a priority screen; not separately captured yet."
     },
     "SC-183": {
-      "status": "PROTOTYPED",
+      "status": "INTEGRATED",
       "route": "/c/memory",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet."
+      "evidence": "prototype/src/journeys/talent-b/Memory.tsx; qa/results/T5.log (\"Memory deleted, content not kept, receipt shown\")",
+      "note": "Primary of /c/memory: each remembered item with source, use and proof it was never shared (disclosure count); private practice kept apart. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-120": {
       "status": "PROTOTYPED",
@@ -355,8 +355,8 @@
     "SC-181": {
       "status": "PROTOTYPED",
       "route": "/r/sourcing",
-      "evidence": "",
-      "note": "Implemented as a state or section of a priority screen; not separately captured yet. Also on /r/plan: paused plan from an earlier session resumed; interrupted runs resume from the last finished unit."
+      "evidence": "captures/cx/R4/d-13-agents-resumed; qa/results/R4.log step 11, R1.log (\"Q resumes from where she stopped\"), T4.log",
+      "note": "Implemented as a state of /r/sourcing (paused search resumes). Also: the paused /r/plan, agency agents resuming paused work (R4), founder \"where was I\" (R1) and T4 return to the same upload part. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-121": {
       "status": "PROTOTYPED",
@@ -377,40 +377,40 @@
       "note": "Implemented as a state or section of a priority screen; not separately captured yet."
     },
     "SC-061": {
-      "status": "PROTOTYPED",
+      "status": "INTEGRATED",
       "route": "/c/welcome",
-      "evidence": "captures/batch1/b1-*-onb-1-welcome; captures/journeys/f2-*",
-      "note": "Primary of /c/welcome. Three starting tracks; private-by-default promises. Own profile store (services/profile.ts), not yet read by Passport."
+      "evidence": "prototype/src/journeys/onboarding/Onboarding.tsx; captures/cx/T1/d-02-profile-start; qa/results/T1.log",
+      "note": "Primary of /c/welcome: three ways in (chat with Q, CV, short form), private by default. Profile now lives in the shared store; claims sync to the private Passport (T1). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-062": {
-      "status": "PROTOTYPED",
+      "status": "INTEGRATED",
       "route": "/c/welcome",
-      "evidence": "captures/batch1/b1-*-onb-2-unreadable, onb-3-reading, onb-4-found",
-      "note": "State of /c/welcome: CV ingestion with unit progress, skeleton, unreadable-scan failure and three recoveries."
+      "evidence": "prototype/src/journeys/onboarding/Onboarding.tsx; captures/cx/T1/d-03-cv-unreadable; qa/results/T1.log",
+      "note": "State of /c/welcome: simulated CV reading with skeleton, unreadable-scan failure named, nothing saved, alternatives offered. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-063": {
-      "status": "PROTOTYPED",
+      "status": "INTEGRATED",
       "route": "/c/welcome",
-      "evidence": "captures/batch1/b1-*-onb-4-found; f2 films",
-      "note": "State of /c/welcome: conversational questions per track; answers become claims."
+      "evidence": "prototype/src/q/skills/talent-a.ts; captures/cx/T1/d-05-profile-built; qa/results/T1.log",
+      "note": "State of /c/welcome: the global Q asks small questions, allows skipping and remembers what is missing; answers become claims in her words. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-064": {
-      "status": "PROTOTYPED",
+      "status": "INTEGRATED",
       "route": "/c/welcome",
-      "evidence": "captures/batch1/b1-*-onb-5-about",
-      "note": "Section of /c/welcome: structured basics with inline validation and private visibility default."
+      "evidence": "prototype/src/journeys/onboarding/Onboarding.tsx (form); captures/cx/T1/d-04-form-mistake; qa/results/T1.log",
+      "note": "Section of /c/welcome: optional seven-field form, switchable with chat, validation with a suggested fix that Q can apply. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-065": {
       "status": "PROTOTYPED",
       "route": "/c/welcome",
-      "evidence": "captures/batch1/b1-*-onb-6-experience, onb-7-edit",
-      "note": "Section of /c/welcome: claims editor; Q flags vague claims; source shown per claim; claims never become evidence."
+      "evidence": "prototype/src/journeys/onboarding/Onboarding.tsx",
+      "note": "Section of /c/welcome: claims grouped (education, projects, volunteering, work, skills) with source and removal; never become evidence. Missing: per-claim dates/company editing and attaching evidence here. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-066": {
       "status": "PROTOTYPED",
       "route": "/c/welcome",
-      "evidence": "captures/batch1/b1-*-onb-8-skills",
-      "note": "Section of /c/welcome: evidenced / claimed / suggested skills; suggestions need explicit confirmation."
+      "evidence": "prototype/src/journeys/onboarding/Onboarding.tsx; qa/results/T1.log (\"Skills exploration: mentioned vs shown\")",
+      "note": "Section of /c/welcome: tools named are claims; mentioned vs shown appears in /c/career. Missing: a single editor for self-reported, demonstrated and verified skills. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-119": {
       "status": "PROTOTYPED",
@@ -433,38 +433,410 @@
     "SC-163": {
       "status": "PROTOTYPED",
       "route": "/c/career",
-      "evidence": "captures/batch1/b1-*-j7-2-role, j7-10-tobi-role",
-      "note": "Section of /c/career: goal per persona, \"Make this my goal\", horizon."
+      "evidence": "prototype/src/journeys/career/Career.tsx, Atlas.tsx, j7.ts; qa/results/T2.log, T1.log; captures/cx/T2/d-03-plan-pm, d-04-plan-ba",
+      "note": "Section of /c/career: goal per person, change of goal by Q (PM → BA) with carried-over progress and undo; J7 now lives in the shared store. Missing: constraints and alternate pathways as explicit inputs. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-166": {
       "status": "PROTOTYPED",
       "route": "/c/career",
-      "evidence": "captures/batch1/b1-*-j7-3-plan",
-      "note": "Section of /c/career: development plan editor (reorder, done, remove), private."
+      "evidence": "prototype/src/journeys/career/Career.tsx, Atlas.tsx, j7.ts; qa/results/T2.log, T1.log; captures/cx/T2/d-05-adjusted",
+      "note": "Section of /c/career: plan steps reorder, done, remove, time left; Q adjusts on request. Missing: resource provenance and budget. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-167": {
       "status": "PROTOTYPED",
       "route": "/c/career",
-      "evidence": "captures/batch1/b1-*-j7-4-practised",
-      "note": "State of /c/career: practice launch for one competency per persona; practice is private and never proof. Full mode chooser pending."
+      "evidence": "prototype/src/journeys/career/Career.tsx, Atlas.tsx, j7.ts; qa/results/T2.log, T1.log; captures/cx/T2/d-06-practice-not-proof",
+      "note": "State of /c/career: practice launch per competency, private and never proof. Missing: a mode chooser (text/form/voice) here. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-169": {
       "status": "PROTOTYPED",
       "route": "/c/career",
-      "evidence": "captures/batch1/b1-*-j7-5-review",
-      "note": "State of /c/career: practical work sample per persona reviewed against a rubric (simulated reviewer)."
+      "evidence": "prototype/src/journeys/career/Career.tsx, Atlas.tsx, j7.ts; qa/results/T2.log, T1.log; captures/cx/T2/d-07-assessed",
+      "note": "State of /c/career: work sample per competency reviewed against a rubric (simulated reviewer), improved resubmission. Missing: timer and access needs. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-171": {
-      "status": "PROTOTYPED",
+      "status": "INTEGRATED",
       "route": "/c/career",
-      "evidence": "captures/batch1/b1-*-j7-7-progress",
-      "note": "Section of /c/career: small multiples; only assessed attempts are joined; practice shown hollow and not counted; table view."
+      "evidence": "prototype/src/journeys/career/Career.tsx, Atlas.tsx, j7.ts; qa/results/T2.log, T1.log; captures/cx/T2/d-10-progress",
+      "note": "Section of /c/career: small multiples per competency on one rubric; practice hollow and never joined; no overall score; table view. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     },
     "SC-174": {
       "status": "PROTOTYPED",
       "route": "/c/career",
-      "evidence": "captures/batch1/b1-*-j7-3-plan",
-      "note": "Section of /c/career: archived goals keep their evidence."
+      "evidence": "prototype/src/journeys/career/Career.tsx, Atlas.tsx, j7.ts; qa/results/T2.log, T1.log; captures/cx/T2/d-04-plan-ba",
+      "note": "Section of /c/career: archived goals keep their evidence and progress; undo restores. Missing: revocation of facts from an archived goal. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-007": {
+      "status": "PROTOTYPED",
+      "route": "/settings",
+      "evidence": "prototype/src/routes/entry.tsx (Settings); captures/cx/T4/phone-09-lite; captures/cx/T5/d-07-settings",
+      "note": "Section of /settings: lite mode, plain words and voice on/off, written to the store and honoured by Q and T4 pages. Missing: locale/language choice, and this is not a public page. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-009": {
+      "status": "PROTOTYPED",
+      "route": "/signup",
+      "evidence": "prototype/src/routes/entry.tsx (Signup); captures/cx/R1/d-01-signup, T1/d-01-signup, T4/phone-01-signup-plain; qa/results/R1.log, T1.log",
+      "note": "Primary of /signup: name, email with inline validation, role choice (hire / look for work), simulated Google; creates the account in the store and opens Q. Missing: terms acceptance. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-010": {
+      "status": "PROTOTYPED",
+      "route": "/signup",
+      "evidence": "prototype/src/routes/entry.tsx (Signup verify step)",
+      "note": "State of /signup: 6-digit code (simulated, 123456), wrong-code error and resend. Missing: emailed link and expired-token handling. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-011": {
+      "status": "PROTOTYPED",
+      "route": "/signup",
+      "evidence": "prototype/src/routes/entry.tsx (Signup mode step)",
+      "note": "State of /signup: hiring vs looking for work. Missing: agency and team-member modes; choice is locked to the demo person's side. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-012": {
+      "status": "PROTOTYPED",
+      "route": "/signup",
+      "evidence": "prototype/src/routes/entry.tsx (Signup Q step); captures/cx/T4/phone-01-signup-plain",
+      "note": "State of /signup: plain words, voice and how proactive Q should be; saved to w.q.prefs and used by Q and /settings. Missing: notification channels at signup (they live in /settings). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-015": {
+      "status": "PROTOTYPED",
+      "route": "/r/home",
+      "evidence": "prototype/src/journeys/hire-a/Home.tsx (FounderHome); captures/cx/R1/d-02-home-welcome, d-07-back-next-day",
+      "note": "State of /r/home (founder home): where she is in hiring, in steps, with the one next thing to do. Missing: a dashboard across several live mandates and tasks. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-016": {
+      "status": "PROTOTYPED",
+      "route": "/r/team",
+      "evidence": "prototype/src/journeys/hire-c/Team.tsx; captures/cx/R3/11-ngozi-team-desktop, 18-phone-team; qa/results/R3.log (role change, undo, permission refused)",
+      "note": "Primary of /r/team: members with local time, role change by admins only (by select or by typing to Q), undo, recent changes. Missing: inviting and removing people. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-017": {
+      "status": "PROTOTYPED",
+      "route": "/r/team",
+      "evidence": "prototype/src/journeys/hire-c/Team.tsx (\"What each role can do\")",
+      "note": "Section of /r/team: five preset roles with a plain \"can do\" preview, enforced by Q and pages. Missing: granular per-permission editing. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-022": {
+      "status": "PROTOTYPED",
+      "route": "/r/calendar/connect",
+      "evidence": "prototype/src/screens/CalendarSetup.tsx (legacy bridge)",
+      "note": "Section of /r/calendar/connect: calendar provider connections, scopes and health (simulated). Missing: integrations other than calendars. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-026": {
+      "status": "PROTOTYPED",
+      "route": "/r/home",
+      "evidence": "prototype/src/journeys/hire-a/Home.tsx (WaitingOnYou); prototype/src/q/proactive/*.ts; captures/cx/R5/d-01-home",
+      "note": "State of /r/home: \"Waiting on you\" (drafts to approve, sources to check) plus proactive Q cards with a stated reason, snooze and dismiss. Missing: a dedicated notification centre. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-157": {
+      "status": "PROTOTYPED",
+      "route": "/r/setup",
+      "evidence": "prototype/src/journeys/hire-c/Setup.tsx; prototype/src/q/skills/hire-c.ts; qa/results/R3.log",
+      "note": "Section of /r/setup: organisation guidelines Q applies to every draft, and what Q may do alone. Missing: approved templates, signatures and escalation rules. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-030": {
+      "status": "PROTOTYPED",
+      "route": "/r/roles/:id",
+      "evidence": "prototype/src/journeys/hire-a/Roles.tsx; captures/cx/R1/d-05-budget-below; qa/results/R1.log, R5.log",
+      "note": "Section of /r/roles/:id: budget below the usual range (illustrative) with options; Q names trade-offs (R5). Missing: a dedicated feasibility review of hard requirements. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-031": {
+      "status": "PROTOTYPED",
+      "route": "/r/roles/:id",
+      "evidence": "prototype/src/journeys/hire-a/Roles.tsx; captures/cx/R1/d-06-version-v1; qa/results/R1.log (versions v1–v3, old version readable, discard and undo)",
+      "note": "Primary of /r/roles/:id: every version newest first, read an old version, approve, discard and undo through the same Q ops. Missing: a side-by-side diff view. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-032": {
+      "status": "PROTOTYPED",
+      "route": "/r/roles/:id",
+      "evidence": "prototype/src/journeys/hire-a/Roles.tsx; captures/cx/R1/d-12-roles",
+      "note": "Section of /r/roles/:id: brief in plain words, must-show requirements, people found and shortlisted. Missing: collaborators and task list. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-035": {
+      "status": "PROTOTYPED",
+      "route": "/r/roles/:id",
+      "evidence": "prototype/src/journeys/hire-a/Roles.tsx (People); captures/cx/R1/d-08-people, R5/d-09-people",
+      "note": "Section of /r/roles/:id: simulated search results with counts, level filter and the pool searched. Missing: search facets and freshness. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-037": {
+      "status": "INTEGRATED",
+      "route": "/r/roles/:id",
+      "evidence": "prototype/src/journeys/hire-a/Roles.tsx (People); captures/cx/R1/d-08-people",
+      "note": "Section of /r/roles/:id: each person card shows fit, \"not shown yet\" unknowns and only evidence the person disclosed (visibleEvidence). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-038": {
+      "status": "PROTOTYPED",
+      "route": "/r/people/:id",
+      "evidence": "prototype/src/journeys/hire-b/Profile.tsx; captures/cx/R2/d-04-profile-tobi, T3/d-08-recruiter-dele; qa/results/R2.log",
+      "note": "Primary of /r/people/:id: only evidence shared with the viewer's organisation, provenance per item, pipeline position, requirement-by-requirement check; revocation by the candidate shows live. Missing: availability. Keyboard review passed (qa/scripts/review/keyboard.mjs). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-042": {
+      "status": "PROTOTYPED",
+      "route": "/r/roles/:id",
+      "evidence": "prototype/src/journeys/hire-a/Roles.tsx; qa/results/R1.log (\"shortlist by name\")",
+      "note": "Section of /r/roles/:id: shortlist by click or by name to Q, written to the pipeline. Missing: ranking within the role and collaboration. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-043": {
+      "status": "INTEGRATED",
+      "route": "/r/agency/searches",
+      "evidence": "prototype/src/journeys/agency/pages.tsx (Searches); prototype/src/q/proactive/agency.ts (agency.search-new); captures/cx/R4/d-06-search-diff; qa/results/R4.log step 5",
+      "note": "Primary of /r/agency/searches: saved searches per client, re-run by typing, diff of what is new; Q flags new matches. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-044": {
+      "status": "PROTOTYPED",
+      "route": "/r/agency/agents",
+      "evidence": "prototype/src/journeys/agency/pages.tsx (Agents); captures/cx/R4/d-02-agents-failed, d-04-agents-interrupted, d-05-agents-recovered; qa/results/R4.log steps 2–4, 11",
+      "note": "Primary of /r/agency/agents: concurrent agents per client with truthful progress, pause, resume, priority, retry, cancel; viewers watch only. Missing: budget, time and tool scope per agent. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-110": {
+      "status": "PROTOTYPED",
+      "route": "/r/people/:id",
+      "evidence": "prototype/src/journeys/hire-b/Profile.tsx (\"How to check\"); qa/results/R2.log (\"assessment recommended with reasons\")",
+      "note": "Section of /r/people/:id: Q recommends how to check each requirement and why. Missing: a selector of assessment tools and access. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-182": {
+      "status": "INTEGRATED",
+      "route": "/r/roles/:id",
+      "evidence": "prototype/src/journeys/hire-a/Roles.tsx (\"Sources disagree\"); prototype/src/q/proactive/hire-a.ts (source-conflict); captures/cx/R5/d-08-conflict; qa/results/R5.log",
+      "note": "Section of /r/roles/:id: two sources shown with what each says, none picked silently; the recruiter's choice is recorded and both sources are kept. Also a /gallery/states specimen. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-050": {
+      "status": "PROTOTYPED",
+      "route": "/r/agency/campaigns",
+      "evidence": "prototype/src/journeys/agency/pages.tsx (Campaigns); captures/cx/R4/d-12-campaign; qa/results/R4.log step 10",
+      "note": "Primary of /r/agency/campaigns: campaign under approved-campaign delegation with per-run and per-day limits; withdrawn candidates excluded. Missing: delivered, bounced, replied and do-not-contact states. All sends, checks and providers are simulated. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-051": {
+      "status": "INTEGRATED",
+      "route": "/r/messages",
+      "evidence": "prototype/src/journeys/hire-c/Messages.tsx; captures/cx/R3/03-ngozi-messages-desktop, 15-phone-messages; qa/results/R3.log",
+      "note": "State of /r/messages: threads per candidate across email, text and in-app, with Q-drafted replies that need approval. All sends, checks and providers are simulated. Keyboard review passed (qa/scripts/review/keyboard.mjs). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-052": {
+      "status": "PROTOTYPED",
+      "route": "/c/messages",
+      "evidence": "prototype/src/journeys/hire-c/CandidateMessages.tsx; captures/cx/R3/09-zara-messages-desktop, 20-phone-zara-messages",
+      "note": "State of /c/messages: the candidate replies, confirms or asks for another time. Missing: explicit \"interested\" / \"decline\" choices. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-054": {
+      "status": "PROTOTYPED",
+      "route": "/c/messages",
+      "evidence": "prototype/src/journeys/hire-c/CandidateMessages.tsx (InterviewCard); qa/results/R3.log (\"Zara sees only the sent invite… pay band and her own time zone\")",
+      "note": "State of /c/messages: invitation card with role, pay band and time in the candidate's own zone. Missing: interview instructions and accommodation request. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-055": {
+      "status": "INTEGRATED",
+      "route": "/r/pipeline",
+      "evidence": "prototype/src/journeys/hire-c/Pipeline.tsx; captures/cx/R3/07-ngozi-pipeline-desktop, 16-phone-pipeline; qa/results/R3.log, R2.log (\"pipeline reflects interview + feedback\")",
+      "note": "Primary of /r/pipeline: board by stage for the organisation's own roles (agency records never appear), moves by click or typing, undo. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-057": {
+      "status": "PROTOTYPED",
+      "route": "/r/interviews",
+      "evidence": "prototype/src/journeys/hire-b/Interviews.tsx; captures/cx/R2/d-15-interviews-list",
+      "note": "Primary of /r/interviews: list with each panel member's rating, feedback due and disputed filters. Missing: side-by-side scorecards with evidence annotations. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-059": {
+      "status": "INTEGRATED",
+      "route": "/r/pipeline",
+      "evidence": "prototype/src/journeys/hire-c/Pipeline.tsx; qa/results/R3.log (job-related reason required; non-job reason refused; kind draft for approval)",
+      "note": "Section of /r/pipeline: \"not progressing\" needs a job-related internal reason and drafts a kind message (reason not included) for approval. All sends, checks and providers are simulated. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-068": {
+      "status": "INTEGRATED",
+      "route": "/c/passport",
+      "evidence": "prototype/src/journeys/talent-b/Passport.tsx (\"Add proof\"); captures/cx/T3/d-02-upload-failed; qa/results/T3.log (drop at 60%, resume from 60%)",
+      "note": "Section of /c/passport: certificate, work sample or link; resumable simulated upload; private until shared. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-069": {
+      "status": "PROTOTYPED",
+      "route": "/c/passport",
+      "evidence": "prototype/src/journeys/talent-b/Passport.tsx (Preview); captures/cx/T3/d-04-redacted-preview",
+      "note": "State of /c/passport: preview of an item and its redacted summary. Missing: a sandboxed live preview of linked projects on the candidate side (the recruiter sandbox is on /r/people/:id). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-070": {
+      "status": "PROTOTYPED",
+      "route": "/c/passport",
+      "evidence": "prototype/src/journeys/talent-b/Passport.tsx; captures/cx/T3/d-03-cert-failed",
+      "note": "Section of /c/passport: certificates with issuer and check status, explained in plain words. Missing: validity and expiry dates. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-072": {
+      "status": "INTEGRATED",
+      "route": "/c/passport",
+      "evidence": "prototype/src/journeys/talent-b/Passport.tsx; prototype/src/q/proactive/talent-b.ts (tb.cert.failed, tb.cert.pending); qa/results/T3.log (pending → failed → manual review)",
+      "note": "State of /c/passport: check with the source, pending shown as pending (not failed), failure with next steps, manual review or reference. All sends, checks and providers are simulated. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-075": {
+      "status": "PROTOTYPED",
+      "route": "/c/passport",
+      "evidence": "prototype/src/journeys/talent-b/Passport.tsx (Discovery); captures/cx/T3/d-10-discovery",
+      "note": "Section of /c/passport (and /settings): who can find you (verified employers, with agencies, nobody) and what they see. Missing: anonymous mode. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-079": {
+      "status": "INTEGRATED",
+      "route": "/c/jobs",
+      "evidence": "prototype/src/journeys/talent-b/Jobs.tsx; captures/cx/T5/d-01-jobs; qa/results/T5.log, T1.log",
+      "note": "Primary of /c/jobs: open jobs from the shared store, ordered by needs shown, employer signals and what they don't mean, saved jobs; closed saved job flagged. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-080": {
+      "status": "PROTOTYPED",
+      "route": "/c/jobs",
+      "evidence": "prototype/src/journeys/talent-b/Jobs.tsx",
+      "note": "Section of /c/jobs: filters for verified employers, saved and remote. Missing: role, salary, location and work-authorisation search. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-081": {
+      "status": "INTEGRATED",
+      "route": "/c/jobs/:id",
+      "evidence": "prototype/src/journeys/talent-b/Jobs.tsx (JobDetailPage); captures/cx/T5/d-02-rivers-signals, d-05-closed-mid-apply",
+      "note": "Primary of /c/jobs/:id: description, employer, signals, fit with evidence used; closed-listing state keeps her choices. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-082": {
+      "status": "INTEGRATED",
+      "route": "/c/jobs/:id",
+      "evidence": "prototype/src/journeys/talent-b/Jobs.tsx (\"Does it fit you?\"); captures/cx/T5/d-03-kora-match-corrected; qa/results/T5.log",
+      "note": "Section of /c/jobs/:id: fit from her Passport and what she told Q, with unknowns; she can challenge a match and the correction is recorded as \"you told me\". axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-083": {
+      "status": "INTEGRATED",
+      "route": "/c/jobs/:id",
+      "evidence": "prototype/src/journeys/talent-b/Jobs.tsx (\"Your application\"); captures/cx/T5/d-04-applying; qa/results/T5.log, T1.log",
+      "note": "Section of /c/jobs/:id: apply with per-item consent and an explicit preview of what is shared; nothing sent until confirmed; appears in the employer pipeline. All sends, checks and providers are simulated. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-084": {
+      "status": "INTEGRATED",
+      "route": "/c/applications",
+      "evidence": "prototype/src/journeys/talent-b/Applications.tsx; captures/cx/T5/d-06-applications, d-10-chidi-applications",
+      "note": "Primary of /c/applications: honest status from employer actions only, days since last activity, follow-up or move on, link to messages. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-085": {
+      "status": "PROTOTYPED",
+      "route": "/c/applications",
+      "evidence": "prototype/src/journeys/talent-b/Applications.tsx (timeline)",
+      "note": "Section of /c/applications: timeline and what was shared per application. Missing: a dedicated detail view with next steps and Q questions. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-086": {
+      "status": "PROTOTYPED",
+      "route": "/c/welcome",
+      "evidence": "prototype/src/journeys/onboarding/Onboarding.tsx (CV); captures/cx/T1/d-10-cv-draft, d-13-cv-saved; qa/results/T1.log (refuses to fabricate)",
+      "note": "Section of /c/welcome: CV lines only from her own claims, each traceable, approved line by line, private. Missing: templates and role-tailored edits. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-089": {
+      "status": "PROTOTYPED",
+      "route": "/c/prep",
+      "evidence": "prototype/src/journeys/talent-b/Prep.tsx; captures/cx/T3/d-11-prep, T5/d-09-prep",
+      "note": "Primary of /c/prep: likely questions for the next booked interview from the job's needs and her Passport, private practice. Missing: progress across rehearsals. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-090": {
+      "status": "INTEGRATED",
+      "route": "/c/career",
+      "evidence": "prototype/src/journeys/career/Career.tsx; captures/cx/T2/d-01-atlas, d-02-transferable; qa/results/T2.log",
+      "note": "Section of /c/career: adjacent roles and transferable competencies from verified evidence, with gaps. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-091": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "prototype/src/journeys/career/Career.tsx (plan); captures/cx/T2/d-03-plan-pm, d-13-plan-final",
+      "note": "Section of /c/career: plan steps (practice, work sample, learning) mapped to gaps. Missing: the lessons and resources themselves. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-093": {
+      "status": "INTEGRATED",
+      "route": "/c/career",
+      "evidence": "prototype/src/journeys/career/Career.tsx (progress); captures/cx/T2/d-10-progress; qa/results/T2.log (reassessment on the same rubric)",
+      "note": "Section of /c/career: assessed points on one rubric over time; practice shown but never counted. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-094": {
+      "status": "PROTOTYPED",
+      "route": "/c/messages",
+      "evidence": "prototype/src/journeys/hire-c/CandidateMessages.tsx; captures/cx/R3/09-zara-messages-desktop",
+      "note": "Primary of /c/messages: only messages employers actually sent, in her time zone, with honest status; offline replies queue. Missing: skill and document alerts (these arrive as proactive Q notes instead). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-096": {
+      "status": "PROTOTYPED",
+      "route": "/r/interviews/:id",
+      "evidence": "prototype/src/journeys/hire-b/Interviews.tsx (\"Questions from the evidence gaps\"); qa/results/R2.log",
+      "note": "Section of /r/interviews/:id: questions generated from evidence gaps per requirement. Missing: editing must-ask/optional probes and timing. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-097": {
+      "status": "PROTOTYPED",
+      "route": "/r/interviews/:id",
+      "evidence": "prototype/src/journeys/hire-b/Interviews.tsx (brief step)",
+      "note": "Section of /r/interviews/:id: the organisation guideline (job-related questions only) and the rubric shown before starting. Missing: a full policy inspector. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-104": {
+      "status": "PROTOTYPED",
+      "route": "/r/interviews/:id",
+      "evidence": "prototype/src/journeys/hire-b/Interviews.tsx (InterviewRoom); captures/cx/R2/d-10-copilot-vague; qa/results/R2.log",
+      "note": "Primary of /r/interviews/:id: simulated copilot with live rubric, notes, follow-ups when an answer is vague; it reads notes, not the call. Missing: a mute-Q control and a live call. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-108": {
+      "status": "INTEGRATED",
+      "route": "/r/interviews/:id",
+      "evidence": "prototype/src/journeys/hire-b/Interviews.tsx; captures/cx/R2/d-11-feedback-draft, d-12-feedback-submitted; qa/results/R2.log",
+      "note": "Section of /r/interviews/:id: rating what was shown in the interview against the rubric; Q drafts feedback from notes, the human edits and submits with approval; the pipeline updates. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-115": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx; captures/cx/T4; qa/results/T4.log",
+      "note": "Section of /c/interview: no time limit, simpler wording, type/speak/form alternatives, lite mode. Missing: an explicit accommodation request and a human path. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-116": {
+      "status": "INTEGRATED",
+      "route": "/r/interviews/:id",
+      "evidence": "prototype/src/journeys/hire-b/Interviews.tsx; prototype/src/q/proactive/hire-b.ts (hire-b.dispute); captures/cx/R2/d-09-compare-dispute; qa/results/R2.log",
+      "note": "Section of /r/interviews/:id: a disputed result opens a review request (with approval), is marked \"under review\" and excluded from comparison until a reviewer decides (simulated). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-125": {
+      "status": "INTEGRATED",
+      "route": "/r/agency/reports",
+      "evidence": "prototype/src/journeys/agency/pages.tsx (Reports); captures/cx/R4/d-16-report-flagged, d-17-report-shared; qa/results/R4.log step 14",
+      "note": "Primary of /r/agency/reports: Q drafts a client report in sections from that client's records only, Dele edits, versions are kept, an isolation check runs before a simulated share. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-129": {
+      "status": "INTEGRATED",
+      "route": "/r/people/:id",
+      "evidence": "prototype/src/journeys/hire-b/ProjectViewer.tsx; captures/cx/R2/d-05-profile-viewer-outage, d-06-profile-viewer-site; qa/results/R2.log",
+      "note": "Section of /r/people/:id: read-only code and sandboxed page preview (scripts off), link domain shown before opening, what the work shows and doesn't; GitHub outage shown honestly. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-134": {
+      "status": "PROTOTYPED",
+      "route": "/settings",
+      "evidence": "prototype/src/routes/entry.tsx (Settings); captures/cx/T5/d-07-settings; qa/results/T5.log (notifications changed through Q)",
+      "note": "Primary of /settings: proactive level, channels (email, text, in-app), job digest, restore dismissed suggestions; also changeable by typing to Q. Missing: quiet hours and per-topic scopes. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-137": {
+      "status": "INTEGRATED",
+      "route": "/r/home",
+      "evidence": "prototype/src/journeys/agency/pages.tsx (AgencyHome); captures/cx/R4/d-01-home, d-21-home-end; qa/results/R4.log",
+      "note": "State of /r/home for agencies: each client in its own section, what needs Dele, agents; Q refuses cross-client mixing; confidential mandates hidden by role. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-138": {
+      "status": "INTEGRATED",
+      "route": "/r/agency/clients",
+      "evidence": "prototype/src/journeys/agency/pages.tsx (Clients, ClientPage, MandatePage); captures/cx/R4/d-20-r-agency-clients, d-18-tunde-denied, d-19-tunde-granted",
+      "note": "Primary of /r/agency/clients: one client in focus, its mandates, people and approvals; permission denied with reason and access request. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-139": {
+      "status": "PROTOTYPED",
+      "route": "/r/agency/submittals",
+      "evidence": "prototype/src/journeys/agency/pages.tsx (Submittals); captures/cx/R4/d-08-submittal-draft, d-09-submittal-withdrawn, d-11-submittal-sent; qa/results/R4.log steps 7–9",
+      "note": "Primary of /r/agency/submittals: consent checked per person, withdrawn consent removes them, simulated send. Missing: duplicate-ownership checks. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-143": {
+      "status": "PROTOTYPED",
+      "route": "/r/audit",
+      "evidence": "prototype/src/journeys/hire-a/Audit.tsx; captures/cx/R5/d-10-audit-panel, d-11-audit-q, R1/d-13-audit; qa/results/R5.log",
+      "note": "Primary of /r/audit: who did what from the one event log, organisation-only, filters by person, kind, words and day, settable by Q. Missing: policy version, source and approval per entry. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-148": {
+      "status": "PROTOTYPED",
+      "route": "/r/calendar",
+      "evidence": "prototype/src/journeys/hire-c/Calendar.tsx; captures/cx/R3/06-ngozi-calendar-desktop, 17-phone-calendar; qa/results/R3.log (panel swap re-validates holds)",
+      "note": "Primary of /r/calendar: panel per interview, changed by click or Q, holds re-validated, who changed it and when; busy/free only across Lagos and London. Missing: required vs optional members and backups. axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-156": {
+      "status": "PROTOTYPED",
+      "route": "/r/messages",
+      "evidence": "prototype/src/journeys/hire-c/Messages.tsx; captures/cx/R3/01-ada-diff-desktop, 02-ada-approval-desktop, 04-ngozi-offline-queued-desktop; qa/results/R3.log",
+      "note": "Primary of /r/messages: threads per candidate, drafts with versions and diffs, checks Q ran, approve/edit/discard, queued offline, contact choices shown. Missing: delivered and failed states (sends are simulated). Keyboard review passed (qa/scripts/review/keyboard.mjs). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
     }
   },
   "motions": {
@@ -476,9 +848,9 @@
     },
     "MO-002": {
       "status": "PROTOTYPED",
-      "route": "/c/interview",
-      "evidence": "Shown in captures/video/F5-*.mp4",
-      "note": "Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do."
+      "route": "/gallery/states",
+      "evidence": "prototype/src/ds/QMark.tsx (listening mood: core grows with input level); prototype/src/journeys/gallery/StatesGallery.tsx (Q moods)",
+      "note": "Listening mood exists in the Q mark and is shown as a live specimen. Not yet driven by the microphone in the rebuilt /c/interview, whose mic button changes label and colour without motion. Re-pointed from /c/interview."
     },
     "MO-003": {
       "status": "PROTOTYPED",
@@ -525,26 +897,26 @@
     "MO-019": {
       "status": "PROTOTYPED",
       "route": "/c/interview",
-      "evidence": "Shown in captures/video/F5-*.mp4",
-      "note": "Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do."
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx (motion.h2 keyed by question, AnimatePresence)",
+      "note": "Question text fades in on each new question; reduced motion via the global MotionConfig; lite mode turns it off. Dedicated clip not recorded."
     },
     "MO-020": {
       "status": "PROTOTYPED",
       "route": "/c/interview",
-      "evidence": "Shown in captures/video/F5-*.mp4",
-      "note": "Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do."
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx (same keyed fade re-runs on \"say it again\" / simpler words)",
+      "note": "Clarification (repeat or simpler words) re-animates the question text. Dedicated clip not recorded."
     },
     "MO-024": {
-      "status": "PROTOTYPED",
-      "route": "/c/interview",
-      "evidence": "Shown in captures/video/F5-*.mp4",
-      "note": "Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do."
+      "status": "RESEARCHED",
+      "route": "",
+      "evidence": "",
+      "note": "Was shown by the earlier interview screen (film F5); the rebuilt /c/interview pauses honestly with a text banner but has no pause motion in code."
     },
     "MO-025": {
-      "status": "PROTOTYPED",
-      "route": "/c/interview",
-      "evidence": "Shown in captures/video/F5-*.mp4",
-      "note": "Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do."
+      "status": "RESEARCHED",
+      "route": "",
+      "evidence": "",
+      "note": "Was shown by the earlier interview screen (film F5); the rebuilt /c/interview completion has no motion in code."
     },
     "MO-027": {
       "status": "PROTOTYPED",
@@ -559,28 +931,28 @@
       "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
     },
     "MO-029": {
-      "status": "PROTOTYPED",
-      "route": "/c/passport",
-      "evidence": "Shown in captures/video/F8-*.mp4",
-      "note": "Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do."
+      "status": "RESEARCHED",
+      "route": "",
+      "evidence": "",
+      "note": "Was shown by the earlier Passport screen (film F8), which is no longer routed; the rebuilt /c/passport ends access without a dedicated motion."
     },
     "MO-036": {
       "status": "PROTOTYPED",
-      "route": "/r/calendar",
-      "evidence": "Shown in captures/video/F1-*.mp4",
-      "note": "Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do."
+      "route": "/r/calendar/connect",
+      "evidence": "prototype/src/screens/CalendarSetup.tsx (legacy bridge); shown in captures/video/F1-*.mp4",
+      "note": "Re-pointed: the calendar setup screen moved from /r/calendar to /r/calendar/connect. Agency agent failure (R4) shows a failed progress bar, prototype/src/journeys/agency/pages.tsx."
     },
     "MO-039": {
       "status": "PROTOTYPED",
-      "route": "/r/setup",
-      "evidence": "",
-      "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
+      "route": "/r/setup/handbook",
+      "evidence": "prototype/src/screens/OrgSetup.tsx (legacy bridge)",
+      "note": "Re-pointed: the policy studio with this motion moved to /r/setup/handbook; the new /r/setup has no motion for guideline changes."
     },
     "MO-042": {
       "status": "PROTOTYPED",
-      "route": "/r/calendar",
-      "evidence": "Shown in captures/video/F3-*.mp4",
-      "note": "Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do."
+      "route": "/r/calendar/connect",
+      "evidence": "prototype/src/screens/CalendarSetup.tsx (legacy bridge); shown in captures/video/F3-*.mp4",
+      "note": "Re-pointed: the scheduling proposal animation lives in the legacy calendar setup screen, now at /r/calendar/connect. The new /r/calendar shows proposals without motion."
     },
     "MO-043": {
       "status": "PROTOTYPED",
@@ -608,15 +980,15 @@
     },
     "MO-050": {
       "status": "PROTOTYPED",
-      "route": "/c/interview",
-      "evidence": "Shown in captures/video/F4-*.mp4",
-      "note": "Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do."
+      "route": "/c/career",
+      "evidence": "prototype/src/journeys/career/Career.tsx (competency glyph keyed by state scales in; rubric panel expands)",
+      "note": "Re-pointed from /c/interview. The competency mark animates when a reviewed assessment changes it and the rubric feedback expands; practice feedback itself has no dedicated motion."
     },
     "MO-052": {
-      "status": "PROTOTYPED",
-      "route": "/c/interview",
-      "evidence": "Shown in captures/video/F4-*.mp4",
-      "note": "Driven by a real state or run event; appears in a journey film. Dedicated 8–20 s clip and reduced-motion capture still to do."
+      "status": "RESEARCHED",
+      "route": "",
+      "evidence": "",
+      "note": "Was shown in the earlier interview screen (film F4); sharing J7 evidence is now an approval in the Q thread (T2) with no dedicated motion in code."
     },
     "MO-054": {
       "status": "PROTOTYPED",
@@ -651,20 +1023,20 @@
     "MO-016": {
       "status": "PROTOTYPED",
       "route": "/c/welcome",
-      "evidence": "captures/journeys/f2-*",
-      "note": "File accepted: agent 1 advances when each page is read; unreadable scan stops it with a broken-bowl Q mark."
+      "evidence": "prototype/src/journeys/onboarding/Onboarding.tsx (view transition); prototype/src/styles/talent-b.css (.tb-bar width transition on /c/passport uploads)",
+      "note": "File accepted: the reading section appears with a shimmer skeleton; Passport uploads fill a progress bar (CSS width transition) from real upload state. Dedicated clip not recorded."
     },
     "MO-017": {
       "status": "PROTOTYPED",
       "route": "/c/welcome",
-      "evidence": "captures/journeys/f2-*",
-      "note": "Parsed: skeleton gives way to claims only after all four parse stages finish."
+      "evidence": "prototype/src/journeys/onboarding/Onboarding.tsx (ds-skeleton while reading)",
+      "note": "Parsing shows a shimmer skeleton until the simulated parse finishes, then the results replace it (no transition on the swap); shimmer stops under reduced motion and lite mode (ds.css)."
     },
     "MO-037": {
       "status": "PROTOTYPED",
       "route": "/c/welcome",
-      "evidence": "captures/journeys/f2-*",
-      "note": "Done step hands off to the career atlas or Passport."
+      "evidence": "prototype/src/journeys/onboarding/Onboarding.tsx (AnimatePresence view fade to matches)",
+      "note": "Onboarding hands off to matches/CV views with a short fade; reduced motion via MotionConfig."
     },
     "MO-048": {
       "status": "PROTOTYPED",
@@ -689,44 +1061,50 @@
       "route": "/r/plan",
       "evidence": "captures/journeys/f6-*",
       "note": "Context chips (with source) appear above Q’s reply before it is used."
+    },
+    "MO-033": {
+      "status": "PROTOTYPED",
+      "route": "/r/people/:id",
+      "evidence": "prototype/src/journeys/hire-b/ProjectViewer.tsx (ds-skeleton while the source is checked, then preview); prototype/src/ds/ds.css (ds-shimmer)",
+      "note": "Safe preview loads behind a skeleton while the (simulated) source is checked, including the GitHub outage and retry. Dedicated clip not recorded."
     }
   },
   "vision": {
     "V02": {
       "status": "PROTOTYPED",
-      "route": "see screens",
-      "evidence": "",
-      "note": "At least one working prototype path; not all listed screens done."
+      "route": "/r/home",
+      "evidence": "prototype/src/q/core/engine.ts, q/QThread.tsx, q/skills/*.ts; all ten journey logs",
+      "note": "One global Q conversation beside every route, persisted per identity, with skills per area; it is a bounded rule engine unless a model gateway is configured. Planner (SC-119) is still PROTOTYPED."
     },
     "V04": {
       "status": "PROTOTYPED",
       "route": "see screens",
-      "evidence": "captures/video/F1-*.mp4",
-      "note": "At least one working prototype path; not all listed screens done."
+      "evidence": "captures/video/F1-*.mp4; captures/cx/R4/d-02-agents-failed; prototype/src/journeys/agency/pages.tsx (truthful progress bars)",
+      "note": "Run progress comes from run events (search, planner, agency agents with failure, retry and resume). Not every listed screen is integrated."
     },
     "V11": {
       "status": "PROTOTYPED",
-      "route": "see screens",
-      "evidence": "captures/video/F5-*.mp4",
-      "note": "At least one working prototype path; not all listed screens done."
+      "route": "/c/interview",
+      "evidence": "captures/video/F5-*.mp4; captures/cx/T4; qa/results/T4.log, T1.log (switch chat/form keeps answers)",
+      "note": "Type, speak or form, switchable without losing words, in onboarding, first steps and interviews. Voice depends on browser speech recognition."
     },
     "V12": {
       "status": "PROTOTYPED",
-      "route": "see screens",
-      "evidence": "",
-      "note": "At least one working prototype path; not all listed screens done."
+      "route": "/r/setup",
+      "evidence": "qa/results/R3.log (guidelines change what Q writes); prototype/src/journeys/hire-c/Setup.tsx; prototype/src/screens/OrgSetup.tsx (/r/setup/handbook)",
+      "note": "Organisation guidelines added by text or handbook upload and applied by Q. Recruiter personal instructions (SC-020) are not built."
     },
     "V15": {
       "status": "PROTOTYPED",
-      "route": "see screens",
-      "evidence": "captures/video/F8-*.mp4",
-      "note": "At least one working prototype path; not all listed screens done."
+      "route": "/c/passport",
+      "evidence": "captures/video/F8-*.mp4; captures/cx/T3; qa/results/T3.log",
+      "note": "Passport with resumable uploads, checks, redacted summaries and an item × organisation matrix read by recruiter pages. Share expiry (SC-073) missing."
     },
     "V18": {
       "status": "PROTOTYPED",
-      "route": "see screens",
-      "evidence": "captures/video/F1-*.mp4",
-      "note": "At least one working prototype path; not all listed screens done."
+      "route": "/r/compare",
+      "evidence": "captures/video/F1-*.mp4; captures/cx/R2; qa/results/R2.log",
+      "note": "Plain-language role research, requirement-by-requirement comparison, unknown vs weak, copilot and feedback for a non-technical recruiter."
     },
     "V28": {
       "status": "PROTOTYPED",
@@ -737,60 +1115,158 @@
     "V33": {
       "status": "PROTOTYPED",
       "route": "see screens",
-      "evidence": "captures/video/F3-*.mp4",
-      "note": "At least one working prototype path; not all listed screens done."
+      "evidence": "captures/video/F3-*.mp4; qa/results/R3.log (proactive reminders, holds, unapproved draft flagged)",
+      "note": "Q proposes and holds times and raises reminders from real state. Not every listed screen is integrated."
     },
     "V34": {
       "status": "PROTOTYPED",
       "route": "see screens",
-      "evidence": "captures/video/F3-*.mp4",
-      "note": "At least one working prototype path; not all listed screens done."
+      "evidence": "captures/video/F3-*.mp4; qa/results/R3.log (Lagos/London overlap, panel swap, slot taken, reschedule)",
+      "note": "Panel and time-zone feasibility on /r/calendar. Required/optional panel members missing."
     },
     "V35": {
       "status": "PROTOTYPED",
       "route": "see screens",
-      "evidence": "captures/video/F3-*.mp4",
-      "note": "At least one working prototype path; not all listed screens done."
+      "evidence": "captures/video/F3-*.mp4; qa/results/R3.log, T5.log; prototype/src/journeys/hire-c/Messages.tsx, CandidateMessages.tsx",
+      "note": "Drafts, checks, approval, offline queue, candidate side and follow-ups. Reminder queue (SC-159) not built. Everything is simulated; no real external system."
     },
     "V36": {
       "status": "PROTOTYPED",
       "route": "see screens",
-      "evidence": "captures/video/F4-*.mp4",
-      "note": "At least one working prototype path; not all listed screens done."
+      "evidence": "captures/video/F4-*.mp4; captures/cx/T2; qa/results/T2.log",
+      "note": "J7 in the shared store: discovery, gaps, plan, practice, assessment, goal change, openings. Practice mode chooser (SC-167) partial."
     },
     "V37": {
       "status": "PROTOTYPED",
       "route": "see screens",
-      "evidence": "captures/video/F4-*.mp4",
-      "note": "At least one working prototype path; not all listed screens done."
+      "evidence": "captures/video/F4-*.mp4; qa/results/T2.log (share needs approval; Medlink sees only the assessed map)",
+      "note": "Practice stays private; promotion is an explicit approved share. Feedback uncertainty (SC-170) missing."
     },
     "V38": {
       "status": "PROTOTYPED",
       "route": "see screens",
-      "evidence": "captures/video/F7-*.mp4",
-      "note": "At least one working prototype path; not all listed screens done."
+      "evidence": "captures/video/F7-*.mp4; qa/results/R1.log (\"Q resumes from where she stopped\"), R5.log (memory with source), T4.log (return)",
+      "note": "Global Q conversation and memory persist across pages and sessions. Context pack (SC-179) and resume (SC-181) are PROTOTYPED."
     },
     "V39": {
-      "status": "PROTOTYPED",
-      "route": "see screens",
-      "evidence": "captures/video/F7-*.mp4",
-      "note": "At least one working prototype path; not all listed screens done."
+      "status": "INTEGRATED",
+      "route": "/r/memory",
+      "evidence": "qa/results/R5.log (memory corrected, old superseded; both sources kept), T5.log (forget salary with receipt, proof of non-sharing); captures/cx/R5/d-06-memory-source, d-07-memory-page, T5/d-08-memory-receipt",
+      "note": "Correction, revocation and conflict reconciliation write the shared store and show on the memory pages and in Q. Screen-reader pass outstanding."
     },
     "V41": {
       "status": "VERIFIED",
       "route": "/",
       "evidence": "design canvas + talent-q-design/prototype (TypeScript, builds clean)",
       "note": "No paid Figma used."
+    },
+    "V01": {
+      "status": "PROTOTYPED",
+      "route": "/r/roles/:id",
+      "evidence": "qa/results/R1.log (bookkeeper), R2.log (backend), T4.log (care assistant), R4.log (Medlink); prototype/src/q/skills/hire-a.ts",
+      "note": "Roles across professions run through the same brief, search and interview flows. Missing: SC-096 plan builder and SC-110 assessment selector are partial."
+    },
+    "V05": {
+      "status": "PROTOTYPED",
+      "route": "/r/agency/agents",
+      "evidence": "qa/results/R4.log steps 2–4, 11; prototype/src/journeys/planner/Planner.tsx; prototype/src/journeys/agency/model.ts",
+      "note": "Concurrent simulated agents per client with pause, priority, retry and resume, plus planner agent lanes. Budget scopes missing. Everything is simulated; no real external system."
+    },
+    "V08": {
+      "status": "PROTOTYPED",
+      "route": "/r/messages",
+      "evidence": "qa/results/R3.log (SENT_SIMULATED, QUEUED_OFFLINE), R4.log (campaign), T5.log (follow-up); prototype/src/journeys/hire-c/Messages.tsx",
+      "note": "Email, text and in-app messages with checks and explicit approval; campaigns under limits. No WhatsApp. Everything is simulated; no real external system."
+    },
+    "V10": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "qa/results/T4.log (voice unavailable falls back to typing); prototype/src/journeys/talent-c/shared.tsx",
+      "note": "Voice is optional with text and form parity. Video interviews are not built."
+    },
+    "V13": {
+      "status": "PROTOTYPED",
+      "route": "/r/interviews/:id",
+      "evidence": "qa/results/R2.log (\"interview questions from evidence gaps\", \"vague answer flagged with follow-ups\"); prototype/src/journeys/hire-b/model.ts",
+      "note": "Q drafts questions from evidence gaps and suggests follow-ups to the interviewer. The candidate room does not adapt its questions."
+    },
+    "V16": {
+      "status": "PROTOTYPED",
+      "route": "/c/passport",
+      "evidence": "qa/results/T3.log (pending → failed → manual review), T4.log (issuer check pending)",
+      "note": "Credential checks with honest pending/failed/review states. Work permits (SC-071) not built. Everything is simulated; no real external system."
+    },
+    "V17": {
+      "status": "PROTOTYPED",
+      "route": "/r/people/:id",
+      "evidence": "qa/results/R2.log (safe viewer, sandboxed page preview, link domain); prototype/src/journeys/hire-b/ProjectViewer.tsx",
+      "note": "Q explains what a shared project shows and doesn't in a read-only, sandboxed viewer. Candidate work critique (SC-076) not built."
+    },
+    "V19": {
+      "status": "PROTOTYPED",
+      "route": "/r/interviews/:id",
+      "evidence": "qa/results/R2.log (\"copilot started\", \"vague answer flagged\"); captures/cx/R2/d-10-copilot-vague",
+      "note": "Simulated copilot working from the interviewer's notes. No live human interview room or transcript (SC-103, SC-106)."
+    },
+    "V21": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "qa/results/T4.log (private practice, tips), T1.log (rehearsal), T2.log (practice is not proof); prototype/src/journeys/talent-b/Prep.tsx",
+      "note": "Private practice with simple feedback, never counted as proof. Employer-approved feedback (SC-107) not built."
+    },
+    "V22": {
+      "status": "PROTOTYPED",
+      "route": "/c/career",
+      "evidence": "qa/results/T2.log (plan with learning steps, course 50%)",
+      "note": "Learning steps sit in the J7 plan and are tracked. A learning player (SC-092) is not built."
+    },
+    "V23": {
+      "status": "PROTOTYPED",
+      "route": "/c/welcome",
+      "evidence": "qa/results/T1.log (CV only from her words; refuses to fabricate); captures/cx/T1/d-10-cv-draft",
+      "note": "CV lines from the person's own claims, approved line by line. Cover letter builder (SC-087) not built."
+    },
+    "V24": {
+      "status": "PROTOTYPED",
+      "route": "/r/compare",
+      "evidence": "qa/results/R2.log (\"weighting changed by typing\", last-year filter)",
+      "note": "The recruiter re-weights criteria by typing; never a single score. Scoring version inspector (SC-144) not built."
+    },
+    "V25": {
+      "status": "PROTOTYPED",
+      "route": "/c/jobs",
+      "evidence": "captures/cx/T5/d-01-jobs; qa/results/T5.log; prototype/src/journeys/hire-a/Roles.tsx (talent search on a role)",
+      "note": "Jobs explore for candidates with applications tracking; talent search sits on each role. Explore Talent landing (SC-034) not built."
+    },
+    "V27": {
+      "status": "PROTOTYPED",
+      "route": "/r/home",
+      "evidence": "prototype/src/ds/QMark.tsx, ds/AppShell.tsx (Q tab and sheet on phones), q/QThread.tsx; journeys/gallery/StatesGallery.tsx (Q moods)",
+      "note": "Gold Q mark with moods beside every page on desktop and as a tab/sheet on phones. Voice-room presence is partial (SC-101)."
+    },
+    "V30": {
+      "status": "PROTOTYPED",
+      "route": "/settings",
+      "evidence": "qa/results/axe-all.json (106 scans clean); qa/scripts/review/keyboard.mjs; qa/results/T4.log (plain words, lite mode, 44px targets)",
+      "note": "Accessible defaults, plain words, lite mode, time zones. No language/locale choice; screen-reader review outstanding."
+    },
+    "V31": {
+      "status": "PROTOTYPED",
+      "route": "/r/agency/clients",
+      "evidence": "qa/results/R4.log, R3.log (team roles); captures/cx/R4, captures/cx/R3/11-ngozi-team-desktop",
+      "note": "Agency with multi-client isolation, consent and access requests; team roles enforced. Team invites (SC-016) missing."
     }
   },
   "routes": {
     "/r/home": "SC-117",
-    "/r/setup": "SC-014",
+    "/r/setup": "SC-018",
+    "/r/setup/handbook": "SC-019",
     "/r/mandate": "SC-027",
     "/r/sourcing": "SC-036",
     "/r/compare": "SC-041",
     "/r/outreach": "SC-049",
-    "/r/calendar": "SC-149",
+    "/r/calendar": "SC-148",
+    "/r/calendar/connect": "SC-149",
     "/c/slots": "SC-153",
     "/c/passport": "SC-067",
     "/c/career": "SC-164",
@@ -799,7 +1275,28 @@
     "/c/memory": "SC-183",
     "/c/welcome": "SC-061",
     "/r/plan": "SC-119",
-    "/c/growth": "SC-162"
+    "/c/growth": "SC-162",
+    "/signup": "SC-009",
+    "/settings": "SC-134",
+    "/r/roles/:id": "SC-031",
+    "/r/audit": "SC-143",
+    "/r/people/:id": "SC-038",
+    "/r/interviews": "SC-057",
+    "/r/interviews/:id": "SC-104",
+    "/r/pipeline": "SC-055",
+    "/r/messages": "SC-156",
+    "/r/team": "SC-016",
+    "/c/messages": "SC-094",
+    "/c/jobs": "SC-079",
+    "/c/jobs/:id": "SC-081",
+    "/c/applications": "SC-084",
+    "/c/prep": "SC-089",
+    "/r/agency/clients": "SC-138",
+    "/r/agency/submittals": "SC-139",
+    "/r/agency/searches": "SC-043",
+    "/r/agency/campaigns": "SC-050",
+    "/r/agency/agents": "SC-044",
+    "/r/agency/reports": "SC-125"
   },
   "design_refs": {
     "SC-117": "Direction review: /x/{a,b,c}/home + captures/directions",
@@ -817,9 +1314,48 @@
     "SC-173": "Direction review: /x/{a,b,c}/career (practice → passport)"
   },
   "d_native_routes": [
-    "/r/home",
+    "/r/agency/clients",
+    "/r/agency/client/:id",
+    "/r/agency/mandate/:id",
+    "/r/agency/agents",
+    "/r/agency/pools",
+    "/r/agency/searches",
+    "/r/agency/compare",
+    "/r/agency/campaigns",
+    "/r/agency/submittals",
+    "/r/agency/notes",
+    "/r/agency/docs",
+    "/r/agency/reports",
     "/r/plan",
+    "/r/home",
+    "/c/home",
+    "/signup",
+    "/settings",
+    "/gallery/states",
+    "/r/roles",
+    "/r/roles/:id",
+    "/r/audit",
+    "/r/compare",
+    "/r/people/:id",
+    "/r/interviews",
+    "/r/interviews/:id",
+    "/r/pipeline",
+    "/r/messages",
+    "/r/calendar",
+    "/r/team",
+    "/r/setup",
+    "/c/messages",
+    "/c/slots",
     "/c/welcome",
-    "/c/career"
+    "/c/career",
+    "/c/growth",
+    "/c/passport",
+    "/c/memory",
+    "/c/jobs",
+    "/c/jobs/:id",
+    "/c/applications",
+    "/c/prep",
+    "/c/interview",
+    "/c/start"
   ]
 }
