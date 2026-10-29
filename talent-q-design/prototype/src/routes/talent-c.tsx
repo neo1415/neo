@@ -22,7 +22,8 @@ function FirstStepsCard() {
   return (
     <div className="talent-c-home">
       <span className="lab">First steps · {s.done} of 3 done</span>
-      <p className="voice t19" style={{ margin: 0 }}>{s.done === 0 ? 'Three small steps: your work, your certificate, your interview.' : `Next: step ${s.step + 1} of 3.${s.up !== null ? ` Your certificate is ${s.up}% sent.` : ''}`}</p>
+      <span className="talent-c-meter" aria-hidden="true">{[0, 1, 2].map((i) => <i key={i} data-s={i < s.done ? 'done' : i === s.done ? 'now' : undefined} />)}</span>
+      <p className="voice t19" style={{ margin: 0 }}>{s.done === 0 ? 'Three small steps: your work, your certificate, your interview. About five minutes.' : `Next: ${['your work', 'your certificate', 'your interview'][s.step]}.${s.up !== null ? ` Your certificate is ${s.up}% sent and waiting for you.` : ''}`}</p>
       <Link className="ds-btn primary" to="/c/start">{s.done ? 'Carry on' : 'Start'}</Link>
     </div>
   );

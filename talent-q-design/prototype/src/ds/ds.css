@@ -274,3 +274,4 @@
 }
 .ds-canvas-head > :last-child:not(:first-child) { margin-left: auto; } /* actions stay end-aligned when they wrap under a long title */
 @media (max-width: 860px) { .ds-q .say { font-size: 16.5px; line-height: 1.45; } } /* phone Q sheet: long replies stay readable without a very long sheet */
+@media (max-width: 480px) { .ds-banner { grid-template-columns: auto 1fr; } .ds-banner > :nth-child(3) { grid-column: 1 / -1; justify-self: start; } } /* banners stack their action under the text on phones */

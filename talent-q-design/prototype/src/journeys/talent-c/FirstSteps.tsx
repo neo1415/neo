@@ -11,7 +11,9 @@ import { Link } from '../../ui/router';
 import { runAction } from '../../q/core/engine';
 import { bankFor, whenText } from './questions';
 import { partsLine, resumeUpload, startUpload, pauseUpload, uploadPct } from './runtime';
-import { DemoControls, LiteWrap, MicButton, ModeSwitch, VOICE_NOTE, patchMe, useMe, usePlace, useVoice } from './shared';
+import { motion } from 'motion/react';
+import { DUR, EASE, arrive } from '../../ds/motion';
+import { DemoControls, Icon, useStill, LiteWrap, MicButton, ModeSwitch, VOICE_NOTE, patchMe, useMe, usePlace, useVoice } from './shared';
 
 const STEPS = ['Your work', 'Your certificate', 'Your interview'];
 
@@ -22,27 +24,28 @@ export function FirstSteps() {
   const step = Math.min(me.step, 2);
   const go = (n: number) => patchMe(pid, (p) => { p.step = n; });
   const slowOffer = me.slow && !lite;
+  const enter = lite ? { initial: false as const } : arrive; // outside LiteWrap's context, so read lite directly
   return (
     <LiteWrap lite={lite}>
-      <Canvas title={done ? 'All three steps are done' : `Step ${step + 1} of 3: ${STEPS[step].toLowerCase()}`} kicker={`${actor.first} · first steps`} open onClose={() => {}}>
-        <ol className="talent-c-steps" aria-label="Your steps">
+      <Canvas title={done ? 'All three steps are done' : `Step ${step + 1} of 3: ${STEPS[step].toLowerCase()}`} kicker={`${actor.first}’s first steps`} open onClose={() => {}}>
+        <ol className="talent-c-steps" aria-label={`Your steps: ${me.stepsDone.length} of 3 done`}>
           {STEPS.map((s, i) => (
-            <li key={s}>
+            <li key={s} data-done={me.stepsDone.includes(i) ? '1' : undefined}>
               <button type="button" aria-current={i === step ? 'step' : undefined} onClick={() => go(i)}>
-                <span className="n" aria-hidden="true">{me.stepsDone.includes(i) ? '✓' : i + 1}</span>
+                <span className="n" aria-hidden="true">{me.stepsDone.includes(i) ? <Icon k="check" size={16} /> : i + 1}</span>
                 <span>{s}<span className="sr">{me.stepsDone.includes(i) ? ' (done)' : i === step ? ' (you are here)' : ''}</span></span>
               </button>
             </li>
           ))}
         </ol>
-        <p className="talent-c-lead">{plain ? 'Take your time. Nothing here is timed, and everything you type is kept, even if you leave or lose signal.' : 'Nothing here is timed. Your work is saved as you go, even offline.'} You can also just tell Q what you want, by typing or speaking.</p>
+        <p className="talent-c-lead">{plain ? 'Take your time. Nothing is timed, and what you write is kept, even if you lose signal.' : 'Nothing here is timed. Your work is saved as you go, even offline.'} <span className="muted">You can also just tell Q.</span></p>
         {slowOffer && (
           <div className="ds-banner talent-c-banner" role="status">
             <span><b>Your connection seems slow.</b> Lite mode uses less data: fewer pictures, no animations, bigger buttons.</span>
             <button type="button" className="ds-btn" onClick={() => void runAction({ label: 'Lite on', act: { t: 'do', op: 'talent-c.lite', args: { on: true } } })}>Turn on lite mode</button>
           </div>
         )}
-        {offline && <div className="ds-banner talent-c-banner" data-k="warn" role="status"><span><b>No connection.</b> You can keep going; everything is saved on this phone and sent when you’re back.</span></div>}
+        {offline && <motion.div {...enter} className="ds-banner talent-c-banner talent-c-state" data-k="warn" role="status"><span className="talent-c-state-icon" aria-hidden="true"><Icon k="alert" /></span><span><b>No connection.</b> You can keep going; everything is saved on this phone and sent when you’re back.</span></motion.div>}
         {step === 0 && <WorkStep pid={pid} plain={plain} />}
         {step === 1 && <CertStep pid={pid} plain={plain} lite={lite} />}
         {step === 2 && <InterviewStep pid={pid} />}
@@ -118,6 +121,7 @@ function CertStep({ pid, plain, lite }: { pid: string; plain: boolean; lite: boo
   const setMode = (m: AnswerMode) => patchMe(pid, (p) => { p.stepMode[1] = m; });
   const v = useVoice(pid, (t) => patchMe(pid, (p) => { p.certDetails.course = t; }), () => setMode('TEXT'));
   const [msg, setMsg] = useState('');
+  const still = useStill();
   const pick = useRef<HTMLInputElement>(null);
   const u = me.upload && me.upload.status !== 'IDLE' ? me.upload : null;
   const p = u ? uploadPct(u) : 0;
@@ -138,11 +142,11 @@ function CertStep({ pid, plain, lite }: { pid: string; plain: boolean; lite: boo
       <h2 id="cs-h" className="voice t24">Add your certificate</h2>
       {ev && <p className="talent-c-item"><Glyph k="unclear" title="Waiting for a check" /> <span><b>{ev.title}</b><span className="t14 muted" style={{ display: 'block' }}>{ev.verification === 'PENDING' ? (plain ? 'Waiting for a check with whoever gave it. That’s normal.' : 'Issuer check pending.') : ev.limits}</span></span></p>}
       <p className="muted">{plain ? 'A photo of it is best. If you can’t, type what it says instead.' : 'Upload a photo or PDF, or type the details.'} Only you see it until you choose to share.</p>
-      <ModeSwitch value={mode === 'FORM' ? 'FORM' : mode} onChange={setMode} label="How do you want to add it?" modes={['FORM', 'TEXT', 'VOICE']} labels={{ FORM: 'Photo', TEXT: 'Type it', VOICE: 'Say it' }} />
+      <ModeSwitch value={mode === 'FORM' ? 'FORM' : mode} onChange={setMode} label="How do you want to add it?" modes={['FORM', 'TEXT', 'VOICE']} labels={{ FORM: 'Photo', TEXT: 'Type it', VOICE: 'Say it' }} icons={{ FORM: 'photo' }} />
       <VoiceFallback v={v} />
       {mode === 'FORM' && (
         <div className="talent-c-upload">
-          {!lite && <CertPicture />}
+          {!lite && !u && <CertPicture />}
           <input ref={pick} id="cs-file" type="file" accept="image/*,application/pdf" capture="environment" className="sr" onChange={(e) => { onFile(e.target.files?.[0]); e.target.value = ''; }} />
           {!u && <div className="talent-c-actions">
             <label htmlFor="cs-file" className="ds-btn primary" role="button" tabIndex={0} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick.current?.click(); } }}>Take or choose a photo</label>
@@ -150,11 +154,15 @@ function CertStep({ pid, plain, lite }: { pid: string; plain: boolean; lite: boo
           </div>}
           {u && (
             <div className="talent-c-progress" data-s={u.status}>
-              <div className="row"><b>{u.fileName}</b><span className="num">{Math.round(u.sizeKb / 102.4) / 10} MB</span></div>
-              <div className="bar" role="progressbar" aria-label="Certificate upload" aria-valuemin={0} aria-valuemax={100} aria-valuenow={p} aria-valuetext={`${p}%, ${u.done} of ${u.chunks} parts`}>
-                {Array.from({ length: u.chunks }, (_, i) => <i key={i} data-on={i < u.done ? '1' : undefined} />)}
+              <div className="row">
+                <span className="talent-c-file"><Icon k="photo" /> <span><b>{u.fileName}</b> <span className="num muted">{Math.round(u.sizeKb / 102.4) / 10} MB</span></span></span>
+                <UploadTag u={u} />
               </div>
-              <p className="t14" aria-live="polite" style={{ margin: 0 }}>{status}</p>
+              <div className="bar" role="progressbar" aria-label="Certificate upload" aria-valuemin={0} aria-valuemax={100} aria-valuenow={p} aria-valuetext={`${p}%, ${u.done} of ${u.chunks} parts`}>
+                {Array.from({ length: u.chunks }, (_, i) => <i key={i} data-on={i < u.done ? '1' : undefined} data-next={i === u.done ? '1' : undefined} />)}
+              </div>
+              <p className="talent-c-upstatus" aria-live="polite">{status}</p>
+              {u.status === 'DONE' && <motion.p className="talent-c-flashnote" initial={still ? false : { opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: DUR.normal, ease: EASE.enter }}><Glyph k="unclear" size={16} /> Private to you. Waiting for a check with whoever gave it, which is normal.</motion.p>}
               <div className="talent-c-actions">
                 {u.status === 'UPLOADING' && <button type="button" className="ds-btn" onClick={() => pauseUpload(pid)}>Pause</button>}
                 {(u.status === 'PAUSED' || u.status === 'FAILED') && u.reason !== 'NEED_FILE' && <button type="button" className="ds-btn primary" disabled={offline} onClick={resume}>{u.status === 'FAILED' ? `Try again from ${p}%` : `Carry on from ${p}%`}</button>}
@@ -178,6 +186,12 @@ function CertStep({ pid, plain, lite }: { pid: string; plain: boolean; lite: boo
       )}
     </section>
   );
+}
+/** Upload state as a tag: icon + word, never colour alone. */
+function UploadTag({ u }: { u: NonNullable<ReturnType<typeof useMe>['me']['upload']> }) {
+  const [k, label, icon] = u.status === 'DONE' ? ['ok', 'Sent', 'check'] as const : u.status === 'UPLOADING' ? ['busy', 'Sending', 'up'] as const
+    : u.status === 'FAILED' ? ['risk', 'Stopped', 'alert'] as const : ['warn', 'Paused', 'pause'] as const;
+  return <span className="ds-tag talent-c-uptag" data-k={k}><Icon k={icon} size={14} /> {label}</span>;
 }
 function CertPicture() {
   return (

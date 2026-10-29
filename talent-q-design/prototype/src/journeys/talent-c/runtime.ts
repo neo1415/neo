@@ -98,7 +98,7 @@ function tick() {
       }
       if (u.failAt !== undefined && u.done === u.failAt) {
         u.status = 'FAILED'; u.reason = 'SERVER'; u.failAt = undefined;
-        qNote(w, pid, `Part ${u.done + 1} of your certificate didn’t go through (our server didn’t answer; simulated). The first ${u.done} parts (${pct(u)}%) are safe. Try again and I’ll carry on from ${pct(u)}%, not from the start.`,
+        qNote(w, pid, `Part ${u.done + 1} of your certificate didn’t go through (a simulated server error). The first ${u.done} parts (${pct(u)}%) are safe. Try again and I’ll carry on from ${pct(u)}%, not from the start.`,
           [{ label: 'Try again from here', primary: true, act: { t: 'do', op: 'talent-c.upload.resume' } }]);
         continue;
       }
@@ -187,7 +187,8 @@ if (typeof window !== 'undefined') {
 export function isUnfinished(p: PersonState) {
   if (!p.place) return false;
   if (p.place.route.startsWith('/c/interview')) { const r = p.rooms[p.room]; return !!r?.started && !r.done; }
-  return p.stepsDone.length < 3;
+  // Only count it as "halfway" once she has started something; an untouched step 1 needs no welcome back.
+  return p.stepsDone.length < 3 && (p.stepsDone.length > 0 || !!p.work.text.trim() || !!p.work.form.job.trim() || !!p.upload);
 }
 /** Plain description of where a person was, for Q and the pages. */
 export function whereLine(p: PersonState): string {
