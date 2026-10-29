@@ -2,7 +2,8 @@
 // SC-179 context pack for a task, SC-183 candidate proof of non-sharing.
 import { useState } from 'react';
 import { MEMORY_LAYERS, MEMORY_LAYER_LABELS, type MemoryItem } from '@contracts';
-import { log, now, uid, update, useWorld, visibleMemories, type World } from '../mock/world';
+import { actorOf, emit, log, now, uid, update, useWorld, visibleMemories, type World } from '../mock/world';
+import type { Actor } from '../state/domain';
 import { Banner, Button, Label, Segmented, Sheet, TextArea, toast } from '../ui/kit';
 import { Link } from '../ui/router';
 
@@ -18,7 +19,8 @@ const TASKS: Record<Task, { label: string; keys: string[] }> = {
 
 export function Memory({ viewer }: { viewer: 'recruiter' | 'candidate' }) {
   const w = useWorld((x) => x);
-  const items = visibleMemories(w, viewer);
+  const actor = actorOf(w);
+  const items = viewer === 'recruiter' ? recruiterMemories(w, actor) : visibleMemories(w, viewer);
   const history = w.memories.filter((m) => m.lifecycle_status === 'superseded' && items.some((i) => i.supersedes_id === m.memory_id));
   const [editing, setEditing] = useState<MemoryItem | null>(null);
   const [text, setText] = useState('');
@@ -37,6 +39,7 @@ export function Memory({ viewer }: { viewer: 'recruiter' | 'candidate' }) {
       d.memories.unshift({ ...old, memory_id: nid, content: text.trim(), structured_value: sv, supersedes_id: id, lifecycle_status: 'active', truth_class: 'STATED_BY_USER', write_mode: 'USER_CONFIRMED', evidence_status: 'SUPPORTED',
         recorded_at: now(), last_confirmed_at: now(), source_refs: [{ kind: 'MESSAGE', ref: nid, label: 'Your correction', quote: text.trim(), at: now() }, ...old.source_refs] });
       log(d, viewer === 'recruiter' ? 'You' : 'Candidate', `Corrected a memory: ${old.memory_key}`);
+      if (viewer === 'recruiter' && actor.orgId) emit(d, actor.id, 'memory.corrected', `ORG:${actor.orgId}`, `${actor.name} corrected what Q remembered: “${old.content}” is replaced by “${text.trim()}”.`);
     });
     toast('Corrected. Q uses the new version from now on; the old one is kept in history.');
     setEditing(null);
@@ -55,6 +58,7 @@ export function Memory({ viewer }: { viewer: 'recruiter' | 'candidate' }) {
         <p className="t-lead muted measure">Q remembers what you tell it to, what a task needs, and your organisation’s rules. It doesn’t remember everything, and it shows you when it uses a memory.</p>
       </header>
 
+      {viewer === 'recruiter' && items.length === 0 && <Banner tone="info" title="Nothing remembered yet">Q hasn’t saved anything for you yet. When it does (a preference you state, or your organisation’s rules), it appears here with its source.</Banner>}
       {MEMORY_LAYERS.filter((l) => l !== 'LIVE_STATE').map((layer) => {
         const list = items.filter((m) => m.layer === layer);
         if (!list.length && (layer === 'CONVERSATION' || layer === 'CONTEXT_PACK' || layer === 'EVALUATED_LEARNING')) return (
@@ -100,11 +104,11 @@ export function Memory({ viewer }: { viewer: 'recruiter' | 'candidate' }) {
       {history.length > 0 && (
         <section className="stack gap-2" aria-label="Earlier versions">
           <Label as="h2">Earlier versions</Label>
-          <ul className="stack gap-1">{history.map((h) => <li key={h.memory_id} className="t-caption"><s>{h.content}</s> · replaced by your correction</li>)}</ul>
+          <ul className="stack gap-1">{history.map((h) => <li key={h.memory_id} className="t-caption"><s>{h.content}</s> · replaced by a correction{h.source_refs[0] ? ` · was from ${h.source_refs[0].label}` : ''}</li>)}</ul>
         </section>
       )}
 
-      {viewer === 'recruiter' ? <ContextPack w={w} task={task} setTask={setTask} /> : <NonSharing w={w} />}
+      {viewer === 'recruiter' ? (actor.orgId === 'org_kora' && <ContextPack w={w} task={task} setTask={setTask} actor={actor} />) : <NonSharing w={w} />}
 
       <Sheet open={!!editing} onClose={() => setEditing(null)} title="Correct this memory" side="center">
         <form className="stack gap-4" onSubmit={(e) => { e.preventDefault(); correct(); }}>
@@ -116,13 +120,14 @@ export function Memory({ viewer }: { viewer: 'recruiter' | 'candidate' }) {
   );
 }
 
-function ContextPack({ w, task, setTask }: { w: World; task: Task; setTask: (t: Task) => void }) {
+function ContextPack({ w, task, setTask, actor }: { w: World; task: Task; setTask: (t: Task) => void; actor: Actor }) {
   const keys = TASKS[task].keys;
   const rows = keys.map((k) => {
     const all = w.memories.filter((m) => m.memory_key === k);
     const live = all.find((m) => m.lifecycle_status === 'active');
     const any = all[0];
     if (any?.visibility_scope === 'CANDIDATE_PRIVATE_PRACTICE') return { k, item: any, use: false, why: 'Candidate’s private practice. Never available to employers.' };
+    if (any?.visibility_scope === 'PERSONAL_PRIVATE' && any.owner_id !== actor.id && any.owner_id !== actor.id.replace(/^u_/, 'p_')) return { k, item: undefined, use: false, why: 'A colleague’s private preference. Q uses it only for them.' };
     if (!live) return { k, item: any, use: false, why: any?.lifecycle_status === 'revoked' ? 'You told Q not to use this.' : 'Forgotten.' };
     return { k, item: live, use: true, why: live.importance_reason };
   });
@@ -135,7 +140,7 @@ function ContextPack({ w, task, setTask }: { w: World; task: Task; setTask: (t: 
         {rows.map((r) => (
           <li key={r.k} className="row wrap gap-4" style={{ padding: '14px 0', borderTop: '1px solid var(--color-line)' }}>
             <span className="tag" style={{ borderColor: r.use ? 'var(--color-ok)' : 'var(--color-line-strong)', minWidth: 88, justifyContent: 'center' }}>{r.use ? 'Used' : 'Left out'}</span>
-            <span className="grow stack"><span>{r.use ? r.item?.content : <span className="muted">{r.k.startsWith('person.p_tobi.practice') ? 'Something private to the candidate' : 'A memory you told Q not to use (content hidden)'}</span>}</span><span className="t-caption">{r.why}</span></span>
+            <span className="grow stack"><span>{r.use ? r.item?.content : <span className="muted">{r.k.startsWith('person.p_tobi.practice') ? 'Something private to the candidate' : !r.item ? 'Someone else’s private preference (content hidden)' : 'A memory you told Q not to use (content hidden)'}</span>}</span><span className="t-caption">{r.why}</span></span>
           </li>
         ))}
       </ul>
@@ -155,4 +160,12 @@ function NonSharing({ w }: { w: World }) {
       <Link to="/c/passport">See exactly what Kora Pay sees</Link>
     </section>
   );
+}
+
+/** A recruiter sees their organisation's shared memories and their own private ones, never a colleague's private
+ * preferences, another organisation's, or a candidate's private practice. (Seed owners use p_ ids for staff.) */
+function recruiterMemories(w: World, a: Actor) {
+  const mine = (owner: string) => owner === a.id || owner === a.id.replace(/^u_/, 'p_');
+  return w.memories.filter((m) => m.lifecycle_status !== 'revoked' && m.lifecycle_status !== 'forgotten' && m.lifecycle_status !== 'superseded'
+    && m.visibility_scope !== 'CANDIDATE_PRIVATE_PRACTICE' && m.tenant_id === a.orgId && (m.visibility_scope !== 'PERSONAL_PRIVATE' || mine(m.owner_id)));
 }

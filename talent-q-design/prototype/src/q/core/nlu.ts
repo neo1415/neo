@@ -8,7 +8,7 @@ const CONTRACTIONS: [RegExp, string][] = [[/\bdon'?t\b/g, 'do not'], [/\bdoesn'?
 const TYPOS: Record<string, string> = {
   intervew: 'interview', interveiw: 'interview', inteview: 'interview', candiate: 'candidate', canidate: 'candidate', candidte: 'candidate', shedule: 'schedule', schedual: 'schedule', calender: 'calendar',
   recieve: 'receive', recruter: 'recruiter', reccomend: 'recommend', recomend: 'recommend', definately: 'definitely', seperate: 'separate', salery: 'salary', sallary: 'salary', bugdet: 'budget', buget: 'budget',
-  experiance: 'experience', experince: 'experience', employes: 'employees', applyed: 'applied', aplied: 'applied', jobb: 'job', resume: 'cv', resumé: 'cv', curriculum: 'cv', comparision: 'comparison', compair: 'compare',
+  experiance: 'experience', experince: 'experience', employes: 'employees', applyed: 'applied', aplied: 'applied', jobb: 'job', resumé: 'cv', curriculum: 'cv', comparision: 'comparison', compair: 'compare',
   freind: 'friend', freindly: 'friendly', freindlier: 'friendlier', mesage: 'message', messege: 'message', invitaion: 'invitation', invitation: 'invitation', fryday: 'friday', tuseday: 'tuesday', wensday: 'wednesday', wednsday: 'wednesday', thurday: 'thursday',
   bussiness: 'business', buisness: 'business', busness: 'business', acount: 'account', acounts: 'accounts', bookeeper: 'bookkeeper', bookeeping: 'bookkeeping', accountnt: 'accountant',
 };
@@ -19,6 +19,8 @@ export function normalise(text: string) {
   for (const [re, rep] of CONTRACTIONS) s = s.replace(re, rep);
   s = s.replace(FILLER, ' ');
   s = s.replace(/[^a-z0-9₦£$%:'\-\s,.?!]/g, ' ');
+  // "resume" is a CV only as a noun ("my resume"); "resume the search" stays a verb.
+  s = s.replace(/\b(my|a|the|your|her|his|their|upload|send|attach|updated|new|old) resume\b/g, '$1 cv').replace(/\bresume (file|pdf|doc)\b/g, 'cv $1');
   s = s.split(/\s+/).map((t) => TYPOS[t.replace(/[,.?!]/g, '')] ?? t).join(' ');
   return s.replace(/\s+/g, ' ').trim();
 }

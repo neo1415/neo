@@ -31,7 +31,7 @@ export function Profile({ id }: { id: string }) {
   );
   const first = firstName(w, id);
   const withdrawn = w.consents[id]?.withdrawnFrom.includes(org);
-  const inPipeline = w.pipeline.some((p) => p.personId === id && (w.mandate.mandateId === p.mandateId || w.mandates.find((m) => m.id === p.mandateId)?.orgId === org));
+  const inPipeline = w.pipeline.some((p) => p.personId === id && ((org === 'org_kora' && w.mandate.mandateId === p.mandateId) || w.mandates.find((m) => m.id === p.mandateId)?.orgId === org));
   if (withdrawn || (!inPipeline && w.consents[id] && !w.consents[id].discoverable)) return (
     <Canvas title={`You can’t see ${first}’s profile`} kicker="Candidate profile · permission" open onClose={() => history.back()}>
       <section className="ds-banner" data-k="risk" role="status"><Glyph k="none" /><span>{withdrawn ? `${first} has stopped sharing their profile with ${orgName}. Q no longer uses anything they shared, and won’t say what it was.` : `${first} isn’t discoverable and hasn’t applied to ${orgName}, so there’s nothing you’re allowed to see.`}</span><Link className="ds-btn" to="/r/compare">Back</Link></section>

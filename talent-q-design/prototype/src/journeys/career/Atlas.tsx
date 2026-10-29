@@ -78,7 +78,7 @@ export function RadialAtlas({ occs, st, sel, onSel, reach, setReach, large, open
   return (
     <section className="ds-sheet" aria-labelledby="atlas-h" style={{ display: 'grid', gap: 14 }}>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'space-between', alignItems: 'flex-end' }}>
-        <h2 id="atlas-h" className="voice t24" style={{ margin: 0, maxWidth: '30ch' }}>{movedN ? `One assessed notebook moved ${movedN} occupations a ring closer.` : `${within} occupations are two gaps or fewer away.`}</h2>
+        <h2 id="atlas-h" className="voice t24" style={{ margin: 0, maxWidth: '30ch' }}>{movedN ? `One reviewed piece of work moved ${movedN} occupations a ring closer.` : within ? `${within} occupations are two gaps or fewer away.` : 'Nothing is within two gaps yet. Reviewed work moves you closer.'}</h2>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           <button type="button" className="ds-filter" aria-pressed={reach} onClick={() => setReach(!reach)}>Within 2 gaps</button>
           {large && openFam && <button type="button" className="ds-filter" onClick={() => setOpenFam(null)}>Collapse {openFam}</button>}
@@ -182,13 +182,14 @@ export function BandAtlas({ occs, st, sel, onSel, reach, setReach, moved, goal, 
   const movedN = Object.entries(moved).filter(([id, g0]) => { const r = rows.find((x) => x.o.id === id); return r && r.g < g0; }).length;
   return (
     <section className="ds-sheet" aria-labelledby="band-h" style={{ display: 'grid', gap: 14 }}>
-      <h2 id="band-h" className="voice t24" style={{ margin: 0 }}>{movedN ? `${movedN} occupations moved a band closer.` : `${rows.filter((r) => r.g <= 2).length} occupations are two gaps or fewer away.`}</h2>
+      <h2 id="band-h" className="voice t24" style={{ margin: 0 }}>{movedN ? `${movedN} occupations moved a band closer.` : rows.some((r) => r.g <= 2) ? `${rows.filter((r) => r.g <= 2).length} occupations are two gaps or fewer away.` : `${rows.length} occupations, nearest ${Math.min(...rows.map((r) => r.g))} gaps away.`}</h2>
       <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 2 }} role="group" aria-label="Filter by family">
         <button type="button" className="ds-filter" aria-pressed={!fam} onClick={() => setFam(null)}>All</button>
         {fams.map((f) => <button key={f} type="button" className="ds-filter" aria-pressed={fam === f} onClick={() => setFam(fam === f ? null : f)} style={{ flex: 'none' }}>{f}</button>)}
         <button type="button" className="ds-filter" aria-pressed={reach} onClick={() => setReach(!reach)} style={{ flex: 'none' }}>Hide 3+ gaps</button>
       </div>
-      {bands.filter((x) => !(reach && x.b === 3)).map(({ b, list }) => (
+      {bands.slice(0, 3).every((x) => !x.list.length) && <p className="t14" style={{ margin: 0 }}>Nothing is two gaps or fewer away yet. What you’ve mentioned starts counting once it’s shown with reviewed work.</p>}
+      {bands.filter((x) => !(reach && x.b === 3) && !(x.b < 3 && !x.list.length && bands.slice(0, 3).every((y) => !y.list.length))).map(({ b, list }) => (
         <div key={b} style={{ display: 'grid', gap: 8 }}>
           <h3 className="lab" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
             <svg width="40" height="12" aria-hidden="true">{[0, 1, 2, 3].map((k) => <circle key={k} cx={6 + k * 10} cy={6} r={k <= b ? 3.5 : 2} fill={k <= b ? 'var(--ink-2)' : 'none'} stroke="var(--ink-2)" />)}</svg>

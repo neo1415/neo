@@ -1,0 +1,74 @@
+/* talent-b (T3 Tobi, T5 Zara): Passport workspace, disclosure matrix, jobs, applications, prep, memory. */
+.tb-stack { display: grid; gap: 12px; min-width: 0; }
+.tb-row-between { display: flex; justify-content: space-between; align-items: center; gap: 8px 12px; flex-wrap: wrap; min-width: 0; }
+.tb-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.tb-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.tb-filters .ds-filter { min-height: 44px; }
+.tb-break { overflow-wrap: anywhere; min-width: 0; }
+.tb-title { margin: 0; font-family: var(--voice); font-weight: 420; font-size: 20px; line-height: 1.25; overflow-wrap: anywhere; }
+.tb-title a { color: inherit; text-underline-offset: 4px; }
+.tb-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 16px; }
+.tb-card { display: grid; gap: 10px; align-content: start; }
+.tb-card[data-selected] { outline: 2px solid var(--ink); outline-offset: 2px; }
+.tb-card[data-conf] { background: repeating-linear-gradient(135deg, var(--sheet) 0 14px, var(--wash) 14px 15px); }
+.tb-check { display: flex; gap: 10px; align-items: center; min-height: 44px; }
+.tb-check input { width: 22px; height: 22px; accent-color: var(--ink); flex: none; }
+.tb-upbtns { display: flex; flex-wrap: wrap; gap: 8px; }
+.tb-linkform { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
+.tb-upload { display: grid; gap: 6px; padding: 10px 0; border-top: 1px solid var(--rule); }
+.tb-upload-head { display: flex; justify-content: space-between; gap: 8px; }
+.tb-bar { height: 8px; border-radius: 999px; background: var(--wash); overflow: hidden; }
+.tb-bar i { display: block; height: 100%; background: var(--ink); border-radius: inherit; transition: width .25s var(--motion-ease-out, ease-out); }
+.tb-upload[data-state='FAILED'] .tb-bar i { background: var(--risk); }
+.ds-thread .tb-bar, .ds-thread .tb-upload { border-color: var(--night-3); }
+.ds-thread .tb-bar { background: var(--night-3); }
+.ds-thread .tb-bar i { background: var(--gold-light); }
+.tb-ref { display: grid; gap: 6px; border: 1px solid var(--night-4, #34302a); border-radius: 12px; padding: 10px 12px; margin-top: 8px; }
+.tb-preview { border: 1.5px solid var(--ink); }
+.tb-doc { background: var(--paper); border-radius: 12px; padding: 14px 16px; border: 1px solid var(--rule); }
+.tb-doc p { margin: 0 0 8px; }
+.tb-doc mark { background: var(--gold-wash, #f6e7c4); color: inherit; padding: 0 2px; }
+.tb-cert { text-align: center; border: 2px double var(--rule-2); }
+.tb-redact { background: var(--ink); color: var(--ink); border-radius: 2px; letter-spacing: -1px; }
+.tb-code { margin: 0; background: var(--night, #1c1a17); color: var(--moon, #ece6da); border-radius: 12px; padding: 14px 16px; font-family: var(--data, monospace); font-size: 13px; line-height: 1.5; overflow-x: auto; white-space: pre; max-width: 100%; }
+.tb-viewas { display: grid; gap: 6px; background: var(--paper); border-radius: 12px; padding: 12px 14px; border: 1px dashed var(--rule-2); }
+.tb-mini { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.tb-mini li { display: flex; justify-content: space-between; gap: 8px; align-items: center; flex-wrap: wrap; }
+.tb-matrix th[scope='row'] { font-weight: 500; min-width: 220px; }
+.tb-matrix td { white-space: nowrap; }
+.tb-cell { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--rule-2); background: transparent; font-size: 14px; color: var(--ink-2); }
+button.tb-cell { cursor: pointer; }
+button.tb-cell:hover { border-color: var(--ink); }
+.tb-cell[aria-pressed='true'] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.tb-cell[data-c='REVOKED'] { border-style: dashed; color: var(--risk); }
+.tb-cell[data-c='LOCKED'], .tb-cell[data-c='WITHDRAWN'] { border-style: dotted; }
+.tb-matrix-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.tb-matrix-list > li { display: grid; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
+.tb-mcell { display: grid; gap: 2px; }
+.tb-sum { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.tb-sum li { display: grid; gap: 4px; padding: 12px 14px; border-radius: 12px; background: var(--paper); }
+.tb-sum li[data-corrected] { border-left: 3px solid var(--gold-ink, #7a5a17); }
+.tb-signals, .tb-needs { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.tb-signals li { display: grid; gap: 4px; justify-items: start; }
+.tb-needs li { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; }
+.tb-needs .ds-tag { white-space: nowrap; }
+.tb-details summary { cursor: pointer; min-height: 32px; }
+.tb-details ul { padding-left: 18px; display: grid; gap: 6px; }
+.tb-timeline { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 6px; }
+.tb-timeline li { display: grid; grid-template-columns: 64px 1fr; gap: 8px; }
+.tb-app[data-moved] { opacity: .75; }
+.tb-apply { border: 1.5px solid var(--ink); }
+.tb-confirm { display: grid; gap: 8px; border: 1.5px solid var(--risk); border-radius: 12px; padding: 12px 14px; }
+.tb-confirm ul { margin: 0; padding-left: 18px; }
+.tb-receipt { display: grid; gap: 4px; padding: 12px 14px; border-radius: 12px; background: var(--paper); border: 1px solid var(--rule); }
+@media (max-width: 860px) {
+  .tb-title { font-size: 18px; }
+  .tb-matrix th[scope='row'] { min-width: 0; }
+}
+.tb-reflist { list-style: none; margin: 8px 0 0; display: grid; gap: 8px; }
+.tb-reflist li { display: grid; gap: 2px; }
+.tb-reflist .tb-refrow { grid-template-columns: auto 1fr; gap: 8px; align-items: start; }
+.tb-ref .ds-tag { color: var(--moon-2); border-color: var(--night-4); }
+.tb-ref .ds-tag[data-k='ok'] { color: var(--ref-green-dark, #93c39c); border-color: currentColor; }
+.tb-ref .ds-tag[data-k='risk'] { color: var(--ref-red-dark, #e78d7f); border-color: currentColor; }
+.tb-ref .ds-tag[data-k='busy'], .tb-ref .ds-tag[data-k='warn'] { color: var(--gold-light); border-color: currentColor; }

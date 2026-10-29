@@ -1,0 +1,101 @@
+/* R3 (hire-c): messages, pipeline, team, calendar, setup, and Q's live cards. Tokens only; classes prefixed .hc- */
+
+/* ---------- Q's live cards (paper inside the ink thread) ---------- */
+.ds .hc-card { background: var(--sheet); color: var(--ink); border-radius: 12px; padding: 12px 14px; display: grid; gap: 8px; min-width: 0; --ink-3: var(--ref-ink-600); }
+.ds .hc-card .lab { color: var(--ink-3); }
+.ds .hc-card-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 10px; }
+.ds .hc-muted { color: var(--ink-3); }
+.ds .hc-card .ds-sim { color: var(--ink-3); border-color: var(--rule-2); }
+.ds .hc-subj { margin: 0; font-weight: 600; font-size: 15px; }
+.ds .hc-body { white-space: pre-wrap; font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+.ds .hc-body.clamp { max-height: 9.5em; overflow: hidden; -webkit-mask-image: linear-gradient(#000 70%, transparent); mask-image: linear-gradient(#000 70%, transparent); }
+.ds .hc-more { all: unset; cursor: pointer; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; justify-self: start; min-height: 32px; display: inline-flex; align-items: center; }
+.ds .hc-more:focus-visible { outline: 2px solid var(--gold-ink); }
+.ds .hc-diff ins { text-decoration: underline 2px; text-underline-offset: 3px; background: var(--gold-wash); color: var(--ink); }
+.ds .hc-diff del { text-decoration: line-through; color: var(--ink-3); }
+.ds .hc-card ins, .ds .hc-card del { font-style: normal; }
+.ds .hc-status { font-family: var(--data); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; border: 1px solid var(--rule-2); border-radius: 4px; padding: 2px 7px; white-space: nowrap; color: var(--ink-2); }
+.ds .hc-status[data-s='AWAITING_APPROVAL'], .ds .hc-status[data-s='HOLD'] { border-color: var(--gold); color: var(--gold-ink); }
+.ds .hc-status[data-s='SENT_SIMULATED'], .ds .hc-status[data-s='CONFIRMED'] { border-color: var(--ok); color: var(--ok); }
+.ds .hc-status[data-s='QUEUED_OFFLINE'], .ds .hc-status[data-s='RESCHEDULE_REQUESTED'] { border-color: var(--warn); color: var(--warn); border-style: dashed; }
+.ds .hc-status[data-s='DRAFT'] { border-style: dashed; }
+.ds .hc-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.ds .hc-checks li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; font-size: 14px; }
+.ds .hc-checks .hc-mark { width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; border: 1.5px solid var(--ok); color: var(--ok); font-size: 12px; font-weight: 700; }
+.ds .hc-checks li[data-ok='0'] .hc-mark { border-radius: 4px; border-color: var(--risk); color: var(--risk); }
+.ds .hc-checks .hc-detail { display: block; color: var(--ink-3); }
+.ds .hc-slots { border-collapse: collapse; width: 100%; font-size: 14px; }
+.ds .hc-slots th, .ds .hc-slots td { text-align: left; padding: 6px 6px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.ds .hc-slots thead th { font-weight: 600; }
+.ds .hc-tz { display: block; font-weight: 400; font-size: 12px; color: var(--ink-3); }
+
+/* ---------- Shared bits ---------- */
+.ds .hc-filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.ds .hc-filters .ds-filter { min-height: 44px; }
+.ds .hc-plain { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.ds .hc-fs { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; min-width: 0; }
+.ds .hc-textarea { min-height: 120px; resize: vertical; font-size: 15px; line-height: 1.5; }
+
+/* ---------- Inbox ---------- */
+.ds .hc-inbox { display: grid; grid-template-columns: minmax(240px, 320px) minmax(0, 1fr); gap: 16px; align-items: start; }
+.ds .hc-list { display: grid; gap: 12px; min-width: 0; }
+.ds .hc-list ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.ds .hc-row { all: unset; box-sizing: border-box; display: grid; gap: 4px; width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--rule-2); background: var(--sheet); cursor: pointer; min-height: 44px; }
+.ds .hc-row:hover { border-color: var(--ink); }
+.ds .hc-row[aria-pressed='true'] { border-color: var(--gold-ink); background: var(--gold-wash); }
+.ds .hc-row:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; }
+.ds .hc-row-top { display: flex; justify-content: space-between; gap: 8px; }
+.ds .hc-ellip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ds .hc-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.ds .hc-thread { display: grid; gap: 14px; min-width: 0; }
+.ds .hc-thread-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.ds .hc-msgs { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.ds .hc-msg { display: grid; gap: 6px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--rule); background: var(--paper); min-width: 0; }
+.ds .hc-msg[data-from='them'] { border-left: 3px solid var(--ink-3); }
+.ds .hc-msg[data-s='DRAFT'], .ds .hc-msg[data-s='AWAITING_APPROVAL'] { border-style: dashed; border-color: var(--gold); background: var(--sheet); }
+.ds .hc-msg-head { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.ds .hc-msg-head .hc-status { margin-left: auto; }
+.ds .hc-draft { display: grid; gap: 10px; min-width: 0; }
+.ds .hc-versions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.ds .hc-iv { display: grid; gap: 8px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--gold); background: var(--sheet); }
+.ds .hc-ask, .ds .hc-reply { display: grid; gap: 10px; }
+
+/* ---------- Pipeline ---------- */
+.ds .hc-board { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+.ds .hc-col[data-empty='1'] { padding-bottom: 12px; }
+.ds .hc-col { background: var(--wash); border-radius: 14px; padding: 10px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.ds .hc-col-h { margin: 0; display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; }
+.ds .hc-pcard { background: var(--sheet); border-radius: 10px; padding: 10px; display: grid; gap: 4px; box-shadow: var(--shadow); min-width: 0; overflow-wrap: anywhere; }
+.ds .hc-move select { min-height: 44px; padding: 6px 10px; font-size: 14px; }
+
+/* ---------- Team, setup, calendar ---------- */
+.ds .hc-team { list-style: none; margin: 0; padding: 0; display: grid; }
+.ds .hc-team li { display: grid; grid-template-columns: 32px minmax(0, 1fr) minmax(170px, 220px); gap: 4px 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.ds .hc-team .hc-can { grid-column: 2 / -1; }
+.ds .hc-team .ds-av { width: 32px; height: 32px; }
+.ds .hc-guides { list-style: none; margin: 0; padding: 0; display: grid; }
+.ds .hc-guides > li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+.ds .hc-guides > li[data-on='0'] b { text-decoration: line-through; color: var(--ink-3); }
+.ds .hc-gedit { display: grid; gap: 8px; width: 100%; }
+.ds .hc-gadd { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+.ds .hc-zones { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.ds .hc-week td { vertical-align: top; min-width: 110px; }
+.ds .hc-blocks { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 13px; }
+.ds .hc-blocks li { border-left: 3px solid var(--rule-2); padding-left: 6px; }
+.ds .hc-blocks li[data-s='HOLD'] { border-left-style: dashed; border-left-color: var(--gold); }
+.ds .hc-blocks li[data-s='INVITED'], .ds .hc-blocks li[data-s='CONFIRMED'] { border-left-color: var(--gold-ink); }
+.ds .hc-events { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ds .hc-events > li { display: grid; gap: 4px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 12px; }
+
+@media (max-width: 860px) {
+  .ds .hc-inbox { grid-template-columns: 1fr; }
+  .ds .hc-board { grid-template-columns: 1fr; }
+  .ds .hc-col[data-empty='1'] { display: none; }
+  .ds .hc-board::after { content: 'Empty stages are hidden on small screens.'; font-size: 14px; color: var(--ink-3); }
+  .ds .hc-team li { grid-template-columns: 32px minmax(0, 1fr); }
+  .ds .hc-team .hc-role, .ds .hc-team .ds-tag { grid-column: 2; justify-self: start; }
+  .ds .hc-gadd { grid-template-columns: 1fr; }
+  .ds .hc-thread.ds-sheet { padding: 14px; }
+}
+.ds .hc-versions .ds-filter { min-height: 44px; min-width: 44px; }
+.ds .hc-more { min-height: 44px; }

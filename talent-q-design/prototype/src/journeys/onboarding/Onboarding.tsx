@@ -1,250 +1,236 @@
-// SC-061 welcome · SC-062 CV ingestion · SC-063 conversational onboarding · SC-064 structured profile ·
-// SC-065 experience claims editor · SC-066 skills editor. Candidate-facing, so warmer (data-audience=candidate)
-// and personal, but held to the same rule: what a CV or a conversation says is a claim, not evidence.
-import { useMemo, useState } from 'react';
+// Your profile (T1). The global Q drives set-up by conversation; this canvas shows the profile being built,
+// and offers the same three ways in: talk to Q, upload a CV (simulated parse) or a short form, switchable
+// at any time. Everything shown here is a CLAIM in the person's own words until evidence backs it up.
+import { useMemo } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { navigate } from '../../ui/router';
 import { Glyph } from '../../ds/Glyph';
-import { moodOf, type QAgent } from '../../ds/QMark';
-import { Canvas, Split, Thread, useNarrow, type Entry } from '../../ds/Workspace';
-import { PERSONAS, blankProfile, ingest, setProfile, useProfile, type Claim, type Profile, type SkillItem, type Track } from '../../services/profile';
+import { Canvas } from '../../ds/Workspace';
+import { Link } from '../../ui/router';
+import { actorOf, update, useWorld } from '../../mock/world';
+import { runAction, useViewState } from '../../q/core/engine';
+import { QUESTIONS, SECTIONS, editProfile, missingOf, readProfile, samplesFor, validateForm, type FormDraft, type Profile, type Section } from '../../services/profile';
+import { entryMatches, type Match } from './match';
+import { taRead } from '../../state/areas/talent-a';
+import { draftCv } from '../../q/skills/talent-a';
+import type { QAction } from '../../state/domain';
 
-type View = 'start' | 'found' | 'profile' | 'experience' | 'skills' | 'done';
-const STEPS: { id: View; label: string }[] = [{ id: 'start', label: 'Start' }, { id: 'found', label: 'What Q found' }, { id: 'profile', label: 'About you' }, { id: 'experience', label: 'Experience' }, { id: 'skills', label: 'Skills' }, { id: 'done', label: 'Ready' }];
-const TRACKS: { id: Track; label: string; line: string }[] = [
-  { id: 'graduate', label: 'I’ve just finished studying', line: 'Q helps you show what you can do without years of job titles.' },
-  { id: 'switcher', label: 'I’m changing careers', line: 'Q helps translate what you’ve done into the language of the new field.' },
-  { id: 'experienced', label: 'I’m experienced in my field', line: 'Q helps you prove depth and keep control of who sees what.' },
-];
+type View = 'profile' | 'form' | 'jobs' | 'cv';
+const act = (a: QAction) => void runAction(a);
+const say = (text: string) => act({ label: text, act: { t: 'say', text } });
+const op = (name: string, args: Record<string, unknown> = {}) => act({ label: name, act: { t: 'do', op: name, args } });
 
 export function Onboarding() {
-  const p = useProfile((x) => x);
-  const narrow = useNarrow();
-  const [view, setView] = useState<View>(p.done ? 'done' : p.step >= 2 ? (['found', 'found', 'found', 'profile', 'experience', 'skills', 'done'] as View[])[p.step] : 'start');
-  const [open, setOpen] = useState(false);
-  const [parse, setParse] = useState<{ agents: QAgent[]; error?: { message: string; recover: string[] } } | null>(null);
-  const persona = p.track ? PERSONAS[p.track] : null;
-  const first = (persona?.name ?? '').split(' ')[0];
-  const show = (v: View) => { setView(v); if (narrow) setOpen(true); };
-
-  const chooseTrack = (t: Track) => setProfile((x) => ({ ...x, track: t, name: PERSONAS[t].name, location: PERSONAS[t].location, step: 1 }));
-  const read = async (file: 'pdf' | 'scan') => {
-    if (!p.track) return;
-    setProfile((x) => ({ ...x, method: 'cv' }));
-    const agents: QAgent[] = [{ label: 'Reading the file', done: 0, total: 2 }, { label: 'Finding your experience', done: 0, total: PERSONAS[p.track].experience.length }, { label: 'Finding skills you mention', done: 0, total: PERSONAS[p.track].skills.length }, { label: 'Checking dates line up', done: 0, total: 1 }];
-    setParse({ agents }); show('found');
-    const idx = { read: 0, experience: 1, skills: 2, dates: 3 } as const;
-    const r = await ingest.parse(p.track, file, (e) => setParse((s) => s && { ...s, agents: s.agents.map((a, i) => (i === idx[e.stage] ? { ...a, done: e.done } : a)) }));
-    if (!r.ok) { setParse((s) => s && { agents: s.agents.map((a, i) => (i === 0 ? { ...a, failed: true } : a)), error: { message: r.message, recover: r.recover } }); return; }
-    setParse(null);
-    setProfile((x) => ({ ...x, experience: r.experience, skills: r.skills, step: 2 }));
-  };
-  const talk = () => { setParse(null); setProfile((x) => ({ ...x, method: 'talk', experience: structuredClone(PERSONAS[x.track!].experience).map((e) => ({ ...e, claims: e.claims.map((c) => ({ ...c, source: 'CONVERSATION' as const })) })), skills: structuredClone(PERSONAS[x.track!].skills), step: 2 })); show('found'); };
-  const answer = (qid: string, a: string) => {
-    setProfile((x) => {
-      const answers = { ...x.answers, [qid]: a };
-      const n = Object.keys(answers).length;
-      const skills = qid === 'tools' && /SQL/.test(a) && !x.skills.some((s) => s.label === 'SQL (basic)') ? [...x.skills, { id: 'sq', label: 'SQL (basic)', state: 'claimed' as const, note: 'You said so in conversation' }] : x.skills;
-      return { ...x, answers, skills, step: n >= 2 ? 3 : x.step };
-    });
-  };
-  const allAnswered = persona ? persona.questions.every((q) => p.answers[q.id]) : false;
-
-  const entries = useMemo<Entry[]>(() => {
-    const e: Entry[] = [{ id: 'hi', who: 'q', text: 'Hi, I’m Q. I’ll help you build a profile that shows what you can do, not just what you say. Everything stays private until you choose to share it. Where are you starting from?',
-      chips: !p.track ? TRACKS.map((t, i) => ({ label: t.label, go: i === 0, on: () => chooseTrack(t.id) })) : undefined }];
-    if (!p.track || !persona) return e;
-    e.push({ id: 'track', who: 'me', text: TRACKS.find((t) => t.id === p.track)!.label });
-    e.push({ id: 'how', who: 'q', text: `${TRACKS.find((t) => t.id === p.track)!.line} How would you like to begin? A CV is quickest; talking it through works just as well.`,
-      chips: p.step === 1 && !parse ? [{ label: `Upload ${persona.file}`, go: true, on: () => read('pdf') }, { label: 'Upload a phone photo of my CV', on: () => read('scan') }, { label: 'Talk it through with Q', on: talk }, { label: 'Fill in a form', on: () => { setProfile((x) => ({ ...x, method: 'form', step: 3 })); show('profile'); } }] : undefined });
-    if (parse?.error) {
-      e.push({ id: 'err', who: 'q', plan: parse.agents, text: `${parse.error.message} Nothing was saved from it. What would you like to do?`,
-        chips: [{ label: `Upload ${persona.file} instead`, go: true, on: () => read('pdf') }, { label: 'Talk it through with Q', on: talk }, { label: 'Fill in a form', on: () => { setParse(null); setProfile((x) => ({ ...x, method: 'form', step: 3 })); show('profile'); } }] });
-      return e;
-    }
-    if (parse) { e.push({ id: 'parse', who: 'q', plan: parse.agents, live: true, text: 'Reading your CV. I’ll show you everything I take from it before anything is saved.' }); return e; }
-    if (p.step < 2) return e;
-    const n = p.experience.reduce((a, x) => a + x.claims.length, 0);
-    e.push({ id: 'found', who: 'q', used: [p.method === 'cv' ? persona.file : 'Our conversation'], text: `I found ${p.experience.length} roles and ${n} things you say you did. They’re listed as claims, in your words. Two need a quick check. A few questions first:`, why: 'Shown as claims: what you say, before any proof' });
-    persona.questions.forEach((q) => {
-      e.push({ id: `q-${q.id}`, who: 'q', text: q.ask, chips: !p.answers[q.id] ? q.options.map((o, i) => ({ label: o, go: i === 0, on: () => answer(q.id, o) })) : undefined });
-      if (p.answers[q.id]) e.push({ id: `a-${q.id}`, who: 'me', text: p.answers[q.id] });
-      if (!p.answers[q.id]) return;
-    });
-    if (!allAnswered) return e.slice(0, e.findIndex((x) => x.id.startsWith('q-') && !p.answers[x.id.slice(2)]) + 1);
-    e.push({ id: 'next', who: 'q', text: `Thanks, ${first}. Next, check the basics, then tidy your claims and skills. You can stop at any point; I’ll keep your place.`,
-      chips: p.done ? [{ label: 'Open my career atlas', go: true, on: () => navigate('/c/career') }, { label: 'Open my Evidence Passport', on: () => navigate('/c/passport') }]
-        : [{ label: view === 'profile' ? 'Go to experience' : view === 'experience' ? 'Go to skills' : view === 'skills' ? 'Finish' : 'Check the basics', go: true, on: () => { const nx: View = view === 'profile' ? 'experience' : view === 'experience' ? 'skills' : view === 'skills' ? 'done' : 'profile'; if (nx === 'done') setProfile((x) => ({ ...x, done: true, step: 6 })); show(nx); } }] });
-    if (p.done) e.push({ id: 'ready', who: 'q', text: `Your profile is ready and private. ${p.skills.filter((s) => s.state === 'evidenced').length} skills already have evidence; the rest are claims you can back up with practice, work samples or credentials.` });
-    return e;
-  }, [p, parse, view]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const agents = parse?.agents ?? [];
-  const mood = moodOf({ agents, blocked: !!parse?.error, waiting: p.step === 2 && !allAnswered, done: p.done });
-  const views = STEPS.map((s, i) => ({ id: s.id, label: `${i + 1}. ${s.label}`, ready: s.id === 'start' || (s.id === 'found' ? p.step >= 2 || !!parse : s.id === 'done' ? p.done : p.step >= 3) }));
+  const w = useWorld((x) => x);
+  const a = actorOf(w);
+  const pid = a.personId ?? 'p_amaka';
+  const p = readProfile(w, pid);
+  const [view, setView] = useViewState<View>('view', 'profile');
+  const matches = useMemo(() => entryMatches(w, pid), [w, pid]);
+  const cv = taRead(w).cv[pid];
+  const offline = w.network === 'offline';
+  const claims = p.experience.reduce((n, x) => n + x.claims.length, 0);
+  const title = view === 'jobs' ? (matches.length ? `${matches.length} entry-level ${matches.length === 1 ? 'job asks' : 'jobs ask'} for things you’ve mentioned` : 'Jobs that fit what you’ve told me')
+    : view === 'cv' ? (cv ? `${cv.lines.length} CV lines, all from your own words` : 'Your CV, from your own words')
+    : view === 'form' ? 'The short form' : p.answered.length ? `Your profile, ${a.first}: ${claims} ${claims === 1 ? 'claim' : 'claims'} so far` : `Welcome, ${a.first}. Let’s show what you can do.`;
   return (
-    <Split id="onboarding"
-      thread={<Thread title="Getting started" entries={entries} agents={agents} busy={parse?.error ? false : undefined} mood={mood} detail={parse?.error ? 'Couldn’t read that file' : undefined} placeholder="Tell Q about yourself"
-        onSend={(t) => { if (p.step === 2 && persona) { const q = persona.questions.find((x) => !p.answers[x.id]); if (q) answer(q.id, t); } }} />}
-      canvas={
-        <Canvas title={view === 'start' ? (p.track ? `Welcome, ${first}` : 'Welcome to Talent Q') : STEPS.find((s) => s.id === view)!.label} kicker="Your profile · private" views={views} view={view} setView={setView}
-          open={open} onClose={() => setOpen(false)} qLine={[...entries].reverse().find((x) => x.who === 'q' && x.text)?.text}
-          aside={p.track ? <button type="button" className="ds-btn quiet" onClick={() => { if (confirm('Start onboarding again? Your answers here will be cleared.')) { setProfile(() => blankProfile()); setParse(null); setView('start'); } }}>Start again</button> : null}>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div key={view + (parse ? 'p' : '')} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.22, ease: 'easeOut' }} style={{ display: 'grid', gap: 16, minWidth: 0 }}>
-              {view === 'start' && <Welcome p={p} onTrack={chooseTrack} onCv={() => read('pdf')} onTalk={talk} />}
-              {view === 'found' && <Found p={p} parse={parse} />}
-              {view === 'profile' && <About p={p} onNext={() => show('experience')} />}
-              {view === 'experience' && <ExperienceEditor p={p} onNext={() => show('skills')} />}
-              {view === 'skills' && <SkillsEditor p={p} onNext={() => { setProfile((x) => ({ ...x, done: true, step: 6 })); show('done'); }} />}
-              {view === 'done' && <Done p={p} />}
-            </motion.div>
-          </AnimatePresence>
-        </Canvas>
-      } />
+    <Canvas title={title} kicker={<span>Your profile · private to you</span>} open onClose={() => {}}
+      views={[{ id: 'profile', label: 'Profile' }, { id: 'form', label: 'Short form' }, { id: 'jobs', label: 'Jobs that fit' }, { id: 'cv', label: 'CV' }]} view={view} setView={setView}
+      aside={p.done ? <span className="ds-tag" data-k="ok">Set up</span> : p.answered.length ? <span className="ds-tag">{p.answered.length + p.none.length} of 6 · {missingOf(p).length} missing</span> : null}>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div key={view} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2, ease: 'easeOut' }} style={{ display: 'grid', gap: 16, minWidth: 0 }}>
+          {view === 'profile' && <ProfileView p={p} pid={pid} offline={offline} />}
+          {view === 'form' && <FormView p={p} pid={pid} />}
+          {view === 'jobs' && <JobsView p={p} matches={matches} />}
+          {view === 'cv' && <CvView p={p} lines={cv?.lines ?? null} approved={cv?.status === 'APPROVED'} first={a.first} />}
+        </motion.div>
+      </AnimatePresence>
+    </Canvas>
   );
 }
 
-function Welcome({ p, onTrack, onCv, onTalk }: { p: Profile; onTrack: (t: Track) => void; onCv: () => void; onTalk: () => void }) {
+function Ways({ p }: { p: Profile }) {
   return (
-    <section className="ds-sheet" aria-labelledby="w-h" style={{ display: 'grid', gap: 20, maxWidth: 820 }}>
-      <h2 id="w-h" className="voice t24" style={{ margin: 0 }}>Show what you can do. Keep control of who sees it.</h2>
-      <div role="group" aria-label="Where are you starting from?" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: 12 }}>
-        {TRACKS.map((t) => (
-          <button key={t.id} type="button" className="ds-opt" aria-pressed={p.track === t.id} onClick={() => onTrack(t.id)} style={{ flexDirection: 'column', gap: 6 }}>
-            <b>{t.label}</b><span className="t14 muted">{t.line}</span>
-          </button>
-        ))}
+    <section className="ds-sheet talent-a-ways" aria-labelledby="ways-h">
+      <h2 id="ways-h" className="voice t24" style={{ margin: 0 }}>{p.answered.length ? 'Add to it any way you like.' : 'Three ways in. Switch whenever you want.'}</h2>
+      <div role="group" aria-label="How you’d like to build your profile" className="talent-a-grid3">
+        <button type="button" className="ds-opt" aria-pressed={p.method === 'talk'} onClick={() => say('help me set up my profile')}><span><b>Chat with Q</b><span className="t14 muted" style={{ display: 'block' }}>Small questions, in your own words. Skip anything.</span></span></button>
+        <button type="button" className="ds-opt" aria-pressed={p.method === 'cv'} onClick={() => op('ta.cv.choose')}><span><b>Upload a CV</b><span className="t14 muted" style={{ display: 'block' }}>Q reads it and shows you everything before it’s used.</span></span></button>
+        <button type="button" className="ds-opt" aria-pressed={p.method === 'form'} onClick={() => op('ta.view', { route: '/c/welcome', view: 'form' })}><span><b>Fill a short form</b><span className="t14 muted" style={{ display: 'block' }}>Seven fields, all optional.</span></span></button>
       </div>
-      {p.track && (
-        <div className="ds-actions"><button type="button" className="ds-btn primary" onClick={onCv}>Upload my CV</button><button type="button" className="ds-btn" onClick={onTalk}>Talk it through</button><span className="t14 muted">Sample file: {PERSONAS[p.track].file} (simulated upload)</span></div>
-      )}
-      <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 10 }} aria-label="Promises">
-        {['Private by default. You choose each employer who sees anything.', 'A CV is a list of claims. Proof comes from work samples, assessments and verified credentials.', 'You can export or delete everything, any time.'].map((t) => <li key={t} style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}><Glyph k="verified" size={18} /><span>{t}</span></li>)}
+      <ul className="talent-a-promises" aria-label="Promises">
+        {['Private by default. You choose each employer who sees anything.', 'What you tell Q is a claim in your words. Q never adds anything you didn’t say.', 'No job history is fine: projects, volunteering and your studies count.'].map((t) => <li key={t}><Glyph k="verified" size={16} /><span>{t}</span></li>)}
       </ul>
     </section>
   );
 }
 
-const SOURCE: Record<Claim['source'], string> = { CV: 'From your CV', CONVERSATION: 'From our conversation', YOU: 'Added by you' };
-function Found({ p, parse }: { p: Profile; parse: { agents: QAgent[]; error?: { message: string; recover: string[] } } | null }) {
-  if (parse?.error) return (
-    <section className="ds-sheet" style={{ display: 'grid', gap: 12 }} aria-labelledby="f-err">
-      <h2 id="f-err" className="voice t24" style={{ margin: 0 }}>I couldn’t read that file.</h2>
-      <p style={{ margin: 0 }}>{parse.error.message} Nothing from it was saved.</p>
-      <ul style={{ margin: 0, paddingLeft: 20 }}>{parse.error.recover.map((r) => <li key={r}>{r}</li>)}</ul>
-    </section>
-  );
-  if (parse) return (
-    <section className="ds-sheet" style={{ display: 'grid', gap: 14 }} aria-busy="true" aria-labelledby="f-load">
-      <h2 id="f-load" className="voice t24" style={{ margin: 0 }}>Reading… nothing is saved until you check it.</h2>
-      {[0.6, 0.9, 0.75, 0.5].map((w, i) => <div key={i} className="ds-skeleton" style={{ height: 18, width: `${w * 100}%` }} />)}
-    </section>
-  );
+const SOURCE: Record<string, string> = { CV: 'From your CV', CONVERSATION: 'From our conversation', YOU: 'Added by you' };
+function sectionStatus(p: Profile, s: Section): { label: string; k: 'none' | 'unclear' | 'partial'; tone?: string } {
+  if (p.answered.includes(s)) return { label: 'Answered · claim', k: 'none' };
+  if (p.none.includes(s)) return { label: 'None, and that’s fine', k: 'partial' };
+  if (p.skipped.includes(s)) return { label: 'Skipped · noted as missing', k: 'unclear', tone: 'warn' };
+  return { label: 'Not yet', k: 'unclear' };
+}
+function ProfileView({ p, pid, offline }: { p: Profile; pid: string; offline: boolean }) {
+  const files = samplesFor(pid);
+  const remove = (xid: string, cid: string) => update((w) => editProfile(w, pid, (x) => { x.experience = x.experience.map((e) => (e.id === xid ? { ...e, claims: e.claims.filter((c) => c.id !== cid) } : e)).filter((e) => e.claims.length); }));
   return (
-    <section className="ds-sheet" aria-labelledby="f-h" style={{ display: 'grid', gap: 16 }}>
-      <h2 id="f-h" className="voice t24" style={{ margin: 0 }}>{p.experience.length} roles, {p.experience.reduce((a, x) => a + x.claims.length, 0)} claims. Two need your eye.</h2>
-      {p.experience.map((x) => (
-        <article key={x.id} style={{ display: 'grid', gap: 8, borderTop: '1px solid var(--rule)', paddingTop: 12 }}>
-          <div><b>{x.title}</b> <span className="muted">· {x.org} · {x.when}</span></div>
-          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 8 }}>
-            {x.claims.map((c) => <li key={c.id} style={{ display: 'grid', gridTemplateColumns: '22px 1fr', gap: 10 }}><Glyph k="none" title="Claim" /><span>{c.text}<span className="t14 muted" style={{ display: 'block' }}>{SOURCE[c.source]} · {c.confidence === 'sure' ? 'read clearly' : 'please check'}{c.flagged ? ` · ${c.flagged}` : ''}</span></span></li>)}
-          </ul>
-        </article>
-      ))}
-    </section>
+    <>
+      <Ways p={p} />
+      {p.cv.status === 'reading' && (
+        <section className="ds-sheet" aria-busy="true" aria-labelledby="cv-read-h" style={{ display: 'grid', gap: 12 }}>
+          <h2 id="cv-read-h" className="voice t24" style={{ margin: 0 }}>Reading {p.cv.file}… nothing is used until you see it.</h2>
+          {[0.6, 0.9, 0.75].map((x, i) => <div key={i} className="ds-skeleton" style={{ height: 16, width: `${x * 100}%` }} />)}
+        </section>
+      )}
+      {p.cv.status === 'unreadable' && !p.answered.length && (
+        <div className="ds-banner" data-k="risk" role="status">
+          <Glyph k="unclear" />
+          <span><b>Q couldn’t read {p.cv.file}.</b> It’s a photo of a page, so there’s no text to read reliably. Nothing was saved from it.</span>
+          <span className="ds-actions">{files.filter((f) => f.kind === 'pdf').map((f) => <button key={f.file} type="button" className="ds-btn" disabled={offline} onClick={() => op('ta.cv.read', { file: f.file, kind: 'pdf' })}>Upload {f.file}</button>)}</span>
+        </div>
+      )}
+      {offline && <p className="ds-banner" data-k="warn" role="status" style={{ margin: 0 }}><Glyph k="unclear" /><span>You’re offline. Your profile is saved on this device; CV reading waits until you reconnect.</span><span /></p>}
+      <section className="ds-sheet" aria-labelledby="prof-h" style={{ display: 'grid', gap: 4 }}>
+        <h2 id="prof-h" className="voice t24" style={{ margin: '0 0 8px' }}>{p.answered.length ? 'What you’ve told Q, in your words' : 'Your profile will build here as you talk to Q'}</h2>
+        <ul className="talent-a-sections">
+          {SECTIONS.map((s) => {
+            const st = sectionStatus(p, s);
+            const exp = p.experience.filter((e) => (s === 'project' ? e.kind === 'project' || e.kind === 'course' : s === 'volunteer' ? e.kind === 'volunteer' : false));
+            const jobs = s === 'project' ? p.experience.filter((e) => e.kind === 'job') : [];
+            return (
+              <li key={s}>
+                <Glyph k={st.k} title={st.label} />
+                <div style={{ minWidth: 0, display: 'grid', gap: 4 }}>
+                  <p style={{ margin: 0 }}><b>{QUESTIONS[s].label}</b> <span className="t14 muted">· {st.label}</span></p>
+                  {s === 'study' && p.study && <p style={{ margin: 0 }}>{p.study}</p>}
+                  {s === 'tools' && p.skills.length > 0 && <p style={{ margin: 0 }}>{p.skills.map((k) => k.label).join(', ')} <span className="t14 muted">· claims</span></p>}
+                  {s === 'location' && p.location && <p style={{ margin: 0 }}>{p.location}{p.workMode ? ` · ${p.workMode}` : ''}</p>}
+                  {s === 'goal' && p.goal && <p style={{ margin: 0 }}>{p.goal}</p>}
+                  {[...jobs, ...exp].map((e) => (
+                    <div key={e.id} style={{ display: 'grid', gap: 4 }}>
+                      <span className="t14" style={{ fontWeight: 600 }}>{e.title}{e.org ? ` · ${e.org}` : ''}{e.when ? ` · ${e.when}` : ''}</span>
+                      {e.claims.map((c) => (
+                        <div key={c.id} className="talent-a-claim">
+                          <span>“{c.text.replace(/\.$/, '')}”<span className="t14 muted" style={{ display: 'block' }}>{SOURCE[c.source]} · claim{c.flagged ? ` · Q: ${c.flagged}` : ''}</span></span>
+                          <button type="button" className="ds-btn quiet" onClick={() => remove(e.id, c.id)} aria-label={`Remove: ${c.text}`}>Remove</button>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+        {p.noJobs && <p className="t14 muted" style={{ margin: '8px 0 0' }}>No job history yet. That’s expected straight from school; Q builds from your studies, projects and volunteering, and never invents a job.</p>}
+      </section>
+      {p.answered.length > 0 && (
+        <section className="ds-sheet" aria-labelledby="sum-h" style={{ display: 'grid', gap: 12 }}>
+          <h2 id="sum-h" className="lab" style={{ margin: 0 }}>At a glance</h2>
+          <dl className="talent-a-stats">
+            {[[String(p.experience.reduce((n, x) => n + x.claims.length, 0)), 'claims, in your words'], [String(p.skills.length), 'tools you named'], [String(missingOf(p).length), 'still missing'], ['0', 'employers who can see you']].map(([n, l]) => <div key={l}><dt className="t14 muted">{l}</dt><dd className="num voice t30">{n}</dd></div>)}
+          </dl>
+          <div className="ds-actions">
+            <button type="button" className="ds-btn primary" onClick={() => say('show me entry level jobs that fit me')}>Jobs that fit me</button>
+            <button type="button" className="ds-btn" onClick={() => say('what jobs could i do with what i have')}>Where could I go?</button>
+            <button type="button" className="ds-btn" onClick={() => say('help me write my cv')}>Help with my CV</button>
+          </div>
+        </section>
+      )}
+    </>
   );
 }
 
-function About({ p, onNext }: { p: Profile; onNext: () => void }) {
-  const [touched, setTouched] = useState(false);
-  const err = touched && !p.location.trim() ? 'Add a city, or “Remote only”, so Q can match roles you can actually take.' : '';
+const FIELDS: { k: keyof FormDraft; label: string; hint?: string; long?: boolean; mode?: 'numeric' }[] = [
+  { k: 'name', label: 'Your name' }, { k: 'location', label: 'Where you can work from', hint: 'A city, or “Remote only”' },
+  { k: 'study', label: 'Course and university', hint: 'For example: Economics, UNN' }, { k: 'year', label: 'Year you finished', hint: 'Four digits, for example 2026', mode: 'numeric' },
+  { k: 'project', label: 'One project from school', hint: 'What it was about and what you did', long: true }, { k: 'volunteer', label: 'Volunteering or activities (optional)', long: true },
+  { k: 'tools', label: 'Tools you’ve used', hint: 'Excel, Google Sheets, Word…' },
+];
+function FormView({ p, pid }: { p: Profile; pid: string }) {
+  const set = (k: keyof FormDraft, v: string) => update((w) => editProfile(w, pid, (x) => { x.form = { ...x.form, [k]: v }; if (x.formErrors[k]) x.formErrors = validateForm(x.form); }));
+  const errs = p.formErrors ?? {};
   return (
-    <form className="ds-sheet" aria-labelledby="a-h" style={{ display: 'grid', gap: 16, maxWidth: 640 }} onSubmit={(e) => { e.preventDefault(); setTouched(true); if (p.location.trim()) onNext(); }}>
-      <h2 id="a-h" className="voice t24" style={{ margin: 0 }}>The basics. Change any of it later.</h2>
-      <div className="ds-field"><label htmlFor="pf-name">Name</label><input id="pf-name" className="ds-input" value={p.name} onChange={(e) => setProfile((x) => ({ ...x, name: e.target.value }))} autoComplete="name" /></div>
-      <div className="ds-field"><label htmlFor="pf-loc">Where you can work from</label><input id="pf-loc" className="ds-input" value={p.location} aria-invalid={!!err} aria-describedby={err ? 'pf-loc-err' : undefined} onChange={(e) => setProfile((x) => ({ ...x, location: e.target.value }))} />{err && <span id="pf-loc-err" className="t14" style={{ color: 'var(--risk)' }}>{err}</span>}</div>
-      <fieldset style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 8 }}><legend className="t14" style={{ fontWeight: 600, marginBottom: 6 }}>How you’d like to work</legend>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>{(['remote', 'hybrid', 'onsite'] as const).map((m) => <button key={m} type="button" className="ds-filter" aria-pressed={p.workMode === m} onClick={() => setProfile((x) => ({ ...x, workMode: m }))}>{m[0].toUpperCase() + m.slice(1)}</button>)}</div></fieldset>
-      <fieldset style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 8 }}><legend className="t14" style={{ fontWeight: 600, marginBottom: 6 }}>Who can see your profile</legend>
-        {([['private', 'Only me (recommended to start)'], ['employers-i-choose', 'Employers I choose, one at a time']] as const).map(([v, l]) => <button key={v} type="button" className="ds-opt" aria-pressed={p.visibility === v} onClick={() => setProfile((x) => ({ ...x, visibility: v }))}>{l}</button>)}</fieldset>
-      <div className="ds-actions"><button type="submit" className="ds-btn primary">Save and continue</button></div>
+    <form className="ds-sheet" aria-labelledby="form-h" style={{ display: 'grid', gap: 14, maxWidth: 680 }} noValidate onSubmit={(e) => { e.preventDefault(); op('ta.form.save'); }}>
+      <h2 id="form-h" className="voice t24" style={{ margin: 0 }}>Fill in what you like. Everything is optional.</h2>
+      <p className="t14 muted" style={{ margin: 0 }}>Anything you’ve already told Q is kept. If something looks wrong when you save, Q will tell you what and help you fix it.</p>
+      {Object.keys(errs).length > 0 && <div className="ds-banner" data-k="risk" role="alert"><Glyph k="unclear" /><span><b>Not saved yet.</b> {Object.keys(errs).length === 1 ? 'One field needs a look' : `${Object.keys(errs).length} fields need a look`}; Q has a suggestion in the conversation.</span><span /></div>}
+      {FIELDS.map((f) => {
+        const err = errs[f.k]; const id = `ta-f-${f.k}`;
+        const common = { id, className: 'ds-input', value: p.form[f.k], 'aria-invalid': !!err, 'aria-describedby': [f.hint ? `${id}-h` : '', err ? `${id}-e` : ''].filter(Boolean).join(' ') || undefined };
+        return (
+          <div key={f.k} className="ds-field">
+            <label htmlFor={id}>{f.label}</label>
+            {f.hint && <span id={`${id}-h`} className="t14 muted">{f.hint}</span>}
+            {f.long ? <textarea {...common} rows={3} onChange={(e) => set(f.k, e.target.value)} /> : <input {...common} inputMode={f.mode} onChange={(e) => set(f.k, e.target.value)} />}
+            {err && <span id={`${id}-e`} className="t14" style={{ color: 'var(--risk)' }}>{err}</span>}
+          </div>
+        );
+      })}
+      <div className="ds-actions"><button type="submit" className="ds-btn primary">Save</button><button type="button" className="ds-btn quiet" onClick={() => say('help me set up my profile')}>I’d rather chat with Q</button></div>
     </form>
   );
 }
 
-function ExperienceEditor({ p, onNext }: { p: Profile; onNext: () => void }) {
-  const [editing, setEditing] = useState<string | null>(null);
-  const [draft, setDraft] = useState('');
-  const fix = (xid: string, cid: string, text: string) => setProfile((x) => ({ ...x, experience: x.experience.map((e) => (e.id === xid ? { ...e, claims: e.claims.map((c) => (c.id === cid ? { ...c, text, flagged: undefined, confidence: 'sure', source: 'YOU' } : c)) } : e)) }));
-  const remove = (xid: string, cid: string) => setProfile((x) => ({ ...x, experience: x.experience.map((e) => (e.id === xid ? { ...e, claims: e.claims.filter((c) => c.id !== cid) } : e)) }));
-  const flagged = p.experience.flatMap((e) => e.claims).filter((c) => c.flagged).length;
-  return (
-    <section className="ds-sheet" aria-labelledby="x-h" style={{ display: 'grid', gap: 16 }}>
-      <h2 id="x-h" className="voice t24" style={{ margin: 0 }}>{flagged ? `${flagged} ${flagged === 1 ? 'claim is' : 'claims are'} vague. A number makes it believable.` : 'Every claim is clear. Next, back the strongest ones with evidence.'}</h2>
-      {p.experience.map((x) => (
-        <article key={x.id} style={{ display: 'grid', gap: 10, borderTop: '1px solid var(--rule)', paddingTop: 12 }}>
-          <div><b>{x.title}</b> <span className="muted">· {x.org} · {x.when}</span></div>
-          {x.claims.map((c) => (
-            <div key={c.id} style={{ display: 'grid', gridTemplateColumns: '22px 1fr auto', gap: 10, alignItems: 'start' }}>
-              <Glyph k="none" title="Claim, not yet evidenced" />
-              {editing === c.id ? (
-                <form onSubmit={(e) => { e.preventDefault(); fix(x.id, c.id, draft); setEditing(null); }} style={{ display: 'grid', gap: 8 }}>
-                  <label htmlFor={`ed-${c.id}`} className="sr">Edit claim</label>
-                  <input id={`ed-${c.id}`} className="ds-input" value={draft} onChange={(e) => setDraft(e.target.value)} autoFocus />
-                  <div className="ds-actions"><button type="submit" className="ds-btn primary">Save</button><button type="button" className="ds-btn quiet" onClick={() => setEditing(null)}>Cancel</button></div>
-                </form>
-              ) : (
-                <span>{c.text}{c.flagged && <span className="ds-note" style={{ display: 'block' }}>Q: {c.flagged}</span>}<span className="t14 muted" style={{ display: 'block' }}>{SOURCE[c.source]} · claim · add evidence from your Passport later</span></span>
-              )}
-              {editing !== c.id && <span style={{ display: 'flex', gap: 4 }}><button type="button" className="ds-btn quiet" onClick={() => { setEditing(c.id); setDraft(c.flagged && c.text.startsWith('Improved') ? 'Cut the weekly trade report from 2 days to 3 hours with a shared dashboard' : c.text); }} aria-label={`Edit: ${c.text}`}>Edit</button><button type="button" className="ds-btn quiet" onClick={() => remove(x.id, c.id)} aria-label={`Remove: ${c.text}`}>Remove</button></span>}
-            </div>
-          ))}
-        </article>
-      ))}
-      <div className="ds-actions"><button type="button" className="ds-btn primary" onClick={onNext}>Continue to skills</button></div>
-    </section>
+const NEED_GLYPH = { evidenced: 'full', mentioned: 'unclear', none: 'none' } as const;
+const NEED_LABEL = { evidenced: 'Evidenced', mentioned: 'Mentioned by you (claim)', none: 'Not shown yet' } as const;
+function JobsView({ p, matches }: { p: Profile; matches: Match[] }) {
+  if (!p.answered.length) return (
+    <section className="ds-sheet" style={{ display: 'grid', gap: 12 }} aria-labelledby="jobs-empty"><h2 id="jobs-empty" className="voice t24" style={{ margin: 0 }}>Q needs to know a little about you first.</h2>
+      <p style={{ margin: 0 }}>Matches compare what a listing asks for with what you’ve told Q. Tell Q about your studies or a project, or upload a CV.</p>
+      <div className="ds-actions"><button type="button" className="ds-btn primary" onClick={() => say('help me set up my profile')}>Set up my profile</button></div></section>
   );
-}
-
-function SkillsEditor({ p, onNext }: { p: Profile; onNext: () => void }) {
-  const [add, setAdd] = useState('');
-  const set = (id: string, f: (s: SkillItem) => SkillItem | null) => setProfile((x) => ({ ...x, skills: x.skills.map((s) => (s.id === id ? f(s) : s)).filter(Boolean) as SkillItem[] }));
-  const g = (s: SkillItem) => (s.state === 'evidenced' ? 'full' : s.state === 'suggested' ? 'unclear' : 'none') as 'full' | 'unclear' | 'none';
+  if (!matches.length) return <section className="ds-sheet" aria-labelledby="jobs-none"><h2 id="jobs-none" className="voice t24" style={{ margin: 0 }}>No open entry-level listing asks for anything you’ve mentioned yet.</h2><p style={{ margin: '8px 0 0' }}>That isn’t a judgement of you. Adding one project or tool usually changes it.</p></section>;
   return (
-    <section className="ds-sheet" aria-labelledby="s-h" style={{ display: 'grid', gap: 16 }}>
-      <h2 id="s-h" className="voice t24" style={{ margin: 0 }}>{p.skills.filter((s) => s.state === 'evidenced').length} skills have evidence. The rest are claims until you show them.</h2>
-      <ul aria-label="Key" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 16px', listStyle: 'none', margin: 0, padding: 0 }} className="t14">
-        <li style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Glyph k="full" size={16} />Evidenced (from your Passport)</li><li style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Glyph k="none" size={16} />Claimed by you</li><li style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}><Glyph k="unclear" size={16} />Suggested by Q: not added until you confirm</li>
-      </ul>
-      {!p.skills.length && <p className="muted">No skills yet. Add the first one below.</p>}
-      <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
-        {p.skills.map((s) => (
-          <li key={s.id} style={{ display: 'grid', gridTemplateColumns: '22px 1fr auto', gap: 10, alignItems: 'center', padding: '12px 0', borderTop: '1px solid var(--rule)' }}>
-            <Glyph k={g(s)} title={s.state} />
-            <span><b style={{ fontWeight: 600 }}>{s.label}</b>{s.note && <span className="t14 muted" style={{ display: 'block' }}>{s.note}</span>}</span>
-            {s.state === 'suggested' ? <span style={{ display: 'flex', gap: 4 }}><button type="button" className="ds-btn" onClick={() => set(s.id, (x) => ({ ...x, state: 'claimed', note: 'Confirmed by you · claim' }))}>It’s true, add it</button><button type="button" className="ds-btn quiet" onClick={() => set(s.id, () => null)}>Not me</button></span>
-              : s.state === 'claimed' ? <button type="button" className="ds-btn quiet" onClick={() => set(s.id, () => null)} aria-label={`Remove ${s.label}`}>Remove</button> : <span className="ds-tag" data-k="ok">Evidence on file</span>}
+    <section className="ds-sheet" aria-labelledby="jobs-h" style={{ display: 'grid', gap: 14 }}>
+      <h2 id="jobs-h" className="voice t24" style={{ margin: 0 }}>Closest first. Mentioned is a claim, not proof, and the employer decides.</h2>
+      <ul aria-label="Key" className="talent-a-key t14">{(['evidenced', 'mentioned', 'none'] as const).map((k) => <li key={k}><Glyph k={NEED_GLYPH[k]} size={16} />{NEED_LABEL[k]}</li>)}</ul>
+      <ul className="talent-a-jobs">
+        {matches.map((m) => (
+          <li key={m.job.id}>
+            <div className="talent-a-jobhead">
+              <span><b>{m.job.title}</b> <span className="muted">· {m.org} · {m.job.location} · {m.job.pay}</span>{m.isNew && <span className="ds-tag" data-k="busy" style={{ marginLeft: 8 }}>New this week</span>}</span>
+              <span className="num t14">{m.fit} of {m.needs.length}</span>
+            </div>
+            <ul className="talent-a-needs">{m.needs.map((n) => <li key={n.need}><Glyph k={NEED_GLYPH[n.state]} title={NEED_LABEL[n.state]} /><span><b style={{ fontWeight: 600 }}>{n.need}</b><span className="t14 muted"> · {n.state === 'none' ? 'not shown yet' : n.basis}</span></span></li>)}</ul>
+            {m.notes.length > 0 && <p className="t14 muted" style={{ margin: 0 }}>{m.notes.join(' ')}</p>}
+            <div className="ds-actions">
+              {m.applied ? <><span className="ds-tag" data-k="ok">Applied · {m.applied.toLowerCase().replace('_', ' ')}</span><Link className="ds-btn" to="/c/applications">My applications</Link></>
+                : <button type="button" className="ds-btn" onClick={() => say(`apply for the ${m.org.split(' ')[0].toLowerCase()} ${m.job.title.toLowerCase()} job`)}>Apply with Q</button>}
+              <button type="button" className="ds-btn quiet" onClick={() => say(`why does the ${m.org.split(' ')[0].toLowerCase()} ${m.job.title.toLowerCase()} job fit me`)}>Why?</button>
+              <Link className="ds-btn quiet" to={`/c/jobs/${m.job.id}`}>Open listing</Link>
+            </div>
           </li>
         ))}
       </ul>
-      <form onSubmit={(e) => { e.preventDefault(); if (!add.trim()) return; setProfile((x) => ({ ...x, skills: [...x.skills, { id: `s${Date.now()}`, label: add.trim(), state: 'claimed', note: 'Added by you · claim' }] })); setAdd(''); }} style={{ display: 'flex', gap: 8 }}>
-        <label htmlFor="sk-add" className="sr">Add a skill</label><input id="sk-add" className="ds-input" value={add} onChange={(e) => setAdd(e.target.value)} placeholder="Add a skill, e.g. Excel pivot tables" /><button type="submit" className="ds-btn">Add</button>
-      </form>
-      <div className="ds-actions"><button type="button" className="ds-btn primary" onClick={onNext}>Finish</button></div>
     </section>
   );
 }
 
-function Done({ p }: { p: Profile }) {
-  const claims = p.experience.reduce((a, x) => a + x.claims.length, 0);
+function CvView({ p, lines, approved, first }: { p: Profile; lines: ReturnType<typeof draftCv> | null; approved: boolean; first: string }) {
+  if (!p.answered.length) return <section className="ds-sheet" aria-labelledby="cv-empty" style={{ display: 'grid', gap: 12 }}><h2 id="cv-empty" className="voice t24" style={{ margin: 0 }}>Q writes CV lines only from what you’ve told it.</h2><div className="ds-actions"><button type="button" className="ds-btn primary" onClick={() => say('help me set up my profile')}>Tell Q about yourself</button></div></section>;
+  if (!lines) return <section className="ds-sheet" aria-labelledby="cv-none" style={{ display: 'grid', gap: 12 }}><h2 id="cv-none" className="voice t24" style={{ margin: 0 }}>No draft yet.</h2><p style={{ margin: 0 }}>Ask Q to draft your CV. Every line will trace back to something you said; nothing is invented.</p><div className="ds-actions"><button type="button" className="ds-btn primary" onClick={() => say('help me write my cv')}>Draft my CV</button></div></section>;
+  const groups = ['Education', 'Projects', 'Volunteering', 'Work', 'Skills'] as const;
+  const claimText = (from: string) => p.experience.flatMap((e) => e.claims).find((c) => c.id === from);
+  const download = () => {
+    const txt = [`${p.name || first}`, p.location, '', ...groups.flatMap((g) => { const ls = lines.filter((l) => l.section === g); return ls.length ? [g.toUpperCase(), ...ls.map((l) => `- ${l.text}`), ''] : []; }), 'Drafted with Talent Q from your own words (prototype).'].join('\n');
+    const url = URL.createObjectURL(new Blob([txt], { type: 'text/plain' })); const el = document.createElement('a'); el.href = url; el.download = `cv-${first.toLowerCase()}.txt`; el.click(); URL.revokeObjectURL(url);
+  };
   return (
-    <section className="ds-sheet" aria-labelledby="d-h" style={{ display: 'grid', gap: 16, maxWidth: 760 }}>
-      <h2 id="d-h" className="voice t30" style={{ margin: 0 }}>You’re set up, {p.name.split(' ')[0]}. Nothing is shared.</h2>
-      <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, margin: 0 }}>
-        {[[String(p.experience.length), 'roles'], [String(claims), 'claims, in your words'], [String(p.skills.filter((s) => s.state === 'evidenced').length), 'skills with evidence'], ['0', 'employers who can see you']].map(([n, l]) => <div key={l} style={{ background: 'var(--paper)', borderRadius: 14, padding: 14 }}><dt className="t14 muted">{l}</dt><dd className="num voice t30" style={{ margin: 0 }}>{n}</dd></div>)}
-      </dl>
-      <div className="ds-actions"><button type="button" className="ds-btn primary" onClick={() => navigate('/c/career')}>See where you could go</button><button type="button" className="ds-btn" onClick={() => navigate('/c/passport')}>Add evidence</button></div>
+    <section className="ds-sheet" aria-labelledby="cv-h" style={{ display: 'grid', gap: 14 }}>
+      <h2 id="cv-h" className="voice t24" style={{ margin: 0 }}>{approved ? 'Saved. Private until you approve an application.' : 'Draft. Check each line; every one traces to your words.'}</h2>
+      {groups.map((g) => { const ls = lines.filter((l) => l.section === g); if (!ls.length) return null; return (
+        <div key={g} style={{ display: 'grid', gap: 6 }}>
+          <h3 className="lab" style={{ margin: 0 }}>{g}</h3>
+          <ul className="talent-a-cv">{ls.map((l) => { const c = claimText(l.from); return <li key={l.id}><span>{l.text}</span><span className="t14 muted">{c ? `${SOURCE[c.source]}: “${c.text.replace(/\.$/, '').slice(0, 70)}${c.text.length > 70 ? '…' : ''}”` : l.from === 'study' ? 'From what you studied' : 'From the tools you named'}{c?.flagged ? ` · Q: ${c.flagged}` : ''}</span></li>; })}</ul>
+        </div>); })}
+      {!p.experience.some((e) => e.kind === 'job') && <p className="t14 muted" style={{ margin: 0 }}>No work section, because you haven’t had a job yet. That’s normal for a graduate CV; projects and volunteering lead.</p>}
+      <div className="ds-actions">
+        {!approved && <button type="button" className="ds-btn primary" onClick={() => op('ta.cv.approve')}>Use these lines</button>}
+        <button type="button" className="ds-btn" onClick={download}>Download as text</button>
+        <button type="button" className="ds-btn quiet" onClick={() => say('help me write my cv')}>Redraft from my profile</button>
+      </div>
     </section>
   );
 }

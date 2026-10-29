@@ -16,6 +16,7 @@ export function evaluateSuggestions(w: World): Suggestion[] {
   if (!prefs || prefs.proactive === 'OFF' || !actor.signedUp) return [];
   const t = simNow(w).getTime();
   const out: Suggestion[] = [];
+  const high = new Set<string>();
   for (const r of rules) {
     if (r.side !== 'both' && r.side !== actor.side) continue;
     if (prefs.proactive === 'QUIET' && r.priority !== 'high') continue;
@@ -24,10 +25,12 @@ export function evaluateSuggestions(w: World): Suggestion[] {
       const saved = w.q.suggestions.find((x) => x.id === id);
       if (saved && (saved.state === 'DISMISSED' || saved.state === 'DONE')) continue;
       if (saved?.state === 'SNOOZED' && saved.until && new Date(saved.until).getTime() > t) continue;
+      if (r.priority === 'high') high.add(id);
       out.push({ id, actor: actor.id, rule: r.id, subject: s.subject, text: s.text, why: s.why, actions: s.actions ?? [], at: w.session.now, state: 'OPEN' });
     }
   }
-  return out;
+  // High-priority suggestions first (stable), so another area's cards can't hide an urgent one.
+  return [...out.filter((s) => high.has(s.id)), ...out.filter((s) => !high.has(s.id))];
 }
 export function useSuggestions() {
   const w = useWorld((x) => x);

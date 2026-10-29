@@ -1,0 +1,56 @@
+/* hire-a (R1 Funmi, R5 Bayo): roles, brief, people, audit, founder home, and Q's live cards. Tokens only. */
+.hire-a-ref { border: 1px solid var(--night-4); border-radius: 12px; padding: 12px 14px; display: grid; gap: 6px; background: rgb(255 255 255 / .03); color: var(--moon); }
+.hire-a-ref .lab { color: var(--moon-2); }
+.hire-a-ref ul { margin: 0; padding-left: 18px; color: var(--moon-2); }
+.hire-a-ref .t14 { color: var(--moon-2); }
+.hire-a-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 10px; }
+.hire-a-two > div { display: grid; gap: 4px; border-top: 1px solid var(--night-4); padding-top: 8px; }
+
+.hire-a-empty { display: grid; gap: 14px; justify-items: start; max-width: 760px; }
+.hire-a-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.hire-a-row { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
+.hire-a-title { color: var(--ink); text-decoration: none; }
+.hire-a-title:hover { text-decoration: underline; text-underline-offset: 4px; }
+.hire-a-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.hire-a-brief { display: grid; gap: 16px; max-width: 860px; }
+.hire-a-brief .ds-banner { grid-template-columns: auto 1fr; }
+.hire-a-brief .ds-banner > :last-child:is(button, span.t14) { grid-column: 1 / -1; justify-self: start; }
+@media (min-width: 700px) { .hire-a-brief .ds-banner { grid-template-columns: auto 1fr auto; } .hire-a-brief .ds-banner > :last-child:is(button, span.t14) { grid-column: auto; } }
+.hire-a-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 14px; margin: 0; }
+.hire-a-facts dt { font-family: var(--data); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.hire-a-facts dd { margin: 4px 0 0; font-weight: 600; }
+.hire-a-reqs { list-style: none; margin: 0; padding: 0; }
+.hire-a-reqs li { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-top: 1px solid var(--rule); }
+.hire-a-versions { list-style: none; margin: 0; padding: 0; }
+.hire-a-versions li { display: grid; grid-template-columns: 40px 1fr auto; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--rule); }
+@media (max-width: 520px) { .hire-a-versions li { grid-template-columns: 40px 1fr; } .hire-a-versions li > button { grid-column: 2; justify-self: start; } }
+
+.hire-a-toolbar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; }
+.hire-a-people { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.hire-a-person { display: grid; gap: 10px; }
+.hire-a-person[data-on='1'] { box-shadow: inset 3px 0 0 var(--ink), var(--shadow); }
+.hire-a-person-head { display: flex; gap: 12px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
+.hire-a-person .ds-btn[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+.hire-a-fit { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.hire-a-fit li { display: flex; gap: 8px; align-items: flex-start; font-size: 15px; color: var(--ink-2); }
+.hire-a-fit li svg { margin-top: 3px; }
+.hire-a-person .ds-banner { grid-template-columns: auto 1fr; }
+.hire-a-person .ds-banner > button { grid-column: 1 / -1; justify-self: start; }
+
+.hire-a-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.hire-a-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.hire-a-chips .ds-filter { min-height: 44px; }
+.hire-a-audit { list-style: none; margin: 0; padding: 0; }
+.hire-a-audit li { display: grid; grid-template-columns: 56px 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid var(--rule); }
+.hire-a-time { font-family: var(--data); font-size: 13px; color: var(--ink-3); padding-top: 2px; }
+
+.hire-a-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.hire-a-steps li { display: grid; grid-template-columns: 24px 1fr; gap: 12px; align-items: flex-start; padding: 8px 0; }
+.hire-a-steps li svg { margin-top: 3px; color: var(--ink-3); }
+.hire-a-steps li[aria-current='step'] svg { color: var(--gold-ink); }
+.hire-a-steps li[aria-current='step'] b { color: var(--ink); }
+
+/* Legacy Kora screens (brief and search) now render as a canvas only; Q's conversation is global. */
+.hire-a-legacy { display: grid; gap: 16px; max-width: 860px; }
+.hire-a-legacy .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; }

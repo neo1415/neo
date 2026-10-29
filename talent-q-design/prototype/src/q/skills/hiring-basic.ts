@@ -1,18 +1,8 @@
 // Kora's original hiring requests, moved from the old Q home into the global conversation so they work
-// from any page: starting the Senior Backend mandate, and opening the comparison, memory, calendar or outreach.
+// from any page: opening the comparison, memory, calendar or outreach.
 import { registerSkill } from '../core/engine';
-import { startIntake } from '../scripts';
 
 const kora = (c: { actor: { orgId?: string } }) => c.actor.orgId === 'org_kora';
-
-registerSkill({
-  id: 'hiring.intake', side: 'recruiter',
-  match: (c) => (kora(c) && c.w.mandate.status === 'DRAFT' && /\b(hire|need|engineer|role|backend|developer)\b/.test(c.norm) ? 0.6 : 0),
-  handle: (c) => {
-    queueMicrotask(() => startIntake(c.text));
-    return { msgs: [{ kind: 'reply', text: 'I’ve started a role brief from what you said. I have two questions; answer them on the brief or here.', used: ['your message', 'Platform engineer mandate, Aug'], actions: [{ label: 'Open the brief', primary: true, act: { t: 'nav', to: '/r/mandate' } }] }], nav: { to: '/r/mandate', label: 'the role brief' } };
-  },
-});
 
 const JUMPS: { re: RegExp; to: string; label: string; text: string; used?: string[] }[] = [
   { re: /\b(compar\w*|shortlist|who should i)\b/, to: '/r/compare', label: 'the comparison', text: 'Here’s the comparison. Each mark shows what kind of evidence backs it.' },

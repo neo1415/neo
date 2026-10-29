@@ -8,6 +8,8 @@ import { anyOf } from '../core/nlu';
 import { protectedCriterion } from '../core/policy';
 
 
+/** For people who asked for plain words: keep only the first n sentences. */
+const brief = (t: string, n: number) => (t.match(/[^.!?]+[.!?]+(\s|$)/g) ?? [t]).slice(0, n).join('').trim();
 const scopeOf = (a: Actor) => (a.orgId ? `ORG:${a.orgId}` : `PERSON:${a.personId}`);
 
 // ---------- Pages Q can open by name ----------
@@ -76,7 +78,8 @@ registerSkill({
   match: (c) => (/\b(what does|what is|what are|what do you mean|meaning of|define|explain)\b/.test(c.norm) && findTerm(c.norm) ? 0.88 : 0),
   handle: (c) => {
     const t = findTerm(c.norm)!;
-    return { msgs: [{ kind: 'reply', text: `${t.term}: ${t.plain}${t.example ? ` For example: ${t.example}` : ''}` }],
+    const plain = c.w.q.prefs[c.actor.id]?.plain;
+    return { msgs: [{ kind: 'reply', text: plain ? `${t.term}: ${brief(t.plain, 1)}` : `${t.term}: ${t.plain}${t.example ? ` For example: ${t.example}` : ''}` }],
       effects: (w, a) => { (w.q.glossarySeen[a.id] ??= []).push(t.key); } };
   },
 });
@@ -151,7 +154,7 @@ registerSkill({ id: 'core.keep', side: 'both', match: (c) => (/^(keep it|leave i
 registerSkill({
   id: 'core.lost', side: 'both',
   match: (c) => (c.ents.unsure && !findTerm(c.norm) && c.norm.split(' ').length < 14 ? 0.62 : 0),
-  handle: (c) => ({ msgs: [{ kind: 'reply', text: nextStepFor(c.w, c.actor).text, actions: nextStepFor(c.w, c.actor).actions }] }),
+  handle: (c) => { const n = nextStepFor(c.w, c.actor); return { msgs: [{ kind: 'reply', text: c.w.q.prefs[c.actor.id]?.plain ? brief(n.text, 2) : n.text, actions: n.actions }] }; },
 });
 export function nextStepFor(w: World, a: Actor): { text: string; actions: QAction[] } {
   if (a.side === 'recruiter') {

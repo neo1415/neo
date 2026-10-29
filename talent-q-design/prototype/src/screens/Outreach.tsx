@@ -32,7 +32,8 @@ export function Outreach() {
   return (
     <main className="main stack gap-10">
       <header className="stack gap-3">
-        <span className="t-label q-text">Approvals</span>
+        <span className="t-label q-text">Approvals · earlier outreach flow</span>
+        <p className="muted measure">Candidate messages now live in <Link to="/r/messages">Messages</Link>, where Q checks each draft before you approve it. Talk to Q in the conversation beside this page; this screen has no conversation of its own.</p>
         <h1 className="t-display">{pending.length ? 'Nothing goes out without your yes.' : 'No drafts are waiting.'}</h1>
         {!pending.length && <p className="muted measure">When Q drafts a message, it waits here with the rules it followed. <Link to="/r/compare">Draft one from the comparison</Link>.</p>}
       </header>

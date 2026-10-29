@@ -12,7 +12,7 @@ import { ASSESS, KORA_ROLE, LEVEL_VALUE, LEVEL_WORD, assessFor, cellFor, criteri
 import { addCorrection, cmpView, finishInterview, ghRetry, live, setCmp, startInterview } from '../../journeys/hire-b/ops';
 import { PROJECTS } from '../../journeys/hire-b/projects';
 
-const kora = (c: QCtx) => !!c.actor.orgId && c.actor.side === 'recruiter';
+const kora = (c: QCtx) => c.actor.orgId === 'org_kora' && c.actor.side === 'recruiter';
 const who = (c: QCtx) => peopleIn(c.norm, c.ents.people).filter((p) => c.w.people.some((x) => x.personId === p));
 const fn = (w: World, p: string) => firstName(w, p);
 const list = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);

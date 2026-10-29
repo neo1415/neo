@@ -1,0 +1,16 @@
+PASS [d] starts signed out at signup
+PASS [d] lands on founder home
+PASS [d] Q asks plain question about the business
+PASS [d] Q creates the org in conversation
+PASS [d] Q hears two jobs and asks which matters more
+PASS [d] Q proposes a role from vague talk (shop assistant)
+PASS [d] Q asks about pay in plain words
+PASS [d] draft brief created as a DRAFT mandate
+PASS [d] [info] explains “mandate” in plain words
+PASS [d] [mind] role re-planned to part-time bookkeeper as v2
+PASS [d] [mind] shared answers kept (budget ₦80k, Ikeja)
+PASS [d] [info] budget below market is raised with options
+PASS [d] budget option applied as v3 (2 days a week)
+PASS [d] versions view lists v1–v3
+PASS [d] old version stays readable
+PASS [d] [recover] wrong click discards the draft

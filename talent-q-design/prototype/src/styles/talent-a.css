@@ -1,0 +1,74 @@
+/* talent-a (T1 Amaka, T2 Chidi): profile canvas, career atlas extras and live cards in Q's thread.
+   Tokens only; Direction D materials (paper canvas, ink thread, gold reserved for Q). */
+.talent-a-ways { display: grid; gap: 16px; }
+.talent-a-grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 10px; }
+.talent-a-promises, .talent-a-key, .talent-a-check { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.talent-a-promises li, .talent-a-check li { display: flex; gap: 10px; align-items: flex-start; }
+.talent-a-key { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.talent-a-key li { display: inline-flex; gap: 8px; align-items: center; color: var(--ink-2); }
+.talent-a-sections { list-style: none; margin: 0; padding: 0; }
+.talent-a-sections > li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-top: 1px solid var(--rule); }
+.talent-a-claim { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: start; }
+.talent-a-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); gap: 10px; margin: 0; }
+.talent-a-stats > div { background: var(--paper); border-radius: 14px; padding: 12px 14px; }
+.talent-a-stats dd { margin: 0; }
+.talent-a-jobs, .talent-a-needs, .talent-a-cv, .talent-a-comps, .talent-a-plan, .talent-a-record, .talent-a-rubric { list-style: none; margin: 0; padding: 0; }
+.talent-a-jobs > li { display: grid; gap: 10px; padding: 14px 0; border-top: 1px solid var(--rule); }
+.talent-a-jobhead { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: baseline; }
+.talent-a-needs { display: grid; gap: 6px; }
+.talent-a-needs li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; align-items: start; }
+.talent-a-cv { display: grid; gap: 8px; }
+.talent-a-cv li { display: grid; gap: 2px; padding: 8px 12px; background: var(--paper); border-radius: 12px; }
+.talent-a-clock { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.talent-a-employer { display: grid; gap: 10px; }
+.talent-a-employer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.talent-a-employer li { display: grid; grid-template-columns: minmax(110px, auto) auto minmax(0, 1fr); gap: 4px 12px; align-items: baseline; }
+.talent-a-source { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; background: var(--paper); border-radius: 14px; padding: 12px 14px; align-items: start; }
+.talent-a-rolehead { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: flex-start; }
+.talent-a-comps > li { border-top: 1px solid var(--rule); padding: 12px 0; display: grid; gap: 10px; }
+.talent-a-comprow { display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+.talent-a-evidence { border: 1px solid var(--rule-2); border-radius: 14px; padding: 14px; display: grid; gap: 8px; background: var(--paper); }
+.talent-a-rubric { display: grid; gap: 4px; }
+.talent-a-rubric li { display: flex; gap: 8px; align-items: center; }
+.talent-a-quiz { background: var(--paper); border-radius: 14px; padding: 16px; display: grid; gap: 12px; }
+.talent-a-quizhead { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: center; }
+.talent-a-jobline { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; background: var(--paper); border-radius: 12px; padding: 12px 14px; }
+.talent-a-plan > li { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 12px 0; border-top: 1px solid var(--rule); }
+.talent-a-plan > li[data-done='1'] { opacity: .65; }
+.talent-a-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.talent-a-tags:empty { display: none; }
+.talent-a-stepbtns { display: flex; gap: 2px; flex-wrap: wrap; justify-content: flex-end; }
+.talent-a-stepbtns .ds-btn { padding: 0 12px; }
+.talent-a-multiples { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 20px; }
+.talent-a-ladder { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 8px; }
+.talent-a-ladder > div { background: var(--paper); border-radius: 12px; padding: 12px; display: grid; gap: 6px; align-content: start; }
+.talent-a-record > li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-top: 1px solid var(--rule); }
+.talent-a-date { font-family: var(--data); font-size: 13px; color: var(--ink-3); }
+.talent-a-measures { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; }
+.talent-a-measures > div { background: var(--paper); border-radius: 14px; padding: 14px; display: grid; gap: 6px; align-content: start; }
+
+/* Live cards inside Q's messages: ink surface, moon text. */
+.talent-a-ref { border: 1px solid var(--night-3); border-radius: 12px; padding: 10px 12px; display: grid; gap: 8px; list-style: none; margin: 0; }
+.talent-a-ref ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.talent-a-ref li { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; color: var(--moon); }
+ul.talent-a-ref > li { display: grid; gap: 4px; }
+ul.talent-a-ref > li + li { border-top: 1px solid var(--night-3); padding-top: 8px; }
+.talent-a-ref-h { margin: 0; font-size: 14px; font-weight: 600; color: var(--moon); }
+.talent-a-ref-h a { color: var(--gold-light); }
+.talent-a-ref-h span { font-weight: 400; color: var(--moon-2); }
+.talent-a-ref-sec { font-family: var(--data); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--moon-2); min-width: 86px; padding-top: 2px; }
+.talent-a-ref-more { margin: 0; font-size: 13px; color: var(--moon-2); }
+.talent-a-ref svg { color: var(--moon-2); margin-top: 2px; }
+
+@media (max-width: 860px) {
+  .talent-a-hide-narrow { display: none; }
+  .talent-a-comprow { grid-template-columns: 24px minmax(0, 1fr); }
+  .talent-a-comprow > .ds-actions { grid-column: 2; justify-content: flex-start !important; }
+  .talent-a-plan > li { grid-template-columns: 22px minmax(0, 1fr); }
+  .talent-a-stepbtns { grid-column: 2; justify-content: flex-start; }
+  .talent-a-jobline, .talent-a-jobhead { grid-template-columns: minmax(0, 1fr); }
+  .talent-a-employer li { grid-template-columns: minmax(0, 1fr) auto; }
+  .talent-a-employer li > .t14 { grid-column: 1 / -1; }
+  .talent-a-ref-sec { min-width: 0; }
+  .talent-a-ref li:has(.talent-a-ref-sec) { flex-direction: column; gap: 0; }
+}

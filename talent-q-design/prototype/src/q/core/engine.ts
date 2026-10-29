@@ -148,9 +148,10 @@ registerOp('undo', (w, _a, actor) => {
   const u = w.q.undo[actor.id]?.pop();
   if (!u) return { say: 'There’s nothing for me to undo yet.' };
   const fn = ops.get(u.inverse.op);
-  fn?.(w, u.inverse.args, actor);
+  const r = fn?.(w, u.inverse.args, actor);
   emit(w, actor.id, 'q.undo', actor.orgId ? `ORG:${actor.orgId}` : `PERSON:${actor.personId}`, `Undid: ${u.label}`);
-  return { say: `Done: I undid “${u.label}”.` };
+  // An inverse may say where the restored thing lives; take the person there.
+  return { say: `Done: I undid “${u.label}”.`, nav: r ? r.nav : undefined };
 });
 
 // ---------------- Navigation with history and view-state ----------------
@@ -182,7 +183,7 @@ export function labelFor(path: string) {
   const w = getWorld();
   const person = path.match(/people\/(p_\w+)/)?.[1];
   if (person) return `${w.people.find((p) => p.personId === person)?.name ?? 'Profile'}’s profile`;
-  const M: Record<string, string> = { '/r/home': 'Q home', '/r/compare': 'the comparison', '/r/plan': 'plans and agents', '/r/pipeline': 'the pipeline', '/r/messages': 'messages', '/r/calendar': 'the calendar', '/r/mandate': 'the role', '/r/interviews': 'interviews', '/c/career': 'your career atlas', '/c/passport': 'your Evidence Passport', '/c/jobs': 'jobs', '/c/applications': 'your applications', '/c/welcome': 'getting started', '/c/home': 'Q home' };
+  const M: Record<string, string> = { '/r/home': 'Q home', '/r/compare': 'the comparison', '/r/plan': 'plans and agents', '/r/pipeline': 'the pipeline', '/r/messages': 'messages', '/r/calendar': 'the calendar', '/r/mandate': 'the role', '/r/interviews': 'interviews', '/c/career': 'your career atlas', '/c/passport': 'your Evidence Passport', '/c/jobs': 'jobs', '/c/applications': 'your applications', '/c/welcome': 'your profile', '/c/home': 'Q home' };
   if (M[path]) return M[path];
   const iv = path.match(/interviews\/(i_\w+)/)?.[1];
   if (iv) { const pid = w.interviews.find((i) => i.id === iv)?.personId; return `the interview with ${w.people.find((x) => x.personId === pid)?.name ?? 'a candidate'}`; }

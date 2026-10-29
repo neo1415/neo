@@ -1,67 +1,77 @@
-// P4 · SC-036 Search progress explorer, SC-045 Recruitment agent execution, SC-120 run states, SC-181 resume.
-// Every number on this screen comes from a run event. Partial results appear as soon as they exist.
+// P4 · SC-036 Search progress explorer, SC-045 agent execution, SC-120 run states, SC-181 resume.
+// The search results are the canvas; Q's commentary arrives in the one global conversation. Every number
+// here comes from a run event. Partial results appear as soon as they exist.
 import { PEOPLE, SOURCE_POOL } from '../mock/fixtures';
 import { useNamedRun, useRun } from '../mock/runtime';
-import { useWorld } from '../mock/world';
-import { QPresence } from '../q/QPresence';
-import { RunConversation } from '../q/RunConversation';
-import { startSourcing } from '../q/scripts';
-import { Arrive, Banner, Button, Label, RunSteps } from '../ui/kit';
-import { Link, navigate } from '../ui/router';
+import { actorOf, useWorld } from '../mock/world';
+import { Canvas } from '../ds/Workspace';
+import { Glyph } from '../ds/Glyph';
+import { QMark } from '../ds/QMark';
+import { Arrive, Label, RunSteps } from '../ui/kit';
+import { Link } from '../ui/router';
+import { startSourcingWithQ, orgMandates, STATUS_PLAIN } from '../journeys/hire-a/model';
+import { openQ } from '../journeys/hire-a/ui';
+import { readA } from '../state/areas/hire-a';
 
 export function Sourcing() {
   const w = useWorld((x) => x);
+  const a = actorOf(w);
   const runId = useNamedRun('sourcing');
   const view = useRun(runId, w.network);
+  if (a.orgId !== 'org_kora') return <OtherOrgSearch />;
   const interrupted = !runId && w.sourcing.cursor > 0 && !w.sourcing.done;
   const notStarted = !runId && w.sourcing.cursor === 0;
   const found = runId ? view.findings.filter((f) => f.kind === 'candidate').map((f) => f.ref) : w.sourcing.found;
   const read = view.steps.find((s) => s.stepId === 'read');
-  const progress = view.steps.length ? view.steps.reduce((a, s) => a + (s.total ? s.done / s.total : s.result === 'DONE' ? 1 : 0), 0) / 5 : 0;
-
+  const progress = view.steps.length ? view.steps.reduce((x, s) => x + (s.total ? s.done / s.total : s.result === 'DONE' ? 1 : 0), 0) / 5 : 0;
+  const done = view.completed || (!runId && w.sourcing.done);
+  const mood = w.network === 'offline' ? 'offline' : done ? 'done' : view.failure ? 'blocked' : runId ? 'working' : 'idle';
   return (
-    <main className="split">
-      <section className="split-conv" aria-labelledby="src-h">
-        <div className="row gap-4">
-          <QPresence state={w.network === 'offline' ? 'offline' : view.completed || w.sourcing.done ? 'done' : view.failure ? 'error' : runId ? 'working' : 'idle'} size={48} progress={progress} />
-          <div className="stack"><span className="t-label q-text">Senior Backend · search</span><h1 id="src-h" className="t-heading">{w.sourcing.done ? 'Search finished' : runId ? 'Searching' : 'Search'}</h1></div>
-        </div>
+    <Canvas title={done ? `${w.sourcing.found.length} people to compare` : runId ? `Searching · ${found.length} found so far` : 'Search for Senior Backend'} kicker={<>Senior Backend · search</>} open onClose={openQ}
+      qLine={done ? 'Search finished. Compare them next.' : runId ? 'Searching. You can leave this page.' : 'Approve the brief to start.'}
+      aside={<span style={{ display: 'flex', gap: 8, alignItems: 'center' }} aria-live="polite"><QMark mood={mood} size={32} agents={runId && !done ? [{ label: 'Search', done: Math.round(progress * 5), total: 5 }] : []} /><span className="t14 muted">{done ? 'Done' : runId ? `${Math.round(progress * 100)}%` : 'Not running'}</span></span>}>
+      <div className="hire-a-legacy">
         {notStarted && (
-          <div className="stack gap-4">
-            <p className="muted">Q starts searching once the mandate is approved.</p>
-            {w.mandate.status === 'DRAFT' ? <Link to="/r/mandate" className="btn btn-primary" style={{ alignSelf: 'flex-start' }}>Approve the mandate first</Link>
-              : <Button variant="primary" onClick={() => startSourcing()}>Start the search</Button>}
-          </div>
+          <div className="ds-banner" role="status"><Glyph k="none" /><span>Q starts searching once the mandate is approved.</span>
+            {w.mandate.status === 'DRAFT' ? <Link to="/r/mandate" className="ds-btn primary">Approve the mandate first</Link> : <button type="button" className="ds-btn primary" onClick={() => startSourcingWithQ()}>Start the search</button>}</div>
         )}
         {interrupted && (
-          <Banner tone="warn" title="This search was interrupted" action={<Button compact variant="primary" onClick={() => startSourcing()}>Resume</Button>}>
-            Q had read {w.sourcing.cursor} of {SOURCE_POOL.length} profiles when the page closed. It remembers where it stopped and will carry on from profile {w.sourcing.cursor + 1}, not start again.
-          </Banner>
+          <div className="ds-banner" data-k="warn" role="status"><Glyph k="partial" /><span><b>This search was interrupted.</b> Q had read {w.sourcing.cursor} of {SOURCE_POOL.length} profiles when the page closed. It will carry on from profile {w.sourcing.cursor + 1}, not start again.</span><button type="button" className="ds-btn primary" onClick={() => startSourcingWithQ()}>Resume</button></div>
         )}
-        <div className="grow"><RunConversation runId={runId} view={view} onRetry={() => startSourcing()} /></div>
-        {(view.completed || (!runId && w.sourcing.done)) && <Button variant="primary" onClick={() => navigate('/r/compare')}>Compare the {w.mandate.shortlist.length} people</Button>}
-      </section>
+        <section className="ds-sheet" aria-labelledby="src-steps" style={{ display: 'grid', gap: 12 }}>
+          <Label as="h2" id="src-steps">Steps</Label>
+          {view.steps.length ? <RunSteps steps={view.steps} /> : <p className="muted" style={{ margin: 0 }}>{w.sourcing.done ? `Finished earlier: ${SOURCE_POOL.length} profiles read, ${w.sourcing.found.length} shortlisted.` : 'Steps appear here as Q starts each one.'}</p>}
+        </section>
+        <section className="ds-sheet" aria-labelledby="src-res" style={{ display: 'grid', gap: 12 }}>
+          <div className="row between"><Label as="h2" id="src-res">Early results · {found.length}</Label>{read && <span className="t-mono subtle">{read.done} of {read.total} read</span>}</div>
+          {found.length === 0 && <p className="muted" style={{ margin: 0 }}>Nobody yet. People appear here as soon as Q finds them; you don’t have to wait for the whole search.</p>}
+          <ul className="stack gap-3" style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+            {found.map((pid) => { const p = PEOPLE.find((x) => x.personId === pid)!; return (
+              <li key={pid}><Arrive><div className="row between gap-4 wrap" style={{ padding: '12px 0', borderTop: '1px solid var(--rule)' }}>
+                <div className="stack" style={{ minWidth: 0 }}><span style={{ fontWeight: 600 }}>{p.name}</span><span className="t-caption">{p.headline} · {p.location}</span></div>
+                <Link to="/r/compare" className="ds-btn">Evidence</Link>
+              </div></Arrive></li>); })}
+          </ul>
+        </section>
+        {w.sourcing.failedSource && <div className="ds-banner" data-k="warn" role="status"><Glyph k="unclear" /><span><b>One source was unavailable.</b> PeopleGraph rate-limited the search. Results come from 2 of 3 sources. Q will retry it tonight and tell you if anyone new appears.</span></div>}
+        {done && <Link to="/r/compare" className="ds-btn primary" style={{ justifySelf: 'start' }}>Compare the {w.mandate.shortlist.length || w.sourcing.found.length} people</Link>}
+        {view.failure && <p className="t14" role="alert" style={{ margin: 0, color: 'var(--risk)' }}>{view.failure.message}</p>}
+      </div>
+    </Canvas>
+  );
+}
 
-      <section className="split-art paper" aria-label="Search progress and early results">
-        <div className="stack gap-10" style={{ maxWidth: 760 }}>
-          <div className="stack gap-4">
-            <Label as="h2">Steps</Label>
-            {view.steps.length ? <RunSteps steps={view.steps} /> : <p className="muted">{w.sourcing.done ? `Finished earlier: ${SOURCE_POOL.length} profiles read, ${w.sourcing.found.length} shortlisted.` : 'Steps appear here as Q starts each one.'}</p>}
-          </div>
-          <div className="stack gap-4">
-            <div className="row between"><Label as="h2">Early results · {found.length}</Label>{read && <span className="t-mono subtle">{read.done} of {read.total} read</span>}</div>
-            {found.length === 0 && <p className="muted">Nobody yet. People appear here as soon as Q finds them; you don’t have to wait for the whole search.</p>}
-            <ul className="stack gap-3">
-              {found.map((pid) => { const p = PEOPLE.find((x) => x.personId === pid)!; return (
-                <li key={pid}><Arrive><div className="panel row between gap-4 wrap" style={{ padding: 18 }}>
-                  <div className="stack"><span style={{ fontWeight: 600 }}>{p.name}</span><span className="t-caption">{p.headline} · {p.location}</span></div>
-                  <Link to="/r/compare" className="btn btn-secondary btn-compact">Evidence</Link>
-                </div></Arrive></li>); })}
-            </ul>
-          </div>
-          {w.sourcing.failedSource && <Banner tone="warn" title="One source was unavailable">PeopleGraph rate-limited the search. Results come from 2 of 3 sources. Q will retry it tonight and tell you if anyone new appears.</Banner>}
-        </div>
+/** Other organisations don't see Kora's search; they see their own roles' searches. */
+function OtherOrgSearch() {
+  const w = useWorld((x) => x);
+  const a = actorOf(w);
+  const ms = orgMandates(w, a);
+  return (
+    <Canvas title={ms.length ? 'Search for your roles' : 'Nothing to search for yet'} kicker="Search" open onClose={openQ}>
+      <section className="ds-sheet hire-a-empty">
+        {ms.length ? <ul className="hire-a-list" style={{ width: '100%' }}>{ms.map((m) => <li key={m.id} className="hire-a-row"><span><b>{m.title}</b> · {STATUS_PLAIN[m.status]}{readA(w).search[m.id] ? ` · ${readA(w).search[m.id].found.length} found` : ''}</span><Link to={`/r/roles/${m.id}`} className="ds-btn">Open</Link></li>)}</ul>
+          : <p style={{ margin: 0 }}>Q searches once you have an approved role brief. Tell Q who you need, or what you need help with.</p>}
       </section>
-    </main>
+    </Canvas>
   );
 }

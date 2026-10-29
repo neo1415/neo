@@ -85,7 +85,7 @@
 .ds-me { align-self: flex-end; max-width: 88%; background: var(--night-3); border-radius: 16px 16px 4px 16px; padding: 10px 14px; font-size: 15px; }
 .ds-q { display: grid; gap: 8px; }
 .ds-q p { margin: 0; }
-.ds-q .say { font-family: var(--voice); font-size: 18px; line-height: 1.45; font-weight: 350; }
+.ds-q .say { white-space: pre-line; font-family: var(--voice); font-size: 18px; line-height: 1.45; font-weight: 350; }
 .ds-why { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--moon-2); border: 1px dashed var(--night-3); border-radius: 999px; padding: 4px 10px; width: fit-content; }
 .ds-used { display: flex; flex-wrap: wrap; gap: 6px; }
 .ds-used span { font-size: 12px; color: var(--moon-2); border: 1px solid var(--night-3); border-radius: 6px; padding: 2px 8px; }
@@ -230,3 +230,6 @@
 .ds-who { display: grid; gap: 2px; background: var(--night-2); border: 1px solid var(--night-3); border-radius: 12px; padding: 6px; margin-top: 4px; }
 .ds-who [aria-current='true'] { background: var(--night-3); color: var(--moon); }
 .ds-taskhead { border-top: 1px solid var(--night-3); padding-top: 12px; }
+/* Lite mode (slow connections): no motion, bigger targets. */
+.ds-app[data-lite='on'] * { animation: none !important; transition: none !important; }
+.ds-app[data-lite='on'] .ds-chip, .ds-app[data-lite='on'] .ds-btn { min-height: 52px; }

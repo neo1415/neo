@@ -7,7 +7,7 @@
 //  4. The identity menu switches between the prototype's demo people (one per journey), each with
 //     their own Q conversation, memory and preferences.
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import { Link, navigate } from '../ui/router';
 import { actorOf, resetWorld, update, useWorld } from '../mock/world';
 import { allRoutes, type RouteDef } from '../routes/registry';
@@ -15,7 +15,7 @@ import { QThread, useQMood } from '../q/QThread';
 import { flushOutbox, useQThread } from '../q/core/engine';
 import { ICONS } from './icons';
 import { QMark } from './QMark';
-import { Split, useNarrow } from './Workspace';
+import { InShell, Split, useNarrow } from './Workspace';
 import './ds.css';
 
 const GROUP_ORDER = ['Q', 'Hiring', 'Agency', 'Work', 'Grow', 'Evidence', 'Organisation', 'You'];
@@ -24,7 +24,7 @@ const COLLAPSIBLE = new Set(['Organisation', 'You']);
 function useNav() {
   const actor = useWorld((w) => actorOf(w));
   const orgKind = useWorld((w) => w.orgs.find((o) => o.id === actorOf(w).orgId)?.kind);
-  const routes = allRoutes().filter((r) => r.nav && (r.side === actor.side || r.side === 'both') && (!r.nav.orgKind || r.nav.orgKind === orgKind));
+  const routes = allRoutes().filter((r) => r.nav && (r.side === actor.side || r.side === 'both') && (!r.nav.orgKind || r.nav.orgKind === orgKind) && (!r.nav.orgIds || r.nav.orgIds.includes(actor.orgId ?? '')));
   const groups = GROUP_ORDER.map((g) => ({ g, items: routes.filter((r) => r.nav!.group === g).sort((a, b) => a.nav!.order - b.nav!.order) })).filter((x) => x.items.length);
   return { actor, groups, routes };
 }
@@ -70,6 +70,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
   </div>;
 
   return (
+    <MotionConfig reducedMotion={lite ? 'always' : 'user'}>
     <div className="ds ds-app" data-rail={rail} data-audience={actor.side === 'candidate' ? 'candidate' : undefined} data-lite={lite ? 'on' : undefined}>
       <a className="skip-link" href="#ds-content">Skip to content</a>
       <nav className="ds-rail" aria-label="Talent Q navigation">
@@ -101,7 +102,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
         </div>
       </nav>
       <div className="ds-main">
-        {narrow ? page : <Split id="app" thread={<QThread />} canvas={page} />}
+        {narrow ? <InShell.Provider value>{page}</InShell.Provider> : <Split id="app" thread={<QThread />} canvas={page} />}
       </div>
       {narrow && !qOpen && <AskBar onOpen={() => setQOpen(true)} />}
       <AnimatePresence>
@@ -127,12 +128,14 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
           <div className="ds-navgroup"><span className="lab">Demo</span>
             <button type="button" className="ds-railbtn" onClick={() => { setMore(false); setWho(true); setTimeout(() => document.querySelector<HTMLButtonElement>('.ds-who button')?.focus(), 30); }}>{ICONS.people}<span>Switch person</span></button>
             <button type="button" className="ds-railbtn" onClick={() => { setMore(false); setPalette(true); }}>{ICONS.command}<span>Go to anything</span></button>
+            <button type="button" className="ds-railbtn" aria-pressed={network === 'offline'} onClick={() => update((w) => { w.network = w.network === 'online' ? 'offline' : 'online'; })}>{ICONS.offline}<span>{network === 'online' ? 'Simulate offline' : 'Reconnect'}</span></button>
           </div>
           {who && <WhoMenu onDone={() => setWho(false)} />}
         </div>
       )}
       {palette && <Palette onClose={() => setPalette(false)} />}
     </div>
+    </MotionConfig>
   );
 }
 
