@@ -20,6 +20,8 @@ export interface Campaign {
   status: 'DRAFT' | 'RUNNING' | 'PAUSED' | 'DONE';
   limits: { perRun: number; perDay: number; maxWords: number; followUps: number };
   approvedBy?: string; approvedAt?: string; messages: CampaignMsg[];
+  /** Pool members left out because their privacy settings keep them from agencies (counted, never named). */
+  notShown?: number;
 }
 export interface SubmittalPerson { personId: string; included: boolean; reason?: string }
 export interface Submittal {
@@ -37,6 +39,8 @@ export interface AgentRun {
   failAt?: number; failAttempts?: number; attempts: number; retryInTicks?: number;
   yields: { at: number; personId: string }[]; found: string[];
   log: { at: string; text: string; k: 'tool' | 'finding' | 'issue' | 'decision' }[];
+  /** Where a resumed run picked up again, and where a provider failed (markers on the progress bar). */
+  resumedFrom?: number; failedAt?: number;
   pausedReason?: string; campaignId?: string; searchId?: string; startedBy: string;
 }
 export interface Doc { id: string; clientOrgId: ClientId; mandateId?: string; name: string; kind: 'BRIEF' | 'SCORECARD' | 'UPLOAD'; signed?: boolean; confidential?: boolean; status: 'UPLOADING' | 'READY' | 'FAILED'; progress: number; summary: string; by: string; at: string }
@@ -82,7 +86,7 @@ export const area = {
         lastRunAt: '2026-10-26', results: ['p_tb_femi', 'p_tb_halima', 'p_tb_yemi', 'p_dayo'], newSinceLast: [], runs: 3,
         universe: [{ personId: 'p_tb_femi', since: '2026-10-01' }, { personId: 'p_tb_halima', since: '2026-10-02' }, { personId: 'p_tb_yemi', since: '2026-10-12' }, { personId: 'p_dayo', since: '2026-10-20' }, { personId: 'p_tb_kemi', since: '2026-10-27' }, { personId: 'p_tb_segun', since: '2026-10-28' }] },
       { id: 'ss_med_ops', clientOrgId: 'org_medlink', mandateId: 'm_ops', name: 'Medlink operations analyst, remote', query: 'process mapping AND spreadsheet modelling AND remote', keywords: ['ops', 'operations', 'analyst'],
-        lastRunAt: '2026-10-25', results: ['p_tb_ruth', 'p_chidi', 'p_amaka'], newSinceLast: [], runs: 2,
+        lastRunAt: '2026-10-25', results: ['p_tb_ruth'], newSinceLast: [], runs: 2,
         universe: [{ personId: 'p_tb_ruth', since: '2026-10-05' }, { personId: 'p_chidi', since: '2026-10-10' }, { personId: 'p_amaka', since: '2026-10-11' }, { personId: 'p_tb_bisi', since: '2026-10-27' }] },
       { id: 'ss_med_api', clientOrgId: 'org_medlink', mandateId: 'm_tb_med_api', name: 'Medlink claims API backend, remote only', query: 'API design AND remote-only', keywords: ['backend', 'api', 'claims', 'engineer', 'remote'],
         lastRunAt: '2026-10-28', results: ['p_tb_femi', 'p_tb_nneka', 'p_tb_obinna'], newSinceLast: [], runs: 1,
@@ -97,7 +101,7 @@ export const area = {
         limits: { perRun: 3, perDay: 6, maxWords: 120, followUps: 1 }, messages: [] },
     ],
     submittals: [
-      { id: 'sub_med_ops_1', clientOrgId: 'org_medlink', mandateId: 'm_ops', poolId: 'pool_med_ops', people: [{ personId: 'p_tb_ruth', included: true }, { personId: 'p_chidi', included: true }], status: 'SENT_SIMULATED', createdBy: 'u_dele', createdAt: '2026-10-23', sentAt: '2026-10-23', receipt: 'sub_sim_7k2' },
+      { id: 'sub_med_ops_1', clientOrgId: 'org_medlink', mandateId: 'm_ops', poolId: 'pool_med_ops', people: [{ personId: 'p_tb_ruth', included: true }], status: 'SENT_SIMULATED', createdBy: 'u_dele', createdAt: '2026-10-23', sentAt: '2026-10-23', receipt: 'sub_sim_7k2' },
     ],
     notes: [
       { id: 'n1', clientOrgId: 'org_kora', mandateId: 'm_tb_kora_pay', by: 'u_dele', text: 'Kora confirmed on-site in Lagos, four days a week. Seyi leads the payouts team.', mentions: [], at: '2026-10-27T15:10:00+01:00', readBy: ['u_dele'] },

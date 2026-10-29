@@ -10,7 +10,7 @@ export interface RouteDef {
   side: 'recruiter' | 'candidate' | 'both' | 'public';
   render: (params: Record<string, string>) => ReactNode;
   /** Shown in the rail when set. Groups: 'Q' | 'Hiring' | 'Agency' | 'Knowledge' | 'Grow' | 'Evidence' | 'Work'. */
-  nav?: { group: string; label: string; icon: IconName; tab?: boolean; order: number; badge?: string; orgKind?: 'EMPLOYER' | 'AGENCY'; /** Only for members of these organisations (pages showing one org's data). */ orgIds?: string[] };
+  nav?: { group: string; label: string; icon: IconName; tab?: boolean; order: number; badge?: string; orgKind?: 'EMPLOYER' | 'AGENCY'; /** Only for members of these organisations (pages showing one org's data). */ orgIds?: string[]; /** Extra paths that also mark this entry as current ("you are here"). */ also?: string[] };
   /** Human label for "go back to …" and history. */
   label: string;
   /** Public and signup pages render without the shell. */

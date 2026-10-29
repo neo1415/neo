@@ -60,7 +60,8 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
   useEffect(() => { if (network === 'online') void flushOutbox(); }, [network]);
   // Remember where each person was, so returning (or switching back to them) restores their place.
   useEffect(() => { update((w) => { w.session.lastRoute[w.session.actor] = path; }); }, [path]);
-  const current = (r: RouteDef) => path === r.path || (r.path !== '/' && path.startsWith(r.path + '/'));
+  // A rail entry is current for its own path, its sub-paths, and any extra prefixes it declares (nav.also).
+  const current = (r: RouteDef) => path === r.path || (r.path !== '/' && path.startsWith(r.path + '/')) || !!r.nav?.also?.some((p) => path === p || path.startsWith(p + '/'));
   const tabs = routes.filter((r) => r.nav?.tab).sort((a, b) => a.nav!.order - b.nav!.order).slice(0, 4);
 
   const page = <div className="ds-page" id="ds-content" tabIndex={-1}>

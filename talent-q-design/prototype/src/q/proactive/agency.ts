@@ -4,9 +4,9 @@
 import { actorOf, simNow } from '../../mock/world';
 import { registerRule } from '../core/proactive';
 import { agency } from '../../state/areas/agency';
-import { clientName, clientShort, conflicts, fmtDay, isAgency, isWithdrawn, personName, today } from '../../journeys/agency/model';
+import { AP, clientName, clientShort, conflicts, fmtDay, isAgency, isWithdrawn, personName, today } from '../../journeys/agency/model';
 
-const P = '/r/agency';
+
 
 registerRule({
   id: 'agency.agent-failed', side: 'recruiter', priority: 'high',
@@ -24,7 +24,7 @@ registerRule({
     subject: pid,
     text: `${personName(w, pid)} withdrew consent on ${fmtDay(at)}. They’re out of every pool, campaign and new submittal.`,
     why: 'The candidate’s consent record changed; Talentbridge may no longer hold or share their details.',
-    actions: [{ label: 'Show the pool', primary: true, act: { t: 'nav', to: `${P}/pools` } }],
+    actions: [{ label: 'Show the pool', primary: true, act: { t: 'nav', to: AP.pools } }],
   }))),
 });
 
@@ -72,6 +72,6 @@ registerRule({
   id: 'agency.mention', side: 'recruiter', priority: 'normal',
   evaluate: (w, a) => (!isAgency(w, a) ? [] : agency(w).notes.filter((n) => n.mentions.includes(a.id) && !n.readBy.includes(a.id)).map((n) => ({
     subject: n.id, text: `${actorOf(w, n.by).first} mentioned you on ${clientShort(w, n.clientOrgId)}: “${n.text.slice(0, 90)}${n.text.length > 90 ? '…' : ''}”`, why: 'A note mentions you and you haven’t opened it yet.',
-    actions: [{ label: 'Open notes', primary: true, act: { t: 'nav', to: `${P}/notes` } }],
+    actions: [{ label: 'Open notes', primary: true, act: { t: 'nav', to: AP.notes } }],
   }))),
 });

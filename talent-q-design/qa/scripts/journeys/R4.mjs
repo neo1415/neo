@@ -16,6 +16,10 @@ const ONLY = (process.argv[3] || 'd,m').split(',');
 const b = await pw.chromium.launch();
 const results = []; const errors = [];
 const MEDLINK_PEOPLE = ['Ruth Akpan', 'Bisi Coker', 'Nneka Okoro', 'Obinna Udeh', 'Chidi Nwosu', 'Amaka Eze'];
+// Privacy (canSeeCandidate): these people never registered with Talentbridge and their discovery rules don't
+// allow agencies, so no agency page or Q reply may name them, even though older pool records include them.
+const HIDDEN_FROM_AGENCY = ['Zara Mensah', 'Chidi Nwosu', 'Amaka Eze'];
+const P = { pools: '/r/agency/pools', searches: '/r/agency/pools/searches', compare: '/r/agency/pools/compare', notes: '/r/agency/clients/notes', docs: '/r/agency/clients/docs', clients: '/r/agency/clients', submittals: '/r/agency/submittals', campaigns: '/r/agency/campaigns', agents: '/r/agency/agents', mandate: (id) => `/r/agency/clients/mandate/${id}` };
 
 for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { width: 390, height: 844 }, 2]].filter(([x]) => ONLY.includes(x))) {
   const ctx = await b.newContext({ viewport: vp, deviceScaleFactor: dpr });
@@ -47,6 +51,9 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   const expect = (cond, msg) => { if (!cond) throw new Error(msg); };
   const canvas = () => page.locator('.ds-canvas').first();
   const chip = (re) => thread().locator('.ds-chip').filter({ hasText: re }).last();
+  const noHidden = (t, where) => { const leak = HIDDEN_FROM_AGENCY.filter((n) => t.includes(n)); if (leak.length) throw new Error(`${where} names ${leak.join(', ')}, hidden by their privacy settings`); };
+  // The rail marks the top destination for nested pages (one navigation system, no duplicate in-page bar).
+  const railCurrent = async () => (await page.locator('.ds-rail [aria-current="page"]').first().innerText().catch(() => '')).trim();
   const setActor = async (id) => { await page.evaluate((a) => { const w = JSON.parse(localStorage.getItem('tq.world.v4')); w.session.actor = a; localStorage.setItem('tq.world.v4', JSON.stringify(w)); }, id); await page.reload(); await page.waitForTimeout(700); };
 
   // Fresh world, signed in as Dele.
@@ -63,7 +70,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
 
   await step('2 curveball [info] provider outage: agent fails, retries once, Q explains', async () => {
     await page.waitForTimeout(9000);
-    await go('/r/agency/agents');
+    await go(P.agents);
     const t = await canvas().innerText();
     expect(/JobBoard NG isn’t responding/.test(t), 'failed banner on agents page');
     expect(/Failed/.test(t), 'failed tag');
@@ -128,9 +135,23 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
     await closeQ();
     let t = await canvas().innerText(); expect(/Halima Musa · not included: Withdrew consent/.test(t), 'excluded in draft with reason');
     await shot('09-submittal-withdrawn');
-    await go('/r/agency/pools'); t = await canvas().innerText();
+    await go(P.pools); t = await canvas().innerText();
     expect(/Removed from this pool/.test(t) && /Halima Musa: withdrew consent/.test(t), 'removed from pool with reason');
     await shot('10-pool-removed');
+  });
+
+  await step('8b privacy: pools, searches and pipelines count hidden people without naming them', async () => {
+    await go(P.pools); let t = await canvas().innerText();
+    noHidden(t, 'Kora pools'); expect(/1 more person in this pool isn’t shown/.test(t) && /privacy settings don’t allow agencies/.test(t) && /Talent Q doesn’t say who/.test(t), 'Kora pool: anonymous hidden note');
+    await canvas().getByRole('button', { name: 'Medlink Health', exact: true }).click(); await page.waitForTimeout(300);
+    t = await canvas().innerText(); noHidden(t, 'Medlink pools');
+    expect(/Operations analysts/.test(t) && /2 more people in this pool aren’t shown/.test(t), 'Medlink ops pool: two hidden, counted');
+    expect(/Ruth Akpan/.test(t) && /Bisi Coker/.test(t), 'registered Medlink candidates still shown');
+    await shot('10b-pool-hidden-medlink');
+    await go(P.searches); t = await canvas().innerText(); noHidden(t, 'Medlink saved searches');
+    await go(P.mandate('m_ops')); t = await canvas().innerText(); noHidden(t, 'Medlink ops mandate'); expect(/2 more people on this mandate aren’t shown/.test(t), 'ops pipeline: hidden counted');
+    await ask('who is in the medlink pipeline', 900); const r = await lastQ(); noHidden(r, 'Q pipeline reply'); expect(/Ruth Akpan/.test(r), `pipeline reply: ${r.slice(0, 120)}`);
+    await closeQ(); await go(P.pools); await canvas().getByRole('button', { name: 'Kora Pay', exact: true }).click(); await page.waitForTimeout(300);
   });
 
   await step('9 change of mind: "actually only the top 3", then yes sends (simulated)', async () => {
@@ -138,7 +159,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
     let r = await lastQ(); expect(/Changed it/.test(r) && /Halima Musa isn’t considered: withdrew consent/.test(r), `revised: ${r.slice(0, 220)}`);
     await ask('yes send it', 900);
     r = await lastQ(); expect(/Sent to Kora Pay/.test(r) && /simulated/.test(r), `sent: ${r.slice(0, 120)}`);
-    await closeQ(); await go('/r/agency/submittals');
+    await closeQ(); await go(P.submittals);
     const t = await canvas().innerText(); expect(/\(simulated\)/.test(t) && /Receipt sub_sim/.test(t), 'sent with receipt');
     await shot('11-submittal-sent');
   });
@@ -146,19 +167,21 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   await step('10 campaign under approved-campaign delegation with limits; withdrawn excluded', async () => {
     await ask('launch the kora payments campaign', 1000);
     let r = await lastQ(); expect(/approved-campaign setting/.test(r) && /4 messages per run/.test(r) && /Halima Musa \(withdrew consent\)/.test(r), `campaign approval: ${r.slice(0, 160)}`);
+    noHidden(r, 'campaign approval'); expect(/One more person in the pool won’t be contacted: their privacy settings/.test(r), `privacy-hidden member counted, not named: ${r.slice(-260)}`);
     await ask('yes', 900);
     r = await lastQ(); expect(/Campaign approved/.test(r), `launched: ${r.slice(0, 100)}`);
-    await closeQ(); await page.waitForTimeout(3500); await go('/r/agency/campaigns');
+    await closeQ(); await page.waitForTimeout(3500); await go(P.campaigns);
     const t = await canvas().innerText(); expect(/Sent \(simulated\)/.test(t) && /Excluded/.test(t) && /Held/.test(t), 'messages sent/held/excluded');
+    noHidden(t, 'campaign page'); expect(/1 more person in this pool isn’t shown/.test(t), 'campaign counts the privacy-hidden member without naming her');
     await shot('12-campaign');
-    await go('/r/agency/campaigns'); await page.getByRole('button', { name: 'Medlink Health' }).click(); await page.waitForTimeout(300);
+    await go(P.campaigns); await page.getByRole('button', { name: 'Medlink Health' }).click(); await page.waitForTimeout(300);
     const t2 = await canvas().innerText(); expect(/isn’t signed/.test(t2), 'medlink campaign blocked without signed brief');
     await ask('launch the medlink campaign', 900);
     const r3 = await lastQ(); expect(/brief for this role isn’t signed/.test(r3), `blocked by guideline: ${r3.slice(0, 100)}`);
     await ask('upload the signed medlink brief', 900); await closeQ(); await page.waitForTimeout(4500);
     const t3 = await canvas().innerText(); expect(/Backend Engineer, Claims API brief \(signed\)/.test(t3) && /Signed brief/.test(t3), 'signed brief uploaded (simulated)');
     await shot('12b-docs-uploaded');
-    await go('/r/agency/campaigns'); const t4 = await canvas().innerText(); expect(/Review and launch with Q/.test(t4), 'medlink campaign now launchable');
+    await go(P.campaigns); const t4 = await canvas().innerText(); expect(/Review and launch with Q/.test(t4), 'medlink campaign now launchable');
   });
 
   await step('11 resume the paused Medlink work from where it stopped', async () => {
@@ -176,7 +199,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   await step('13 collaboration note @mentioning Tunde', async () => {
     await ask('tell tunde to check femis references before friday', 900);
     const r = await lastQ(); expect(/mentioning Tunde/.test(r), `note: ${r.slice(0, 100)}`);
-    await closeQ(); await go('/r/agency/notes');
+    await closeQ(); await go(P.notes);
     const t = await canvas().innerText(); expect(/@Tunde check femis references/i.test(t), 'note on page');
     await shot('15-notes');
   });
@@ -184,7 +207,8 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   await step('14 client report: Q drafts from Kora only, Dele edits, isolation check, share (simulated)', async () => {
     await ask('draft the kora report', 900);
     await closeQ();
-    let t = await canvas().innerText(); expect(/Isolation check passed/.test(t), 'isolation check'); expect(!MEDLINK_PEOPLE.some((n) => t.includes(n)) && !/Medlink/.test(t.split('Showing')[1] ?? ''), 'no Medlink data in Kora report');
+    let t = await canvas().innerText(); expect(/Isolation check passed/.test(t), 'isolation check');
+    const rep = await canvas().locator('.agency-report').innerText(); expect(!MEDLINK_PEOPLE.some((n) => rep.includes(n)) && !/Medlink/.test(rep), 'no Medlink data in Kora report');
     await canvas().getByRole('button', { name: 'Edit', exact: true }).click();
     const box = canvas().locator('textarea').first(); await box.fill(`${await box.inputValue()} Also see Ruth Akpan.`);
     t = await canvas().innerText(); expect(/Can’t be shared as written/.test(t), 'live isolation check flags a Medlink candidate');
@@ -202,7 +226,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
     await canvas().getByRole('button', { name: /Tunde · Viewer/ }).click(); await page.waitForTimeout(400);
     await ask('open the confidential kora backend role', 900);
     const r = await lastQ(); expect(/You don’t have access/.test(r) && /Viewer/.test(r), `denied: ${r.slice(0, 100)}`);
-    await closeQ(); await go('/r/agency/mandate/m_kora_agency');
+    await closeQ(); await go(P.mandate('m_kora_agency'));
     let t = await canvas().innerText(); expect(/Permission denied/.test(t) && /marked this mandate confidential/.test(t), 'denied page with reason');
     await shot('18-tunde-denied');
     await canvas().getByRole('button', { name: 'Request access from Dele' }).click(); await page.waitForTimeout(400);
@@ -219,23 +243,31 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
     const r = await lastQ(); expect(/Granted/.test(r), `granted: ${r.slice(0, 80)}`);
     await closeQ();
     await canvas().getByRole('button', { name: /Tunde · Viewer/ }).click(); await page.waitForTimeout(400);
-    await go('/r/agency/mandate/m_kora_agency');
+    await go(P.mandate('m_kora_agency'));
     const t = await canvas().innerText(); expect(/Backend Engineer \(Kora Pay, via agency\)/.test(t) && /Confidential\./.test(t), 'mandate visible after grant');
     await shot('19-tunde-granted');
     await canvas().getByRole('button', { name: /Dele · Owner/ }).click(); await page.waitForTimeout(300);
   });
 
   await step('17 pages render for each client (compare, docs, clients) without mixing', async () => {
-    for (const r of ['/r/agency/compare', '/r/agency/docs', '/r/agency/clients']) {
+    for (const r of [P.compare, P.docs, P.clients, P.searches, P.pools, P.submittals]) {
       await go(r);
       for (const c of ['Kora Pay', 'Medlink Health']) {
         await canvas().getByRole('button', { name: c, exact: true }).click(); await page.waitForTimeout(250);
         const t = await canvas().innerText();
         if (c === 'Kora Pay') expect(!MEDLINK_PEOPLE.slice(0, 4).some((n) => t.includes(n)), `${r}: Medlink person on Kora view`);
         else expect(!['Halima Musa', 'Kemi Bassey', 'Segun Ilori', 'Yemi Adeola'].some((n) => t.includes(n)), `${r}: Kora person on Medlink view`);
+        noHidden(t, `${r} (${c})`);
       }
       await shot(`20${r.replace(/\//g, '-')}`);
     }
+    // Information architecture: nested pages keep their top destination marked in the rail; no duplicate section bar.
+    if (!phone) for (const [r, label] of [[P.searches, 'Talent pools'], [P.compare, 'Talent pools'], [P.notes, 'Clients'], [P.mandate('m_tb_kora_pay'), 'Clients'], [P.agents, 'Agents']]) {
+      await go(r); const cur = await railCurrent(); expect(cur.includes(label), `${r}: rail marks "${cur}", expected ${label}`);
+    }
+    expect(!(await page.locator('.agency-subnav').count()), 'no duplicate in-page section bar');
+    // Old flat paths still land on the nested page.
+    await page.goto(`${BASE}#/r/agency/compare`); await page.waitForTimeout(700); expect(page.url().endsWith('#/r/agency/pools/compare'), `old path redirect: ${page.url()}`);
     await go('/r/home'); await shot('21-home-end');
   });
 

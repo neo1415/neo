@@ -24,6 +24,14 @@ const agencyActors = (w: World) => w.actors.filter((a) => a.orgId === AGENCY_ID)
 export const owners = (w: World) => agencyActors(w).filter((a) => a.role === 'OWNER' || a.role === 'ADMIN');
 export const canAct = (a: Actor) => a.role === 'OWNER' || a.role === 'ADMIN' || a.role === 'RECRUITER';
 export const SCOPE = `ORG:${AGENCY_ID}`;
+/** Canonical agency paths. The rail holds the top destinations (clients, pools, submittals, campaigns, agents,
+ *  reports); secondary pages nest under their parent so the rail keeps showing where you are. */
+const R = '/r/agency';
+export const AP = {
+  clients: `${R}/clients`, client: (id: string) => `${R}/clients/${id}`, mandate: (id: string) => `${R}/clients/mandate/${id}`, notes: `${R}/clients/notes`, docs: `${R}/clients/docs`,
+  pools: `${R}/pools`, searches: `${R}/pools/searches`, compare: `${R}/pools/compare`,
+  submittals: `${R}/submittals`, campaigns: `${R}/campaigns`, agents: `${R}/agents`, reports: `${R}/reports`,
+} as const;
 /** Lower-case the first letter only (keeps month names and people's names capitalised). */
 export const lc = (s?: string) => (s ? s[0].toLowerCase() + s.slice(1) : '');
 
@@ -48,7 +56,11 @@ export const submittalsFor = (w: World, client: ClientId) => agency(w).submittal
 export const notesFor = (w: World, client: ClientId) => agency(w).notes.filter((n) => n.clientOrgId === client);
 export const runsFor = (w: World, client: ClientId) => agency(w).runs.filter((r) => r.clientOrgId === client);
 export const docsFor = (w: World, client: ClientId) => agency(w).docs.filter((d) => d.clientOrgId === client);
-export const pipelineFor = (w: World, client: ClientId) => { const ids = agencyMandates(w, client).map((m) => m.id); return w.pipeline.filter((p) => ids.includes(p.mandateId)); };
+/** A client's pipeline as Talentbridge may see it: people hidden by their own privacy settings are left out. */
+export const pipelineFor = (w: World, client: ClientId) => { const ids = agencyMandates(w, client).map((m) => m.id); return w.pipeline.filter((p) => ids.includes(p.mandateId) && allowed(w, p.personId)); };
+export const mandatePeople = (w: World, mandateId: string) => w.pipeline.filter((p) => p.mandateId === mandateId && allowed(w, p.personId));
+/** How many people on a mandate's pipeline Talentbridge may not see (counted, never named). */
+export const mandateHidden = (w: World, mandateId: string) => w.pipeline.filter((p) => p.mandateId === mandateId && !allowed(w, p.personId) && !isWithdrawn(w, p.personId)).length;
 /** Everyone who appears in a client's records (pipeline or pools): the only people a client view or report may name. */
 export const peopleFor = (w: World, client: ClientId) => [...new Set([...pipelineFor(w, client).map((p) => p.personId), ...poolsFor(w, client).flatMap((p) => p.members)])].filter((p) => allowed(w, p));
 
@@ -103,7 +115,7 @@ export function conflicts(w: World) {
   const out: { personId: string; a: MandateX; b: MandateX }[] = [];
   const ms = clientIds(w).flatMap((c) => agencyMandates(w, c));
   const byPerson = new Map<string, MandateX[]>();
-  for (const p of w.pipeline) { const m = ms.find((x) => x.id === p.mandateId); if (m && !['REJECTED', 'WITHDRAWN'].includes(p.stage)) byPerson.set(p.personId, [...(byPerson.get(p.personId) ?? []), m]); }
+  for (const p of w.pipeline) { const m = ms.find((x) => x.id === p.mandateId); if (m && allowed(w, p.personId) && !['REJECTED', 'WITHDRAWN'].includes(p.stage)) byPerson.set(p.personId, [...(byPerson.get(p.personId) ?? []), m]); }
   for (const [personId, list] of byPerson) for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++) {
     const a = list[i], b = list[j];
     if (a.clientOrgId !== b.clientOrgId && ((a.workMode === 'ONSITE' && b.workMode === 'REMOTE') || (a.workMode === 'REMOTE' && b.workMode === 'ONSITE')) && !isWithdrawn(w, personId)) out.push({ personId, a, b });
@@ -118,7 +130,7 @@ export function rerunSearch(w: World, actor: Actor, searchId: string) {
   const s = ag(w).searches.find((x) => x.id === searchId)!;
   const t = today(w);
   const prev = s.results;
-  const now = s.universe.filter((u) => u.since <= t).map((u) => u.personId);
+  const now = s.universe.filter((u) => u.since <= t && allowed(w, u.personId)).map((u) => u.personId);
   const results = now.filter((p) => !isWithdrawn(w, p));
   const dropped = now.filter((p) => isWithdrawn(w, p));
   s.newSinceLast = results.filter((p) => !prev.includes(p));
@@ -168,10 +180,11 @@ export function launchCampaign(w: World, actor: Actor, id: string) {
   if (c.status === 'RUNNING') return { ok: false, text: 'That campaign is already running.' };
   const pool = A.pools.find((p) => p.id === c.poolId)!;
   let queued = 0;
-  c.messages = pool.members.map((p) => {
+  // People the agency may not see are never messaged and never named: they are only counted.
+  c.notShown = pool.members.filter((p) => !isWithdrawn(w, p) && !allowed(w, p)).length;
+  c.messages = pool.members.filter((p) => isWithdrawn(w, p) || allowed(w, p)).map((p) => {
     const body = messageFor(w, c.template, p); const n = words(body);
     if (isWithdrawn(w, p)) return { personId: p, status: 'EXCLUDED' as const, reason: consentReason(w, p, c.clientOrgId), words: n };
-    if (!allowed(w, p)) return { personId: p, status: 'EXCLUDED' as const, reason: 'Their privacy settings don’t allow agencies to contact them', words: n };
     if (n > c.limits.maxWords) return { personId: p, status: 'HELD' as const, reason: `Message is ${n} words; the limit is ${c.limits.maxWords}`, words: n };
     if (c.messages.some((m) => m.personId === p && m.status === 'SENT_SIMULATED')) return c.messages.find((m) => m.personId === p)!;
     if (queued >= c.limits.perRun) return { personId: p, status: 'HELD' as const, reason: `Over this run’s limit of ${c.limits.perRun}; goes in the next run`, words: n };
@@ -203,12 +216,12 @@ export function withdrawConsent(w: World, personId: string) {
 
 export function pauseRun(w: World, actor: Actor, r: AgentRun, reason: string) {
   if (!['RUNNING', 'QUEUED', 'RETRYING'].includes(r.state)) return false;
-  r.state = 'PAUSED'; r.pausedReason = reason; r.log.push({ at: new Date().toISOString(), text: `Paused by ${actor.first} at ${r.done} of ${r.total}. ${reason}`, k: 'decision' });
+  r.state = 'PAUSED'; r.pausedReason = reason; r.resumedFrom = undefined; r.log.push({ at: new Date().toISOString(), text: `Paused by ${actor.first} at ${r.done} of ${r.total}. ${reason}`, k: 'decision' });
   emit(w, actor.id, 'agency.run.paused', SCOPE, `Paused ${clientShort(w, r.clientOrgId)} · ${r.label} at ${r.done}/${r.total}.`, { clientOrgId: r.clientOrgId }); return true;
 }
 export function resumeRun(w: World, actor: Actor, r: AgentRun) {
   if (r.state !== 'PAUSED') return false;
-  r.state = 'QUEUED'; r.pausedReason = undefined; r.log.push({ at: new Date().toISOString(), text: `Resumed by ${actor.first} from ${r.done} of ${r.total}; no finished work is repeated`, k: 'decision' });
+  r.state = 'QUEUED'; r.pausedReason = undefined; r.resumedFrom = r.done; r.log.push({ at: new Date().toISOString(), text: `Resumed by ${actor.first} from ${r.done} of ${r.total}; no finished work is repeated`, k: 'decision' });
   emit(w, actor.id, 'agency.run.resumed', SCOPE, `Resumed ${clientShort(w, r.clientOrgId)} · ${r.label} from ${r.done}/${r.total}.`, { clientOrgId: r.clientOrgId }); return true;
 }
 export function cancelRun(w: World, actor: Actor, r: AgentRun) {
@@ -356,7 +369,7 @@ export function tick(w: World) {
   fillSlots(w);
   for (const r of A.runs.filter((x) => x.state === 'RUNNING').sort((a, b) => a.priority - b.priority).slice(0, SLOTS)) {
     if (r.failAt != null && r.done === r.failAt && r.providerState === 'OK' && r.attempts === 1) {
-      r.state = 'FAILED'; r.providerState = 'DOWN'; r.retryInTicks = 4;
+      r.state = 'FAILED'; r.providerState = 'DOWN'; r.retryInTicks = 4; r.failedAt = r.done;
       r.log.push({ at: at(), text: `${r.provider} stopped responding (simulated outage). ${r.done} of ${r.total} kept. Will retry automatically once.`, k: 'issue' });
       note(w, `${r.provider} stopped responding during the ${clientShort(w, r.clientOrgId)} ${r.label.toLowerCase()} (a simulated outage). I’ve kept the ${r.done} profiles already read and will retry once automatically. The other agents are unaffected.`, [{ label: 'Show agents', act: { t: 'nav', to: '/r/agency/agents' } }]);
       continue;
@@ -392,7 +405,7 @@ export function startRunner() {
   if (typeof window === 'undefined' || timer != null) return;
   const w0 = getWorld(); const A0 = agency(w0);
   if (A0.lastTickAt && Date.now() - A0.lastTickAt > 15000 && A0.runs.some((r) => r.state === 'RUNNING')) {
-    update((w) => { for (const r of ag(w).runs) if (r.state === 'RUNNING') { r.state = 'PAUSED'; r.pausedReason = 'Interrupted when the page closed. Every finished unit was kept; resume continues from here.'; r.log.push({ at: at(), text: `Interrupted at ${r.done} of ${r.total} when the page closed`, k: 'issue' }); } });
+    update((w) => { for (const r of ag(w).runs) if (r.state === 'RUNNING') { r.state = 'PAUSED'; r.resumedFrom = undefined; r.pausedReason = 'Interrupted when the page closed. Every finished unit was kept; resume continues from here.'; r.log.push({ at: at(), text: `Interrupted at ${r.done} of ${r.total} when the page closed`, k: 'issue' }); } });
   }
   timer = window.setInterval(() => {
     const w = getWorld();
@@ -402,4 +415,11 @@ export function startRunner() {
 }
 
 export const RUN_STATE: Record<AgentRun['state'], string> = { QUEUED: 'Waiting for a slot', RUNNING: 'Running', PAUSED: 'Paused', FAILED: 'Failed', RETRYING: 'Retrying', DONE: 'Finished', CANCELLED: 'Cancelled' };
+/** What a person monitoring agents needs to tell apart at a glance (interrupted is a pause nobody chose). */
+export type RunPhase = 'running' | 'waiting' | 'retrying' | 'failed' | 'paused' | 'interrupted' | 'done' | 'cancelled';
+export const phaseOf = (r: AgentRun): RunPhase => r.state === 'RUNNING' ? 'running' : r.state === 'QUEUED' ? 'waiting' : r.state === 'RETRYING' ? 'retrying' : r.state === 'FAILED' ? 'failed'
+  : r.state === 'PAUSED' ? (r.pausedReason?.startsWith('Interrupted') ? 'interrupted' : 'paused') : r.state === 'DONE' ? 'done' : 'cancelled';
+export const PHASE_LABEL: Record<RunPhase, string> = { running: 'Running', waiting: 'Waiting for a slot', retrying: 'Retrying', failed: 'Failed', paused: 'Paused', interrupted: 'Interrupted', done: 'Finished', cancelled: 'Cancelled' };
+export const PHASE_ORDER: RunPhase[] = ['failed', 'interrupted', 'retrying', 'running', 'paused', 'waiting', 'done', 'cancelled'];
+export const UNIT: Record<AgentRun['kind'], string> = { SEARCH: 'profiles read', EVIDENCE: 'checks done', CAMPAIGN: 'messages sent' };
 export const PRIORITY: Record<1 | 2 | 3, string> = { 1: 'Urgent', 2: 'Normal', 3: 'Low' };

@@ -1,13 +1,13 @@
 // Q skills for the agency (R4, Dele at Talentbridge; Tunde is a Viewer). Everything on the agency pages can
 // be done by typing to Q in imperfect language. Tenant isolation is a hard rule: a reply only ever names
 // the client in question's records, and requests that mix Kora Pay and Medlink Health are declined.
-import { actorOf, emit, simNow, type World } from '../../mock/world';
+import { actorOf, canSeeCandidate, emit, simNow, type World } from '../../mock/world';
 import type { Actor, QAction } from '../../state/domain';
 import { appendQ, pushUndo, registerOp, registerSkill } from '../core/engine';
 import type { QCtx, QReply } from '../core/types';
 import { agency, type AgentRun, type ClientId } from '../../state/areas/agency';
 import {
-  AGENCY_ID, SCOPE, ag, addNote, lc, agencyMandates, briefSigned, buildReport, canAct, canSeeMandate, cancelRun, clientIds, clientName, clientShort, clientsIn, conflicts, consentReason, consentState,
+  AP, AGENCY_ID, mandatePeople, SCOPE, ag, addNote, lc, agencyMandates, briefSigned, buildReport, canAct, canSeeMandate, cancelRun, clientIds, clientName, clientShort, clientsIn, conflicts, consentReason, consentState,
   deniedReason, draftSubmittal, focusOf, fmtDay, interrupt, isAgency, isWithdrawn, isolationCheck, launchCampaign, mandateOf, messageFor, owners, pauseRun, peopleFor, personName, pipelineFor, poolsFor, prioritise,
   ranked, requestAccess, rerunSearch, resumeRun, retryRun, runsFor, searchesFor, sendSubmittal, setFocus, today, withdrawConsent, PRIORITY, RUN_STATE,
 } from '../../journeys/agency/model';
@@ -82,7 +82,7 @@ registerSkill({
       const rs = findRuns(c.w, c.norm).filter((r) => ['RUNNING', 'QUEUED', 'RETRYING'].includes(r.state));
       if (!rs.length) return say('Nothing that matches is running right now, so there’s nothing to pause.');
       return { msgs: [{ kind: 'reply', text: `Paused ${rs.map((r) => `${short(c.w, r.clientOrgId)} · ${r.label} at ${r.done} of ${r.total}`).join('; ')}. Finished work is kept; say “resume” to continue from there.` }],
-        effects: (w, a) => { for (const r of rs) pauseRun(w, a, ag(w).runs.find((x) => x.id === r.id)!, 'Paused by you; resumes from here.'); pushUndo(w, a.id, 'pause agents', 'agency.runs.resume', { ids: rs.map((r) => r.id) }); }, nav: { to: `${PAGE}/agents`, label: 'agents' } };
+        effects: (w, a) => { for (const r of rs) pauseRun(w, a, ag(w).runs.find((x) => x.id === r.id)!, 'Paused by you; resumes from here.'); pushUndo(w, a.id, 'pause agents', 'agency.runs.resume', { ids: rs.map((r) => r.id) }); }, nav: { to: AP.agents, label: 'agents' } };
     }
     const toPause = runsFor(c.w, stop).filter((r) => ['RUNNING', 'QUEUED', 'RETRYING'].includes(r.state));
     const toRaise = urgent ? runsFor(c.w, urgent).filter((r) => !['DONE', 'CANCELLED'].includes(r.state)) : [];
@@ -90,9 +90,9 @@ registerSkill({
     return {
       msgs: [{ kind: 'reply', text: `${toPause.length ? `Paused ${short(c.w, stop)}’s ${toPause.length === 1 ? 'agent' : `${toPause.length} agents`}: ${toPause.map((r) => `${r.label.toLowerCase()} at ${r.done} of ${r.total}`).join(', ')}. Nothing finished is lost and each resumes from where it stopped.` : `${short(c.w, stop)} had nothing running to pause.`}${failedStop.length ? ` (${failedStop.map((r) => r.label.toLowerCase()).join(', ')} was already stopped by the provider outage.)` : ''}${urgent ? ` ${short(c.w, urgent)} is now urgent: ${toRaise.length ? `${toRaise.map((r) => r.label.toLowerCase()).join(' and ')} ${toRaise.length === 1 ? 'takes' : 'take'} the free slots first.` : `I’ve started an urgent ${short(c.w, urgent)} search (${searchesFor(c.w, urgent)[0]?.name ?? 'its main saved search'}); it takes the first free slot.`}` : ''}`,
         used: [`${clientName(c.w, stop)} · ${toPause.length} running`, ...(urgent ? [`${clientName(c.w, urgent)} · ${toRaise.length} ${toRaise.length === 1 ? 'agent' : 'agents'}`] : [])],
-        actions: [{ label: `Resume ${short(c.w, stop)}`, act: { t: 'say', text: `resume ${short(c.w, stop)}` } }, { label: 'Show agents', primary: true, act: { t: 'nav', to: `${PAGE}/agents` } }] }],
+        actions: [{ label: `Resume ${short(c.w, stop)}`, act: { t: 'say', text: `resume ${short(c.w, stop)}` } }, { label: 'Show agents', primary: true, act: { t: 'nav', to: AP.agents } }] }],
       effects: (w, a) => { interrupt(w, a, stop, urgent); if (urgent) setFocus(w, a.id, urgent); pushUndo(w, a.id, `pause ${short(w, stop)}`, 'agency.runs.resume', { ids: toPause.map((r) => r.id) }); },
-      nav: { to: `${PAGE}/agents`, label: 'agents' }, frame: null,
+      nav: { to: AP.agents, label: 'agents' }, frame: null,
     };
   },
 });
@@ -105,7 +105,7 @@ registerSkill({
     const rs = findRuns(c.w, c.norm, named[0]).filter((r) => r.state === 'PAUSED');
     if (!rs.length) return say(named[0] ? `Nothing of ${short(c.w, named[0])}’s is paused.` : 'Nothing is paused right now.');
     return { msgs: [{ kind: 'reply', text: `Resumed ${rs.map((r) => `${short(c.w, r.clientOrgId)} · ${r.label.toLowerCase()} from ${r.done} of ${r.total}`).join('; ')}. ${rs.length > 1 || agency(c.w).runs.filter((r) => r.state === 'RUNNING').length >= 3 ? 'Three agents run at once; the rest wait for a slot in priority order.' : ''}`.trim() }],
-      effects: (w, a) => { for (const r of rs) resumeRun(w, a, ag(w).runs.find((x) => x.id === r.id)!); }, nav: { to: `${PAGE}/agents`, label: 'agents' } };
+      effects: (w, a) => { for (const r of rs) resumeRun(w, a, ag(w).runs.find((x) => x.id === r.id)!); }, nav: { to: AP.agents, label: 'agents' } };
   },
 });
 registerSkill({
@@ -116,7 +116,7 @@ registerSkill({
     const client = clientsIn(c.norm)[0]; const p: 1 | 3 = /\b(lower|deprioriti[sz]e|less important)\b/.test(c.norm) ? 3 : 1;
     const rs = runsFor(c.w, client).filter((r) => !['DONE', 'CANCELLED'].includes(r.state));
     return { msgs: [{ kind: 'reply', text: rs.length ? `${short(c.w, client)}’s ${rs.length === 1 ? 'agent is' : `${rs.length} agents are`} now ${PRIORITY[p].toLowerCase()} priority.${p === 1 ? ' They take free slots first; I haven’t paused anyone else’s work.' : ''}` : `${short(c.w, client)} has no agents running.` }],
-      effects: (w, a) => { for (const r of rs) prioritise(w, a, ag(w).runs.find((x) => x.id === r.id)!, p); }, nav: { to: `${PAGE}/agents`, label: 'agents' } };
+      effects: (w, a) => { for (const r of rs) prioritise(w, a, ag(w).runs.find((x) => x.id === r.id)!, p); }, nav: { to: AP.agents, label: 'agents' } };
   },
 });
 registerSkill({
@@ -147,7 +147,7 @@ registerSkill({
       if (!canAct(c.actor)) return viewerNo(c, 'retry agents');
       const skip = /\bskip\b/.test(c.norm);
       return { msgs: [{ kind: 'reply', text: skip ? `Skipping ${r.provider} for the ${short(c.w, r.clientOrgId)} ${r.label.toLowerCase()}. It continues from ${r.done} of ${r.total} on the Talent Q network only, so it may find fewer people.` : `Retrying ${r.provider} for the ${short(c.w, r.clientOrgId)} ${r.label.toLowerCase()} now. If it answers, the run continues from ${r.done} of ${r.total}; nothing already read is repeated.` }],
-        effects: (w, a) => { retryRun(w, a, ag(w).runs.find((x) => x.id === r.id)!, skip); }, nav: { to: `${PAGE}/agents`, label: 'agents' } };
+        effects: (w, a) => { retryRun(w, a, ag(w).runs.find((x) => x.id === r.id)!, skip); }, nav: { to: AP.agents, label: 'agents' } };
     }
     return { msgs: [{ kind: 'reply', text: `${r.provider}, the job board the ${short(c.w, r.clientOrgId)} ${r.label.toLowerCase()} reads from, stopped responding at profile ${r.done} of ${r.total} (a simulated outage). I kept the ${r.done} profiles already read, retried once automatically${r.state === 'RETRYING' ? ' and am retrying now' : ', and it’s still down'}. Only this agent is affected; the other ${agency(c.w).runs.filter((x) => x.id !== r.id && x.state === 'RUNNING').length} running agents are fine.`,
       why: `Attempts so far: ${r.attempts}. Provider status: ${r.providerState === 'DOWN' ? 'not responding' : r.providerState.toLowerCase()}`,
@@ -163,16 +163,16 @@ registerSkill({
     const client = clientOf(c); const s = findSearch(c.w, c.norm, client);
     if (!s) return say(`${short(c.w, client)} has no saved searches yet.`);
     const t = today(c.w);
-    const nowIds = s.universe.filter((u) => u.since <= t).map((u) => u.personId);
+    const nowIds = s.universe.filter((u) => u.since <= t && canSeeCandidate(c.w, u.personId, AGENCY_ID)).map((u) => u.personId);
     const added = nowIds.filter((p) => !isWithdrawn(c.w, p) && !s.results.includes(p));
     const dropped = nowIds.filter((p) => isWithdrawn(c.w, p) && s.results.includes(p));
     const total = nowIds.filter((p) => !isWithdrawn(c.w, p)).length;
     return {
       msgs: [{ kind: 'reply', text: `I re-ran “${s.name}” for ${clientName(c.w, client)}. ${total} matches now; ${added.length ? `${added.length} new since ${fmtDay(s.lastRunAt)}: ${added.map((p) => personName(c.w, p)).join(', ')}.` : `nothing new since ${fmtDay(s.lastRunAt)}.`}${dropped.length ? ` ${dropped.map((p) => personName(c.w, p)).join(', ')} no longer appear${dropped.length === 1 ? 's' : ''}: withdrew consent.` : ''} I only searched ${short(c.w, client)}’s criteria; nothing was contacted.`,
         used: [`Saved search · ${s.name}`, `Last run ${fmtDay(s.lastRunAt)}`],
-        actions: added.length ? [{ label: `Add ${added.length === 1 ? 'them' : 'them all'} to the pool`, primary: true, act: { t: 'do', op: 'agency.pool.add', args: { searchId: s.id } } }, { label: 'Show the search', act: { t: 'nav', to: `${PAGE}/searches` } }] : [{ label: 'Show the search', act: { t: 'nav', to: `${PAGE}/searches` } }] }],
+        actions: added.length ? [{ label: `Add ${added.length === 1 ? 'them' : 'them all'} to the pool`, primary: true, act: { t: 'do', op: 'agency.pool.add', args: { searchId: s.id } } }, { label: 'Show the search', act: { t: 'nav', to: AP.searches } }] : [{ label: 'Show the search', act: { t: 'nav', to: AP.searches } }] }],
       effects: (w, a) => { setFocus(w, a.id, client); rerunSearch(w, a, s.id); },
-      nav: { to: `${PAGE}/searches`, label: 'saved searches' },
+      nav: { to: AP.searches, label: 'saved searches' },
     };
   },
 });
@@ -214,10 +214,10 @@ function draftReply(c: QCtx, client: ClientId, poolId: string, n: number, revise
   return {
     msgs: [{ kind: 'approval', text: `${revised ? 'Changed it: ' : ''}Here’s the top ${n} from ${short(c.w, client)}’s ${pool.name} pool, ranked by how many of the role’s must-haves their evidence shows. Ready to send ${inc.length}: ${inc.map((p) => personName(c.w, p)).join(', ') || 'no one'}.${exc.length ? ` Not included: ${exc.map((p) => `${personName(c.w, p)} (${lc(consentReason(c.w, p, client))})`).join('; ')}.` : ''}${gone.length ? ` ${gone.map((p) => personName(c.w, p)).join(', ')} ${gone.length === 1 ? 'isn’t' : 'aren’t'} considered: withdrew consent.` : ''} Send this to ${clientName(c.w, client)}? It’s simulated: nothing leaves Talent Q.`,
       used: [`${short(c.w, client)} · ${pool.name} pool`, 'Consent checked per person', `Mandate · ${mandateOf(c.w, pool.mandateId)?.title}`],
-      actions: [{ label: `Send to ${short(c.w, client)} (simulated)`, primary: true, act: { t: 'do', op: 'agency.submittal.sendLatest', args: { client } } }, { label: 'Only the top 3', act: { t: 'say', text: 'actually only the top 3' } }, { label: 'Show the submittal', act: { t: 'nav', to: `${PAGE}/submittals` } }] }],
+      actions: [{ label: `Send to ${short(c.w, client)} (simulated)`, primary: true, act: { t: 'do', op: 'agency.submittal.sendLatest', args: { client } } }, { label: 'Only the top 3', act: { t: 'say', text: 'actually only the top 3' } }, { label: 'Show the submittal', act: { t: 'nav', to: AP.submittals } }] }],
     effects: (w, a) => { setFocus(w, a.id, client); const s = draftSubmittal(w, a, client, poolId, n); s.id = id; pushUndo(w, a.id, `draft submittal to ${short(w, client)}`, 'agency.submittal.discard', { id }); },
     frame: { intent: 'agency.submit', slots: { id, client, pool: poolId }, awaiting: 'approve', startedAt: new Date().toISOString() },
-    nav: { to: `${PAGE}/submittals`, label: 'submittals' },
+    nav: { to: AP.submittals, label: 'submittals' },
   };
 }
 
@@ -231,25 +231,26 @@ registerSkill({
     if (!camp) return say(`${short(c.w, client)} has no campaign set up yet.`);
     const pool = agency(c.w).pools.find((p) => p.id === camp.poolId)!;
     const wantsGo = /\b(start|launch|run|send|go|approve|kick off|begin)\b/.test(c.norm);
-    if (!wantsGo) return { msgs: [{ kind: 'reply', text: `“${camp.name}” for ${short(c.w, client)} is ${camp.status === 'DRAFT' ? 'a draft' : camp.status.toLowerCase()}: ${camp.messages.filter((m) => m.status === 'SENT_SIMULATED').length} sent (simulated), ${camp.messages.filter((m) => m.status === 'HELD').length} held, ${camp.messages.filter((m) => m.status === 'EXCLUDED').length} excluded.` }], effects: focusFx(client), nav: { to: `${PAGE}/campaigns`, label: 'campaigns' } };
+    if (!wantsGo) return { msgs: [{ kind: 'reply', text: `“${camp.name}” for ${short(c.w, client)} is ${camp.status === 'DRAFT' ? 'a draft' : camp.status.toLowerCase()}: ${camp.messages.filter((m) => m.status === 'SENT_SIMULATED').length} sent (simulated), ${camp.messages.filter((m) => m.status === 'HELD').length} held, ${camp.messages.filter((m) => m.status === 'EXCLUDED').length} excluded.` }], effects: focusFx(client), nav: { to: AP.campaigns, label: 'campaigns' } };
     if (!canAct(c.actor)) return viewerNo(c, 'launch campaigns');
-    if (!briefSigned(c.w, camp.mandateId)) return { msgs: [{ kind: 'refusal', text: `I can’t launch “${camp.name}” yet: ${short(c.w, client)}’s brief for this role isn’t signed, and Talentbridge’s rule is “Campaigns need a signed client brief”. Upload the signed brief and I’ll prepare it.`, actions: [{ label: 'Upload the signed brief (simulated)', primary: true, act: { t: 'say', text: `upload the signed ${short(c.w, client)} brief` } }] }], effects: focusFx(client), nav: { to: `${PAGE}/docs`, label: 'documents' } };
-    const members = pool.members;
+    if (!briefSigned(c.w, camp.mandateId)) return { msgs: [{ kind: 'refusal', text: `I can’t launch “${camp.name}” yet: ${short(c.w, client)}’s brief for this role isn’t signed, and Talentbridge’s rule is “Campaigns need a signed client brief”. Upload the signed brief and I’ll prepare it.`, actions: [{ label: 'Upload the signed brief (simulated)', primary: true, act: { t: 'say', text: `upload the signed ${short(c.w, client)} brief` } }] }], effects: focusFx(client), nav: { to: AP.docs, label: 'documents' } };
+    const members = pool.members.filter((p) => isWithdrawn(c.w, p) || canSeeCandidate(c.w, p, AGENCY_ID));
+    const notShown = pool.members.length - members.length;
     const excluded = members.filter((p) => isWithdrawn(c.w, p));
     const eligible = members.filter((p) => !isWithdrawn(c.w, p));
     const now = eligible.slice(0, camp.limits.perRun);
     const sample = messageFor(c.w, camp.template, now[0] ?? members[0]);
     return {
-      msgs: [{ kind: 'approval', text: `Ready to launch “${camp.name}” to ${short(c.w, client)}’s ${pool.name} pool under Talentbridge’s approved-campaign setting: you approve the campaign once, and I send within its limits without asking each time. Limits: ${camp.limits.perRun} messages per run, ${camp.limits.perDay} a day, ${camp.limits.maxWords} words each, ${camp.limits.followUps} follow-up. This run: ${now.map((p) => personName(c.w, p)).join(', ')}; ${Math.max(0, eligible.length - now.length)} wait for the next run.${excluded.length ? ` Excluded: ${excluded.map((p) => `${personName(c.w, p)} (withdrew consent)`).join(', ')}.` : ''} First message: “${sample}” Sends are simulated.`,
+      msgs: [{ kind: 'approval', text: `Ready to launch “${camp.name}” to ${short(c.w, client)}’s ${pool.name} pool under Talentbridge’s approved-campaign setting: you approve the campaign once, and I send within its limits without asking each time. Limits: ${camp.limits.perRun} messages per run, ${camp.limits.perDay} a day, ${camp.limits.maxWords} words each, ${camp.limits.followUps} follow-up. This run: ${now.map((p) => personName(c.w, p)).join(', ')}; ${Math.max(0, eligible.length - now.length)} wait for the next run.${excluded.length ? ` Excluded: ${excluded.map((p) => `${personName(c.w, p)} (withdrew consent)`).join(', ')}.` : ''}${notShown ? ` ${notShown === 1 ? 'One more person' : `${notShown} more people`} in the pool won’t be contacted: their privacy settings don’t allow agencies to reach them.` : ''} First message: “${sample}” Sends are simulated.`,
         used: ['Delegation · approved campaign', `Signed ${short(c.w, client)} brief`, 'Candidate consent'],
         actions: [{ label: 'Approve and launch (simulated)', primary: true, act: { t: 'do', op: 'agency.campaign.launch', args: { id: camp.id } } }, { label: 'Not yet', act: { t: 'say', text: 'not now' } }] }],
-      effects: focusFx(client), nav: { to: `${PAGE}/campaigns`, label: 'campaigns' },
+      effects: focusFx(client), nav: { to: AP.campaigns, label: 'campaigns' },
       frame: { intent: 'agency.campaign', slots: { id: camp.id }, awaiting: 'approve', startedAt: new Date().toISOString() },
     };
   },
   answer: (c) => {
     const f = c.frame; if (!f || f.awaiting !== 'approve') return null;
-    if (c.ents.yes) return { msgs: [], effects: (w, a) => { const r = launchCampaign(w, a, f.slots.id); qReply(w, a, r.text, [{ label: 'Watch it run', act: { t: 'nav', to: `${PAGE}/agents` } }]); }, frame: null };
+    if (c.ents.yes) return { msgs: [], effects: (w, a) => { const r = launchCampaign(w, a, f.slots.id); qReply(w, a, r.text, [{ label: 'Watch it run', act: { t: 'nav', to: AP.agents } }]); }, frame: null };
     if (c.ents.no) return { msgs: [{ kind: 'reply', text: 'Okay, the campaign stays a draft. Nothing was sent.' }], frame: null };
     return null;
   },
@@ -264,7 +265,7 @@ registerSkill({
     const raw = c.text.replace(/^\s*(please\s+)?(add|leave|write|make)\s+(a\s+)?note\s*(for|to)?\s*/i, '').replace(/^\s*note\s*(for|to)?\s*:?\s*/i, '').trim();
     const text = /\b(tunde|dele)\b/i.test(raw) && !/@/.test(raw) ? raw.replace(/^(tell|ask|remind|let|ping|message)\s+(tunde|dele)\b\s*(to\s+)?/i, (_m, _v, who) => `@${who[0].toUpperCase()}${who.slice(1).toLowerCase()} `).replace(/^(tunde|dele)\b\s*:?\s*/i, (_m, who) => `@${who[0].toUpperCase()}${who.slice(1).toLowerCase()} `) : raw;
     const mention = c.w.actors.filter((a) => a.orgId === AGENCY_ID && a.id !== c.actor.id && new RegExp(`\\b${a.first}\\b`, 'i').test(text));
-    return { msgs: [{ kind: 'reply', text: `Added to ${clientName(c.w, client)}’s notes${mention.length ? `, mentioning ${mention.map((a) => a.first).join(' and ')}. ${mention.map((a) => a.first).join(' and ')} will see it under “Mentions you”` : ''}. Only Talentbridge staff can read it; ${short(c.w, client)} never sees internal notes.`, actions: [{ label: 'Show notes', act: { t: 'nav', to: `${PAGE}/notes` } }] }],
+    return { msgs: [{ kind: 'reply', text: `Added to ${clientName(c.w, client)}’s notes${mention.length ? `, mentioning ${mention.map((a) => a.first).join(' and ')}. ${mention.map((a) => a.first).join(' and ')} will see it under “Mentions you”` : ''}. Only Talentbridge staff can read it; ${short(c.w, client)} never sees internal notes.`, actions: [{ label: 'Show notes', act: { t: 'nav', to: AP.notes } }] }],
       effects: (w, a) => { setFocus(w, a.id, client); const n = addNote(w, a, client, text); pushUndo(w, a.id, 'add a note', 'agency.note.delete', { id: n.id }); } };
   },
 });
@@ -278,16 +279,16 @@ registerSkill({
     const rep = agency(c.w).reports[client];
     if (/\b(share|send|publish|email)\b/.test(c.norm)) {
       if (!canAct(c.actor)) return viewerNo(c, 'share client reports');
-      if (!rep) return { msgs: [{ kind: 'reply', text: `There’s no ${short(c.w, client)} report yet. I’ll draft one first from ${short(c.w, client)}’s records only, so you can read and edit it before anything is shared.` }], effects: (w, a) => { setFocus(w, a.id, client); ag(w).reports[client] = buildReport(w, client, a.id); }, nav: { to: `${PAGE}/reports`, label: 'client reports' } };
+      if (!rep) return { msgs: [{ kind: 'reply', text: `There’s no ${short(c.w, client)} report yet. I’ll draft one first from ${short(c.w, client)}’s records only, so you can read and edit it before anything is shared.` }], effects: (w, a) => { setFocus(w, a.id, client); ag(w).reports[client] = buildReport(w, client, a.id); }, nav: { to: AP.reports, label: 'client reports' } };
       const chk = isolationCheck(c.w, rep);
-      if (!chk.ok) return { msgs: [{ kind: 'refusal', text: `I can’t share this version: it names ${[...chk.foreignPeople, ...chk.foreignClients].join(', ')}, which ${chk.foreignPeople.length + chk.foreignClients.length === 1 ? 'isn’t' : 'aren’t'} part of ${short(c.w, client)}’s records. Remove ${chk.foreignPeople.length + chk.foreignClients.length === 1 ? 'it' : 'them'} and I’ll check again.`, why: 'Isolation check runs before every share' }], nav: { to: `${PAGE}/reports`, label: 'client reports' } };
+      if (!chk.ok) return { msgs: [{ kind: 'refusal', text: `I can’t share this version: it names ${[...chk.foreignPeople, ...chk.foreignClients].join(', ')}, which ${chk.foreignPeople.length + chk.foreignClients.length === 1 ? 'isn’t' : 'aren’t'} part of ${short(c.w, client)}’s records. Remove ${chk.foreignPeople.length + chk.foreignClients.length === 1 ? 'it' : 'them'} and I’ll check again.`, why: 'Isolation check runs before every share' }], nav: { to: AP.reports, label: 'client reports' } };
       return { msgs: [{ kind: 'approval', text: `Share version ${rep.v} of the ${short(c.w, client)} report${rep.status === 'EDITED' ? ' with your edits' : ''} with ${clientName(c.w, client)}? I checked it: it names only ${short(c.w, client)}’s own candidates and roles. Sharing is simulated.`, used: [`${short(c.w, client)} report v${rep.v}`, 'Isolation check passed'],
-        actions: [{ label: `Share with ${short(c.w, client)} (simulated)`, primary: true, act: { t: 'do', op: 'agency.report.share', args: { client } } }, { label: 'Let me edit first', act: { t: 'nav', to: `${PAGE}/reports` } }] }], effects: focusFx(client), nav: { to: `${PAGE}/reports`, label: 'client reports' } };
+        actions: [{ label: `Share with ${short(c.w, client)} (simulated)`, primary: true, act: { t: 'do', op: 'agency.report.share', args: { client } } }, { label: 'Let me edit first', act: { t: 'nav', to: AP.reports } }] }], effects: focusFx(client), nav: { to: AP.reports, label: 'client reports' } };
     }
     const redraft = !rep || /\b(draft|write|prepare|make|create|redo|regenerate|update|refresh|new)\b/.test(c.norm);
     return { msgs: [{ kind: 'reply', text: redraft ? `I’ve drafted ${rep ? `version ${rep.v + 1} of ` : ''}the ${clientName(c.w, client)} report from ${short(c.w, client)}’s records only: ${agencyMandates(c.w, client).length} roles, ${pipelineFor(c.w, client).length} people, submittals and outreach. Edit any section on the page, then tell me to share it.` : `Here’s the ${short(c.w, client)} report (version ${rep!.v}, ${rep!.status === 'SHARED_SIMULATED' ? 'shared' : rep!.status === 'EDITED' ? 'edited by you' : 'draft'}).`,
       used: [`${short(c.w, client)} records only`], actions: [{ label: 'Share it', act: { t: 'say', text: `share the ${short(c.w, client)} report` } }] }],
-      effects: (w, a) => { setFocus(w, a.id, client); if (redraft) ag(w).reports[client] = buildReport(w, client, a.id, ag(w).reports[client]); }, nav: { to: `${PAGE}/reports`, label: 'client reports' } };
+      effects: (w, a) => { setFocus(w, a.id, client); if (redraft) ag(w).reports[client] = buildReport(w, client, a.id, ag(w).reports[client]); }, nav: { to: AP.reports, label: 'client reports' } };
   },
 });
 
@@ -321,7 +322,7 @@ registerSkill({
       if (!req) return say('There are no access requests waiting.');
       return { msgs: [{ kind: 'approval', text: `${actorOf(c.w, req.actorId).first} asked to see the confidential ${req.recordLabel} record. Granting lets them read that one record, including the confidential brief. It’s logged.`, actions: [{ label: `Let ${actorOf(c.w, req.actorId).first} see it`, primary: true, act: { t: 'do', op: 'agency.access.decide', args: { id: req.id, d: 'GRANTED' } } }, { label: 'Decline', act: { t: 'do', op: 'agency.access.decide', args: { id: req.id, d: 'DECLINED' } } }] }] };
     }
-    if (canSeeMandate(c.w, c.actor, m)) return { msgs: [{ kind: 'reply', text: `Opening ${m.title}. It’s confidential for ${short(c.w, m.clientOrgId!)}: please don’t discuss it outside Talentbridge.` }], effects: focusFx(m.clientOrgId!), nav: { to: `${PAGE}/mandate/${m.id}`, label: m.title } };
+    if (canSeeMandate(c.w, c.actor, m)) return { msgs: [{ kind: 'reply', text: `Opening ${m.title}. It’s confidential for ${short(c.w, m.clientOrgId!)}: please don’t discuss it outside Talentbridge.` }], effects: focusFx(m.clientOrgId!), nav: { to: AP.mandate(m.id), label: m.title } };
     if (/\b(request|ask for|need) access\b/.test(c.norm)) return { msgs: [{ kind: 'reply', text: `I’ve asked Dele to let you see it. You’ll get access only if he says yes; until then the record stays hidden. I’ll tell you when he decides.` }], effects: (w, a) => { requestAccess(w, a, m); } };
     return { msgs: [{ kind: 'refusal', text: `You don’t have access to that record. ${deniedReason(c.w, c.actor, m)} You can still work with the ${short(c.w, m.clientOrgId!)} pools and searches. If you need it for your research, I can ask Dele for access.`, why: 'Permission denied: confidential client record, Viewer role',
       actions: [{ label: 'Ask Dele for access', primary: true, act: { t: 'say', text: 'request access' } }] }], effects: (w, a) => emit(w, a.id, 'agency.access.denied', SCOPE, `${a.first} was denied a confidential record (${clientShort(w, m.clientOrgId!)} · ${m.title}).`) };
@@ -356,9 +357,9 @@ registerSkill({
     const ms = agencyMandates(c.w, client).filter((x) => !x.confidential);
     const m = ms.find((x) => agency(c.w).docs.some((d) => d.mandateId === x.id && d.kind === 'BRIEF' && !d.signed)) ?? ms.find((x) => agency(c.w).campaigns.some((k) => k.mandateId === x.id) && !briefSigned(c.w, x.id)) ?? ms.find((x) => !briefSigned(c.w, x.id)) ?? ms[0];
     const name = `${clientName(c.w, client)} ${m.title} brief${signed ? ' (signed)' : ''}.pdf`;
-    return { msgs: [{ kind: 'reply', text: `Uploading “${name}” to ${short(c.w, client)}’s documents (simulated: no real file). ${signed ? `Once it’s in, ${short(c.w, client)}’s campaign for ${m.title} can be launched.` : ''}`.trim(), actions: [{ label: 'Show documents', act: { t: 'nav', to: `${PAGE}/docs` } }] }],
+    return { msgs: [{ kind: 'reply', text: `Uploading “${name}” to ${short(c.w, client)}’s documents (simulated: no real file). ${signed ? `Once it’s in, ${short(c.w, client)}’s campaign for ${m.title} can be launched.` : ''}`.trim(), actions: [{ label: 'Show documents', act: { t: 'nav', to: AP.docs } }] }],
       effects: (w, a) => { setFocus(w, a.id, client); ag(w).docs.push({ id: `d_${Date.now().toString(36)}`, clientOrgId: client, mandateId: m.id, name, kind: 'BRIEF', signed, status: 'UPLOADING', progress: 0, summary: signed ? `Signed brief for ${m.title}.` : `Brief for ${m.title}.`, by: a.id, at: today(w) }); emit(w, a.id, 'agency.doc.uploaded', SCOPE, `${a.first} uploaded ${name} (simulated).`, { clientOrgId: client }); },
-      nav: { to: `${PAGE}/docs`, label: 'documents' } };
+      nav: { to: AP.docs, label: 'documents' } };
   },
 });
 
@@ -371,7 +372,7 @@ registerSkill({
     if (!pool) return say(`${short(c.w, client)} has no pool to compare yet.`);
     const top = ranked(c.w, pool).slice(0, 3).map((p) => personName(c.w, p));
     return { msgs: [{ kind: 'reply', text: `Comparing ${short(c.w, client)}’s ${pool.name} pool against ${mandateOf(c.w, pool.mandateId)?.title}. Each mark shows what kind of evidence backs each requirement. Strongest on the must-haves: ${top.join(', ')}.`, used: [`${short(c.w, client)} · ${pool.name}`] }],
-      effects: (w, a) => { setFocus(w, a.id, client); setUi(w, a, 'compare.pool', pool.id); }, nav: { to: `${PAGE}/compare`, label: 'the comparison' } };
+      effects: (w, a) => { setFocus(w, a.id, client); setUi(w, a, 'compare.pool', pool.id); }, nav: { to: AP.compare, label: 'the comparison' } };
   },
 });
 
@@ -383,8 +384,8 @@ registerSkill({
     const client = clientOf(c);
     const ms = agencyMandates(c.w, client).filter((m) => canSeeMandate(c.w, c.actor, m));
     const hidden = agencyMandates(c.w, client).length - ms.length;
-    const lines = ms.map((m) => { const ppl = c.w.pipeline.filter((p) => p.mandateId === m.id && !isWithdrawn(c.w, p.personId)); return `${m.title}: ${ppl.length ? ppl.map((p) => personName(c.w, p.personId)).join(', ') : 'no one yet'}`; });
-    return { msgs: [{ kind: 'reply', text: `${clientName(c.w, client)} only. ${lines.join('. ')}.${hidden ? ` ${hidden} confidential ${hidden === 1 ? 'role is' : 'roles are'} hidden for your role.` : ''}`, used: [`${short(c.w, client)} records`] }], effects: focusFx(client), nav: { to: `${PAGE}/client/${client}`, label: clientName(c.w, client) } };
+    const lines = ms.map((m) => { const ppl = mandatePeople(c.w, m.id).filter((p) => !isWithdrawn(c.w, p.personId)); return `${m.title}: ${ppl.length ? ppl.map((p) => personName(c.w, p.personId)).join(', ') : 'no one yet'}`; });
+    return { msgs: [{ kind: 'reply', text: `${clientName(c.w, client)} only. ${lines.join('. ')}.${hidden ? ` ${hidden} confidential ${hidden === 1 ? 'role is' : 'roles are'} hidden for your role.` : ''}`, used: [`${short(c.w, client)} records`] }], effects: focusFx(client), nav: { to: AP.client(client), label: clientName(c.w, client) } };
   },
 });
 
@@ -403,8 +404,8 @@ registerSkill({
 
 // ---------------- Open agency pages and switch client focus ----------------
 const PAGES: [RegExp, string, string][] = [
-  [/\bagents?|runs?|monitor\w*\b/, '/agents', 'agents'], [/\bsaved searches|searches\b/, '/searches', 'saved searches'], [/\bpools?\b/, '/pools', 'talent pools'], [/\bcampaigns?\b/, '/campaigns', 'campaigns'],
-  [/\bsubmittals?\b/, '/submittals', 'submittals'], [/\b(documents?|docs|files|briefs?)\b/, '/docs', 'documents'], [/\breports?\b/, '/reports', 'client reports'], [/\bnotes?|mentions?\b/, '/notes', 'notes'], [/\bclients?\b/, '/clients', 'clients'], [/\bmandates?|roles\b/, '/clients', 'clients and mandates'],
+  [/\bagents?|runs?|monitor\w*\b/, AP.agents, 'agents'], [/\bsaved searches|searches\b/, AP.searches, 'saved searches'], [/\bcompar\w*\b/, AP.compare, 'the pool comparison'], [/\bpools?\b/, AP.pools, 'talent pools'], [/\bcampaigns?\b/, AP.campaigns, 'campaigns'],
+  [/\bsubmittals?\b/, AP.submittals, 'submittals'], [/\b(documents?|docs|files|briefs?)\b/, AP.docs, 'documents'], [/\breports?\b/, AP.reports, 'client reports'], [/\bnotes?|mentions?\b/, AP.notes, 'notes'], [/\bclients?\b/, AP.clients, 'clients'], [/\bmandates?|roles\b/, AP.clients, 'clients and mandates'],
 ];
 registerSkill({
   id: 'agency.open', side: 'recruiter',
@@ -418,7 +419,7 @@ registerSkill({
   handle: (c) => {
     const client = clientsIn(c.norm)[0];
     const page = PAGES.find(([re]) => re.test(c.norm));
-    const to = page ? `${PAGE}${page[1]}` : `${PAGE}/client/${client}`;
+    const to = page ? page[1] : AP.client(client!);
     const label = page ? page[2] : clientName(c.w, client!);
     return { msgs: [{ kind: 'reply', text: `${page ? `Opening ${label}` : `Switched to ${clientName(c.w, client!)}`}${client ? `, showing ${clientName(c.w, client)} only` : ''}.${client ? ' Other clients’ records stay out of this view.' : ''}` }],
       effects: client ? focusFx(client) : undefined, nav: { to, label } };
@@ -430,16 +431,16 @@ export function needsYou(w: World, a: Actor): { text: string; action: QAction }[
   const A = agency(w); const out: { text: string; action: QAction }[] = [];
   if (a.role === 'VIEWER') {
     const mine = A.notes.filter((n) => n.mentions.includes(a.id) && !n.readBy.includes(a.id));
-    if (mine.length) out.push({ text: `${mine.length} ${mine.length === 1 ? 'note mentions' : 'notes mention'} you.`, action: { label: 'Show notes', act: { t: 'nav', to: `${PAGE}/notes` } } });
-    for (const r of A.access.filter((x) => x.actorId === a.id && x.state !== 'PENDING')) out.push({ text: `Access to ${r.recordLabel}: ${r.state === 'GRANTED' ? 'granted' : 'declined'}.`, action: { label: 'Open it', act: { t: 'nav', to: `${PAGE}/mandate/${r.recordId}` } } });
+    if (mine.length) out.push({ text: `${mine.length} ${mine.length === 1 ? 'note mentions' : 'notes mention'} you.`, action: { label: 'Show notes', act: { t: 'nav', to: AP.notes } } });
+    for (const r of A.access.filter((x) => x.actorId === a.id && x.state !== 'PENDING')) out.push({ text: `Access to ${r.recordLabel}: ${r.state === 'GRANTED' ? 'granted' : 'declined'}.`, action: { label: 'Open it', act: { t: 'nav', to: AP.mandate(r.recordId) } } });
     return out;
   }
   for (const r of A.runs.filter((x) => x.state === 'FAILED')) out.push({ text: `${short(w, r.clientOrgId)} ${r.label.toLowerCase()} failed: ${r.provider} isn’t responding.`, action: { label: 'Retry now', act: { t: 'do', op: 'agency.run.retry', args: { id: r.id } } } });
   for (const r of A.access.filter((x) => x.state === 'PENDING')) out.push({ text: `${actorOf(w, r.actorId).first} asked to see ${r.recordLabel}.`, action: { label: `Let ${actorOf(w, r.actorId).first} see it`, act: { t: 'do', op: 'agency.access.decide', args: { id: r.id, d: 'GRANTED' } } } });
   for (const x of conflicts(w)) out.push({ text: `${personName(w, x.personId)}: ${short(w, x.a.clientOrgId!)} wants ${x.a.workMode === 'ONSITE' ? 'on-site' : 'remote'}, ${short(w, x.b.clientOrgId!)} wants ${x.b.workMode === 'ONSITE' ? 'on-site' : 'remote'}.`, action: { label: 'Explain the conflict', act: { t: 'say', text: 'explain the kora and medlink conflict' } } });
   for (const s of A.submittals.filter((x) => x.status === 'SENT_SIMULATED' && !x.reply && !x.nudgedAt && x.sentAt && (simNow(w).getTime() - new Date(`${x.sentAt}T12:00:00Z`).getTime()) / 864e5 >= 3)) out.push({ text: `${clientName(w, s.clientOrgId)} hasn’t replied to the ${fmtDay(s.sentAt)} submittal.`, action: { label: 'Draft a nudge', act: { t: 'do', op: 'agency.submittal.nudge', args: { id: s.id } } } });
-  for (const s of A.submittals.filter((x) => x.status === 'DRAFT')) out.push({ text: `A ${short(w, s.clientOrgId)} submittal is waiting for your yes.`, action: { label: 'Review it', act: { t: 'nav', to: `${PAGE}/submittals` } } });
-  for (const n of A.notes.filter((x) => x.mentions.includes(a.id) && !x.readBy.includes(a.id))) out.push({ text: `${actorOf(w, n.by).first} mentioned you on ${short(w, n.clientOrgId)}.`, action: { label: 'Read it', act: { t: 'nav', to: `${PAGE}/notes` } } });
+  for (const s of A.submittals.filter((x) => x.status === 'DRAFT')) out.push({ text: `A ${short(w, s.clientOrgId)} submittal is waiting for your yes.`, action: { label: 'Review it', act: { t: 'nav', to: AP.submittals } } });
+  for (const n of A.notes.filter((x) => x.mentions.includes(a.id) && !x.readBy.includes(a.id))) out.push({ text: `${actorOf(w, n.by).first} mentioned you on ${short(w, n.clientOrgId)}.`, action: { label: 'Read it', act: { t: 'nav', to: AP.notes } } });
   return out;
 }
 
@@ -472,7 +473,7 @@ registerOp('agency.access.decide', (w, a, actor) => {
   const r = ag(w).access.find((x) => x.id === a.id); if (!r || r.state !== 'PENDING') return { say: 'That request has already been decided.' };
   r.state = a.d === 'GRANTED' ? 'GRANTED' : 'DECLINED'; r.decidedBy = actor.id;
   emit(w, actor.id, 'agency.access.decided', SCOPE, `${actor.first} ${r.state === 'GRANTED' ? 'granted' : 'declined'} ${actorOf(w, r.actorId).first}’s access to ${r.recordLabel}.`, { clientOrgId: r.clientOrgId });
-  (w.q.threads[r.actorId] ??= []).push({ id: `qm_${Date.now().toString(36)}`, at: new Date().toISOString(), who: 'q', kind: 'notice', engine: 'system', text: r.state === 'GRANTED' ? `${actor.first} gave you access to ${r.recordLabel}. It’s confidential: keep it inside Talentbridge.` : `${actor.first} declined access to ${r.recordLabel}.`, actions: r.state === 'GRANTED' ? [{ label: 'Open it', primary: true, act: { t: 'nav', to: `${PAGE}/mandate/${r.recordId}` } }] : undefined });
+  (w.q.threads[r.actorId] ??= []).push({ id: `qm_${Date.now().toString(36)}`, at: new Date().toISOString(), who: 'q', kind: 'notice', engine: 'system', text: r.state === 'GRANTED' ? `${actor.first} gave you access to ${r.recordLabel}. It’s confidential: keep it inside Talentbridge.` : `${actor.first} declined access to ${r.recordLabel}.`, actions: r.state === 'GRANTED' ? [{ label: 'Open it', primary: true, act: { t: 'nav', to: AP.mandate(r.recordId) } }] : undefined });
   return { say: `${r.state === 'GRANTED' ? 'Granted' : 'Declined'}. I’ve told ${actorOf(w, r.actorId).first}, and it’s in the audit log.` };
 });
 registerOp('agency.report.save', (w, a, actor) => { const r = ag(w).reports[String(a.client)]; if (!r) return; r.sections = a.sections as typeof r.sections; r.v += 1; r.status = 'EDITED'; r.editedBy = actor.id; r.history.push({ v: r.v, at: today(w), by: actor.id, note: `Edited by ${actor.first}` }); return { say: `Saved your edits as version ${r.v}. ${isolationCheck(w, r).ok ? 'It still names only this client’s records.' : 'Heads-up: it now names someone or something outside this client’s records, so I won’t share it until that’s removed.'}` }; });
