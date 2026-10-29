@@ -1,0 +1,52 @@
+/* Candidate home (creative refresh within Direction D). Spacing on the 4/8 scale; one elevation level. */
+.ch { display: grid; gap: 24px; max-width: 760px; }
+.ch-q { display: flex; gap: 12px; align-items: flex-start; }
+.ch-q p { margin: 0; font-size: clamp(19px, 1.7vw, 22px); line-height: 1.4; color: var(--ink); max-width: 46ch; }
+.ch-next { display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: center; }
+.ch-when { display: grid; justify-items: center; align-content: center; min-width: 88px; padding: 12px 8px; border-radius: 16px; background: var(--wash); }
+.ch-when .d { font-family: var(--data); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.ch-when .t { font-family: var(--voice); font-size: 28px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.ch-what { display: grid; gap: 6px; min-width: 0; }
+.ch-what h2 { margin: 0; font-size: 24px; font-weight: 400; line-height: 1.2; letter-spacing: -0.01em; }
+.ch-what p { margin: 0; color: var(--ink-2); }
+.ch-acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.ch-pathwrap { display: grid; gap: 12px; }
+.ch-pathwrap > .lab { margin: 0; }
+.ch-path { list-style: none; margin: 0; padding: 0; display: grid; }
+.ch-path li { display: grid; grid-template-columns: 28px 1fr; gap: 14px; padding: 16px 0; border-top: 1px solid var(--rule); position: relative; }
+.ch-path li:last-child { border-bottom: 1px solid var(--rule); }
+.ch-path .mark { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--rule-2); display: grid; place-items: center; margin-top: 2px; color: var(--paper); }
+.ch-path li[data-done] .mark { background: var(--ink); border-color: var(--ink); }
+.ch-path b { font-weight: 600; }
+.ch-path p { margin: 4px 0 6px; color: var(--ink-2); max-width: 56ch; }
+.ch-link { color: var(--ink); font-weight: 500; text-underline-offset: 3px; display: inline-flex; min-height: 44px; align-items: center; }
+.ch .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+@media (max-width: 520px) { .ch-next { grid-template-columns: 1fr; gap: 12px; } .ch-when { grid-auto-flow: column; justify-content: start; gap: 10px; min-width: 0; padding: 8px 12px; } .ch-when .t { font-size: 22px; } }
+
+/* Recruiter Today (Kora). Dense but calm: two working columns, then roles, then activity. */
+.rh { display: grid; gap: 20px; max-width: 1080px; }
+.rh-cols { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 1100px) { .rh-cols { grid-template-columns: 1fr; } }
+.rh-h { margin: 0 0 12px; font-family: var(--voice); font-weight: 400; font-size: 22px; line-height: 1.2; display: flex; gap: 10px; align-items: baseline; }
+.rh-h .num { font-family: var(--data); font-size: 13px; color: var(--ink-3); }
+.rh-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.rh-list li { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; padding: 12px 0; border-top: 1px solid var(--rule); }
+.rh-list li:first-child { border-top: 0; padding-top: 0; }
+.rh-time { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.rh-time li { display: grid; grid-template-columns: 72px 1fr; gap: 12px; align-items: baseline; }
+.rh-time time { display: grid; font-variant-numeric: tabular-nums; }
+.rh-time time span { font-family: var(--data); font-size: 13px; color: var(--ink-2); }
+.rh-roles { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.rh-role-top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-bottom: 8px; }
+.rh-role-top a { color: var(--ink); text-underline-offset: 3px; }
+.rh-strip { display: flex; gap: 3px; min-height: 36px; }
+.rh-strip span { display: flex; align-items: center; gap: 4px; min-width: max-content; padding: 0 10px; font-size: 13px; border-radius: 8px; background: var(--wash); color: var(--ink-2); }
+.rh-strip span b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.rh-strip span[data-s='INTERVIEW'], .rh-strip span[data-s='OFFER'], .rh-strip span[data-s='HIRED'] { background: var(--ink); color: var(--paper); }
+.rh-strip span[data-s='INTERVIEW'] b, .rh-strip span[data-s='OFFER'] b, .rh-strip span[data-s='HIRED'] b { color: var(--paper); }
+@media (max-width: 600px) { .rh-strip { flex-wrap: wrap; } }
+.rh-recent { display: grid; gap: 10px; }
+.rh-recent .lab { margin: 0; }
+.rh-recent ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.rh-recent li { display: grid; grid-template-columns: 120px 1fr; gap: 12px; font-size: 14px; color: var(--ink-2); }
+@media (max-width: 600px) { .rh-recent li { grid-template-columns: 1fr; gap: 2px; } }

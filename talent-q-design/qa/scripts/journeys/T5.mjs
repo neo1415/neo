@@ -46,7 +46,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   step('Q explains signals and their limits', /Not verified doesn’t mean a scam/.test(r) && /Registered business: no/.test(r));
   r = await ask('ok show me only verified jobs');
   await closeQ();
-  const vlist = await page.locator('.tb-grid').innerText();
+  const vlist = await page.locator('.tb-jobs').innerText();
   step('Verified filter hides the unverified employer', !/rivers/i.test(vlist) && /kora/i.test(vlist));
   await page.goto(`${BASE}#/c/jobs/j_rivers_backend`); await page.waitForTimeout(500); await shot('02-rivers-signals');
 
@@ -106,7 +106,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   w = await world(); const n = w.consents.p_zara.notifications;
   step('Curveball [mind]: notifications changed through Q', n.email && !n.sms && !n.inApp && n.digest === 'WEEKLY');
   await closeQ(); await page.goto(`${BASE}#/settings`); await page.waitForTimeout(400);
-  step('Settings page reflects it', (await page.getByRole('button', { name: 'Text message (SMS)' }).getAttribute('aria-pressed')) === 'false');
+  step('Settings page reflects it', (await page.getByRole('switch', { name: 'Text message (SMS)' }).getAttribute('aria-checked')) === 'false');
   await shot('07-settings');
 
   // Forget [info]

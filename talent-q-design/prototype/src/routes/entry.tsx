@@ -3,13 +3,15 @@
 import { useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { registerRoute } from './registry';
-import { actorOf, emit, simNow, update, useWorld, type World } from '../mock/world';
+import { actorOf, discoveryRule, emit, simNow, update, useWorld, type World } from '../mock/world';
 import { navigate, Link } from '../ui/router';
 import { QMark } from '../ds/QMark';
 import { Canvas } from '../ds/Workspace';
-import { Glyph } from '../ds/Glyph';
 import { QHome } from '../screens/QHome';
 import { appendQ } from '../q/core/engine';
+import { SwitchRow } from '../ds/Switch';
+import { arrive } from '../ds/motion';
+import '../styles/home.css';
 import '../ds/ds.css';
 
 // ---------------- Home sections: journeys add blocks to the home pages ----------------
@@ -43,30 +45,67 @@ function RecruiterHome() {
   );
 }
 
+// Candidate home (creative-direction refresh, L2): personal and encouraging, not a stat dashboard.
+// Q speaks first in one line; the next real commitment is the anchor; "where you are" is a path written in
+// the person's terms, where "not yet" reads as normal, never as failure.
 function CandidateHome() {
   const w = useWorld((x) => x);
   const a = actorOf(w);
   const pid = a.personId!;
   const prof = w.profiles[pid];
   const apps = w.applications.filter((x) => x.personId === pid);
-  const t = simNow(w).getTime();
-  const next = w.calendar.filter((e) => e.personId === pid && e.status !== 'CANCELLED' && new Date(e.start).getTime() > t).sort((x, y) => x.start.localeCompare(y.start))[0];
-  const passport = w.evidence.filter((e) => e.ownerId === pid);
+  const now = simNow(w);
+  const next = w.calendar.filter((e) => e.personId === pid && e.status !== 'CANCELLED' && new Date(e.start).getTime() > now.getTime()).sort((x, y) => x.start.localeCompare(y.start))[0];
+  const proof = w.evidence.filter((e) => e.ownerId === pid && e.kind !== 'CLAIM' && e.kind !== 'PRACTICE');
+  const checked = proof.filter((e) => e.verification === 'VERIFIED' || e.verified).length;
+  const answered = prof ? (prof.answered?.length ?? 0) : 0;
+  const moving = apps.filter((x) => ['VIEWED', 'INTERVIEW', 'OFFER'].includes(x.status)).length;
+  const hour = Number(now.toLocaleString('en-GB', { hour: '2-digit', hour12: false, timeZone: a.timezone }));
+  const hello = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const org = next ? w.orgs.find((o) => o.id === next.orgId)?.name : undefined;
+  const role = next ? (next.mandateId && w.mandates.find((m) => m.id === next.mandateId)?.title) || (next.mandateId === w.mandate.mandateId ? w.mandate.title : undefined) : undefined;
+  const days = next ? Math.round((new Date(next.start).setHours(0, 0, 0, 0) - new Date(now).setHours(0, 0, 0, 0)) / 864e5) : 0;
+  const when = next ? new Date(next.start) : null;
+  const tz = { timeZone: a.timezone } as const;
+  const qLine = next && days <= 2
+    ? `Your interview with ${org ?? 'the employer'} is ${days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in two days'}. A short practice could help, and only you will see it.`
+    : !prof?.done ? (answered ? `Welcome back. You’re ${answered} of 6 parts into your profile; we can carry on whenever you like.` : `Let’s start with you: a few small questions in your own words, and you can skip anything.`)
+    : !checked ? 'Your profile is set up. One piece of proof, like a certificate or a project, would make it much stronger.'
+    : !apps.length ? 'You’re ready to apply. I can show you the jobs that fit what you’ve shown so far.'
+    : moving ? `${moving === 1 ? 'One application is' : `${moving} applications are`} moving. I’ll tell you as soon as anything changes.`
+    : 'Your applications are with employers. I’ll tell you as soon as anyone replies.';
+  const path = [
+    { id: 'me', done: !!prof?.done, title: 'Tell Q about yourself', text: prof?.done ? 'Your profile is set up. You can change it any time.' : answered ? `${answered} of 6 parts done. Pick up where you left off.` : 'A few small questions, in your own words. Skip anything.', to: '/c/welcome', cta: prof?.done ? 'See your profile' : answered ? 'Carry on' : 'Start' },
+    { id: 'proof', done: checked > 0, title: 'Show what you can do', text: checked ? `${checked} ${checked === 1 ? 'piece of proof is' : 'pieces of proof are'} checked. Employers trust these most.` : proof.length ? `${proof.length} ${proof.length === 1 ? 'item is' : 'items are'} waiting to be checked.` : 'Add one thing that shows your work: a certificate, a project or a reference.', to: '/c/passport', cta: 'Your Evidence Passport' },
+    { id: 'apply', done: apps.length > 0, title: 'Apply when you’re ready', text: apps.length ? `You’ve applied to ${apps.length}. ${moving ? `${moving} ${moving === 1 ? 'is' : 'are'} moving.` : 'No replies yet, which is normal in the first week.'}` : 'No applications yet, and that’s fine. Q will point out jobs that fit you.', to: apps.length ? '/c/applications' : '/c/jobs', cta: apps.length ? 'Your applications' : 'Jobs that fit' },
+  ];
   return (
-    <Canvas title={`Hello, ${a.first}`} kicker="Q · your day" open onClose={() => {}}>
-      <section className="ds-sheet" aria-label="Your day" style={{ display: 'grid', gap: 18, maxWidth: 820 }}>
-        {next && (
-          <div className="ds-banner"><Glyph k="full" /><span><b>Interview {new Date(next.start).toLocaleString('en-GB', { weekday: 'long', hour: '2-digit', minute: '2-digit', timeZone: a.timezone })}</b> · {[w.orgs.find((o) => o.id === next.orgId)?.name, (next.mandateId && w.mandates.find((m) => m.id === next.mandateId)?.title) || (next.mandateId === w.mandate.mandateId ? w.mandate.title : undefined)].filter(Boolean).join(', ') || 'with an employer'}</span><Link className="ds-btn" to="/c/interview">Prepare</Link></div>
+    <Canvas title={`${hello}, ${a.first}`} kicker={now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', ...tz })} open onClose={() => {}}>
+      <div className="ch">
+        <motion.div className="ch-q" {...arrive}><QMark mood="idle" size={28} /><p className="voice">{qLine}</p></motion.div>
+        {next && when && (
+          <section className="ds-sheet ch-next" aria-labelledby="ch-next-h">
+            <div className="ch-when" aria-hidden="true"><span className="d">{when.toLocaleDateString('en-GB', { weekday: 'short', ...tz })}</span><span className="t">{when.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', ...tz })}</span></div>
+            <div className="ch-what">
+              <h2 id="ch-next-h" className="voice">Interview{org ? ` with ${org}` : ''}</h2>
+              <p>{role ? `${role} · ` : ''}{when.toLocaleString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', ...tz })}</p>
+              <div className="ch-acts"><Link className="ds-btn primary" to="/c/interview">Practise first</Link><Link className="ds-btn quiet" to="/c/messages">Details and messages</Link></div>
+            </div>
+          </section>
         )}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: 12 }}>
-          {[
-            { k: 'Profile', v: prof?.done ? 'Set up' : a.signedUp ? 'Not finished' : 'Not started', to: '/c/welcome' },
-            { k: 'Evidence Passport', v: `${passport.filter((e) => e.kind !== 'CLAIM' && e.kind !== 'PRACTICE').length} proof · ${passport.filter((e) => e.kind === 'CLAIM').length} claims`, to: '/c/passport' },
-            { k: 'Applications', v: apps.length ? `${apps.length} · ${apps.filter((x) => ['VIEWED', 'INTERVIEW', 'OFFER'].includes(x.status)).length} active` : 'None yet', to: '/c/applications' },
-          ].map((x) => <Link key={x.k} to={x.to} style={{ background: 'var(--paper)', borderRadius: 14, padding: 14, textDecoration: 'none', color: 'var(--ink)', display: 'grid', gap: 4 }}><span className="t14 muted">{x.k}</span><b>{x.v}</b></Link>)}
-        </div>
+        <section aria-labelledby="ch-path-h" className="ch-pathwrap">
+          <h2 id="ch-path-h" className="lab">Where you are</h2>
+          <ol className="ch-path">
+            {path.map((x) => (
+              <li key={x.id} data-done={x.done || undefined}>
+                <span className="mark" aria-hidden="true">{x.done ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5 10 17.5 19 7" /></svg> : null}</span>
+                <div><b>{x.title}</b><span className="sr">{x.done ? ' (done)' : ''}</span><p>{x.text}</p><Link to={x.to} className="ch-link">{x.cta}</Link></div>
+              </li>
+            ))}
+          </ol>
+        </section>
         <HomeSections side="candidate" />
-      </section>
+      </div>
     </Canvas>
   );
 }
@@ -135,8 +174,8 @@ function Signup() {
             {step === 'q' && (
               <div style={{ display: 'grid', gap: 12 }}>
                 <h1 id="su-h" className="voice t30" style={{ margin: 0 }}>How should Q work with you?</h1>
-                <button type="button" className="ds-opt" aria-pressed={prefs.plain} onClick={() => setPrefs({ ...prefs, plain: !prefs.plain })}><span><b>Use plain, simple words</b><span className="t14 muted" style={{ display: 'block' }}>Q avoids jargon and explains any term it has to use.</span></span></button>
-                <button type="button" className="ds-opt" aria-pressed={prefs.voice} onClick={() => setPrefs({ ...prefs, voice: !prefs.voice })}><span><b>Let me talk to Q by voice</b><span className="t14 muted" style={{ display: 'block' }}>You can always type instead.</span></span></button>
+                <div><SwitchRow label="Use plain, simple words" help="Q avoids jargon and explains any term it has to use." on={prefs.plain} onChange={(v) => setPrefs({ ...prefs, plain: v })} />
+                <SwitchRow label="Talk to Q by voice" help="You can always type instead." on={prefs.voice} onChange={(v) => setPrefs({ ...prefs, voice: v })} /></div>
                 <fieldset style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 6 }}><legend className="t14" style={{ fontWeight: 600, marginBottom: 6 }}>Should Q suggest things on its own?</legend>
                   <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>{([['NORMAL', 'Yes, when useful'], ['QUIET', 'Only urgent things'], ['OFF', 'Only when I ask']] as const).map(([v, l]) => <button key={v} type="button" className="ds-filter" aria-pressed={prefs.proactive === v} onClick={() => setPrefs({ ...prefs, proactive: v })}>{l}</button>)}</div></fieldset>
                 <button type="button" className="ds-btn primary" onClick={finish}>Start</button>
@@ -151,6 +190,13 @@ function Signup() {
 registerRoute({ path: '/signup', side: 'public', bare: true, label: 'sign up', render: () => <Signup /> });
 
 // ---------------- Settings (both sides) ----------------
+/** The candidate's discovery rule in plain words (the rule itself is set on the Evidence Passport). */
+const findRule = (w: World, pid: string) => {
+  if (!w.consents[pid]?.discoverable) return 'Nobody can find you in search. You can still apply, and anyone you’ve shared with keeps what you shared.';
+  const r = discoveryRule(w, pid); const hidden = r.hideFrom.map((o) => w.orgs.find((x) => x.id === o)?.name ?? o);
+  const base = r.who === 'NOBODY' ? 'Nobody can find you in search.' : r.who === 'VERIFIED_EMPLOYERS' ? 'Only verified employers can find you. Agencies can’t.' : 'Verified employers and agencies can find you.';
+  return hidden.length ? `${base} Hidden from ${hidden.join(', ')}.` : base;
+};
 function Settings() {
   const w = useWorld((x) => x);
   const a = actorOf(w);
@@ -164,18 +210,18 @@ function Settings() {
         <h2 id="st-q" className="voice t24" style={{ margin: 0 }}>How Q works with you</h2>
         <fieldset style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 6 }}><legend className="t14" style={{ fontWeight: 600, marginBottom: 6 }}>Suggestions Q makes on its own</legend>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>{([['NORMAL', 'When useful'], ['QUIET', 'Only time-sensitive'], ['OFF', 'Only when I ask']] as const).map(([v, l]) => <button key={v} type="button" className="ds-filter" aria-pressed={p.proactive === v} onClick={() => setP({ proactive: v })}>{l}</button>)}</div></fieldset>
-        <button type="button" className="ds-opt" aria-pressed={p.plain} onClick={() => setP({ plain: !p.plain })}><span><b>Plain, simple words</b></span></button>
-        <button type="button" className="ds-opt" aria-pressed={p.voice} onClick={() => setP({ voice: !p.voice })}><span><b>Voice input</b><span className="t14 muted" style={{ display: 'block' }}>Uses your device’s speech recognition when available.</span></span></button>
+        <div><SwitchRow label="Plain, simple words" help="Q avoids jargon and explains any term it has to use." on={p.plain} onChange={(v) => setP({ plain: v })} />
+        <SwitchRow label="Voice input" help="Uses your device’s speech recognition when it’s available. You can always type." on={p.voice} onChange={(v) => setP({ voice: v })} /></div>
         <p className="t14 muted" style={{ margin: 0 }}>Snoozed or dismissed suggestions: {w.q.suggestions.filter((s) => s.actor === a.id && s.state !== 'OPEN').length}. <button type="button" className="ds-linkbtn" style={{ color: 'var(--ink-2)' }} onClick={() => update((d) => { d.q.suggestions = d.q.suggestions.filter((s) => s.actor !== a.id); })}>Bring them back</button></p>
       </section>
       {c && (
         <section className="ds-sheet" aria-labelledby="st-n" style={{ display: 'grid', gap: 14, maxWidth: 760 }}>
           <h2 id="st-n" className="voice t24" style={{ margin: 0 }}>Notifications and privacy</h2>
-          {([['email', 'Email'], ['sms', 'Text message (SMS)'], ['inApp', 'In Talent Q']] as const).map(([k, l]) => <button key={k} type="button" className="ds-opt" aria-pressed={c.notifications[k]} onClick={() => setC({ notifications: { ...c.notifications, [k]: !c.notifications[k] } })}><b>{l}</b></button>)}
+          <div>{([['email', 'Email', 'Updates and messages from employers you’re talking to.'], ['sms', 'Text message (SMS)', 'Only for interviews and anything urgent.'], ['inApp', 'In Talent Q', 'Shown when you open the app.']] as const).map(([k, l, h]) => <SwitchRow key={k} label={l} help={h} on={c.notifications[k]} onChange={(v) => setC({ notifications: { ...c.notifications, [k]: v } })} />)}</div>
           <fieldset style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 6 }}><legend className="t14" style={{ fontWeight: 600, marginBottom: 6 }}>Job digest</legend>
             <div style={{ display: 'flex', gap: 8 }}>{(['DAILY', 'WEEKLY', 'OFF'] as const).map((v) => <button key={v} type="button" className="ds-filter" aria-pressed={c.notifications.digest === v} onClick={() => setC({ notifications: { ...c.notifications, digest: v } })}>{v === 'OFF' ? 'Off' : v[0] + v.slice(1).toLowerCase()}</button>)}</div></fieldset>
-          <button type="button" className="ds-opt" aria-pressed={c.discoverable} onClick={() => setC({ discoverable: !c.discoverable })}><span><b>Let verified employers find my profile</b><span className="t14 muted" style={{ display: 'block' }}>They see only what you’ve shared publicly. Off means you can still apply.</span></span></button>
-          <button type="button" className="ds-opt" aria-pressed={c.lite} onClick={() => setC({ lite: !c.lite })}><span><b>Lite mode</b><span className="t14 muted" style={{ display: 'block' }}>Fewer images and animations, bigger buttons, for slow connections.</span></span></button>
+          <div className="ds-switchrow"><div className="txt"><b>Who can find you in search</b><span className="t14 muted">{findRule(w, a.personId!)}</span></div><Link className="ds-btn" to="/c/passport">Change</Link></div>
+          <SwitchRow label="Lite mode" help="Fewer images and animations and bigger buttons, for slow connections." on={c.lite} onChange={(v) => setC({ lite: v })} />
           <Link to="/c/memory" className="ds-btn" style={{ justifySelf: 'start' }}>What Q remembers about me</Link>
         </section>
       )}

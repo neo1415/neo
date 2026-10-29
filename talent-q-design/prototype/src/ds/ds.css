@@ -254,3 +254,14 @@
 .ds-sheet .ds-sheet { box-shadow: none; border: 1px solid var(--rule); background: transparent; }
 .ds-page-body { min-width: 0; }
 .ds-thinking { display: flex; gap: 8px; align-items: center; margin: 0; color: var(--moon-2); }
+/* Switch rows: the state is shown by position and by the words On/Off, not by colour alone. */
+.ds-switchrow { display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; padding: 14px 0; border-top: 1px solid var(--rule); }
+.ds-switchrow:first-of-type { border-top: 0; }
+.ds-switchrow .txt { display: grid; gap: 2px; min-width: 0; }
+.ds-switch { all: unset; box-sizing: border-box; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 2px; font-size: 14px; color: var(--ink-2); }
+.ds-switch .knob { width: 44px; height: 26px; border-radius: 999px; background: var(--rule-2); position: relative; transition: background var(--dur-normal, .2s) cubic-bezier(.2,0,0,1); flex: none; }
+.ds-switch .knob::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--sheet); box-shadow: 0 1px 2px rgb(0 0 0 / .2); transition: transform .2s cubic-bezier(.2,0,0,1); }
+.ds-switch[aria-checked='true'] .knob { background: var(--ink); }
+.ds-switch[aria-checked='true'] .knob::after { transform: translateX(18px); }
+.ds-switch .state { min-width: 2.2em; }
+.ds-switch:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; border-radius: 8px; }

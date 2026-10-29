@@ -72,7 +72,7 @@ await page.getByRole('button', { name: 'Continue', exact: true }).click();
 await page.locator('#su-code').fill('123456');
 await page.getByRole('button', { name: 'Verify' }).click();
 await page.getByRole('button', { name: 'Continue', exact: true }).click();
-const plainPressed = await page.getByRole('button', { name: /Use plain, simple words/ }).getAttribute('aria-pressed');
+const plainPressed = await page.getByRole('switch', { name: /Use plain, simple words/ }).getAttribute('aria-checked');
 await shot(page, 'phone-01-signup-plain');
 await page.getByRole('button', { name: 'Start' }).click(); await sleep(500);
 let w = await world(page);
