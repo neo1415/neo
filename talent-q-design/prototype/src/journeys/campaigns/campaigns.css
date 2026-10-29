@@ -1,0 +1,129 @@
+/* Hiring campaigns (/r/campaigns, /r/campaigns/:id) and Q's campaign card. Direction D tokens only.
+   One elevation level: sections are ds-sheets; rows inside are flat with 1px rules. Gold only for Q (the lede mark). */
+.cp-lede { margin: 0; font-family: var(--voice); font-size: 19px; line-height: 1.4; color: var(--ink); max-width: 68ch; }
+.cp-q { color: var(--gold); font-size: 14px; vertical-align: 2px; margin-right: 4px; }
+.cp-head { display: grid; gap: 6px; }
+.cp-head p { margin: 0; }
+.cp-tags { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.cp-empty { display: grid; gap: 10px; justify-items: start; }
+.cp-empty p { margin: 0; max-width: 60ch; }
+
+/* List */
+.cp-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+.cp-card { display: grid; gap: 10px; align-content: start; }
+.cp-card-head { display: flex; flex-wrap: wrap; gap: 8px 12px; justify-content: space-between; align-items: baseline; }
+.cp-card-title { color: var(--ink); text-decoration: none; }
+.cp-card-title:hover { text-decoration: underline; text-underline-offset: 4px; }
+.cp-card-meta { margin: 0; }
+.cp-card-roles { list-style: none; margin: 0; padding: 0; }
+.cp-card-roles li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--rule); flex-wrap: wrap; }
+.cp-role-name { font-weight: 600; }
+.cp-card > .ds-btn { justify-self: start; }
+.cp-loose ul, .cp-archived ul, .cp-list { list-style: none; margin: 8px 0 0; padding: 0; }
+.cp-loose li, .cp-archived li, .cp-list li { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; justify-content: space-between; padding: 10px 0; border-top: 1px solid var(--rule); }
+.cp-loose li a, .cp-archived li a { color: var(--ink); }
+.cp-archived summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: 8px; }
+
+/* Overview sections */
+.cp-sec { display: grid; gap: 12px; scroll-margin-top: 64px; }
+.cp-sec-head { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; align-items: center; }
+.cp-sec-head h2 { margin: 0; font-weight: 600; }
+.cp-sec p { margin: 0; }
+.cp-acts { list-style: none; margin: 0; padding: 0; }
+.cp-act { display: grid; grid-template-columns: 84px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--rule); }
+.cp-act-k { color: var(--ink-3); }
+.cp-act[data-kind='BRIEF'] .cp-act-k, .cp-act[data-kind='RUBRIC'] .cp-act-k, .cp-act[data-kind='MESSAGE'] .cp-act-k { color: var(--gold-ink); }
+@media (max-width: 640px) { .cp-act { grid-template-columns: 1fr; gap: 6px; } .cp-act > .ds-btn { justify-self: start; } }
+.cp-others summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: 8px; color: var(--ink-2); }
+
+/* Roles with stage strips */
+.cp-roles { list-style: none; margin: 0; padding: 0; }
+.cp-role { display: grid; gap: 8px; padding: 16px 0; border-top: 1px solid var(--rule); }
+.cp-role:first-child { border-top: 0; padding-top: 4px; }
+.cp-role-head { display: flex; flex-wrap: wrap; gap: 6px 12px; justify-content: space-between; align-items: baseline; }
+.cp-role-title { display: inline-flex; gap: 8px; align-items: baseline; flex-wrap: wrap; min-width: 0; }
+.cp-role-title a { color: var(--ink); text-decoration: none; }
+.cp-role-title a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.cp-role-meta { margin: 0; }
+.cp-next { display: flex; gap: 8px; align-items: baseline; }
+.cp-next .lab { color: var(--gold-ink); }
+.cp-remove { justify-self: start; color: var(--ink-3); min-height: 32px; }
+/* The strip: one cell per stage that has people, width ∝ count (min width keeps the label legible), count + name
+   as direct labels. Stage order reads left to right; deeper stages sit on a darker step of the one ink ramp. */
+.cp-strip-wrap { display: grid; gap: 4px; }
+.cp-strip { list-style: none; margin: 0; padding: 0; display: flex; gap: 2px; }
+.cp-strip li { flex-basis: 0; min-width: 84px; display: grid; gap: 0; padding: 6px 10px; background: var(--wash); border-radius: 4px; color: var(--ink); }
+.cp-strip li:first-child { border-radius: 8px 4px 4px 8px; }
+.cp-strip li:last-child { border-radius: 4px 8px 8px 4px; }
+.cp-strip li:only-child { border-radius: 8px; }
+.cp-strip li b { font-family: var(--data); font-size: 19px; font-weight: 500; line-height: 1.2; }
+.cp-strip li span { font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+.cp-strip li:is([data-stage='REPLIED'], [data-stage='INTERVIEW']) { background: var(--rule-2); }
+.cp-strip li:is([data-stage='OFFER'], [data-stage='HIRED']) { background: var(--ink-2); color: var(--sheet); }
+.cp-strip li:is([data-stage='OFFER'], [data-stage='HIRED']) span { color: var(--sheet); }
+@media (max-width: 520px) { .cp-strip { flex-wrap: wrap; } .cp-strip li { min-width: calc(50% - 1px); flex-grow: 1 !important; } }
+.cp-strip-empty, .cp-strip-none { margin: 0; }
+.cp-hidden { display: flex; gap: 6px; align-items: flex-start; color: var(--ink-2); }
+.cp-hidden svg { margin-top: 3px; flex: none; }
+
+/* Add a role (conflict and closed states shown before choosing) */
+.cp-add { flex-basis: 100%; display: grid; gap: 8px; border: 1px solid var(--rule); border-radius: 12px; padding: 12px 14px; }
+.cp-add-head { display: flex; justify-content: space-between; align-items: center; }
+.cp-add ul { list-style: none; margin: 0; padding: 0; }
+.cp-add li { display: flex; gap: 12px; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--rule); }
+.cp-add li[data-state='closed'] b { color: var(--ink-3); }
+.cp-add .ds-banner { grid-template-columns: auto 1fr; }
+.cp-banner-acts { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Board */
+.cp-filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.cp-filters .ds-filter { min-height: 44px; }
+.cp-save { display: inline-flex; gap: 6px; align-items: center; }
+.cp-save .ds-input { min-height: 40px; width: 180px; }
+.cp-board th[scope='row'] a { color: var(--ink); font-weight: 600; }
+.ds-tag[data-stage='INTERVIEW'], .ds-tag[data-stage='OFFER'], .ds-tag[data-stage='HIRED'] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+.ds-tag[data-stage='REPLIED'] { border-color: var(--ink-2); color: var(--ink); }
+.cp-board-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.cp-board-cards > li { display: grid; gap: 6px; padding: 12px 0; border-top: 1px solid var(--rule); }
+.cp-board-cards > li > a { color: var(--ink); }
+.cp-board-cards ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.cp-board-cards ul li { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+
+/* Scorecards: coverage drawn as a bar (0–100% of criterion weight observed); the index is text beside it. */
+.cp-scores, .cp-score-rows, .cp-msgs, .cp-threads, .cp-hist { list-style: none; margin: 0; padding: 0; }
+.cp-score, .cp-msgs > li { display: grid; gap: 8px; padding: 14px 0; border-top: 1px solid var(--rule); }
+.cp-score:first-child, .cp-msgs > li:first-child { border-top: 0; padding-top: 4px; }
+.cp-score-rows li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; align-items: center; padding: 6px 0; }
+.cp-cov { display: inline-flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.cp-covbar { display: inline-block; width: 96px; height: 8px; border-radius: 4px; background: var(--wash); overflow: hidden; }
+.cp-covbar i { display: block; height: 100%; background: var(--ink-2); border-radius: 4px; }
+
+/* Messages */
+.cp-thread { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: minmax(0, 200px) minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; min-height: 44px; padding: 8px 0; border-top: 1px solid var(--rule); }
+.cp-thread:hover b { text-decoration: underline; }
+.cp-thread:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; }
+.cp-thread > span:first-child { display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.cp-ellip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 640px) { .cp-thread { grid-template-columns: 1fr; gap: 2px; } .cp-ellip { white-space: normal; } }
+
+/* History */
+.cp-hist li { display: grid; grid-template-columns: 130px 1fr; gap: 12px; padding: 8px 0; border-top: 1px solid var(--rule); }
+@media (max-width: 520px) { .cp-hist li { grid-template-columns: 1fr; gap: 2px; } }
+
+/* Q's card in the thread (ink material) */
+.cp-ref { border: 1px solid var(--night-4); border-radius: 12px; padding: 12px 14px; display: grid; gap: 6px; background: rgb(255 255 255 / .03); color: var(--moon); }
+.cp-ref .lab, .cp-ref .t14 { color: var(--moon-2); }
+.cp-ref-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.cp-ref ul { list-style: none; margin: 0; padding: 0; }
+.cp-ref li { display: flex; justify-content: space-between; gap: 10px; padding: 4px 0; border-top: 1px solid var(--night-4); font-size: 14px; }
+.cp-ref li .num { color: var(--moon-2); }
+
+/* Roles page: grouped by campaign (journeys/hire-a/Roles.tsx) */
+.cp-group { display: grid; gap: 8px; }
+.cp-group-head { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; justify-content: space-between; }
+.cp-group-head h2 { margin: 0; }
+.cp-group-head a { color: var(--ink); }
+.cp-inline-link { font-size: 14px; }
+
+/* Agency outreach page: link to the parent hiring campaign */
+.cp-parent { margin: 0; display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }

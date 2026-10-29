@@ -6,6 +6,9 @@ import { appendQ } from '../../q/core/engine';
 import type { Actor, CalEvent, Msg, OrgRole, Stage, Thread } from '../../state/domain';
 import { STAGE_LABEL } from '../../state/domain';
 import { hc, hcw, type Check, type DraftKind, type DraftMeta, type Guide, type Slot, type Tone } from '../../state/areas/hire-c';
+import { contentHash, defaultSender, emailChecks, providerSend } from './email';
+import { mailboxOf } from '../../state/areas/mail';
+import { campaignOf } from '../../state/areas/campaigns';
 
 // ---------------- Time ----------------
 export const LAGOS = 'Africa/Lagos';
@@ -190,12 +193,14 @@ export function currentDraft(w: World, actor: Actor, frameMsg?: string, personId
   return list.sort((a, b) => latestV(b).at.localeCompare(latestV(a).at))[0];
 }
 
-export function compose(w: World, d: Pick<DraftMeta, 'kind' | 'tone' | 'slot' | 'panel' | 'mandateId' | 'personId' | 'orgId' | 'by'>): { subject: string; body: string } {
+export function compose(w: World, d: Pick<DraftMeta, 'kind' | 'tone' | 'slot' | 'panel' | 'mandateId' | 'personId' | 'orgId' | 'by'> & { options?: DraftMeta['options'] }): { subject: string; body: string } {
   const p = personOf(w, d.personId)!; const first = p.name.split(' ')[0]; const tz = p.timezone;
   const org = orgOf(w, d.orgId)?.name ?? 'our team'; const title = mandateTitle(w, d.mandateId);
   const sender = w.actors.find((a) => a.id === d.by) ?? actorOf(w);
   const band = guide(w, d.orgId, 'PAY_BAND') && firstMessage(w, d.orgId, d.personId) && d.kind !== 'REJECTION' ? payBand(w, d.mandateId) : undefined;
-  const when = d.slot ? `${slotText(d.slot.start, tz)} (${city(tz)} time${offsetOf(d.slot.start, tz) !== offsetOf(d.slot.start, LAGOS) ? `, ${tTime(d.slot.start, LAGOS)} in Lagos` : ''})` : 'a time that suits you';
+  const one = (st: string) => `${slotText(st, tz)} (${city(tz)} time${offsetOf(st, tz) !== offsetOf(st, LAGOS) ? `, ${tTime(st, LAGOS)} in Lagos` : ''})`;
+  const opts = d.options ?? [];
+  const when = d.slot ? (opts.length ? `either ${[d.slot, ...opts].map((o) => one(o.start)).join(' or ')}` : one(d.slot.start)) : 'a time that suits you';
   const panel = listNames(d.panel.filter((x) => x !== d.personId).sort((x, y) => Number(x === d.by) - Number(y === d.by)).map((id) => { if (id === d.by) return 'me'; const a = w.actors.find((x) => x.id === id); return a ? `${a.name} (${a.title}${a.timezone !== LAGOS ? `, joining from ${city(a.timezone)}` : ''})` : nameOf(w, id); }));
   const t = d.tone; const friendly = t === 'friendlier';
   const hi = friendly || t === 'shorter' ? `Hi ${first},` : `Dear ${first},`;
@@ -221,6 +226,15 @@ export function compose(w: World, d: Pick<DraftMeta, 'kind' | 'tone' | 'slot' | 
     subject = `Following up: ${title} at ${org}`;
     parts.push(`Just checking you saw our message about the ${title} role${d.slot ? `. We’d still like to meet you on ${when}` : ''}. If that time doesn’t work, reply with one that does, or tell us if you’d rather not go ahead; either is fine.`);
     if (bandLine) parts.push(bandLine);
+  } else if (d.kind === 'AVAILABILITY') {
+    subject = `Next step: ${title} at ${org}`;
+    parts.push(`Thank you for your interest in the ${title} role at ${org}. The next step is a 45-minute video interview with ${panel}.`);
+    parts.push('Could you reply with two or three times that suit you this week or next? We’ll confirm one, in your time zone.');
+    if (bandLine) parts.push(bandLine);
+  } else if (d.kind === 'CONFIRMATION') {
+    subject = `Confirmed: ${title} interview at ${org}`;
+    parts.push(`Thank you for confirming. Your interview is booked for ${d.slot ? one(d.slot.start) : 'the time you chose'}, by video, with ${panel}. The calendar invitation follows separately.`);
+    parts.push('If anything changes, just reply to this email.');
   } else if (d.kind === 'REPLY') {
     subject = `Re: your application for ${title}`;
     parts.push(`Thank you for your message and for sharing your work. The ${title} team is reviewing applications now, and we’ll update you here as soon as there’s news about next steps.`);
@@ -235,17 +249,20 @@ export function compose(w: World, d: Pick<DraftMeta, 'kind' | 'tone' | 'slot' | 
   return { subject, body: parts.join('\n\n') };
 }
 
-export const KIND_LABEL: Record<DraftKind, string> = { INVITE: 'interview invitation', RESCHEDULE: 'new interview time', FOLLOW_UP: 'follow-up', REJECTION: 'decision message', REPLY: 'reply' };
+export const KIND_LABEL: Record<DraftKind, string> = { INVITE: 'interview invitation', RESCHEDULE: 'new interview time', FOLLOW_UP: 'follow-up', REJECTION: 'decision message', REPLY: 'reply', AVAILABILITY: 'next-step email', CONFIRMATION: 'confirmation' };
 
 /** Create a draft (status DRAFT) in the person's thread. Returns the message id. */
-export function createDraft(w: World, actor: Actor, o: { id?: string; personId: string; kind: DraftKind; tone?: Tone; slot?: { start: string; end: string }; panel?: string[]; mandateId?: string; reason?: string; eventId?: string }) {
+export function createDraft(w: World, actor: Actor, o: { id?: string; personId: string; kind: DraftKind; tone?: Tone; slot?: { start: string; end: string }; panel?: string[]; mandateId?: string; reason?: string; eventId?: string; options?: { start: string; end: string }[]; channel?: Msg['channel']; senderId?: string; batchId?: string; template?: string; threadId?: string }) {
   const mandateId = o.mandateId ?? entryFor(w, o.personId, actor.orgId)?.mandateId;
-  const meta: DraftMeta = { msgId: o.id ?? uid('msg'), threadId: '', personId: o.personId, orgId: actor.orgId!, kind: o.kind, by: actor.id, tone: o.tone ?? 'neutral', slot: o.slot, panel: o.panel ?? defaultPanel(w, actor, mandateId), mandateId, versions: [], reason: o.reason, eventId: o.eventId };
+  const meta: DraftMeta = { msgId: o.id ?? uid('msg'), threadId: '', personId: o.personId, orgId: actor.orgId!, kind: o.kind, by: actor.id, tone: o.tone ?? 'neutral', slot: o.slot, panel: o.panel ?? defaultPanel(w, actor, mandateId), mandateId, versions: [], reason: o.reason, eventId: o.eventId, options: o.options, batchId: o.batchId, template: o.template };
   const { subject, body } = compose(w, meta);
-  const t = threadFor(w, actor.orgId!, o.personId, mandateId);
+  const t = (o.threadId && w.threads.find((x) => x.id === o.threadId)) || threadFor(w, actor.orgId!, o.personId, mandateId);
   meta.threadId = t.id;
+  meta.campaignId = t.campaignId ?? (mandateId ? campaignOf(w, mandateId, actor.orgId)?.id : undefined);
+  const channel = o.channel ?? 'EMAIL';
+  const senderId = channel === 'EMAIL' ? (o.senderId ?? defaultSender(w, actor, actor.orgId!, mandateId)?.id) : undefined;
   meta.versions.push({ v: 1, at: now(), by: actor.id, subject, body, note: `First draft (${KIND_LABEL[o.kind]})`, slot: meta.slot, tone: meta.tone, panel: [...meta.panel] });
-  t.messages.push({ id: meta.msgId, from: actor.id, to: o.personId, subject, body, at: now(), status: 'DRAFT', channel: 'EMAIL' });
+  t.messages.push({ id: meta.msgId, from: actor.id, to: o.personId, subject, body, at: now(), status: 'DRAFT', channel, senderId });
   hcw(w).drafts[meta.msgId] = meta;
   markUsed(w, actor.orgId, ['PAY_BAND', 'PANEL_TWO', 'HOURS'], `Draft to ${firstOf(w, o.personId)}`);
   emit(w, actor.id, 'message.drafted', `ORG:${actor.orgId}`, `${actor.name} drafted a ${KIND_LABEL[o.kind]} to ${nameOf(w, o.personId)} with Q.`, { msgId: meta.msgId });
@@ -273,9 +290,20 @@ export function reviseDraft(w: World, actor: Actor, msgId: string, change: { slo
   d.versions.push({ v: prev.v + 1, at: now(), by: actor.id, subject, body, note: change.note, manual: change.body !== undefined ? true : prev.manual && !change.tone, slot: d.slot, tone: d.tone, panel: [...d.panel] });
   f0.m.body = body; f0.m.subject = subject; f0.m.status = 'DRAFT'; f0.m.at = now();
   d.checks = undefined; d.checkedV = undefined;
+  voidApproval(w, d, f0.m, change.note);
   if (d.eventId && change.slot) { const e = w.calendar.find((x) => x.id === d.eventId && x.status === 'HOLD'); if (e) { e.start = change.slot.start; e.end = change.slot.end; } }
   emit(w, actor.id, 'message.revised', `ORG:${d.orgId}`, `${actor.name} revised the draft to ${nameOf(w, d.personId)} (v${prev.v + 1}: ${change.note}).`, { msgId });
   return d.versions[d.versions.length - 1];
+}
+
+/** A material edit voids the approval of the old content, and the old idempotency key with it (E01-08). */
+export function voidApproval(w: World, d: DraftMeta, m: Msg, why: string) {
+  if (!m.approvedHash || m.approvedHash === contentHash(m)) return;
+  if (d.approval && !d.approval.voided) d.approval.voided = why;
+  m.approvedHash = undefined; m.idempotencyKey = undefined; m.approvedBy = undefined;
+  if (m.delivery === 'FAILED' || m.delivery === 'QUEUED') { m.delivery = undefined; m.failReason = undefined; }
+  d.scheduledFor = undefined;
+  emit(w, 'system', 'email.approval.voided', `ORG:${d.orgId}`, `The approval of the email to ${nameOf(w, d.personId)} no longer applies: the content changed (${why}).`, { msgId: m.id });
 }
 
 // ---------------- Pre-send checks ----------------
@@ -284,6 +312,7 @@ export function runChecks(w: World, actor: Actor, msgId: string): Check[] {
   const d = hc(w).drafts[msgId]; const f0 = findMsg(w, msgId); if (!d || !f0) return [];
   const o = orgOf(w, d.orgId)!; const p = personOf(w, d.personId)!; const pFirst = p.name.split(' ')[0];
   const out: Check[] = [];
+  out.push(...emailChecks(w, actor, d, f0.m));
   // Approval and delegation
   const role = actor.role ?? 'VIEWER';
   if (o.delegation === 'DRAFT_ONLY') out.push({ id: 'deleg', group: 'Approval', label: 'What Q may do alone', ok: false, detail: `${o.name} is set to “draft only”: Q writes, people send it themselves. An admin can change this on Organisation and policy.` });
@@ -423,7 +452,7 @@ export function approveAndSend(w: World, actor: Actor, msgId: string, v?: number
   const f0 = findMsg(w, msgId); const d = hc(w).drafts[msgId];
   if (!f0 || !d) return { ok: false, text: 'I can’t find that draft any more. It may have been discarded.' };
   const pFirst = firstOf(w, d.personId);
-  if (f0.m.status === 'SENT_SIMULATED') return { ok: false, text: `That message to ${pFirst} was already sent (simulated). I won’t send it twice.` };
+  if (f0.m.status === 'SENT_SIMULATED') { if (f0.m.channel === 'EMAIL' && f0.m.acceptedAt) return { ok: false, text: providerSend(w, actor, msgId).text }; return { ok: false, text: `That message to ${pFirst} was already sent (simulated). I won’t send it twice.` }; }
   if (f0.m.status === 'QUEUED_OFFLINE') return { ok: false, text: `It’s already queued and will go when you’re back online.` };
   if (!CAN_SEND.includes(actor.role ?? 'VIEWER')) return { ok: false, text: `Only an admin or recruiter can approve sends at ${orgOf(w, d.orgId)?.name}. I’ve left it waiting for approval; nothing was sent.` };
   if (f0.m.status !== 'AWAITING_APPROVAL' || (v !== undefined && latestV(d).v !== v) || d.checkedV !== latestV(d).v) return { ok: false, text: `This draft hasn’t been checked and approved in its current version, so I haven’t sent it. Say “send it” and I’ll check it again and ask for your yes.` };
@@ -433,10 +462,23 @@ export function approveAndSend(w: World, actor: Actor, msgId: string, v?: number
     emit(w, actor.id, 'message.queued', `ORG:${d.orgId}`, `${actor.name} approved a message to ${nameOf(w, d.personId)} while offline; queued, not sent.`, { msgId });
     return { ok: true, text: `You’re offline, so nothing has been sent. Your approval is saved and the message to ${pFirst} is queued (status: queued offline). When you reconnect I’ll re-check the calendar and then send it.` };
   }
+  // Approval binds to this exact content (recipients, subject, body, attachments, sender).
+  const isMail = f0.m.channel === 'EMAIL' && !!f0.m.senderId && mailboxOf(w, f0.m.senderId)?.kind !== 'SERVICE';
+  if (!f0.m.approvedHash || f0.m.approvedHash !== contentHash(f0.m)) { f0.m.approvedHash = contentHash(f0.m); hcw(w).drafts[msgId].approval = { by: actor.id, at: now(), hash: f0.m.approvedHash, v: latestV(d).v }; emit(w, actor.id, 'email.send.requested', `ORG:${d.orgId}`, `${actor.name} approved v${latestV(d).v} of the ${KIND_LABEL[d.kind]} to ${nameOf(w, d.personId)} (content ${f0.m.approvedHash}).`, { msgId }); }
+  f0.m.approvedBy = actor.id;
+  const sched = hc(w).drafts[msgId].scheduledFor;
+  if (sched && new Date(sched).getTime() > simNow(w).getTime()) { f0.m.delivery = 'QUEUED'; return { ok: true, text: `Approved and scheduled for ${tDay(sched, LAGOS)} at ${tTime(sched, LAGOS)} (simulated). Nothing goes before then; you can cancel it until it goes.` }; }
+  if (isMail) {
+    const r = providerSend(w, actor, msgId);
+    if (!r.ok) return { ok: false, text: r.text };
+    finalizeSend(w, msgId, actor.id); markUsed(w, d.orgId, ['APPROVE_EACH', 'PAY_BAND', 'JOB_RELATED'], `Message to ${pFirst}`);
+    if (r.reason === 'BOUNCED') return { ok: true, text: r.text };
+    return { ok: true, text: `${r.text}${d.slot && (d.kind === 'INVITE' || d.kind === 'RESCHEDULE') ? ` The calendar invite is out to ${listNames(d.panel.map((id) => firstOf(w, id)))}, status “invited” until ${pFirst} confirms.` : ''}` };
+  }
   finalizeSend(w, msgId, actor.id);
   markUsed(w, d.orgId, ['APPROVE_EACH', 'PAY_BAND', 'JOB_RELATED'], `Message to ${pFirst}`);
   const ch = f0.m.channel === 'EMAIL' ? 'by email' : f0.m.channel === 'SMS' ? 'by text' : 'in Talent Q';
-  return { ok: true, text: `Simulated send: the ${KIND_LABEL[d.kind]} went to ${pFirst} ${ch}. Nothing really left Talent Q.${d.slot && d.kind !== 'REJECTION' && d.kind !== 'REPLY' ? ` The calendar invite is out to ${listNames(d.panel.map((id) => firstOf(w, id)))}, status “invited” until ${pFirst} confirms.` : ''}` };
+  return { ok: true, text: `Simulated send: the ${KIND_LABEL[d.kind]} went to ${pFirst} ${ch}. Nothing really left Talent Q.${d.slot && (d.kind === 'INVITE' || d.kind === 'RESCHEDULE' || d.kind === 'FOLLOW_UP') ? ` The calendar invite is out to ${listNames(d.panel.map((id) => firstOf(w, id)))}, status “invited” until ${pFirst} confirms.` : ''}` };
 }
 
 /** Flush messages approved while offline: re-check the calendar first, then send. */
@@ -449,6 +491,14 @@ export function flushQueued(w: World) {
     const over = allowanceRefusal(w, t.orgId);
     if (over) { m.status = 'AWAITING_APPROVAL'; appendQ(w, approver, { who: 'q', kind: 'notice', engine: 'system', text: `Back online. ${over}` }); continue; }
     if (clash) { m.status = 'DRAFT'; appendQ(w, approver, { who: 'q', kind: 'notice', engine: 'system', text: `Back online. Before sending, I re-checked: ${firstOf(w, clash)} became busy at that time while you were offline, so I did not send the message to ${firstOf(w, t.personId)}. It’s back in drafts. Say “send it” to pick a new time.`, ref: { type: 'hire-c.draft', id: `${m.id}@${d ? latestV(d).v : 1}` } }); continue; }
+    if (m.channel === 'EMAIL' && m.senderId && mailboxOf(w, m.senderId)?.kind !== 'SERVICE') {
+      m.status = 'AWAITING_APPROVAL'; m.approvedHash ??= contentHash(m);
+      const r = providerSend(w, actorOf(w, approver), m.id);
+      if (!r.ok) { appendQ(w, approver, { who: 'q', kind: 'notice', engine: 'system', text: `Back online. ${r.text}` }); continue; }
+      finalizeSend(w, m.id, approver);
+      appendQ(w, approver, { who: 'q', kind: 'notice', engine: 'system', text: `Back online. I re-checked the calendar and sent the queued message to ${firstOf(w, t.personId)}. ${r.text}` });
+      continue;
+    }
     finalizeSend(w, m.id, approver);
     appendQ(w, approver, { who: 'q', kind: 'notice', engine: 'system', text: `Back online. I re-checked the calendar and sent the queued message to ${firstOf(w, t.personId)}. Simulated send (receipt ${m.receipt}).` });
   }

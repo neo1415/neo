@@ -6,14 +6,25 @@ import type { World } from '../../mock/world';
 export type GuideCheck = 'PAY_BAND' | 'PANEL_TWO' | 'APPROVE_EACH' | 'JOB_RELATED' | 'HOURS' | 'NONE';
 export interface Guide { id: string; text: string; source: string; check: GuideCheck; on: boolean; v: number; by: string; at: string; used: number; lastUsed?: string }
 
-export type DraftKind = 'INVITE' | 'RESCHEDULE' | 'FOLLOW_UP' | 'REJECTION' | 'REPLY';
+export type DraftKind = 'INVITE' | 'RESCHEDULE' | 'FOLLOW_UP' | 'REJECTION' | 'REPLY' | 'AVAILABILITY' | 'CONFIRMATION';
 export type Tone = 'neutral' | 'friendlier' | 'formal' | 'shorter';
 export interface DraftVersion { v: number; at: string; by: string; subject: string; body: string; note: string; manual?: boolean; slot?: { start: string; end: string }; tone?: Tone; panel?: string[] }
-export interface Check { id: string; group: 'Approval' | 'Candidate' | 'Calendar' | 'Guidelines' | 'Consent'; label: string; ok: boolean; warn?: boolean; detail: string; fix?: { label: string; op: string; args: Record<string, unknown> } }
+export interface Check { id: string; group: 'Approval' | 'Sender' | 'Candidate' | 'Calendar' | 'Guidelines' | 'Consent'; label: string; ok: boolean; warn?: boolean; detail: string; fix?: { label: string; op: string; args: Record<string, unknown> } }
 export interface DraftMeta {
   msgId: string; threadId: string; personId: string; orgId: string; kind: DraftKind; by: string; tone: Tone;
   slot?: { start: string; end: string }; panel: string[]; mandateId?: string; versions: DraftVersion[];
   checks?: Check[]; checkedAt?: string; checkedV?: number; eventId?: string; reason?: string;
+  // ---- Connected email (addendum E-01) ----
+  /** Other times offered in the same message ("Thursday or Friday"). */
+  options?: { start: string; end: string }[];
+  /** Template the draft started from (org policy), and the campaign it belongs to. */
+  template?: string; campaignId?: string;
+  /** Several individual drafts made from one request (multi-recipient review): same batch id, one recipient each. */
+  batchId?: string;
+  /** Approved to go later (schedule send). Nothing is sent before this time. */
+  scheduledFor?: string;
+  /** Who approved which exact content (hash), so a later material edit is visible as "approval voided". */
+  approval?: { by: string; at: string; hash: string; v: number; voided?: string };
 }
 export interface Slot { start: string; end: string; notes: { id: string; name: string; tz: string; local: string; early?: boolean }[] }
 export interface SlotProposal { id: string; personId: string; panel: string[]; slots: Slot[]; at: string; by: string; label: string; kind: 'INVITE' | 'RESCHEDULE' }

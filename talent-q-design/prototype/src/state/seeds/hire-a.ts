@@ -64,4 +64,14 @@ const PAYOUTS: MandateX = {
   versions: [{ v: 1, at: '2026-10-27T15:10:00+01:00', by: 'u_ada', note: 'Drafted by Ada for Bayo’s approval' }],
 };
 
-export const seed: SeedPatch = { people: [...SMALL_POOL, ...KORA_JUNIORS], evidence: E as SeedPatch['evidence'], mandates: [PAYOUTS] };
+// A role Kora closed in September (campaign conflict state: a closed role can't join a campaign until it is re-opened).
+const IOS: MandateX = {
+  id: 'm_kora_ios', orgId: 'org_kora', title: 'Mobile Engineer (iOS)', plain: 'Built the merchant app for iPhone. Filled in September.', team: 'Mobile', location: 'Lagos', workMode: 'HYBRID',
+  pay: { min: 1500000, max: 2100000, currency: 'NGN', period: 'month' }, status: 'CLOSED', createdBy: 'u_ngozi',
+  requirements: [{ reqId: 'io1', label: 'Swift in production', mustHave: true, plain: 'Has shipped and maintained an iOS app' }],
+  versions: [{ v: 1, at: '2026-06-02T10:00:00+01:00', by: 'u_ngozi', note: 'Approved' }, { v: 2, at: '2026-09-18T16:00:00+01:00', by: 'u_ngozi', note: 'Closed: filled' }],
+};
+// Seyi referred Ifeoma for Payouts too, so one person relates to two roles in the Q4 campaign (cross-role board, AD-D-06).
+const REFERRALS: SeedPatch['pipeline'] = [{ mandateId: 'm_payouts', personId: 'p_ife', stage: 'SOURCED', at: '2026-10-28', by: 'u_seyi', note: 'Referred by Seyi: also fits Payouts' }];
+
+export const seed: SeedPatch = { people: [...SMALL_POOL, ...KORA_JUNIORS], evidence: E as SeedPatch['evidence'], mandates: [PAYOUTS, IOS], pipeline: REFERRALS };
