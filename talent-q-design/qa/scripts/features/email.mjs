@@ -194,7 +194,7 @@ try {
   r = await ask(page, 'try again');
   w = await world(page);
   step('Retry after rate limit: accepted once, same key', allMsgs(w).find(({ m }) => m.id === rl.id).m.delivery === 'ACCEPTED' && allMsgs(w).find(({ m }) => m.id === rl.id).m.idempotencyKey === rl.idempotencyKey, r);
-  r = await ask(page, 'email Ifeoma a follow up');
+  r = await ask(page, 'email Ifeoma a reply about next steps');
   r = await ask(page, 'send it');
   await qa(page, "w.areas.mail.failNext.mb_ada = 'SMTP_REJECTED'"); await chip(page, 'Approve and send');
   await page.locator('.hc-row', { hasText: 'Ifeoma' }).click(); await sleep(400);

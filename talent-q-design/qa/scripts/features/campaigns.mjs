@@ -164,7 +164,8 @@ try {
   await go(page, '/r/roles/m_backend');
   t = await canvas(page);
   step('Role page shows its campaign (legacy Senior Backend too)', /Part of the Q4 Engineering Expansion campaign/.test(t) && /Open the full brief/.test(t));
-  step('Role page links to the rubric with the version in force', /Rubric v1 in force/.test(t) && /\/r\/roles\/m_backend\/rubric$/.test(await page.getByRole('link', { name: /Rubric v1 in force/ }).first().getAttribute('href')), await page.evaluate(() => [...document.querySelectorAll('a')].filter((a) => /Rubric/.test(a.textContent)).map((a) => a.getAttribute('href') + ' ' + a.textContent).join(' | ')));
+  const rhref = await page.getByRole('link', { name: /Rubric\s+v1\s+in force/ }).first().getAttribute('href').catch(() => '');
+  step('Role page links to the rubric with the version in force', /Rubric\s+v1\s+in force/.test(t) && /\/r\/roles\/m_backend\/rubric$/.test(rhref ?? ''), `${JSON.stringify(t.slice(0, 200))} ${rhref}`);
   await go(page, '/r/roles/m_payouts');
   step('Role page (MandateX) shows its campaign', /Part of the Q4 Engineering Expansion campaign/.test(await canvas(page)));
 
