@@ -1,0 +1,26 @@
+/* Interaction-state gallery (/gallery/states). */
+.gs { min-height: 100vh; background: var(--paper); color: var(--ink); padding: clamp(16px, 3vw, 40px); display: grid; gap: 24px; align-content: start; }
+.gs-head { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.gs-head > div { flex: 1; min-width: 220px; }
+.gs-index { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; }
+.gs-index a { color: var(--ink-2); }
+.gs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 20px; align-items: start; }
+.gs-card { display: grid; gap: 10px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 16px; padding: 16px; scroll-margin-top: 16px; }
+.gs-cardhead { display: flex; gap: 10px; align-items: baseline; }
+.gs-id { white-space: nowrap; font-family: var(--data); font-size: 12px; letter-spacing: .06em; color: var(--ink-3); }
+.gs-thread { background: var(--night); color: var(--moon); border-radius: 12px; padding: 16px; display: grid; gap: 12px; min-height: 120px; align-content: start; }
+.gs-thread .ds-me { justify-self: end; margin: 0; }
+.gs-row { display: flex; gap: 10px; align-items: center; }
+.gs-pad { display: grid; gap: 10px; padding: 16px; }
+.gs-bar { height: 8px; border-radius: 99px; background: var(--rule); overflow: hidden; }
+.gs-bar span { display: block; height: 100%; background: var(--ink); border-radius: 99px; }
+.gs-bar span[data-state='fail'] { background: var(--risk); }
+.gs-skel { display: block; height: 12px; border-radius: 6px; background: linear-gradient(90deg, var(--rule) 0%, var(--paper) 50%, var(--rule) 100%); background-size: 200% 100%; animation: gs-shimmer 1.2s linear infinite; }
+.gs-caret { display: inline-block; width: 2px; height: 1em; background: var(--gold-light); vertical-align: text-bottom; margin-left: 2px; animation: gs-blink 1s steps(2) infinite; }
+.gs-conf { display: grid; gap: 6px; }
+.gs-conf span { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+@keyframes gs-shimmer { to { background-position: -200% 0; } }
+@keyframes gs-blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .gs-skel, .gs-caret { animation: none; } }
+.gs-h { font-family: var(--voice); font-weight: 400; font-size: 19px; line-height: 1.25; }
+.gs-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
