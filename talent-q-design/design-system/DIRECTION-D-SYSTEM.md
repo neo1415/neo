@@ -58,3 +58,57 @@ New areas join an existing group, or replace an item with a hub. The rail does n
 - Phones use landmarks: the thread is `main` and the sheet is a `dialog`.
 - Touch targets are at least 44 px.
 - axe-core runs on every batch (`qa/scripts/axe-batch1.mjs`).
+
+## Execution rules (added in the design pass, 29 Oct)
+
+These rules came out of the critique of the ten journeys. They are what keeps the system looking designed rather than assembled.
+
+**Page anatomy**
+- Every page has a one-line kicker and a title.
+  - The kicker gives context only: who or where, or a date. Status never goes in the kicker; use a tag or a banner.
+  - The title is the subject: a name, a role, or "Good morning, Ada". Q's reading of the page is a lede under the title, never the title itself.
+- "Simulated" is marked once, in the shell: the rail brand on desktop, a thin bar on phones. Each action that would touch a real system carries its own label ("Simulated send", "Simulated upload", "Simulated check").
+
+**Elevation**
+- There is one level. A `ds-sheet` floats on the paper; a sheet inside a sheet becomes a flat panel with a 1 px rule.
+- Shadows are tinted toward the paper hue (`--shadow`).
+
+**Controls**
+- Choosing between options uses `ds-opt` cards.
+- An on/off setting uses `SwitchRow` (`src/ds/Switch.tsx`). It has `role="switch"`, and its state is shown by position and by the words On or Off, never by fill colour alone.
+- Q's actions are chips. The primary action is gold, because it is Q's; everything else is quiet.
+- A page action is a `ds-btn`.
+
+**Q in the thread**
+- Replies are short. Lists go in reference cards, not paragraphs.
+- Context chips show what Q used.
+- "Q noticed" cards follow a fixed order: the observation, then its actions as chips, then a quiet footer row with "Why am I seeing this?", "Later" and "Dismiss".
+- Q never offers to open the page you are already on.
+
+**Candidate surfaces** (creative-direction refresh)
+- Q speaks first, in one line, about what matters today.
+- The person's next real commitment is the visual anchor.
+- Progress is a path written in the person's own terms, where "not yet" reads as normal.
+- No dashboards of identical stat tiles.
+
+**Recruiter surfaces**
+- Dense but calm. "Needs you" leads.
+- Counts are direct labels, so a pipeline stage strip carries both the number and the stage name.
+- Interviews only in "Coming up"; personal busy blocks live on the calendar.
+
+**Motion tokens** (`src/ds/motion.ts`)
+
+| Purpose | Duration | Easing |
+|---|---|---|
+| Feedback | 100–200 ms | — |
+| Orientation | 200–400 ms | — |
+| Entering | — | `EASE.enter` (decelerate) |
+| Leaving | faster than entering | `EASE.exit` |
+
+- `arrive` (rise 6 px and fade in) is the one pattern for messages, cards and page arrival.
+- Nothing functional runs longer than 500 ms, and no real work is ever delayed so that an animation can be seen.
+- Reduced motion turns movement into instant swaps (`MotionConfig` is global). Lite mode removes animation entirely.
+
+**Privacy-aware patterns**
+- A hidden person is counted, never named: "2 people aren't shown: their privacy settings…".
+- A permission state shows no data, says why in plain words, and offers a way back.
