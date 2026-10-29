@@ -12,7 +12,7 @@ import { hc, hcw } from '../../state/areas/hire-c';
 import { canRead, mail, mailboxOf, PROVIDER_NAME, sendersFor } from '../../state/areas/mail';
 import { campaigns, campaignsFor } from '../../state/areas/campaigns';
 import {
-  approveAndSend, checkDraft, CAN_SEND, createDraft, currentDraft, entryFor, findMsg, findSlots, firstOf, guidesOf, KIND_LABEL, LAGOS, latestV, listNames, mandateTitle, nameOf, nextWeek, parseTime, resolveDays, reviseDraft, tDay, tTime, defaultPanel, finalizeSend,
+  addDays, approveAndSend, checkDraft, CAN_SEND, createDraft, currentDraft, entryFor, findMsg, findSlots, firstOf, guidesOf, KIND_LABEL, LAGOS, latestV, listNames, mandateTitle, nameOf, nextWeek, parseTime, resolveDays, reviseDraft, tDay, tTime, defaultPanel, finalizeSend,
 } from '../../journeys/hire-c/lib';
 import {
   acceptedLine, addressOf, approvalValid, attachmentOptions, automationRun, bookProposed, confirmMatch, contentHash, defaultSender, disconnect, extractTime, looksLikeInstruction, pendingMatch, providerSend, receiveEmail, reconnect, replyMailbox, setFailNext, scopeWord,
@@ -267,7 +267,9 @@ function emailInvite(c: QCtx, pid: string): QReply {
   if (w.consents[pid]?.withdrawnFrom.includes(a.orgId!)) return { msgs: [{ kind: 'refusal', text: `${first} withdrew consent for ${orgOf(w, a.orgId)?.name} to contact them, so I won’t draft anything.` }] };
   const iv = w.interviews.find((i) => i.personId === pid && i.orgId === a.orgId && i.status !== 'CANCELLED');
   const panel = iv?.panel.length ? iv.panel : defaultPanel(w, a, entry.mandateId);
-  const days = c.ents.days.length ? resolveDays(w, c.ents.days, c.norm) : nextWeek(w);
+  // "Thursday or Friday": the next Thursday, then the Friday after it (never a Friday that comes before it).
+  const raw = c.ents.days.length ? resolveDays(w, c.ents.days.filter((x) => x !== 'next week'), c.norm) : nextWeek(w);
+  const days = raw.reduce<string[]>((acc, d) => { let x = d; while (acc.length && x < acc[0]) x = addDays(x, 7); acc.push(x); return acc; }, []);
   const prefer = parseTime(c.ents.time) ?? '14:00';
   const slots = days.map((d) => findSlots(w, { attendees: panel, personId: pid, dates: [d], orgId: a.orgId, preferHM: prefer, limit: 1 })[0]).filter(Boolean);
   if (!slots.length) return { msgs: [{ kind: 'reply', text: `${listNames(panel.map((p) => firstOf(w, p)))} aren’t all free ${days.length > 1 ? 'on those days' : 'that day'} within interview hours, so I haven’t drafted it. Want me to look at next week?`, actions: [{ label: `Find times for ${first}`, primary: true, act: { t: 'say', text: `find a time for ${first} next week` } }] }] };

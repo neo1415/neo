@@ -128,3 +128,4 @@
 /* Agency outreach page: link to the parent hiring campaign */
 .cp-parent { margin: 0; display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
 @media (max-width: 640px) { .cp-filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -4px; padding: 0 4px; } .cp-filters > * { flex: none; } }
+.cp-rolelinks { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }

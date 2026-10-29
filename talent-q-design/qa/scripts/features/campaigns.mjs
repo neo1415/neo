@@ -147,6 +147,15 @@ try {
   r = await ask(page, 'whats the difference between a hiring campaign and an outreach campaign');
   step('Q explains hiring vs outreach campaigns', /outreach campaign is narrower/.test(r), r);
 
+  // Proactive: only within 10 days of the deadline (a deadline 7 weeks away is not news).
+  const cards = async () => { await page.locator('.ds-suggest-more[aria-expanded="false"]').first().click({ timeout: 600 }).catch(() => {}); await sleep(300); return (await page.locator('.ds-suggest').allInnerTexts()).join(' | '); };
+  await go(page, '/r/campaigns');
+  step('Proactive: no deadline card 7 weeks out', !/is due in \d+ days/.test(await cards()));
+  await page.evaluate(() => window.__tqQA.update((w) => { w.session.offsetDays = 45; })); await sleep(500);
+  let cs = await cards();
+  step('Proactive: within 10 days of the deadline, the draft Payouts brief is flagged with a reason', /Q4 Engineering Expansion” is due in \d+ days, and the Backend Engineer, Payouts brief is still a draft waiting for Bayo/.test(cs), cs.slice(0, 300));
+  await page.evaluate(() => window.__tqQA.update((w) => { w.session.offsetDays = 0; })); await sleep(300);
+
   // Roles page grouped by campaign; legacy Senior Backend reachable
   await go(page, '/r/roles');
   t = await canvas(page);
@@ -155,6 +164,7 @@ try {
   await go(page, '/r/roles/m_backend');
   t = await canvas(page);
   step('Role page shows its campaign (legacy Senior Backend too)', /Part of the Q4 Engineering Expansion campaign/.test(t) && /Open the full brief/.test(t));
+  step('Role page links to the rubric with the version in force', /Rubric v1 in force/.test(t) && /\/r\/roles\/m_backend\/rubric$/.test(await page.getByRole('link', { name: /Rubric v1 in force/ }).first().getAttribute('href')), await page.evaluate(() => [...document.querySelectorAll('a')].filter((a) => /Rubric/.test(a.textContent)).map((a) => a.getAttribute('href') + ' ' + a.textContent).join(' | ')));
   await go(page, '/r/roles/m_payouts');
   step('Role page (MandateX) shows its campaign', /Part of the Q4 Engineering Expansion campaign/.test(await canvas(page)));
 

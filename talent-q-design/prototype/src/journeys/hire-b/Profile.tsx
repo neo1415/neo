@@ -23,6 +23,7 @@ import { PageIndex } from '../../ds/PageIndex';
 import { Scorecard } from '../rubric/Scorecard';
 import { roleIndex } from '../../state/areas/rubrics';
 import { studioPath } from '../rubric/model';
+import { media, visibleSegments } from '../../state/areas/media';
 
 const IN_WORDS: Record<string, string> = { r1: 'payments', r2: 'Go', r3: 'Postgres', r4: 'on-call leadership', r5: 'mentoring' };
 const list = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
@@ -186,6 +187,10 @@ export function Profile({ id }: { id: string }) {
       <section id="pf-ev" className="ds-sheet hire-b-grid" aria-labelledby="pf-ev-h">
         <div className="hire-b-row"><h2 id="pf-ev-h" className="voice t24" style={{ margin: 0 }}>Shared with {orgName}</h2><span className="t14 muted">{items.length} item{items.length === 1 ? '' : 's'}</span></div>
         <p className="t14 muted" style={{ margin: 0 }}>Only what {first} chose to share with {orgName}. Private items, practice and anything they took back are never shown or counted.</p>
+        {/* Video evidence (AD-F-09): only items with at least one part shared with this organisation, never the rest. */}
+        {media(w).items.filter((m) => m.ownerId === id && visibleSegments(w, m.id, org).length > 0).map((m) => (
+          <p key={m.id} className="t14" style={{ margin: 0 }}><Glyph k="verified" size={14} /> {first} shared parts of a video: <b>{m.title}</b>. <Link to={`/r/people/${id}/video`}>Open the video evidence</Link></p>
+        ))}
         {revoked > 0 && <p className="t14" role="status" style={{ margin: 0 }}><Glyph k="none" size={14} /> {first} ended {orgName}’s access to {revoked === 1 ? 'an item' : `${revoked} items`} they’d shared. Q no longer uses {revoked === 1 ? 'it' : 'them'}.</p>}
         {items.length === 0 && <div className="hire-b-empty"><Glyph k="none" /><div><b>{first} hasn’t shared anything with you yet.</b><p className="t14 muted" style={{ margin: 0 }}>Ask about their work in conversation instead of assuming.</p></div></div>}
         {checked.length > 0 && <><h3 className="hire-b-evh"><Glyph k="verified" size={16} />Checked at the source <span className="muted">{checked.length}</span></h3><ul className="hire-b-ev">{checked.map(evItem)}</ul></>}

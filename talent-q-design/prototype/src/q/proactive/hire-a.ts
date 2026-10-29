@@ -69,7 +69,7 @@ registerRule({
   },
 });
 
-// Hiring campaigns (addendum §D): a campaign's deadline is near and one of its roles is still a draft brief, so nothing
+// Hiring campaigns (addendum §D): a campaign's deadline is within 10 days and one of its roles is still a draft brief, so nothing
 // is searched for it yet. Shown to the campaign owner. The subject is the brief version, the same subject as
 // 'hire-a.draft-stale', so one decision (dismiss, later) covers both and the brief never gets two cards.
 registerRule({

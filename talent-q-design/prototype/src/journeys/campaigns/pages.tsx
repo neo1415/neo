@@ -19,6 +19,7 @@ import { Link, navigate } from '../../ui/router';
 import { runAction, sendToQ, useViewState } from '../../q/core/engine';
 import { prefillQ } from '../../q/QThread';
 import { campaigns } from '../../state/areas/campaigns';
+import { approvedVersion } from '../../state/areas/rubrics';
 import { ClientSwitch } from '../agency/pages';
 import { AP, clientIds, clientName, setFocus } from '../agency/model';
 import {
@@ -239,13 +240,14 @@ function RoleRow({ w, a, c, r, acts }: { w: World; a: Actor; c: HiringCampaign; 
   const meta = campaigns(w).roleMeta[r.id] ?? {};
   const ivs = w.interviews.filter((i) => i.mandateId === r.id && i.orgId === a.orgId && i.status !== 'CANCELLED').length;
   const next = acts[0];
+  const rv = r.clientOrgId ? undefined : approvedVersion(w, r.id);
   return (
     <motion.li className="cp-role" layout transition={{ duration: DUR.normal, ease: EASE.standard }}>
       <div className="cp-role-head">
         <span className="cp-role-title"><Link to={r.href} className="voice t19">{r.title}</Link>{r.confidential && <span className="ds-tag" data-k="warn">Confidential</span>}</span>
         <span className="ds-tag" data-k={r.status === 'DRAFT' ? 'busy' : isClosed(r) ? undefined : 'ok'}>{STATUS_WORD[r.status]}</span>
       </div>
-      <p className="t14 muted cp-role-meta">Owner {firstOf(w, r.owner)} · due {meta.due ? dayText(meta.due) : c.deadline ? `${dayText(c.deadline)} (campaign)` : 'not set'}{ivs ? ` · ${plural(ivs, 'interview')}` : ''}</p>
+      <p className="t14 muted cp-role-meta">Owner {firstOf(w, r.owner)} · due {meta.due ? dayText(meta.due) : c.deadline ? `${dayText(c.deadline)} (campaign)` : 'not set'}{ivs ? ` · ${plural(ivs, 'interview')}` : ''}{!r.clientOrgId && <> · <Link to={`/r/roles/${r.id}/rubric`}>{rv ? `Rubric v${rv.v} in force` : 'No rubric yet'}</Link></>}</p>
       <StageStrip sc={sc} />
       <HiddenCount n={sc.hidden} />
       {next && <p className="cp-next t14"><span className="lab">Next</span> {next.text}</p>}

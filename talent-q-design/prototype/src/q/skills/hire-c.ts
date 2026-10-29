@@ -61,7 +61,7 @@ function usedFor(w: World, a: Actor, msgId: string) {
   const f0 = findMsg(w, msgId); const out: string[] = [];
   const band = payBand(w, d.mandateId); const pb = guide(w, d.orgId, 'PAY_BAND');
   if (pb && band && f0?.m.body.includes(band)) out.push(guideChip(pb));
-  const panel = guide(w, d.orgId, 'PANEL_TWO'); if (panel && d.panel.length >= 2 && d.kind !== 'REJECTION' && d.kind !== 'REPLY') out.push(guideChip(panel));
+  const panel = guide(w, d.orgId, 'PANEL_TWO'); if (panel && d.panel.length >= 2 && (d.kind === 'INVITE' || d.kind === 'RESCHEDULE')) out.push(guideChip(panel));
   if (d.slot) { const h = guide(w, d.orgId, 'HOURS'); if (h) out.push(guideChip(h)); out.push(`Calendars: ${listNames(d.panel.map((id) => firstOf(w, id)))} (busy times only)`); }
   const p = personOf(w, d.personId)!; out.push(`${p.name.split(' ')[0]}: ${city(p.timezone)} time`);
   void a; return out;

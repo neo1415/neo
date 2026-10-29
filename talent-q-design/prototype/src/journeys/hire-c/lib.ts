@@ -236,6 +236,7 @@ export function compose(w: World, d: Pick<DraftMeta, 'kind' | 'tone' | 'slot' | 
     subject = `A request: a walkthrough of ${topic}`;
     parts.push(`Thank you for your interest in the ${title} role. Could you share a short walkthrough video (around 5 minutes) of ${topic}? It helps us see how you work, in your own words.`);
     parts.push('You choose exactly what we see, in your Evidence Passport: you can share only some parts, set an expiry, or send a written walkthrough instead. Please leave out anything confidential to a client or employer.');
+    if (bandLine) parts.push(bandLine);
   } else if (d.kind === 'CONFIRMATION') {
     subject = `Confirmed: ${title} interview at ${org}`;
     parts.push(`Thank you for confirming. Your interview is booked for ${d.slot ? one(d.slot.start) : 'the time you chose'}, by video, with ${panel}. The calendar invitation follows separately.`);

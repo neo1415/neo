@@ -18,6 +18,7 @@ import { doOp, evidenceGlyph, LimitsPanel, openQ, PayRange, say, StatusTag } fro
 import { CONFLICTS } from '../../q/skills/hire-a';
 import { campaignOf, campaignsFor } from '../../state/areas/campaigns';
 import { reqOf } from '../campaigns/model';
+import { approvedVersion, rubricFor } from '../../state/areas/rubrics';
 import '../campaigns/campaigns.css';
 
 /** The one next thing for a role, in plain words (shown on the list so nobody has to open each role). */
@@ -96,14 +97,25 @@ function legacyNext(w: World) {
   return `${sl} shortlisted${iv ? ` · ${iv} interviews` : ''}`;
 }
 
+/** Where a role sits (its campaign) and how it is assessed (the rubric version in force, from the rubric studio). */
+function RoleLinks({ w, id, orgId }: { w: World; id: string; orgId?: string }) {
+  const c = campaignOf(w, id, orgId); const v = approvedVersion(w, id); const draft = rubricFor(w, id)?.versions.some((x) => x.state === 'Q_PROPOSED');
+  return (
+    <div className="cp-rolelinks">
+      {c && <p className="t14" style={{ margin: 0 }}>Part of the <Link to={`/r/campaigns/${c.id}`}>{c.name}</Link> campaign.</p>}
+      <Link to={`/r/roles/${id}/rubric`} className="ds-btn">{v ? <>Rubric <span className="num">v{v.v}</span> in force</> : draft ? 'Rubric: review Q’s proposal' : 'Rubric: agree how to assess'}</Link>
+    </div>
+  );
+}
+
 /** The legacy Senior Backend brief, summarised here so /r/roles/m_backend works; the full brief stays at /r/mandate. */
 function LegacyRole() {
   const w = useWorld((x) => x);
   const a = actorOf(w);
-  const md = w.mandate; const c = campaignOf(w, md.mandateId, a.orgId);
+  const md = w.mandate;
   return (
     <Canvas title={md.title} kicker={<>Role brief · Kora Pay</>} aside={<span className="ds-tag" data-k={md.status === 'DRAFT' ? 'busy' : 'ok'}><span className="num">v{md.version}</span> · {md.status === 'DRAFT' ? 'Draft' : 'Approved'}</span>} open onClose={openQ}>
-      {c && <p className="t14" style={{ margin: 0 }}>Part of the <Link to={`/r/campaigns/${c.id}`}>{c.name}</Link> campaign.</p>}
+      <RoleLinks w={w} id={md.mandateId} orgId={a.orgId} />
       <div className="hire-a-brief">
         <section className="ds-sheet" aria-labelledby="lb-plain" style={{ display: 'grid', gap: 14 }}>
           <h2 id="lb-plain" className="lab" style={{ margin: 0 }}>In plain words</h2>
@@ -115,7 +127,6 @@ function LegacyRole() {
         </section>
         <div className="ds-actions">
           <Link to="/r/mandate" className="ds-btn primary">Open the full brief</Link>
-          <Link to={`/r/roles/${md.mandateId}/rubric`} className="ds-btn">Assessment rubric</Link>
           <Link to="/r/compare" className="ds-btn">Compare the shortlist</Link>
         </div>
       </div>
@@ -152,7 +163,7 @@ export function RoleDetail({ id }: { id: string }) {
   return (
     <Canvas title={m.title} kicker={<>Role brief · {w.orgs.find((o) => o.id === m.orgId)?.name}</>} aside={<StatusTag m={m} />} views={views} view={view} setView={(v) => { setVer(null); setView(v); }} open onClose={openQ}
       qLine={m.status === 'DRAFT' ? `Draft v${curV(m)}: approve it when it looks right, or tell me what to change.` : `v${curV(m)} is approved.`}>
-      {(() => { const c = campaignOf(w, m.id, a.orgId); return c ? <p className="t14" style={{ margin: 0 }}>Part of the <Link to={`/r/campaigns/${c.id}`}>{c.name}</Link> campaign.</p> : null; })()}
+      <RoleLinks w={w} id={m.id} orgId={a.orgId} />
       {view === 'brief' && <Brief w={w} m={m} ver={ver} clearVer={() => setVer(null)} />}
       {view === 'people' && <People w={w} m={m} />}
       {view === 'versions' && <Versions w={w} m={m} open={(v) => { setVer(v); setView('brief'); }} />}
