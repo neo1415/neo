@@ -14,3 +14,51 @@ PASS [d] budget option applied as v3 (2 days a week)
 PASS [d] versions view lists v1–v3
 PASS [d] old version stays readable
 PASS [d] [recover] wrong click discards the draft
+PASS [d] Q confirms what will be undone
+PASS [d] [recover] undo restores the draft exactly
+PASS [d] home shows where she is
+PASS [d] [recover] Q resumes from where she stopped
+PASS [d] proactive: draft unapproved for over a day
+PASS [d] approved after explicit approval
+PASS [d] simulated search finds bookkeepers only
+PASS [d] Kora pipeline invisible to Crumb & Co
+PASS [d] shortlist by name
+PASS [d] Q proposes times and asks for approval
+PASS [d] CalEvent HOLDs written (simulated)
+PASS [d] DRAFT invitations written, nothing sent
+PASS [d] roles page scoped to Crumb & Co
+PASS [d] audit log shows only Crumb & Co events
+PASS [d] Kora’s legacy brief is not shown to Funmi
+PASS [m] starts signed out at signup
+PASS [m] lands on founder home
+PASS [m] Q asks plain question about the business
+PASS [m] Q creates the org in conversation
+PASS [m] Q hears two jobs and asks which matters more
+PASS [m] Q proposes a role from vague talk (shop assistant)
+PASS [m] Q asks about pay in plain words
+PASS [m] draft brief created as a DRAFT mandate
+PASS [m] [info] explains “mandate” in plain words
+PASS [m] [mind] role re-planned to part-time bookkeeper as v2
+PASS [m] [mind] shared answers kept (budget ₦80k, Ikeja)
+PASS [m] [info] budget below market is raised with options
+PASS [m] budget option applied as v3 (2 days a week)
+PASS [m] versions view lists v1–v3
+PASS [m] old version stays readable
+PASS [m] [recover] wrong click discards the draft
+PASS [m] Q confirms what will be undone
+PASS [m] [recover] undo restores the draft exactly
+PASS [m] home shows where she is
+PASS [m] [recover] Q resumes from where she stopped
+PASS [m] proactive: draft unapproved for over a day
+PASS [m] approved after explicit approval
+PASS [m] simulated search finds bookkeepers only
+PASS [m] Kora pipeline invisible to Crumb & Co
+PASS [m] shortlist by name
+PASS [m] Q proposes times and asks for approval
+PASS [m] CalEvent HOLDs written (simulated)
+PASS [m] DRAFT invitations written, nothing sent
+PASS [m] roles page scoped to Crumb & Co
+PASS [m] audit log shows only Crumb & Co events
+PASS [m] Kora’s legacy brief is not shown to Funmi
+ERRORS []
+PASS R1: 62/62 steps passed

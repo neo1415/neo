@@ -10,5 +10,5 @@ for j in R1 R2 R3 R4 R5 T1 T2 T3 T4 T5; do
     *) cmd=(env BASE="$BASE" node "$DIR/$j.mjs");;
   esac
   timeout 1200 "${cmd[@]}" > "$OUT/$j.log" 2>&1; code=$?
-  echo "$j exit=$code pass=$(grep -c 'PASS' "$OUT/$j.log") fail=$(grep -c 'FAIL' "$OUT/$j.log")"
+  echo "$j exit=$code pass=$(grep -cE '^PASS' "$OUT/$j.log") fail=$(grep -cE '^FAIL' "$OUT/$j.log")"
 done | tee "$OUT/summary.txt"

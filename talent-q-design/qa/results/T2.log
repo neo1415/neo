@@ -1,0 +1,64 @@
+PASS [d] Discovery: atlas opens from sales, goal is Associate PM
+PASS [d] Transferable skills come from the verified sales evidence
+PASS [d] Skills view shows the verified source and evidence vs gaps
+PASS [d] Evidence vs gaps, competency by competency
+PASS [d] Plan with practice, work sample and learning steps
+PASS [d] Progress: a practice step is marked done (private)
+PASS [d] Progress: the learning step is half done
+PASS [d] Curveball [mind]: goal changes to BA, PM archived
+PASS [d] Shared progress carried over (discovery notes done, course 50%)
+PASS [d] Curveball [recover]: undo restores the PM goal
+PASS [d] Goal back to BA, with the same carried-over progress
+PASS [d] Curveball [mind]: Q shows its reasoning before changing anything
+PASS [d] Q adjusts on request: course swapped for a tracker work sample
+PASS [d] Practice question (private)
+PASS [d] Correct, but practice is not proof; employers see the same as before
+PASS [d] Curveball [info]: Q refuses to treat practice as proof
+PASS [d] Recruiter-visible profile unchanged after practice
+PASS [d] Work sample assessed (simulated reviewer): level 2, map moves
+PASS [d] Assessment is private: still invisible to employers
+PASS [d] Q notes his commitment, once
+PASS [d] Demo clock moves three weeks (simulated)
+PASS [d] Proactive notes from real state (commitment due, overdue step)
+PASS [d] Q summarises what changed and what is stale
+PASS [d] Reassessment on the same rubric: level 2 → 3
+PASS [d] Progress view shows the comparable rise
+PASS [d] Openings: Medlink BA and Tinda APM, with gaps and history
+PASS [d] Privacy: J7 is private; nothing visible by default
+PASS [d] Share needs his approval
+PASS [d] Nothing shared before approval
+PASS [d] After approval, Medlink sees only the assessed map
+PASS [d] Readiness page reads the same J7 state
+PASS [m] Discovery: atlas opens from sales, goal is Associate PM
+PASS [m] Transferable skills come from the verified sales evidence
+PASS [m] Skills view shows the verified source and evidence vs gaps
+PASS [m] Evidence vs gaps, competency by competency
+PASS [m] Plan with practice, work sample and learning steps
+PASS [m] Progress: a practice step is marked done (private)
+PASS [m] Progress: the learning step is half done
+PASS [m] Curveball [mind]: goal changes to BA, PM archived
+PASS [m] Shared progress carried over (discovery notes done, course 50%)
+PASS [m] Curveball [recover]: undo restores the PM goal
+PASS [m] Goal back to BA, with the same carried-over progress
+PASS [m] Curveball [mind]: Q shows its reasoning before changing anything
+PASS [m] Q adjusts on request: course swapped for a tracker work sample
+PASS [m] Practice question (private)
+PASS [m] Correct, but practice is not proof; employers see the same as before
+PASS [m] Curveball [info]: Q refuses to treat practice as proof
+PASS [m] Recruiter-visible profile unchanged after practice
+PASS [m] Work sample assessed (simulated reviewer): level 2, map moves
+PASS [m] Assessment is private: still invisible to employers
+PASS [m] Q notes his commitment, once
+PASS [m] Demo clock moves three weeks (simulated)
+PASS [m] Proactive notes from real state (commitment due, overdue step)
+PASS [m] Q summarises what changed and what is stale
+PASS [m] Reassessment on the same rubric: level 2 → 3
+PASS [m] Progress view shows the comparable rise
+PASS [m] Openings: Medlink BA and Tinda APM, with gaps and history
+PASS [m] Privacy: J7 is private; nothing visible by default
+PASS [m] Share needs his approval
+PASS [m] Nothing shared before approval
+PASS [m] After approval, Medlink sees only the assessed map
+PASS [m] Readiness page reads the same J7 state
+
+62/62 steps passed

@@ -1,0 +1,72 @@
+PASS d 1 agency home shows clients, mandates, agents and what needs Dele
+PASS d 2 curveball [info] provider outage: agent fails, retries once, Q explains
+PASS d 3 curveball [mind] interrupt: "stop the medlink search, kora is urgent"
+PASS d 4 retry the failed provider; run recovers without losing work
+PASS d 5 saved search re-run by typing, diff shows what is new (Kora only)
+PASS d 6 isolation: Q refuses "show medlink's candidates on the kora report"
+PASS d 7 submittal by typing: top 5 from the payments pool, consent checked per person
+PASS d 8 curveball [info] consent withdrawn: Halima drops out with a visible reason; Q tells Dele
+PASS d 9 change of mind: "actually only the top 3", then yes sends (simulated)
+PASS d 10 campaign under approved-campaign delegation with limits; withdrawn excluded
+PASS d 11 resume the paused Medlink work from where it stopped
+PASS d 12 curveball [info] conflicting requirements: Kora on-site vs Medlink remote
+PASS d 13 collaboration note @mentioning Tunde
+PASS d 14 client report: Q drafts from Kora only, Dele edits, isolation check, share (simulated)
+PASS d 15 curveball [recover] Tunde (Viewer) is denied the confidential Kora record and requests access
+PASS d 16 Dele grants access; Tunde can now open the record
+PASS d 17 pages render for each client (compare, docs, clients) without mixing
+PASS m 1 agency home shows clients, mandates, agents and what needs Dele
+PASS m 2 curveball [info] provider outage: agent fails, retries once, Q explains
+PASS m 3 curveball [mind] interrupt: "stop the medlink search, kora is urgent"
+PASS m 4 retry the failed provider; run recovers without losing work
+PASS m 5 saved search re-run by typing, diff shows what is new (Kora only)
+PASS m 6 isolation: Q refuses "show medlink's candidates on the kora report"
+PASS m 7 submittal by typing: top 5 from the payments pool, consent checked per person
+PASS m 8 curveball [info] consent withdrawn: Halima drops out with a visible reason; Q tells Dele
+PASS m 9 change of mind: "actually only the top 3", then yes sends (simulated)
+PASS m 10 campaign under approved-campaign delegation with limits; withdrawn excluded
+PASS m 11 resume the paused Medlink work from where it stopped
+PASS m 12 curveball [info] conflicting requirements: Kora on-site vs Medlink remote
+PASS m 13 collaboration note @mentioning Tunde
+PASS m 14 client report: Q drafts from Kora only, Dele edits, isolation check, share (simulated)
+PASS m 15 curveball [recover] Tunde (Viewer) is denied the confidential Kora record and requests access
+PASS m 16 Dele grants access; Tunde can now open the record
+PASS m 17 pages render for each client (compare, docs, clients) without mixing
+
+PASS d 1 agency home shows clients, mandates, agents and what needs Dele
+PASS d 2 curveball [info] provider outage: agent fails, retries once, Q explains
+PASS d 3 curveball [mind] interrupt: "stop the medlink search, kora is urgent"
+PASS d 4 retry the failed provider; run recovers without losing work
+PASS d 5 saved search re-run by typing, diff shows what is new (Kora only)
+PASS d 6 isolation: Q refuses "show medlink's candidates on the kora report"
+PASS d 7 submittal by typing: top 5 from the payments pool, consent checked per person
+PASS d 8 curveball [info] consent withdrawn: Halima drops out with a visible reason; Q tells Dele
+PASS d 9 change of mind: "actually only the top 3", then yes sends (simulated)
+PASS d 10 campaign under approved-campaign delegation with limits; withdrawn excluded
+PASS d 11 resume the paused Medlink work from where it stopped
+PASS d 12 curveball [info] conflicting requirements: Kora on-site vs Medlink remote
+PASS d 13 collaboration note @mentioning Tunde
+PASS d 14 client report: Q drafts from Kora only, Dele edits, isolation check, share (simulated)
+PASS d 15 curveball [recover] Tunde (Viewer) is denied the confidential Kora record and requests access
+PASS d 16 Dele grants access; Tunde can now open the record
+PASS d 17 pages render for each client (compare, docs, clients) without mixing
+PASS m 1 agency home shows clients, mandates, agents and what needs Dele
+PASS m 2 curveball [info] provider outage: agent fails, retries once, Q explains
+PASS m 3 curveball [mind] interrupt: "stop the medlink search, kora is urgent"
+PASS m 4 retry the failed provider; run recovers without losing work
+PASS m 5 saved search re-run by typing, diff shows what is new (Kora only)
+PASS m 6 isolation: Q refuses "show medlink's candidates on the kora report"
+PASS m 7 submittal by typing: top 5 from the payments pool, consent checked per person
+PASS m 8 curveball [info] consent withdrawn: Halima drops out with a visible reason; Q tells Dele
+PASS m 9 change of mind: "actually only the top 3", then yes sends (simulated)
+PASS m 10 campaign under approved-campaign delegation with limits; withdrawn excluded
+PASS m 11 resume the paused Medlink work from where it stopped
+PASS m 12 curveball [info] conflicting requirements: Kora on-site vs Medlink remote
+PASS m 13 collaboration note @mentioning Tunde
+PASS m 14 client report: Q drafts from Kora only, Dele edits, isolation check, share (simulated)
+PASS m 15 curveball [recover] Tunde (Viewer) is denied the confidential Kora record and requests access
+PASS m 16 Dele grants access; Tunde can now open the record
+PASS m 17 pages render for each client (compare, docs, clients) without mixing
+
+No page errors.
+R4: PASS

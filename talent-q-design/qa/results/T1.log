@@ -1,0 +1,78 @@
+PASS [d] Starts signed out on sign-up
+PASS [d] Signed up and welcomed by Q
+PASS [d] Q starts a guided profile and asks one small question
+PASS [d] Q offers sample files to upload
+PASS [d] Curveball [info]: unreadable scan is named, nothing saved, alternatives offered
+PASS [d] Switches back to chatting; Q resumes at the same question
+PASS [d] Curveball [info]: Q asks a smaller, concrete question
+PASS [d] Study saved in her words
+PASS [d] Small questions about school projects
+PASS [d] Project kept as a claim, Q asks for a rough number
+PASS [d] Detail added to the project, in her words
+PASS [d] Curveball [info]: no work history is fine; Q never invents a job
+PASS [d] Volunteering saved as a claim
+PASS [d] Curveball [mind]: skipping allowed; Q remembers without nagging
+PASS [d] Switches to the short form
+PASS [d] Curveball [recover]: form mistake explained, with a suggested fix
+PASS [d] Q fixes it, saves the form and carries on
+PASS [d] Profile complete; claims sync to her private Passport
+PASS [d] Proactive from real state: a new entry-level job matches, with a reason
+PASS [d] Career atlas opens; claims shown as mentioned, not proven
+PASS [d] Skills exploration: mentioned vs shown
+PASS [d] Practice question (private)
+PASS [d] Practice is not proof; map unchanged
+PASS [d] Matches from real listings, as claims not promises
+PASS [d] Need-by-need explanation with her own words
+PASS [d] Rehearsal question from her own project; practice is private
+PASS [d] Feedback without scoring; not evidence
+PASS [d] Links to the full interview room (/c/interview)
+PASS [d] CV draft only from her words
+PASS [d] Curveball [info]: Q refuses to fabricate an internship or Python
+PASS [d] Her own statement is added as a claim
+PASS [d] CV redrafted with her new claim
+PASS [d] CV lines approved (private)
+PASS [d] Apply asks for approval and says what is shared
+PASS [d] Application created (simulated), links to /c/applications
+PASS [d] Applications link offered
+PASS [d] Curveball [recover]: “go back” returns to the previous page
+PASS [d] Profile page shows the application on the match
+PASS [m] Starts signed out on sign-up
+PASS [m] Signed up and welcomed by Q
+PASS [m] Q starts a guided profile and asks one small question
+PASS [m] Q offers sample files to upload
+PASS [m] Curveball [info]: unreadable scan is named, nothing saved, alternatives offered
+PASS [m] Switches back to chatting; Q resumes at the same question
+PASS [m] Curveball [info]: Q asks a smaller, concrete question
+PASS [m] Study saved in her words
+PASS [m] Small questions about school projects
+PASS [m] Project kept as a claim, Q asks for a rough number
+PASS [m] Detail added to the project, in her words
+PASS [m] Curveball [info]: no work history is fine; Q never invents a job
+PASS [m] Volunteering saved as a claim
+PASS [m] Curveball [mind]: skipping allowed; Q remembers without nagging
+PASS [m] Switches to the short form
+PASS [m] Curveball [recover]: form mistake explained, with a suggested fix
+PASS [m] Q fixes it, saves the form and carries on
+PASS [m] Profile complete; claims sync to her private Passport
+PASS [m] Proactive from real state: a new entry-level job matches, with a reason
+PASS [m] Career atlas opens; claims shown as mentioned, not proven
+PASS [m] Skills exploration: mentioned vs shown
+PASS [m] Practice question (private)
+PASS [m] Practice is not proof; map unchanged
+PASS [m] Matches from real listings, as claims not promises
+PASS [m] Need-by-need explanation with her own words
+PASS [m] Rehearsal question from her own project; practice is private
+PASS [m] Feedback without scoring; not evidence
+PASS [m] Links to the full interview room (/c/interview)
+PASS [m] CV draft only from her words
+PASS [m] Curveball [info]: Q refuses to fabricate an internship or Python
+PASS [m] Her own statement is added as a claim
+PASS [m] CV redrafted with her new claim
+PASS [m] CV lines approved (private)
+PASS [m] Apply asks for approval and says what is shared
+PASS [m] Application created (simulated), links to /c/applications
+PASS [m] Applications link offered
+PASS [m] Curveball [recover]: “go back” returns to the previous page
+PASS [m] Profile page shows the application on the match
+
+76/76 steps passed

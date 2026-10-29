@@ -1,0 +1,76 @@
+PASS [d] starts as Ada
+PASS [d] role research in plain words
+PASS [d] compare by criteria navigates
+PASS [d] only Tobi and Zara, payments and Go
+PASS [d] [mind] criteria changed mid-comparison
+PASS [d] [mind] challenge: Q shows reasoning and evidence
+PASS [d] [mind] Q accepts the correction
+PASS [d] weighting changed by typing
+PASS [d] profile opens from Q
+PASS [d] profile: only shared evidence with provenance
+PASS [d] profile: confidential exists, contents hidden
+PASS [d] profile: pipeline position
+PASS [d] [info] GitHub outage shown honestly with cache date
+PASS [d] safe viewer: sandboxed, read-only
+PASS [d] [info] retry #1 still down, said honestly
+PASS [d] [info] retry #2 recovers
+PASS [d] page preview sandboxed (scripts off)
+PASS [d] external link shows domain before opening
+PASS [d] go back restores the comparison exactly
+PASS [d] draft invitation handled (hire-c skill) without breaking R2 · I took that to mean Tobi, from the profile you just viewed. Here’s a draft interview invit
+PASS [d] [info] CV vs evidence: unknown separated from weak
+PASS [d] [mind] last-year filter on, notes rewritten
+PASS [d] [info] proactive: dispute raised from real state
+PASS [d] [info] Q explains the dispute
+PASS [d] review needs approval
+PASS [d] [info] disputed result excluded from comparison
+PASS [d] assessment recommended with reasons
+PASS [d] interview questions from evidence gaps
+PASS [d] copilot started
+PASS [d] vague answer flagged with follow-ups
+PASS [d] specific answer accepted
+PASS [d] Q drafts feedback from notes
+PASS [d] submit needs approval
+PASS [d] feedback stored in interviews (human edit kept)
+PASS [d] pipeline reflects interview + feedback
+PASS [d] proactive: new verified certificate since last look
+PASS [d] [info] withdrawn consent: permission state with reason
+PASS [m] starts as Ada
+PASS [m] role research in plain words
+PASS [m] compare by criteria navigates
+PASS [m] only Tobi and Zara, payments and Go
+PASS [m] [mind] criteria changed mid-comparison
+PASS [m] [mind] challenge: Q shows reasoning and evidence
+PASS [m] [mind] Q accepts the correction
+PASS [m] weighting changed by typing
+PASS [m] profile opens from Q
+PASS [m] profile: only shared evidence with provenance
+PASS [m] profile: confidential exists, contents hidden
+PASS [m] profile: pipeline position
+PASS [m] [info] GitHub outage shown honestly with cache date
+PASS [m] safe viewer: sandboxed, read-only
+PASS [m] [info] retry #1 still down, said honestly
+PASS [m] [info] retry #2 recovers
+PASS [m] page preview sandboxed (scripts off)
+PASS [m] external link shows domain before opening
+PASS [m] go back restores the comparison exactly
+PASS [m] draft invitation handled (hire-c skill) without breaking R2 · I took that to mean Tobi, from the profile you just viewed. Here’s a draft interview invit
+PASS [m] [info] CV vs evidence: unknown separated from weak
+PASS [m] [mind] last-year filter on, notes rewritten
+PASS [m] [info] proactive: dispute raised from real state
+PASS [m] [info] Q explains the dispute
+PASS [m] review needs approval
+PASS [m] [info] disputed result excluded from comparison
+PASS [m] assessment recommended with reasons
+PASS [m] interview questions from evidence gaps
+PASS [m] copilot started
+PASS [m] vague answer flagged with follow-ups
+PASS [m] specific answer accepted
+PASS [m] Q drafts feedback from notes
+PASS [m] submit needs approval
+PASS [m] feedback stored in interviews (human edit kept)
+PASS [m] pipeline reflects interview + feedback
+PASS [m] proactive: new verified certificate since last look
+PASS [m] [info] withdrawn consent: permission state with reason
+ERRORS []
+R2: 74/74 steps passed

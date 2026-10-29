@@ -1,0 +1,56 @@
+PASS [d] Passport opens as a D-native workspace
+PASS [d] Q starts an upload from natural language · Uploading “system-design-doc.pdf” to your Passport (simulated). It stays private
+PASS [d] Curveball [recover]: upload drops at 60% · FAILED 60%
+PASS [d] Retry resumes from 60% while on another page · Retrying “system-design-doc.pdf” from 60%.
+PASS [d] Upload finished and item is in the Passport (private)
+PASS [d] Q explains pending is not failed · “AWS Solutions Architect – Associate” is check pending. We’ve asked the source and are wai
+PASS [d] Curveball [info]: issuer unreachable, still PENDING
+PASS [d] Second check: issuer cannot confirm → FAILED
+PASS [d] Proactive: “your AWS certificate check failed”
+PASS [d] Q gives concrete next steps
+PASS [d] Manual review → UNDER_REVIEW
+PASS [d] Curveball [info]: Q refuses to share the confidential original
+PASS [d] Refuses again when pushed, without blame
+PASS [d] Redacted summary created (redactedOf the original) · Here’s the redacted summary, private for now: “Designed a rules engine that screens payouts for fraud before money leave
+PASS [d] Kora gets the summary; original stays private
+PASS [d] “What Talentbridge sees” preview
+PASS [d] Revocation needs approval and lists the code items
+PASS [d] revokedFrom set; event emitted to Talentbridge scope (no titles)
+PASS [d] Curveball [mind]: undo re-shares
+PASS [d] Revoked again
+PASS [d] Talentbridge preview no longer lists the code
+PASS [d] visibleEvidence rule: Talentbridge loses code, Kora keeps it
+PASS [d] Recruiter page (Dele) does not show the revoked code
+PASS [d] Q shows its summary with the basis for each line
+PASS [d] Curveball [mind]: Q shows its basis and corrects the summary
+PASS [d] Discovery back to verified employers only
+PASS [d] Prep for the booked Medlink interview
+PASS [m] Passport opens as a D-native workspace
+PASS [m] Q starts an upload from natural language · Uploading “system-design-doc.pdf” to your Passport (simulated). It stays private
+PASS [m] Curveball [recover]: upload drops at 60% · FAILED 60%
+PASS [m] Retry resumes from 60% while on another page · Retrying “system-design-doc.pdf” from 60%.
+PASS [m] Upload finished and item is in the Passport (private)
+PASS [m] Q explains pending is not failed · “AWS Solutions Architect – Associate” is check pending. We’ve asked the source and are wai
+PASS [m] Curveball [info]: issuer unreachable, still PENDING
+PASS [m] Second check: issuer cannot confirm → FAILED
+PASS [m] Proactive: “your AWS certificate check failed”
+PASS [m] Q gives concrete next steps
+PASS [m] Manual review → UNDER_REVIEW
+PASS [m] Curveball [info]: Q refuses to share the confidential original
+PASS [m] Refuses again when pushed, without blame
+PASS [m] Redacted summary created (redactedOf the original) · Here’s the redacted summary, private for now: “Designed a rules engine that screens payouts for fraud before money leave
+PASS [m] Kora gets the summary; original stays private
+PASS [m] “What Talentbridge sees” preview
+PASS [m] Revocation needs approval and lists the code items
+PASS [m] revokedFrom set; event emitted to Talentbridge scope (no titles)
+PASS [m] Curveball [mind]: undo re-shares
+PASS [m] Revoked again
+PASS [m] Talentbridge preview no longer lists the code
+PASS [m] visibleEvidence rule: Talentbridge loses code, Kora keeps it
+PASS [m] Recruiter page (Dele) does not show the revoked code
+PASS [m] Q shows its summary with the basis for each line
+PASS [m] Curveball [mind]: Q shows its basis and corrects the summary
+PASS [m] Discovery back to verified employers only
+PASS [m] Prep for the booked Medlink interview
+
+54/54 steps passed

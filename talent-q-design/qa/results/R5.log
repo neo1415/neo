@@ -1,0 +1,68 @@
+PASS [d] home shows what is waiting on Bayo
+PASS [d] proactive: draft waiting on him for over a day
+PASS [d] Kora intake starts the Senior Backend brief from Q
+PASS [d] no second conversation on the brief page
+PASS [d] answers applied to the brief
+PASS [d] approval starts the search; result arrives in Q
+PASS [d] approval asked with the exact version
+PASS [d] Bayo approves the brief (hiring manager may)
+PASS [d] search for Payouts runs (Kora pool)
+PASS [d] only seniors applied and visible
+PASS [d] [mind] Q points out the contradiction and asks which to keep
+PASS [d] his choice is applied (juniors back, by level)
+PASS [d] [mind] senior-but-cheap trade-off named
+PASS [d] [recover] offer refused, names who can
+PASS [d] request reaches the colleague’s Q
+PASS [d] policy change refused, admin named
+PASS [d] [recover] bulk send prepared as drafts, nothing sent
+PASS [d] [info] non-job criterion declined
+PASS [d] Q offers job-related criteria instead
+PASS [d] job-related criterion added as a new version
+PASS [d] age proxy declined too
+PASS [d] declines are logged
+PASS [d] Q shows what it remembered and its source
+PASS [d] memory corrected, old one superseded
+PASS [d] memory page shows the new value and the replaced one
+PASS [d] Bayo does not see Ada’s private preferences
+PASS [d] [info] both sources shown, none picked silently
+PASS [d] his choice recorded; both sources kept
+PASS [d] who changed the panel → Ngozi, with when
+PASS [d] audit filtered to the panel change
+PASS [d] what did you do yesterday → Q’s own actions
+PASS [d] audit filtered to Q, yesterday
+PASS [d] audit is Kora-only (no Crumb & Co)
+PASS [m] home shows what is waiting on Bayo
+PASS [m] proactive: draft waiting on him for over a day
+PASS [m] Kora intake starts the Senior Backend brief from Q
+PASS [m] no second conversation on the brief page
+PASS [m] answers applied to the brief
+PASS [m] approval starts the search; result arrives in Q
+PASS [m] approval asked with the exact version
+PASS [m] Bayo approves the brief (hiring manager may)
+PASS [m] search for Payouts runs (Kora pool)
+PASS [m] only seniors applied and visible
+PASS [m] [mind] Q points out the contradiction and asks which to keep
+PASS [m] his choice is applied (juniors back, by level)
+PASS [m] [mind] senior-but-cheap trade-off named
+PASS [m] [recover] offer refused, names who can
+PASS [m] request reaches the colleague’s Q
+PASS [m] policy change refused, admin named
+PASS [m] [recover] bulk send prepared as drafts, nothing sent
+PASS [m] [info] non-job criterion declined
+PASS [m] Q offers job-related criteria instead
+PASS [m] job-related criterion added as a new version
+PASS [m] age proxy declined too
+PASS [m] declines are logged
+PASS [m] Q shows what it remembered and its source
+PASS [m] memory corrected, old one superseded
+PASS [m] memory page shows the new value and the replaced one
+PASS [m] Bayo does not see Ada’s private preferences
+PASS [m] [info] both sources shown, none picked silently
+PASS [m] his choice recorded; both sources kept
+PASS [m] who changed the panel → Ngozi, with when
+PASS [m] audit filtered to the panel change
+PASS [m] what did you do yesterday → Q’s own actions
+PASS [m] audit filtered to Q, yesterday
+PASS [m] audit is Kora-only (no Crumb & Co)
+ERRORS []
+PASS R5: 66/66 steps passed

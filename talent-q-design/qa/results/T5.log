@@ -1,0 +1,58 @@
+PASS [d] Jobs list shows employer signals
+PASS [d] Q explains signals and their limits
+PASS [d] Verified filter hides the unverified employer
+PASS [d] Match explained with the evidence used
+PASS [d] Curveball [mind]: challenge recorded as “you told me”, not proof
+PASS [d] Job page shows the corrected need
+PASS [d] Advice offered (includes a cover note)
+PASS [d] Curveball [mind]: Q accepts and remembers
+PASS [d] Declined advice is not repeated
+PASS [d] Application started, nothing sent until confirmed
+PASS [d] Curveball [info]: listing closes mid-application
+PASS [d] Curveball [recover]: back on the job, closed banner and choices kept
+PASS [d] Nothing is submitted to a closed listing
+PASS [d] Proactive: “a job you saved closed”
+PASS [d] Similar open jobs offered
+PASS [d] Curveball [info]: honest status, no blame
+PASS [d] Proactive: “Rivers hasn’t replied in N days” · 
+A job you saved closed: Harbour Freight Tech’s Ba / 
+Rivers Logistics hasn’t replied in 24 days about 
+PASS [d] Polite follow-up drafted for approval
+PASS [d] Follow-up is SENT_SIMULATED in w.threads
+PASS [d] “Viewed” means only that
+PASS [d] Curveball [mind]: notifications changed through Q
+PASS [d] Settings page reflects it
+PASS [d] Deletion plan: what goes and what can’t
+PASS [d] Memory deleted, content not kept, receipt shown
+PASS [d] Prep without promising an interview
+PASS [d] Applications page renders any candidate’s applications
+PASS [m] Jobs list shows employer signals
+PASS [m] Q explains signals and their limits
+PASS [m] Verified filter hides the unverified employer
+PASS [m] Match explained with the evidence used
+PASS [m] Curveball [mind]: challenge recorded as “you told me”, not proof
+PASS [m] Job page shows the corrected need
+PASS [m] Advice offered (includes a cover note)
+PASS [m] Curveball [mind]: Q accepts and remembers
+PASS [m] Declined advice is not repeated
+PASS [m] Application started, nothing sent until confirmed
+PASS [m] Curveball [info]: listing closes mid-application
+PASS [m] Curveball [recover]: back on the job, closed banner and choices kept
+PASS [m] Nothing is submitted to a closed listing
+PASS [m] Proactive: “a job you saved closed”
+PASS [m] Similar open jobs offered
+PASS [m] Curveball [info]: honest status, no blame
+PASS [m] Proactive: “Rivers hasn’t replied in N days” · 
+A job you saved closed: Harbour Freight Tech’s Ba / 
+Rivers Logistics hasn’t replied in 24 days about 
+PASS [m] Polite follow-up drafted for approval
+PASS [m] Follow-up is SENT_SIMULATED in w.threads
+PASS [m] “Viewed” means only that
+PASS [m] Curveball [mind]: notifications changed through Q
+PASS [m] Settings page reflects it
+PASS [m] Deletion plan: what goes and what can’t
+PASS [m] Memory deleted, content not kept, receipt shown
+PASS [m] Prep without promising an interview
+PASS [m] Applications page renders any candidate’s applications
+
+52/52 steps passed
