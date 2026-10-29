@@ -20,6 +20,8 @@ export interface World {
   people: Person[];
   /** Mandates other than Kora's Senior Backend, which remains `mandate` for the original screens. */
   mandates: MandateX[];
+  /** Per-area slices owned by one feature area each (see src/state/areas/*). Typed by that area's accessor. */
+  areas: Record<string, unknown>;
   pipeline: PipelineEntry[];
   threads: Thread[];
   calendar: CalEvent[];
@@ -59,6 +61,8 @@ const KEY = 'tq.world.v4';
 
 /** Feature areas add their own seed records in src/state/seeds/*.ts (export const seed: SeedPatch). */
 export interface SeedPatch { actors?: Actor[]; orgs?: Org[]; people?: Person[]; mandates?: MandateX[]; pipeline?: PipelineEntry[]; threads?: Thread[]; calendar?: CalEvent[]; interviews?: Interview[]; jobs?: Job[]; applications?: Application[]; evidence?: World['evidence'] }
+/** Feature areas with their own state register an initial slice in src/state/areas/*.ts (export const area). */
+const AREA_INITS = Object.values(import.meta.glob<{ area: { id: string; init: () => unknown } }>('../state/areas/*.ts', { eager: true })).map((m) => m.area).filter(Boolean);
 const SEEDS = Object.values(import.meta.glob<{ seed: SeedPatch }>('../state/seeds/*.ts', { eager: true })).map((m) => m.seed).filter(Boolean);
 function merged<K extends keyof SeedPatch>(k: K, base: NonNullable<SeedPatch[K]>): NonNullable<SeedPatch[K]> { const extra = SEEDS.flatMap((s) => ((s[k] ?? []) as unknown[])); return [...(base as unknown[]), ...extra] as NonNullable<SeedPatch[K]>; }
 
@@ -70,7 +74,7 @@ export function initialWorld(): World {
     session: { actor: 'u_ada', now: NOW, offsetDays: 0, lastRoute: {} },
     actors, orgs: merged('orgs', ORGS), people, mandates: merged('mandates', MANDATES), pipeline: merged('pipeline', PIPELINE), threads: merged('threads', THREADS), calendar: merged('calendar', CAL), interviews: merged('interviews', INTERVIEWS), jobs: merged('jobs', JOBS), applications: merged('applications', APPLICATIONS),
     consents: Object.fromEntries(people.map((p) => [p.personId, consentFor(p.personId)])),
-    profiles: {}, j7: {}, planners: {},
+    profiles: {}, j7: {}, planners: {}, areas: Object.fromEntries(AREA_INITS.map((a) => [a.id, a.init()])),
     q: { threads: {}, frames: {}, suggestions: [], prefs: Object.fromEntries(actors.map((a) => [a.id, defaultPrefs(a)])), nav: {}, ui: {}, undo: {}, glossarySeen: {}, outbox: {} },
     events: [],
     org: { setupStep: 0, setupDone: false, delegation: 'APPROVE_EACH_SEND', policies: POLICIES },
@@ -97,7 +101,7 @@ export function initialWorld(): World {
 function load(): World {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) { const w = JSON.parse(raw) as World; if (w.v === 4) return { ...w, network: 'online' }; }
+    if (raw) { const w = JSON.parse(raw) as World; if (w.v === 4) return { ...w, network: 'online', areas: { ...Object.fromEntries(AREA_INITS.map((a) => [a.id, a.init()])), ...(w.areas ?? {}) } }; }
   } catch { /* storage unavailable: start fresh */ }
   return initialWorld();
 }
