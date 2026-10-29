@@ -15,11 +15,24 @@ const read = (k: string, d: string) => { try { return localStorage.getItem(k) ??
 const write = (k: string, v: string) => { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } };
 
 type ThreadMode = 'open' | 'collapsed';
+/** True inside the AppShell's global Split: pages render only their canvas, Q's thread is global. */
+export const InShell = createContext(false);
+export interface PageTask { title: string; entries: Entry[]; onSend: (t: string) => void; agents: QAgent[]; mood?: QMood; detail?: string; busy?: boolean }
+let pageTask: PageTask | null = null; const taskSubs = new Set<() => void>();
+export const getPageTask = () => pageTask;
+export const onPageTask = (f: () => void) => { taskSubs.add(f); return () => { taskSubs.delete(f); }; };
+const setPageTask = (t: PageTask | null) => { pageTask = t; taskSubs.forEach((f) => f()); };
 const SplitCtx = createContext<{ mode: ThreadMode; setMode: (m: ThreadMode) => void; handle?: ReactNode }>({ mode: 'open', setMode: () => {} });
 export const useSplit = () => useContext(SplitCtx);
 
 /** Thread | separator | canvas. Width and collapse state persist per user (localStorage, convenience only). */
-export function Split({ thread, canvas, id = 'main', defaultMode = 'open' }: { thread: ReactNode; canvas: ReactNode; id?: string; defaultMode?: ThreadMode }) {
+export function Split(props: { thread: ReactNode; canvas: ReactNode; id?: string; defaultMode?: ThreadMode }) {
+  const nested = useContext(InShell);
+  // Inside the shell, a page's own Thread registers itself as the active task (rendered in the global thread).
+  if (nested) return <>{props.thread}{props.canvas}</>;
+  return <SplitRoot {...props} />;
+}
+function SplitRoot({ thread, canvas, id = 'main', defaultMode = 'open' }: { thread: ReactNode; canvas: ReactNode; id?: string; defaultMode?: ThreadMode }) {
   const [w, setW] = useState(() => Number(read(`tq.split.${id}.w`, '380')) || 380);
   const [mode, setModeRaw] = useState<ThreadMode>(() => (read(`tq.split.${id}.mode`, defaultMode) as ThreadMode));
   const [drag, setDrag] = useState(false);
@@ -43,7 +56,7 @@ export function Split({ thread, canvas, id = 'main', defaultMode = 'open' }: { t
     ) }}>
       <div ref={host} className="ds-split" data-thread={mode} style={{ ['--thread-w' as string]: `${w}px` }}>
         {thread}
-        {canvas}
+        <InShell.Provider value={id === 'app'}>{canvas}</InShell.Provider>
       </div>
     </SplitCtx.Provider>
   );
@@ -66,6 +79,18 @@ export interface Entry {
 export function Thread({ title, entries, onSend, agents = [], mood, detail, placeholder, head, busy, composer, typing }: {
   title: string; entries: Entry[]; onSend: (t: string) => void; agents?: QAgent[]; mood?: QMood; detail?: string; placeholder: string; head?: ReactNode; busy?: boolean;
   /** Replaces the default text composer (e.g. the multimodal composer with voice, SC-118). */ composer?: ReactNode; typing?: boolean;
+}) {
+  const nested = useContext(InShell);
+  if (nested) return <TaskRegistrar title={title} entries={entries} onSend={onSend} agents={agents} mood={mood} detail={detail} busy={busy} />;
+  return <ThreadView title={title} entries={entries} onSend={onSend} agents={agents} mood={mood} detail={detail} placeholder={placeholder} head={head} busy={busy} composer={composer} typing={typing} />;
+}
+function TaskRegistrar(t: PageTask) {
+  useEffect(() => { setPageTask(t); }, [t.entries, t.agents, t.mood, t.detail, t.busy]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => setPageTask(null), []);
+  return null;
+}
+function ThreadView({ title, entries, onSend, agents = [], mood, detail, placeholder, head, busy, composer, typing }: {
+  title: string; entries: Entry[]; onSend: (t: string) => void; agents?: QAgent[]; mood?: QMood; detail?: string; placeholder: string; head?: ReactNode; busy?: boolean; composer?: ReactNode; typing?: boolean;
 }) {
   const { mode, setMode, handle } = useSplit();
   const narrow = useNarrow();
@@ -110,7 +135,7 @@ export function Thread({ title, entries, onSend, agents = [], mood, detail, plac
   );
 }
 
-function EntryView({ e, latest }: { e: Entry; latest: boolean }) {
+export function EntryView({ e, latest }: { e: Entry; latest: boolean }) {
   if (e.who === 'me') return <motion.p className="ds-me" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>{e.text}</motion.p>;
   return (
     <motion.div className="ds-q" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.24 }}>
@@ -144,7 +169,8 @@ export function Canvas<V extends string>({ title, kicker, views, view, setView, 
   title: string; kicker: ReactNode; views?: ViewDef<V>[]; view?: V; setView?: (v: V) => void; versions?: Version<V>[]; onVersion?: (v: Version<V>) => void;
   building?: boolean; open: boolean; onClose: () => void; children: ReactNode; qLine?: string; aside?: ReactNode;
 }) {
-  const narrow = useNarrow();
+  const nestedShell = useContext(InShell);
+  const narrow = useNarrow() && !nestedShell;
   const ref = useRef<HTMLElement>(null);
   useEffect(() => { if (narrow && open) ref.current?.focus(); }, [narrow, open]);
   if (narrow && !open) return null;

@@ -2,7 +2,7 @@
 // `ingest.parse` and the profile store actions, so a real parser and profile API can replace this file.
 // Principle: everything read from a CV or said in conversation is a CLAIM. Nothing here creates evidence;
 // evidence comes only from the Evidence Passport (work samples, assessments, verified credentials).
-import { useSyncExternalStore } from 'react';
+import { actorOf, emit, now, update, useWorld, type World } from '../mock/world';
 
 export type Track = 'graduate' | 'switcher' | 'experienced';
 export type Confidence = 'sure' | 'check';
@@ -79,12 +79,29 @@ export const PERSONAS: Record<Track, { name: string; file: string; location: str
   },
 };
 
-const KEY = 'tq.profile.v1';
 export const blankProfile = (): Profile => ({ v: 1, track: null, name: '', location: '', workMode: '', visibility: 'private', method: null, step: 0, experience: [], skills: [], answers: {}, done: false });
-let state: Profile = (() => { try { const p = JSON.parse(localStorage.getItem(KEY) || 'null'); if (p?.v === 1) return p as Profile; } catch { /* ignore */ } return blankProfile(); })();
-const subs = new Set<() => void>();
-export const setProfile = (f: (p: Profile) => Profile) => { state = f(state); try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* ignore */ } subs.forEach((l) => l()); };
-export function useProfile<T>(sel: (p: Profile) => T): T { return useSyncExternalStore((l) => { subs.add(l); return () => subs.delete(l); }, () => sel(state)); }
+// The profile lives in the one store (World v4), keyed by the signed-in candidate's person id.
+const whose = (w: World) => { const a = actorOf(w); return a.side === 'candidate' && a.personId ? a.personId : 'p_amaka'; };
+export const setProfile = (f: (p: Profile) => Profile) => update((w) => {
+  const pid = whose(w);
+  const before = w.profiles[pid] ?? blankProfile();
+  const next = f(before);
+  w.profiles[pid] = next;
+  if (next.done && !before.done) syncToPassport(w, pid, next);
+});
+export function useProfile<T>(sel: (p: Profile) => T): T { return useWorld((w) => sel(w.profiles[whose(w)] ?? BLANK)); }
+const BLANK = blankProfile();
+
+/** Onboarding output becomes Passport items: every claim stays a CLAIM (private), never evidence. */
+function syncToPassport(w: World, pid: string, p: Profile) {
+  w.evidence = w.evidence.filter((e) => !(e.ownerId === pid && e.origin === 'ONBOARDING'));
+  for (const x of p.experience) for (const c of x.claims) {
+    w.evidence.push({ evidenceId: `e_${pid}_${c.id}`, ownerId: pid, kind: 'CLAIM', title: c.text, source: c.source === 'CV' ? 'Your CV' : c.source === 'CONVERSATION' ? 'Your conversation with Q' : 'Added by you', observedAt: now().slice(0, 10), verified: false, verification: 'UNVERIFIED', shows: `${x.title}, ${x.org} (${x.when})`, limits: 'A claim in your words. Add a work sample, reference or credential to back it.', visibility: 'PRIVATE', sharedWith: [], origin: 'ONBOARDING' });
+  }
+  const person = w.people.find((x) => x.personId === pid);
+  if (person && p.experience[0]) person.headline = PERSONAS[p.track ?? 'graduate'].headline;
+  emit(w, pid, 'profile.completed', `PERSON:${pid}`, `Profile set up: ${p.experience.reduce((n, x) => n + x.claims.length, 0)} claims and ${p.skills.length} skills added to your Passport (private).`);
+}
 
 // ---------------- Ingestion (simulated parser) ----------------
 export type ParseEvent = { stage: 'read' | 'experience' | 'skills' | 'dates'; done: number; total: number };

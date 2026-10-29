@@ -5,4 +5,5 @@ import './styles/base.css';
 import './styles/components.css';
 import { App } from './app/App';
 
+document.documentElement.dataset.theme = 'light';
 createRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>);

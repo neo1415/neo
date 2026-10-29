@@ -6,7 +6,7 @@
 //   - anything that leaves Talent Q (a message, a calendar hold, a referee contact) waits for approval;
 //   - state is durable: a plan interrupted by closing the tab resumes from its last finished unit.
 // Simulated: every source, provider and receipt here is fictional and labelled so in the UI.
-import { useSyncExternalStore } from 'react';
+import { getWorld, update, useWorld } from '../mock/world';
 
 export type AgentId = 'sourcing' | 'evidence' | 'outreach' | 'scheduling' | 'references';
 export const AGENTS: Record<AgentId, { name: string; does: string }> = {
@@ -34,7 +34,6 @@ export interface PlannerState {
   seq: number;
 }
 
-const KEY = 'tq.planner.v1';
 export const GOAL = 'Fill Senior Backend Engineer by 30 November';
 export const CONTEXT_USED = ['Mandate v1 · approved 22 Oct', 'Your meeting hours (20 Oct)', 'Kora handbook p.7 · panel of two', 'Policy: approve each send'];
 
@@ -49,25 +48,20 @@ function initialTasks(scope: string): Task[] {
   ].map((t) => (scope.includes('relocation') && t.id === 't1' ? { ...t, total: 24 } : t)) as Task[];
 }
 
+// The planner lives in the one store (World v4), one plan board per signed-in recruiter.
+const who = () => getWorld().session.actor;
 export function initialPlanner(): PlannerState {
   return { v: 1, goal: '', scope: null, status: 'NONE', tasks: [], log: [], approvals: [], findings: [], earlier: { title: 'Reference checks for Ifeoma Obi', at: '27 Oct, 16:40', progress: '1 of 2 referees confirmed', status: 'PAUSED' }, seq: 0 };
 }
-function load(): PlannerState {
-  try {
-    const s = JSON.parse(localStorage.getItem(KEY) || 'null') as PlannerState | null;
-    if (s?.v === 1) {
-      // The simulated runtime lives in this tab. If the tab closed mid-run, say so and resume from the cursor.
-      if (s.status === 'RUNNING') return { ...s, status: 'PAUSED', pausedReason: 'Interrupted when the page closed. Every finished step was kept.' };
-      return s;
-    }
-  } catch { /* storage unavailable */ }
-  return initialPlanner();
-}
-let state: PlannerState = load();
-const subs = new Set<() => void>();
-const set = (f: (s: PlannerState) => PlannerState) => { state = f(state); try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* ignore */ } subs.forEach((l) => l()); };
-export const getPlanner = () => state;
-export function usePlanner<T>(sel: (s: PlannerState) => T): T { return useSyncExternalStore((l) => { subs.add(l); return () => subs.delete(l); }, () => sel(state)); }
+const INITIAL = initialPlanner();
+export const getPlanner = (actor = who()) => getWorld().planners[actor] ?? INITIAL;
+const set = (f: (s: PlannerState) => PlannerState, actor = who()) => update((w) => { w.planners[actor] = f(w.planners[actor] ?? initialPlanner()); });
+export function usePlanner<T>(sel: (s: PlannerState) => T): T { return useWorld((w) => sel(w.planners[w.session.actor] ?? INITIAL)); }
+// The simulated runtime lives in this tab. A plan left RUNNING by a closed tab resumes from its cursor, and says so.
+queueMicrotask(() => {
+  const w = getWorld();
+  if (Object.values(w.planners).some((p) => p.status === 'RUNNING')) update((d) => { for (const k of Object.keys(d.planners)) if (d.planners[k].status === 'RUNNING') d.planners[k] = { ...d.planners[k], status: 'PAUSED', pausedReason: 'Interrupted when the page closed. Every finished step was kept.' }; });
+});
 const line = (s: PlannerState, agent: LogLine['agent'], kind: LogLine['kind'], text: string): PlannerState => ({ ...s, seq: s.seq + 1, log: [...s.log, { id: s.seq + 1, at: Date.now(), agent, kind, text }] });
 
 // ---------------- The engine: one unit of work per tick, round-robin across runnable tasks ----------------
@@ -78,11 +72,13 @@ const FINDS = [
   { who: 'Zara Mensah', note: 'Postgres at scale, no payments yet', strength: 'partial' as const },
 ];
 let timer: number | null = null;
+/** The actor whose plan is ticking (agents keep working if the person switches page or identity). */
+let runningFor: string | null = null;
 const TICK = 240;
 
 function step() {
   timer = null;
-  const s = state;
+  const s = getPlanner(runningFor ?? undefined);
   if (s.status !== 'RUNNING') return;
   let next = { ...s, tasks: s.tasks.map((t) => ({ ...t })) };
   // Unblock tasks whose dependencies finished.
@@ -123,7 +119,7 @@ function step() {
       if (approvalsFor(t.id).length) next = line(next, t.agent, 'approval', `${approvalsFor(t.id).length} ${approvalsFor(t.id).length === 1 ? 'action waits' : 'actions wait'} for your approval`);
     }
   }
-  set(() => next);
+  set(() => next, runningFor ?? undefined);
   timer = window.setTimeout(step, TICK);
 }
 function approvalsFor(id: string): Approval[] {
@@ -133,7 +129,7 @@ function approvalsFor(id: string): Approval[] {
   if (id === 't5') return [{ id: 'a_ref_ifeoma', taskId: id, kind: 'REFERENCE_REQUEST', to: 'Ifeoma Obi', title: 'Ask Ifeoma’s consent to contact two referees', preview: 'Ifeoma is asked first. Referees are contacted only if she agrees, and only about on-call leadership.', effect: 'Sends a consent request to Ifeoma (simulated). No referee is contacted yet.', state: 'WAITING' }];
   return [];
 }
-const kick = () => { if (timer == null && state.status === 'RUNNING') timer = window.setTimeout(step, TICK); };
+const kick = () => { runningFor = who(); if (timer == null && getPlanner().status === 'RUNNING') timer = window.setTimeout(step, TICK); };
 
 // ---------------- Actions (the service surface the UI calls) ----------------
 export const planner = {

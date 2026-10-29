@@ -7,7 +7,7 @@ import { Button, Label, Segmented, Sim, toast } from '../ui/kit';
 import { IEye, IEyeOff, ILock } from '../ui/icons';
 
 type View = 'mine' | 'kora';
-const KIND: Record<Evidence['kind'], string> = { PROJECT: 'Project', CREDENTIAL: 'Credential', ASSESSMENT: 'Assessment', WORK_SAMPLE: 'Work sample', REFERENCE: 'Reference', EMPLOYMENT: 'Employment' };
+const KIND: Record<Evidence['kind'], string> = { PROJECT: 'Project', CREDENTIAL: 'Credential', ASSESSMENT: 'Assessment', WORK_SAMPLE: 'Work sample', REFERENCE: 'Reference', EMPLOYMENT: 'Employment', CLAIM: 'Claim', PRACTICE: 'Practice (private)' };
 
 export function Passport() {
   const evidence = useWorld((w) => w.evidence);

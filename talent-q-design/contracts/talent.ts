@@ -30,7 +30,8 @@ export interface Mandate {
 export interface Evidence {
   evidenceId: string;
   ownerId: string;
-  kind: 'PROJECT' | 'CREDENTIAL' | 'ASSESSMENT' | 'WORK_SAMPLE' | 'REFERENCE' | 'EMPLOYMENT';
+  /** CLAIM = said by the candidate (CV or conversation), not evidence. PRACTICE = private practice, never shareable. */
+  kind: 'PROJECT' | 'CREDENTIAL' | 'ASSESSMENT' | 'WORK_SAMPLE' | 'REFERENCE' | 'EMPLOYMENT' | 'CLAIM' | 'PRACTICE';
   title: string;
   source: string;
   observedAt: string;
@@ -40,6 +41,15 @@ export interface Evidence {
   limits: string;
   visibility: 'PRIVATE' | 'SHARED_WITH' | 'PUBLIC_PROFILE';
   sharedWith: string[];
+  /** Where the item came from in Talent Q (onboarding, J7, an upload, a reviewer). */
+  origin?: 'ONBOARDING' | 'J7' | 'UPLOAD' | 'REVIEW' | 'SEED';
+  /** Verification lifecycle; PENDING means not yet checked, which is different from failed. */
+  verification?: 'VERIFIED' | 'PENDING' | 'UNVERIFIED' | 'FAILED' | 'UNDER_REVIEW';
+  /** The original is confidential; only a redacted summary or an attestation may be shared. */
+  confidential?: boolean;
+  redactedOf?: string;
+  /** Organisations whose access the candidate revoked (kept for audit, never re-granted silently). */
+  revokedFrom?: string[];
 }
 
 export interface Person {

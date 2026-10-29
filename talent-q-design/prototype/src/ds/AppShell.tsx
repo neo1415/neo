@@ -1,148 +1,217 @@
-// Product navigation for the whole of Talent Q.
-// Principles: (1) two workspaces, Hiring and Career, switched at the top, so each person sees only their
-// side; (2) at most four groups and nine items per workspace in the rail, everything else reachable from
-// the command palette (Ctrl/⌘ K) and from Q itself; (3) phones get four tabs plus "More"; (4) items appear
-// only for areas that exist, so navigation never leads to a placeholder.
+// The Talent Q shell. Principles:
+//  1. Q is present on every product page: the conversation sits beside the page on desktop (resizable,
+//     collapsible) and is one tap away on phones (an "Ask Q" bar that opens Q as a sheet).
+//  2. Navigation is built from the route registry, grouped, and adapts to who is signed in (employer,
+//     agency or candidate). Groups past the first three are collapsible, so the rail never overwhelms.
+//  3. Phones get four tabs plus More; Q is always reachable and shows its latest line as a peek.
+//  4. The identity menu switches between the prototype's demo people (one per journey), each with
+//     their own Q conversation, memory and preferences.
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { Link, navigate } from '../ui/router';
-import { resetWorld, update, useWorld, type World } from '../mock/world';
-import { usePlanner } from '../services/agents';
-import { ICONS, type IconName } from './icons';
+import { actorOf, resetWorld, update, useWorld } from '../mock/world';
+import { allRoutes, type RouteDef } from '../routes/registry';
+import { QThread, useQMood } from '../q/QThread';
+import { flushOutbox, useQThread } from '../q/core/engine';
+import { ICONS } from './icons';
 import { QMark } from './QMark';
+import { Split, useNarrow } from './Workspace';
 import './ds.css';
 
-type SpaceId = 'hiring' | 'career';
-interface Item { to: string; label: string; icon: IconName; tab?: boolean; badge?: number; also?: string[] }
-interface Group { label: string; items: Item[] }
+const GROUP_ORDER = ['Q', 'Hiring', 'Agency', 'Work', 'Grow', 'Evidence', 'Organisation', 'You'];
+const COLLAPSIBLE = new Set(['Organisation', 'You']);
 
-function useSpaces(): Record<SpaceId, { label: string; who: string; sub: string; av: string; groups: Group[] }> {
-  const pending = useWorld((w: World) => w.proposals.filter((p) => p.status === 'AWAITING_APPROVAL').length);
-  const plannerWaiting = usePlanner((p) => p.approvals.filter((a) => a.state === 'WAITING').length);
-  return {
-    hiring: {
-      label: 'Hiring', who: 'Ada Okafor', sub: 'Kora Pay · recruiter', av: 'AO',
-      groups: [
-        { label: 'Q', items: [{ to: '/r/home', label: 'Home', icon: 'q', tab: true }, { to: '/r/plan', label: 'Plans and agents', icon: 'agents', tab: true, badge: plannerWaiting || undefined }] },
-        { label: 'Hiring', items: [{ to: '/r/mandate', label: 'Roles', icon: 'roles' }, { to: '/r/sourcing', label: 'Search', icon: 'search' }, { to: '/r/compare', label: 'People', icon: 'people', tab: true }, { to: '/r/outreach', label: 'Approvals', icon: 'approvals', badge: pending || undefined }, { to: '/r/calendar', label: 'Calendar', icon: 'calendar', tab: true }] },
-        { label: 'Knowledge', items: [{ to: '/r/memory', label: 'What Q remembers', icon: 'memory' }, { to: '/r/setup', label: 'Organisation and policy', icon: 'org' }] },
-      ],
-    },
-    career: {
-      label: 'Career', who: 'Amaka Eze', sub: 'Building a career', av: 'AE',
-      groups: [
-        { label: 'Q', items: [{ to: '/c/career', label: 'Career atlas', icon: 'atlas', tab: true }, { to: '/c/welcome', label: 'Getting started', icon: 'welcome' }] },
-        { label: 'Grow', items: [{ to: '/c/growth', label: 'Readiness to apply', icon: 'measures' }, { to: '/c/interview', label: 'Practice and interview', icon: 'practice', tab: true }] },
-        { label: 'Evidence', items: [{ to: '/c/passport', label: 'Evidence Passport', icon: 'passport', tab: true }, { to: '/c/slots', label: 'Interviews', icon: 'interview', tab: true }, { to: '/c/memory', label: 'What Q remembers', icon: 'memory' }] },
-      ],
-    },
-  };
+function useNav() {
+  const actor = useWorld((w) => actorOf(w));
+  const orgKind = useWorld((w) => w.orgs.find((o) => o.id === actorOf(w).orgId)?.kind);
+  const routes = allRoutes().filter((r) => r.nav && (r.side === actor.side || r.side === 'both') && (!r.nav.orgKind || r.nav.orgKind === orgKind));
+  const groups = GROUP_ORDER.map((g) => ({ g, items: routes.filter((r) => r.nav!.group === g).sort((a, b) => a.nav!.order - b.nav!.order) })).filter((x) => x.items.length);
+  return { actor, groups, routes };
 }
 
 export function AppShell({ path, children }: { path: string; children: ReactNode }) {
-  const spaces = useSpaces();
-  const space: SpaceId = path.startsWith('/c/') ? 'career' : 'hiring';
-  const S = spaces[space];
+  const { actor, groups, routes } = useNav();
   const network = useWorld((w) => w.network);
+  const lite = useWorld((w) => (actor.side === 'candidate' && actor.personId ? !!w.consents[actor.personId]?.lite : false));
+  const orgName = useWorld((w) => w.orgs.find((o) => o.id === actor.orgId)?.name);
+  const qm = useQMood();
+  const narrow = useNarrow();
   const [rail, setRail] = useState<'open' | 'collapsed'>(() => { try { return (localStorage.getItem('tq.rail') as 'open' | 'collapsed') || 'open'; } catch { return 'open'; } });
   const [palette, setPalette] = useState(false);
   const [more, setMore] = useState(false);
-  const [switcher, setSwitcher] = useState(false);
+  const [who, setWho] = useState(false);
+  const [qOpen, setQOpen] = useState(false);
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   useEffect(() => { try { localStorage.setItem('tq.rail', rail); } catch { /* ignore */ } }, [rail]);
   useEffect(() => {
-    const on = (e: KeyboardEvent) => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setPalette((p) => !p); } };
+    const on = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setPalette((p) => !p); }
+      // "/" focuses Q's composer from anywhere (like a search box), unless typing in a field.
+      if (e.key === '/' && !(e.target as HTMLElement).closest('input,textarea,[contenteditable]')) { e.preventDefault(); if (narrow) setQOpen(true); setTimeout(() => document.getElementById('q-ask')?.focus(), 30); }
+    };
     window.addEventListener('keydown', on); return () => window.removeEventListener('keydown', on);
-  }, []);
-  useEffect(() => { setMore(false); setSwitcher(false); }, [path]);
-  const items = S.groups.flatMap((g) => g.items);
-  const current = (it: Item) => path === it.to || (it.to === '/r/mandate' && path === '/r/mandate');
-  const tabs = items.filter((i) => i.tab).slice(0, 4);
-  const other: SpaceId = space === 'hiring' ? 'career' : 'hiring';
+  }, [narrow]);
+  useEffect(() => { setMore(false); setWho(false); setQOpen(false); }, [path]);
+  useEffect(() => { if (network === 'online') void flushOutbox(); }, [network]);
+  // Remember where each person was, so returning (or switching back to them) restores their place.
+  useEffect(() => { update((w) => { w.session.lastRoute[w.session.actor] = path; }); }, [path]);
+  const current = (r: RouteDef) => path === r.path || (r.path !== '/' && path.startsWith(r.path + '/'));
+  const tabs = routes.filter((r) => r.nav?.tab).sort((a, b) => a.nav!.order - b.nav!.order).slice(0, 4);
+
+  const page = <div className="ds-page" id="ds-content" tabIndex={-1}>
+    {network === 'offline' && (
+      <div className="ds-banner" data-k="warn" role="status" style={{ margin: '12px 16px 0' }}>
+        <span aria-hidden="true">{ICONS.offline}</span>
+        <span><b>You’re offline.</b> Your work is saved on this device. Q keeps your messages and reads them when you reconnect. Nothing is sent while you’re offline.</span>
+        <button type="button" className="ds-btn" onClick={() => update((w) => { w.network = 'online'; })}>Reconnect</button>
+      </div>
+    )}
+    {children}
+  </div>;
 
   return (
-    <div className="ds ds-app" data-rail={rail} data-audience={space === 'career' ? 'candidate' : undefined}>
+    <div className="ds ds-app" data-rail={rail} data-audience={actor.side === 'candidate' ? 'candidate' : undefined} data-lite={lite ? 'on' : undefined}>
       <a className="skip-link" href="#ds-content">Skip to content</a>
-      <nav className="ds-rail" aria-label={`${S.label} navigation`}>
-        <Link to={space === 'hiring' ? '/r/home' : '/c/career'} className="ds-rail-brand" aria-label="Talent Q home"><QMark mood={network === 'offline' ? 'offline' : 'idle'} size={30} /><span className="ds-hide-collapsed">Talent Q</span></Link>
+      <nav className="ds-rail" aria-label="Talent Q navigation">
+        <Link to={actor.side === 'recruiter' ? '/r/home' : '/c/home'} className="ds-rail-brand" aria-label="Talent Q home"><QMark mood={network === 'offline' ? 'offline' : 'idle'} size={30} /><span className="ds-hide-collapsed">Talent Q</span></Link>
         <div className="ds-space">
-          <button type="button" className="ds-space-btn" aria-expanded={switcher} aria-label={`Workspace: ${S.label}, ${S.who}. Switch workspace`} onClick={() => setSwitcher(!switcher)}>
-            <span className="ds-av" aria-hidden="true">{S.av}</span>
-            <span className="who ds-hide-collapsed"><b>{S.label}</b><span>{S.who}</span></span>
+          <button type="button" className="ds-space-btn" aria-expanded={who} aria-label={`Signed in as ${actor.name}${actor.journey ? `, journey ${actor.journey}` : ''}. Switch person`} onClick={() => setWho(!who)}>
+            <span className="ds-av" aria-hidden="true">{actor.initials}</span>
+            <span className="who ds-hide-collapsed"><b>{actor.name}</b><span>{actor.title}{orgName ? ` · ${orgName}` : ''}</span></span>
           </button>
-          {switcher && (
-            <Link to={other === 'hiring' ? '/r/home' : '/c/career'} className="ds-navlink"><span className="ds-av" aria-hidden="true" style={{ width: 22, height: 22, fontSize: 10, background: 'var(--night-4)', color: 'var(--moon)' }}>{spaces[other].av}</span><span className="ds-hide-collapsed">Switch to {spaces[other].label.toLowerCase()} · {spaces[other].who}</span></Link>
-          )}
+          {who && <WhoMenu onDone={() => setWho(false)} />}
         </div>
-        {S.groups.map((g) => (
-          <div key={g.label} className="ds-navgroup">
-            <span className="lab ds-hide-collapsed">{g.label}</span>
-            {g.items.map((it) => (
-              <Link key={it.to} to={it.to} current={current(it)} className="ds-navlink" aria-label={rail === 'collapsed' ? it.label : undefined} title={rail === 'collapsed' ? it.label : undefined}>
-                {ICONS[it.icon]}<span className="ds-hide-collapsed">{it.label}</span>{it.badge ? <span className="badge num ds-hide-collapsed" aria-label={`${it.badge} waiting`}>{it.badge}</span> : null}
-              </Link>
-            ))}
-          </div>
-        ))}
+        {groups.map(({ g, items }) => {
+          const collapsible = COLLAPSIBLE.has(g); const open = !collapsible || openGroups[g] || items.some(current);
+          return (
+            <div key={g} className="ds-navgroup">
+              {collapsible ? <button type="button" className="ds-groupbtn ds-hide-collapsed" aria-expanded={open} onClick={() => setOpenGroups({ ...openGroups, [g]: !open })}><span className="lab">{g}</span><span aria-hidden="true">{open ? '−' : '+'}</span></button> : <span className="lab ds-hide-collapsed">{g}</span>}
+              {(open || rail === 'collapsed') && items.map((r) => (
+                <Link key={r.path} to={r.path} current={current(r)} className="ds-navlink" aria-label={rail === 'collapsed' ? r.nav!.label : undefined} title={rail === 'collapsed' ? r.nav!.label : undefined}>
+                  {ICONS[r.nav!.icon]}<span className="ds-hide-collapsed">{r.nav!.label}</span><NavBadge kind={r.nav!.badge} />
+                </Link>
+              ))}
+            </div>
+          );
+        })}
         <div className="ds-rail-foot">
           <button type="button" className="ds-railbtn" onClick={() => setPalette(true)} aria-label="Go to anything (Control K)">{ICONS.command}<span className="ds-hide-collapsed">Go to anything</span><kbd className="ds-hide-collapsed">⌘K</kbd></button>
           <button type="button" className="ds-railbtn" aria-pressed={network === 'offline'} onClick={() => update((w) => { w.network = w.network === 'online' ? 'offline' : 'online'; })}>{ICONS.offline}<span className="ds-hide-collapsed">{network === 'online' ? 'Simulate offline' : 'Reconnect'}</span></button>
           <button type="button" className="ds-railbtn" aria-label={rail === 'open' ? 'Collapse navigation' : 'Expand navigation'} onClick={() => setRail(rail === 'open' ? 'collapsed' : 'open')}>{rail === 'open' ? ICONS.collapse : ICONS.expand}<span className="ds-hide-collapsed">Collapse</span></button>
         </div>
       </nav>
-      <div className="ds-main" id="ds-content" tabIndex={-1}>
-        {network === 'offline' && (
-          <div className="ds-banner" data-k="warn" role="status" style={{ margin: '12px 16px 0' }}>
-            <span aria-hidden="true">{ICONS.offline}</span>
-            <span><b>You’re offline.</b> Q keeps working on the server; you’ll catch up from your last step when you reconnect. Nothing is sent while you’re offline.</span>
-            <button type="button" className="ds-btn" onClick={() => update((w) => { w.network = 'online'; })}>Reconnect</button>
-          </div>
-        )}
-        {children}
+      <div className="ds-main">
+        {narrow ? page : <Split id="app" thread={<QThread />} canvas={page} />}
       </div>
-      <nav className="ds-tabs" aria-label={`${S.label} tabs`}>
-        {tabs.map((t) => <Link key={t.to} to={t.to} current={current(t)}>{ICONS[t.icon]}<span>{t.label.split(' ')[0]}</span></Link>)}
+      {narrow && !qOpen && <AskBar onOpen={() => setQOpen(true)} />}
+      <AnimatePresence>
+        {narrow && qOpen && (
+          <motion.div className="ds-qsheet" role="dialog" aria-modal="true" aria-label="Q" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 40, opacity: 0 }} transition={{ duration: 0.22, ease: 'easeOut' }}
+            onKeyDown={(e) => { if (e.key === 'Escape') setQOpen(false); }}>
+            <QThread onClose={() => setQOpen(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <nav className="ds-tabs" aria-label="Tabs">
+        <button type="button" aria-expanded={qOpen} onClick={() => setQOpen(!qOpen)} aria-current={qOpen ? 'page' : undefined}><QMark mood={qm.mood} agents={qm.agents} size={22} /><span>Q</span></button>
+        {tabs.slice(0, 3).map((t) => <Link key={t.path} to={t.path} current={current(t)}>{ICONS[t.nav!.icon]}<span>{t.nav!.label.split(' ')[0]}</span></Link>)}
         <button type="button" aria-expanded={more} onClick={() => setMore(!more)}>{ICONS.more}<span>More</span></button>
       </nav>
       {more && (
         <div className="ds-more ink" role="dialog" aria-label="More">
-          {S.groups.map((g) => (
-            <div key={g.label} className="ds-navgroup">
-              <span className="lab">{g.label}</span>
-              {g.items.map((it) => <Link key={it.to} to={it.to} current={current(it)} className="ds-navlink">{ICONS[it.icon]}<span>{it.label}</span>{it.badge ? <span className="badge num">{it.badge}</span> : null}</Link>)}
+          {groups.map(({ g, items }) => (
+            <div key={g} className="ds-navgroup"><span className="lab">{g}</span>
+              {items.map((r) => <Link key={r.path} to={r.path} current={current(r)} className="ds-navlink">{ICONS[r.nav!.icon]}<span>{r.nav!.label}</span></Link>)}
             </div>
           ))}
-          <div className="ds-navgroup">
-            <Link to={other === 'hiring' ? '/r/home' : '/c/career'} className="ds-navlink">{ICONS.people}<span>Switch to {spaces[other].label.toLowerCase()}</span></Link>
+          <div className="ds-navgroup"><span className="lab">Demo</span>
+            <button type="button" className="ds-railbtn" onClick={() => { setMore(false); setWho(true); setTimeout(() => document.querySelector<HTMLButtonElement>('.ds-who button')?.focus(), 30); }}>{ICONS.people}<span>Switch person</span></button>
             <button type="button" className="ds-railbtn" onClick={() => { setMore(false); setPalette(true); }}>{ICONS.command}<span>Go to anything</span></button>
           </div>
+          {who && <WhoMenu onDone={() => setWho(false)} />}
         </div>
       )}
-      {palette && <Palette onClose={() => setPalette(false)} spaces={spaces} />}
+      {palette && <Palette onClose={() => setPalette(false)} />}
     </div>
   );
 }
 
-function Palette({ onClose, spaces }: { onClose: () => void; spaces: ReturnType<typeof useSpaces> }) {
+function NavBadge({ kind }: { kind?: string }) {
+  const n = useWorld((w) => {
+    if (kind === 'approvals') return w.threads.flatMap((t) => t.messages).filter((m) => m.status === 'AWAITING_APPROVAL' && w.threads.find((t) => t.messages.includes(m))?.orgId === actorOf(w).orgId).length + w.proposals.filter((p) => p.status === 'AWAITING_APPROVAL').length;
+    if (kind === 'plan') return (w.planners[w.session.actor]?.approvals ?? []).filter((a) => a.state === 'WAITING').length;
+    if (kind === 'apps') return w.applications.filter((a) => a.personId === actorOf(w).personId && a.status === 'INTERVIEW').length;
+    return 0;
+  });
+  return n ? <span className="badge num ds-hide-collapsed" aria-label={`${n} waiting`}>{n}</span> : null;
+}
+
+/** Peek of Q's latest line + a big target that opens Q. Phones only. */
+function AskBar({ onOpen }: { onOpen: () => void }) {
+  const msgs = useQThread();
+  const last = [...msgs].reverse().find((m) => m.who !== 'me');
+  const { mood, agents } = useQMood();
+  return (
+    <div className="ds-askbar ink">
+      <QMark mood={mood} agents={agents} size={36} />
+      <button type="button" onClick={onOpen} aria-label={last ? `Q: ${last.text}. Open Q` : 'Ask Q'}>
+        {last ? <span className="peek">{last.text}</span> : <span>Ask Q anything…</span>}
+      </button>
+    </div>
+  );
+}
+
+function WhoMenu({ onDone }: { onDone: () => void }) {
+  const actors = useWorld((w) => w.actors.filter((a) => a.journey));
+  const cur = useWorld((w) => w.session.actor);
+  const last = useWorld((w) => w.session.lastRoute);
+  const sw = (id: string) => {
+    const a = actors.find((x) => x.id === id)!;
+    update((w) => { w.session.actor = id; });
+    onDone();
+    navigate(last[id] ?? (a.side === 'recruiter' ? (a.signedUp ? '/r/home' : '/signup') : (a.signedUp ? '/c/home' : '/signup')));
+  };
+  return (
+    <div className="ds-who" role="group" aria-label="Switch person (demo)">
+      {(['recruiter', 'candidate'] as const).map((side) => (
+        <div key={side} style={{ display: 'grid', gap: 2 }}>
+          <span className="lab" style={{ padding: '6px 10px 2px' }}>{side === 'recruiter' ? 'Hiring' : 'Candidates'}</span>
+          {actors.filter((a) => a.side === side).map((a) => (
+            <button key={a.id} type="button" className="ds-railbtn" aria-current={a.id === cur ? 'true' : undefined} onClick={() => sw(a.id)}>
+              <span className="ds-av" aria-hidden="true" style={{ width: 24, height: 24, fontSize: 10 }}>{a.initials}</span>
+              <span>{a.name} <span className="muted">· {a.journey}</span></span>
+            </button>
+          ))}
+        </div>
+      ))}
+      <button type="button" className="ds-railbtn" onClick={() => { if (confirm('Reset the whole demo to its starting state? Every person’s conversations and work will be cleared.')) { resetWorld(); onDone(); navigate('/'); } }}>{ICONS.reset}<span>Reset the demo</span></button>
+    </div>
+  );
+}
+
+function Palette({ onClose }: { onClose: () => void }) {
+  const { routes } = useNav();
   const [q, setQ] = useState('');
   const [i, setI] = useState(0);
   const input = useRef<HTMLInputElement>(null);
   useEffect(() => { input.current?.focus(); }, []);
   const all = useMemo(() => [
-    ...(Object.entries(spaces) as [SpaceId, ReturnType<typeof useSpaces>[SpaceId]][]).flatMap(([, s]) => s.groups.flatMap((g) => g.items.map((it) => ({ label: it.label, grp: `${s.label} · ${g.label}`, run: () => navigate(it.to) })))),
-    { label: 'Components and tokens', grp: 'Design system', run: () => navigate('/gallery') },
-    { label: 'Design direction archive (A–D)', grp: 'Design system', run: () => navigate('/x') },
-    { label: 'Start page', grp: 'Talent Q', run: () => navigate('/') },
-    { label: 'Reset the demo', grp: 'Prototype', run: () => { if (confirm('Reset the demo to its starting state?')) { resetWorld(); navigate('/'); } } },
-  ], [spaces]);
-  const list = all.filter((x) => `${x.label} ${x.grp}`.toLowerCase().includes(q.toLowerCase()));
+    { label: `Ask Q: “${q || '…'}”`, grp: 'Q', run: () => { if (q) window.dispatchEvent(new CustomEvent('tq-compose', { detail: q })); } },
+    ...routes.map((r) => ({ label: r.nav!.label, grp: r.nav!.group, run: () => navigate(r.path) })),
+    { label: 'Settings', grp: 'You', run: () => navigate('/settings') },
+    { label: 'Interaction gallery (all states)', grp: 'Prototype', run: () => navigate('/gallery/states') },
+    { label: 'Components and tokens', grp: 'Prototype', run: () => navigate('/gallery') },
+    { label: 'Design direction archive (A–D)', grp: 'Prototype', run: () => navigate('/x') },
+  ], [routes, q]);
+  const list = all.filter((x, k) => k === 0 || `${x.label} ${x.grp}`.toLowerCase().includes(q.toLowerCase()));
   const go = (k: number) => { const x = list[k]; if (!x) return; onClose(); x.run(); };
   return (
     <div className="ds-scrim" onClick={onClose}>
       <div className="ds-palette" role="dialog" aria-modal="true" aria-label="Go to anything" onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => { if (e.key === 'Escape') onClose(); if (e.key === 'ArrowDown') { e.preventDefault(); setI(Math.min(list.length - 1, i + 1)); } if (e.key === 'ArrowUp') { e.preventDefault(); setI(Math.max(0, i - 1)); } if (e.key === 'Enter') { e.preventDefault(); go(i); } }}>
-        <input ref={input} value={q} onChange={(e) => { setQ(e.target.value); setI(0); }} placeholder="Go to a page or action…" aria-label="Search pages and actions" aria-controls="ds-pal-list" aria-activedescendant={list[i] ? `pal-${i}` : undefined} role="combobox" aria-expanded="true" />
+        <input ref={input} value={q} onChange={(e) => { setQ(e.target.value); setI(q ? 1 : 0); }} placeholder="Go to a page, or ask Q…" aria-label="Search pages or ask Q" aria-controls="ds-pal-list" aria-activedescendant={list[i] ? `pal-${i}` : undefined} role="combobox" aria-expanded="true" />
         <ul id="ds-pal-list" role="listbox" aria-label="Results">
           {list.map((x, k) => <li key={x.grp + x.label} role="none"><button type="button" role="option" id={`pal-${k}`} aria-selected={k === i} data-active={k === i} onMouseEnter={() => setI(k)} onClick={() => go(k)}><span>{x.label}</span><span className="grp">{x.grp}</span></button></li>)}
-          {!list.length && <li className="muted" style={{ padding: 12 }}>Nothing matches “{q}”. Try asking Q instead.</li>}
         </ul>
       </div>
     </div>

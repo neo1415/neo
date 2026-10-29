@@ -1,15 +1,13 @@
-// P1 · SC-117 Q home workspace + SC-118 composer. Direction D: the conversation is Q's ink thread (with the
-// multimodal composer); what needs you and what Q is doing is the paper canvas. Logic unchanged from P1.
+// P1 · SC-117 Q home workspace. Since the complete-experience phase the conversation is the global Q thread
+// (beside every page); this page is the paper canvas: what needs you and what Q is doing. Kora Pay view.
 import { useState, useSyncExternalStore } from 'react';
 import { TERMINAL_STATUSES } from '@contracts';
 import { allRuns, onRuns, useNamedRun, useRun } from '../mock/runtime';
-import { getWorld, now, uid, update, useWorld } from '../mock/world';
-import { startIntake } from '../q/scripts';
+import { useWorld } from '../mock/world';
 import { fmt } from '../q/slots';
-import { Arrive, Composer, Label, RunSteps, Sim } from '../ui/kit';
-import { Canvas, Split, Thread, type Entry } from '../ds/Workspace';
-import { moodOf } from '../ds/QMark';
-import { Link, navigate } from '../ui/router';
+import { Arrive, Label, RunSteps, Sim } from '../ui/kit';
+import { Canvas } from '../ds/Workspace';
+import { Link } from '../ui/router';
 
 function useActiveRuns() {
   const runs = useSyncExternalStore(onRuns, () => allRuns().map((r) => `${r.runId}:${r.status}:${r.seq}`).join('|'));
@@ -25,51 +23,16 @@ export function QHome() {
   const waitingCount = pending.length + (slotsToSend ? 1 : 0) + (counter ? 1 : 0);
   const sourcingId = useNamedRun('sourcing');
   const sourcing = useRun(sourcingId, w.network);
-  const [typing, setTyping] = useState(false);
   const [narrowOpen, setNarrowOpen] = useState(false);
 
   const headline = waitingCount ? `${waitingCount === 1 ? 'One thing needs' : `${waitingCount} things need`} your yes.`
     : active.length ? 'I’m working. Nothing needs you yet.'
     : w.mandate.status === 'DRAFT' ? 'Tell me who you need.' : 'You’re clear for now.';
 
-  const onSend = (text: string) => {
-    update((d) => { d.chat.recruiter.push({ id: uid('m'), who: 'me', text, at: now() }); });
-    setTyping(true);
-    setTimeout(() => {
-      setTyping(false);
-      const t = text.toLowerCase();
-      const reply = (q: string, link?: { label: string; to: string }, used?: { kind: 'MEMORY' | 'POLICY' | 'CURRENT_PROMPT' | 'AUTHORIZED_FACT'; label: string }[]) =>
-        update((d) => { d.chat.recruiter.push({ id: uid('m'), who: 'q', text: q, at: now(), link, used }); });
-      if (/hire|need|engineer|role|backend|developer/.test(t) && getWorld().mandate.status === 'DRAFT') {
-        startIntake(text);
-        reply('I’ve started a mandate from what you said. I have two questions; answer them there or here.', { label: 'Open the mandate', to: '/r/mandate' }, [{ kind: 'CURRENT_PROMPT', label: 'your message' }]);
-        navigate('/r/mandate');
-      } else if (/compar|shortlist|who/.test(t)) reply('Here’s the shortlist side by side, with each claim linked to its evidence.', { label: 'Open the comparison', to: '/r/compare' });
-      else if (/remember|memory|forget|know about/.test(t)) reply('This is everything I remember for you, where each item came from, and how to change it.', { label: 'What Q remembers', to: '/r/memory' });
-      else if (/schedul|interview|time|calendar|book/.test(t)) reply('I’ll find times using your remembered hours: after 10:00, mornings first, Tuesday review kept clear.', { label: 'Go to scheduling', to: '/r/calendar' }, [{ kind: 'MEMORY', label: 'Your meeting hours (20 Oct)' }]);
-      else if (/message|outreach|email|send/.test(t)) reply('Drafts wait for your approval. Nothing is sent without it.', { label: 'Open approvals', to: '/r/outreach' });
-      else reply('I can shape a role, find and compare people, draft outreach for your approval, and schedule interviews. What would you like to start with?');
-    }, 450);
-  };
-
   const booked = w.scheduling && ['BOOKED', 'REMINDERS'].includes(w.scheduling.state) ? w.scheduling.slots.find((s) => s.slotId === w.scheduling!.chosenSlotId) : null;
 
-  const entries: Entry[] = [
-    { id: 'hello', who: 'q', text: `Good morning, Ada. ${headline} I work on Kora Pay’s hiring in the background and only bring you what needs a decision.`,
-      chips: w.chat.recruiter.length ? undefined : [{ label: w.mandate.status === 'DRAFT' ? 'I need a senior backend engineer for payments' : 'Who should I talk to first?', go: true, on: () => onSend(w.mandate.status === 'DRAFT' ? 'I need a senior backend engineer for payments' : 'Who should I talk to first?') }, { label: 'Plan a whole hire with agents', on: () => navigate('/r/plan') }] },
-    ...w.chat.recruiter.map((m): Entry => m.who === 'me' ? { id: m.id, who: 'me', text: m.text } : {
-      id: m.id, who: 'q', text: m.text, used: m.used?.map((u) => u.label), chips: m.link ? [{ label: m.link.label, go: true, on: () => navigate(m.link!.to) }] : undefined,
-    }),
-  ];
-  const agents = sourcingId && !sourcing.completed ? sourcing.steps.filter((x) => x.total).map((x) => ({ label: x.label, done: x.done ?? 0, total: x.total ?? 1 })) : [];
-  const mood = moodOf({ offline: w.network === 'offline', agents, waiting: waitingCount > 0 });
-
   return (
-    <Split id="home"
-      thread={<Thread title="Q home" entries={entries} onSend={onSend} agents={agents} mood={mood} typing={typing} placeholder="Ask Q, or tell it what to do"
-        composer={<Composer onSend={onSend} suggestion={w.mandate.status === 'DRAFT' ? 'I need a senior backend engineer for payments' : 'Who should I talk to first?'} />} />}
-      canvas={
-        <Canvas title={headline} kicker="Q · your day" open={narrowOpen} onClose={() => setNarrowOpen(false)} qLine={entries[entries.length - 1]?.text}>
+        <Canvas title={headline} kicker="Q · your day" open={narrowOpen} onClose={() => setNarrowOpen(false)}>
           <section className="ds-sheet ds-legacy" aria-label="What needs you and what Q is doing" style={{ display: 'grid', gap: 28, maxWidth: 820 }}>
             <div className="stack gap-4">
               <Label as="h2">Needs you · {waitingCount}</Label>
@@ -112,6 +75,5 @@ export function QHome() {
             </div>
           </section>
         </Canvas>
-      } />
   );
 }

@@ -205,3 +205,28 @@
   .ds-log { padding-bottom: 24px; }
   .ds-thread .ds-compose { position: sticky; bottom: 76px; z-index: 2; box-shadow: 0 -12px 24px -12px var(--night); }
 }
+
+/* ---------- Global Q (thread beside every page; sheet on phones) ---------- */
+.ds-qsim { margin-left: auto; font-family: var(--data); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--moon-2); border: 1px dashed var(--night-4); border-radius: 4px; padding: 3px 7px; background: transparent; min-height: 28px; }
+.ds-context { margin: 0; padding: 8px 20px; font-size: 12px; color: var(--moon-2); border-bottom: 1px solid var(--night-3); font-family: var(--data); letter-spacing: .04em; }
+.ds-suggest { border: 1px solid var(--gold-light); border-radius: 14px; padding: 12px 14px; display: grid; gap: 8px; background: rgb(227 194 125 / .06); }
+.ds-linkbtn { all: unset; cursor: pointer; font-size: 13px; color: var(--moon-2); text-decoration: underline; text-underline-offset: 3px; justify-self: start; }
+.ds-linkbtn:focus-visible { outline: 2px solid var(--gold-light); }
+.ds-q[data-kind='refusal'] .say, .ds-q[data-kind='approval'] .say { border-left: 2px solid var(--gold-light); padding-left: 12px; }
+.ds-page { min-width: 0; min-height: 100vh; }
+.ds-page > .ds-canvas { min-height: 100vh; }
+.ds-askbar { display: none; }
+@media (max-width: 860px) {
+  .ds-askbar { display: grid; grid-template-columns: 40px 1fr; gap: 10px; align-items: center; position: fixed; left: 8px; right: 8px; bottom: 76px; z-index: 55; background: var(--night); color: var(--moon); border-radius: 16px; padding: 8px 12px; box-shadow: 0 10px 30px -12px rgb(0 0 0 / .6); border: 1px solid var(--night-3); }
+  .ds-askbar button { all: unset; cursor: pointer; display: grid; min-height: 44px; align-items: center; color: var(--moon-2); font-size: 15px; }
+  .ds-askbar .peek { color: var(--moon); font-family: var(--voice); font-size: 15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ds-qsheet { position: fixed; inset: 0 0 68px 0; z-index: 65; display: flex; }
+  .ds-qsheet > .ds-thread { flex: 1; height: auto; min-height: 0; position: static; }
+  .ds-page { padding-bottom: 96px; }
+  .ds-page > .ds-canvas { min-height: auto; }
+}
+.ds-groupbtn { all: unset; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; padding: 4px 10px; cursor: pointer; color: var(--moon-2); min-height: 32px; }
+.ds-groupbtn:focus-visible { outline: 2px solid var(--gold-light); border-radius: 6px; }
+.ds-who { display: grid; gap: 2px; background: var(--night-2); border: 1px solid var(--night-3); border-radius: 12px; padding: 6px; margin-top: 4px; }
+.ds-who [aria-current='true'] { background: var(--night-3); color: var(--moon); }
+.ds-taskhead { border-top: 1px solid var(--night-3); padding-top: 12px; }

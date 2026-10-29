@@ -10,6 +10,7 @@ import { moodOf, type QAgent } from '../../ds/QMark';
 import { Canvas, Split, Thread, useNarrow, useTimers, type Chip, type Entry, type ViewDef } from '../../ds/Workspace';
 import { BandAtlas, OccList, RadialAtlas, gapsOf, shown } from './Atlas';
 import { PERSONAS, type CState, type Persona, type PlanStep, type Rec, type RecClass } from './personas';
+import { actorOf, emit, update, useWorld, type World } from '../../mock/world';
 
 type View = 'atlas' | 'list' | 'role' | 'plan' | 'progress' | 'record';
 type PId = Persona['id'];
@@ -23,18 +24,39 @@ const LADDER: { cls: RecClass; counts: string }[] = [
 
 interface J7State { states: Record<string, CState>; record: Rec[]; plan: PlanStep[]; moved: Record<string, number>; goal: string; archived: { occ: string; at: string; why: string }[]; pick: string | null; practising: boolean; sample: 'none' | 'running' | 'assessed' }
 const fresh = (p: Persona): J7State => ({ states: Object.fromEntries(p.comps.map((c) => [c.id, c.state])), record: p.record, plan: p.plan, moved: {}, goal: p.goal, archived: [], pick: null, practising: false, sample: 'none' });
-const KEY = 'tq.j7.v1';
-const loadAll = (): Partial<Record<PId, J7State>> => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
+export const PERSON_OF: Record<PId, string> = { graduate: 'p_amaka', switcher: 'p_chidi', experienced: 'p_tobi' };
+function mirrorToPassport(w: World, personId: string, P: Persona, before: J7State, next: J7State) {
+  const added = next.record.filter((r) => !before.record.some((b) => b.id === r.id));
+  for (const r of added) {
+    if (r.cls !== 'Practice attempt' && r.cls !== 'Assessed by rubric and reviewer') continue;
+    const practice = r.cls === 'Practice attempt';
+    w.evidence.push({ evidenceId: `e_j7_${personId}_${r.id}`, ownerId: personId, kind: practice ? 'PRACTICE' : 'ASSESSMENT', title: practice ? `Practice: ${P.comps.find((c) => c.id === r.comp)?.label}` : P.practice.sample.title,
+      source: practice ? 'Talent Q practice (private)' : 'Talent Q rubric review (simulated reviewer)', observedAt: w.session.now.slice(0, 10), verified: !practice, verification: practice ? 'UNVERIFIED' : 'VERIFIED',
+      shows: r.why, limits: r.not, visibility: 'PRIVATE', sharedWith: [], origin: 'J7' });
+    emit(w, personId, practice ? 'j7.practice.logged' : 'j7.assessment.completed', `PERSON:${personId}`, practice ? 'Practice attempt logged (private, not proof).' : `${P.practice.sample.title} assessed; added to your Passport as private.`);
+  }
+}
 
 export function J7() {
   const narrow = useNarrow();
   const later = useTimers();
-  const [pid, setPid] = useState<PId>(() => { try { return (localStorage.getItem('tq.j7.persona') as PId) || 'graduate'; } catch { return 'graduate'; } });
+  // The persona follows the signed-in candidate; in the hiring workspace (demo only) it can be switched.
+  const actorPerson = useWorld((w) => actorOf(w).personId ?? null);
+  const fromActor = (Object.keys(PERSON_OF) as PId[]).find((k) => PERSON_OF[k] === actorPerson);
+  const [pickPid, setPid] = useState<PId>('graduate');
+  const pid: PId = fromActor ?? pickPid;
+  const personId = PERSON_OF[pid];
   const P = PERSONAS[pid];
-  const [all, setAll] = useState(loadAll);
-  const S = all[pid] ?? fresh(P);
-  const setS = (f: (s: J7State) => J7State) => setAll((a) => { const n = { ...a, [pid]: f(a[pid] ?? fresh(P)) }; try { localStorage.setItem(KEY, JSON.stringify(n)); } catch { /* ignore */ } return n; });
-  useEffect(() => { try { localStorage.setItem('tq.j7.persona', pid); } catch { /* ignore */ } }, [pid]);
+  // J7 lives in the one store (World v4). Practice and assessments are mirrored into the person's
+  // Passport as PRIVATE items: J7 never makes anything recruiter-visible on its own.
+  const stored = useWorld((w) => w.j7[personId] as J7State | undefined);
+  const S = stored ?? fresh(P);
+  const setS = (f: (s: J7State) => J7State) => update((w) => {
+    const before = (w.j7[personId] as J7State | undefined) ?? fresh(P);
+    const next = f(before);
+    w.j7[personId] = next;
+    mirrorToPassport(w, personId, P, before, next);
+  });
 
   const [view, setView] = useState<View>('atlas');
   const [occRaw, setOcc] = useState<string | null>(null);
@@ -151,7 +173,7 @@ export function J7() {
           building={S.sample === 'running'} open={open} onClose={() => setOpen(false)} qLine={[...entries].reverse().find((e) => e.who === 'q' && e.text)?.text}
           aside={
             <div role="group" aria-label="Demo persona" style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}><span className="lab">Demo persona</span>
-              {(Object.keys(PERSONAS) as PId[]).map((k) => <button key={k} type="button" className="ds-filter" aria-pressed={pid === k} onClick={() => setPid(k)}>{PERSONAS[k].first} · {k === 'graduate' ? 'graduate' : k === 'switcher' ? 'switcher' : 'experienced'}</button>)}
+              {!fromActor && (Object.keys(PERSONAS) as PId[]).map((k) => <button key={k} type="button" className="ds-filter" aria-pressed={pid === k} onClick={() => setPid(k)}>{PERSONAS[k].first} · {k === 'graduate' ? 'graduate' : k === 'switcher' ? 'switcher' : 'experienced'}</button>)}
             </div>}>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={view + pid} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.22, ease: 'easeOut' }} style={{ display: 'grid', gap: 16, minWidth: 0 }}>
