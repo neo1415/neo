@@ -28,6 +28,10 @@ AREAS = [
     ('talent-a', 'T1 · T2', 'First profile and the career atlas', 'Amaka, a graduate, and Chidi, a salesperson moving into product'),
     ('talent-b', 'T3 · T5', 'Evidence Passport, jobs and privacy', 'Tobi, a backend engineer, and Zara, who wants control of who sees her'),
     ('talent-c', 'T4', 'The interview room on a phone', 'Grace, a care assistant on a slow phone connection'),
+    ('email', 'J11 · E-01', 'Connected email and candidate contact', 'Ada’s Google Workspace mailbox, Kora’s contact policy, Tobi’s question'),
+    ('campaigns', 'J11 · §D', 'Hiring campaigns', 'Kora’s Q4 Engineering Expansion and Talentbridge’s client campaigns'),
+    ('rubric', 'J11 · §E', 'Evaluation rubrics and scoring', 'Ada agreeing how to judge Senior Backend, and Tobi’s scorecard'),
+    ('media', 'J11 · §F', 'Video and voice evidence', 'Tobi’s consented walkthrough and Ada’s evidence report'),
 ]
 def captions(area):
     md = open(f'{ROOT}/journeys/design/{area}.md').read()
@@ -89,10 +93,24 @@ for cid, t, d, j, who, route in CLIPS:
     phone = cid.startswith(('04', '09'))
     motion.append({'id': cid, 'title': t, 'text': d, 'journey': j, 'phone': phone, 'as': who, 'route': route})
 
+# ---- films: the connected journey and the email clip (recorded from the tested build)
+FILM_DIR = os.environ.get('FILMS', f'{ROOT}/captures/films/J11')
+films = []
+os.makedirs(f'{out}/films', exist_ok=True)
+for fid, title, text in [('J11-connected-journey', 'J11 · One connected journey', 'Tobi watches the role briefing and asks Kora a question; Ada files it in the Q4 campaign, agrees a rubric, reviews Tobi’s consented walkthrough and emails an invitation; Tobi replies and it’s booked. Six disruptions on the way.'),
+                         ('E01-email-clip', 'Email: request to booking', 'Ask Q to email an invitation → the draft names sender and campaign → approve the exact content → Google sign-in expired → reconnect → sent once → reply with a new subject → confirm → booked.')]:
+    for v in ('desktop', 'phone'):
+        src = f'{FILM_DIR}/{fid}-{v}.mp4'
+        if not os.path.exists(src): continue
+        # Web copy under the 15 MB per-file publish limit; full-quality masters stay in captures/films/J11.
+        subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-i', src, '-vf', 'scale=-2:720' if v == 'desktop' else 'scale=-2:1280', '-c:v', 'libx264', '-crf', '30', '-preset', 'slow', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', f'{out}/films/{fid}-{v}.mp4'], check=True)
+        subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-ss', '20', '-i', src, '-frames:v', '1', '-vf', 'scale=720:-2', '-q:v', '5', f'{out}/films/{fid}-{v}.jpg'], check=True)
+        films.append({'id': f'{fid}-{v}', 'title': title, 'text': text, 'phone': v == 'phone'})
+
 # ---- the prototype itself, as a second page
 shutil.copytree(app, f'{out}/app')
 
-data = {'areas': areas, 'screens': screens, 'people': PEOPLE, 'motion': motion}
+data = {'areas': areas, 'screens': screens, 'people': PEOPLE, 'motion': motion, 'films': films}
 html = open(f'{here}/template.html').read().replace('/*__DATA__*/null', json.dumps(data, ensure_ascii=False))
 open(f'{out}/index.html', 'w').write(html)
 total = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(out) for f in fs)

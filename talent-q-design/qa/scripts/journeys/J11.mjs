@@ -37,7 +37,8 @@ async function run(vp) {
     const r = await lastQ(); return r;
   };
   const chip = async (re) => { await openQ(); await page.locator('.ds-thread .ds-chip, .ds-sheet .ds-chip').filter({ hasText: re }).last().click(); await sleep(800); };
-  const as = async (id, route) => { await closeQ(); await page.evaluate((id) => window.__tqQA.update((w) => { w.session.actor = id; w.actors.find((a) => a.id === id).signedUp = true; }), id); await page.goto(`${BASE}?n=${Math.random()}#${route}`); await page.waitForSelector('.ds-app'); await sleep(900); };
+  // Switch person through the review link, so the new person's page is the first thing rendered (no wrong-side flash).
+  const as = async (id, route) => { await closeQ(); await page.goto(`${BASE}?n=${Math.random()}#${route}${route.includes('?') ? '&' : '?'}as=${id}`); await page.waitForSelector('.ds-app'); await sleep(900); };
   const go = async (route) => { await closeQ(); await page.evaluate((r) => { location.hash = r; }, route); await sleep(900); };
   const body = () => page.locator('body').innerText();
   // On phones the hub shows one conversation at a time; go back to the list first if one is open.

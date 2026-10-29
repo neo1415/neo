@@ -154,18 +154,33 @@ dialog::backdrop { background: #0d0c0be6; }
   <header>
     <div class="mark"><span class="qmark" aria-hidden="true"></span><span class="lab">Talent Q · design review · 29 October 2026</span></div>
     <div class="read" style="display:grid;gap:18px">
-      <h1>The redesign, before any films are recorded</h1>
-      <p class="lead">Every page in the ten journeys went through a design pass: critique against usability principles, an interaction review and a motion review, done page by page. Below is what changed, side by side, plus short motion clips, every screen as it stands now, and what is still weak.</p>
+      <h1>The redesign, and your two addenda</h1>
+      <p class="lead">After your review, four features and connected email were added and joined into one journey you can watch: candidate contact, hiring campaigns, role rubrics with evidence-backed scoring, consented video evidence, and Q managing email. Below that is the earlier design pass, side by side, and every screen as it stands now.</p>
       <p class="muted">The prototype runs here in full. Everything in it is simulated: no real messages, bookings or checks. Open it as any of the ten people below; each link starts on that person’s first page.</p>
     </div>
     <div class="btns">
       <a class="btn primary" href="app/index.html#/" target="_blank" rel="noopener">Open the prototype</a>
+      <a class="btn" href="#new">What’s new</a>
       <a class="btn" href="#pairs">Before and after</a>
       <a class="btn" href="#motion">Motion</a>
     </div>
     <nav class="people" aria-label="Open the prototype as" id="people"></nav>
   </header>
 
+
+  <section id="new" aria-labelledby="h-new">
+    <div class="sec-head read"><span class="lab">After your review · 29 October, evening</span><h2 id="h-new">One connected journey through everything you added</h2>
+      <p class="muted">Recorded from the build that passed every test. Each caption is a step the journey test checked at that moment, and every provider action is simulated and labelled.</p></div>
+    <div class="clips" id="films"></div>
+    <div class="changes" style="margin-top:36px">
+      <div class="change"><b>Candidates can ask before applying</b><p>The job page has a short role briefing Q can quote by the second. Kora’s contact policy shows before anything is written; employers with contact off show only their published route, never an invented address. <a href="app/index.html#/c/jobs/j_kora_backend?as=p_tobi" target="_blank" rel="noopener">Try it as Tobi</a></p></div>
+      <div class="change"><b>Hiring campaigns group roles</b><p>Q4 Engineering Expansion holds its roles, stage counts, owners, deadlines, scorecards and messages. Agency outreach runs are listed as its children, not confused with it. <a href="app/index.html#/r/campaigns/c_q4_eng?as=u_ada" target="_blank" rel="noopener">Open the campaign as Ada</a></p></div>
+      <div class="change"><b>Each role gets its own rubric</b><p>Q drafts job-related criteria; Ada edits weights and approves a frozen version. Scores always show their coverage, unknowns never count as zero, and a mid-campaign change asks before anyone is re-scored. <a href="app/index.html#/r/roles/m_backend/rubric?as=u_ada" target="_blank" rel="noopener">Open the studio</a></p></div>
+      <div class="change"><b>Video evidence, with consent</b><p>Tobi chooses who sees which parts, for how long. Q marks timestamped moments against the rubric, says what wasn’t shown, and never judges face, voice, accent or appearance. <a href="app/index.html#/c/passport?as=p_tobi" target="_blank" rel="noopener">Open Tobi’s Passport</a></p></div>
+      <div class="change"><b>Q works your email</b><p>Google, Microsoft or other business email (simulated). Q drafts from the right sender, you approve the exact content, statuses are honest, an expired sign-in never causes a double send, and Q won’t send as someone else. <a href="app/index.html#/settings/email?as=u_ada" target="_blank" rel="noopener">Email settings</a></p></div>
+      <div class="change"><b>Your audit, fixed</b><p>Q’s first line now comes from the page: Ada’s home opens with the invitation that has waited two days, not a generic hello. Long phone pages have a section index, and the comparison uses each role’s own weights.</p></div>
+    </div>
+  </section>
   <section aria-labelledby="h-shared">
     <div class="sec-head read"><span class="lab">Across every page</span><h2 id="h-shared">What changed in the shared layer</h2>
       <p class="muted">These fixes live in the components every journey uses, so each one improved dozens of screens at once.</p></div>
@@ -209,17 +224,19 @@ dialog::backdrop { background: #0d0c0be6; }
       <p class="muted">Each area’s designer listed what they couldn’t fix. Some were shared problems and are now fixed; the rest are below.</p></div>
     <div class="weak">
       <div><h3 style="margin-bottom:12px">Design</h3><ol>
-        <li><div><b>Long pages on phones</b><span>Tobi’s profile runs to about nine screens, and on long interview questions the answer box starts below the fold. A sticky in-page index and a sticky answer bar would fix both.</span></div></li>
+        <li><div><b>Some phone pages are still long</b><span>The rubric studio and Tobi’s profile now have a section index, but they remain long. The video transcript scrolls inside the page on phones.</span></div></li>
         <li><div><b>Page header crowding</b><span>With long titles, the header’s actions drop to a second row; on a phone, a job’s Save button sits above the content instead of beside the title.</span></div></li>
         <li><div><b>Q’s longer replies on phones</b><span>Fraunces at 18 px reads well in short lines but long answers get heavy. Long replies should summarise first and fold the rest.</span></div></li>
-        <li><div><b>Q can repeat the page</b><span>On Grace’s home, the Q card and the page both say her interview is tomorrow. Q should stay quiet about what the page already shows.</span></div></li>
+        <li><div><b>Cards can still echo the page</b><span>Q’s opening line no longer repeats the page, but a proactive card can still restate something the page shows (Grace’s interview).</span></div></li>
         <li><div><b>Agency at scale</b><span>Agent rows are long on phones, there’s no summary mode for ten or more agents, and the client switcher won’t work past about eight clients.</span></div></li>
         <li><div><b>Pipeline filters on phones</b><span>Role filters wrap to three rows at 390 px. A select would be tighter.</span></div></li>
         <li><div><b>Career atlas density</b><span>At 48 occupations the radial labels crowd. The list view is the fallback, but the map should cluster.</span></div></li>
         <li><div><b>Roles list “next” line</b><span>It’s text only. A small stage track per role would scan faster.</span></div></li>
       </ol></div>
       <div><h3 style="margin-bottom:12px">Behaviour and product</h3><ol>
-        <li><div><b>Weighting is fixed</b><span>Q weighs must-haves 1.5× and explains it, but Ada can only turn that off, not set her own weights. This waits on decision D4.</span></div></li>
+        <li><div><b>The score isn’t validated</b><span>Rubric weights are now set per role, but the index is the addendum’s prototype arithmetic. It needs job analysis and adverse-impact checks before it informs decisions (D17).</span></div></li>
+        <li><div><b>No real analysis yet</b><span>Video findings, transcripts and reply summaries are written in advance or rule-based. Any upload yields the same demo transcript; the page says so.</span></div></li>
+        <li><div><b>Gaps the builders listed</b><span>No “start the next round” after keeping v1; owners and due dates aren’t editable; a person in two roles shows once in the hub; public video preview isn’t built.</span></div></li>
         <li><div><b>Interview copilot timing</b><span>It doesn’t track time per question, and its question rail duplicates Previous/Next on desktop.</span></div></li>
         <li><div><b>Practice tips repeat</b><span>Tips are rule-based and feel the same across questions. A real model would vary them.</span></div></li>
         <li><div><b>Handbook rules are guidance</b><span>Rules from an uploaded handbook are cited, not machine-checked. Classifying them is production work.</span></div></li>
@@ -227,6 +244,8 @@ dialog::backdrop { background: #0d0c0be6; }
         <li><div><b>The intake brief has no versions view</b><span>Kora’s intake page edits the older mandate record, so unlike Funmi’s briefs it has no version history.</span></div></li>
       </ol></div>
       <div><h3 style="margin-bottom:12px">Fixed during review</h3><ol class="fixed">
+        <li><div><b>Generic Q greeting</b><span>Q’s first line now names one real thing on the page and never repeats a card or the greeting.</span></div></li>
+        <li><div><b>Fixed 1.5× weighting</b><span>The comparison uses the approved rubric’s weights, explained in the margin.</span></div></li>
         <li><div><b>Duplicate Q cards</b><span>Two areas noticed the same interview and both showed a card. Now one card per subject, and dismissing it covers both.</span></div></li>
         <li><div><b>Card stacks pushing the conversation away</b><span>Q now shows its most urgent card and folds the rest.</span></div></li>
         <li><div><b>Reset and cancel did nothing when embedded</b><span>They used browser dialogs, which this viewer blocks. They now confirm in place.</span></div></li>
@@ -242,6 +261,7 @@ dialog::backdrop { background: #0d0c0be6; }
       <div class="dcard"><span class="lab">D1 · Discovery</span><h3>Findable by anyone, with limits for the unverified</h3><p>The default is that any organisation can find a candidate. Until verified, an organisation can send 3 messages a week, labelled as unverified, and can’t run campaigns, make submittals or see contact details. Open as <a href="app/index.html#/r/home?as=u_funmi" target="_blank" rel="noopener">Funmi</a> to see it.</p></div>
       <div class="dcard"><span class="lab">D3 · Verification</span><h3>No posting until the business is verified</h3><p>Funmi can draft and approve a brief and search straight away. Posting asks for her business registration number first; a wrong number fails honestly and every attempt is in the audit log.</p></div>
       <div class="dcard"><span class="lab">D6 · Skills and jobs</span><h3>ESCO, on the ILO’s ISCO-08 codes</h3><p>The open European classification of about 3,000 occupations and 13,900 skills, linked to each other. The career atlas, matching and job tags use it in production; local job titles map onto it.</p></div>
+      <div class="dcard"><span class="lab">D16–D19 · New, for you</span><h3>Four decisions the addenda raise</h3><p>Mail access level (send-only first, or reading replies too); who validates rubrics and the score; which provider analyses video and how long it’s kept; and the default for candidates contacting employers. Details in the decision register.</p></div>
       <div class="dcard"><span class="lab">D8 · Language</span><h3>English now, built to translate</h3><p>Every string goes through a message catalogue and dates and money use locale formatting, so adding a language is translation, not rework.</p></div>
     </div>
   </section>
@@ -249,8 +269,8 @@ dialog::backdrop { background: #0d0c0be6; }
   <footer>
     <div class="read" style="display:grid;gap:12px">
       <span class="lab">Next</span>
-      <h2>Your review, then the films</h2>
-      <p class="muted">Tell me what you’d change, by screen or by journey. Once you’re happy with how it looks and moves, I’ll record the full demonstration films (desktop and phone, with chapters) from this exact build.</p>
+      <h2>Your review, then the full films</h2>
+      <p class="muted">Tell me what you’d change, by screen or by journey. Once you’re happy, I’ll record the full demonstration films (hiring and careers, desktop and phone, with chapters) from this exact build. The engineering handoff for everything here is in the repository.</p>
     </div>
   </footer>
 </div>
@@ -301,6 +321,9 @@ tabs.addEventListener('click', (e) => { const t = e.target.closest('.tab'); if (
 tabs.addEventListener('keydown', (e) => { if (!['ArrowRight', 'ArrowLeft'].includes(e.key)) return; const all = [...tabs.querySelectorAll('.tab')]; const i = all.indexOf(document.activeElement); if (i < 0) return; const n = (i + (e.key === 'ArrowRight' ? 1 : all.length - 1)) % all.length; all[n].focus(); showArea(n); });
 const savedArea = +(store.get('tq.review.area') ?? 0);
 showArea(savedArea >= 0 && savedArea < DATA.areas.length ? savedArea : 0);
+
+// films
+$('#films').innerHTML = (DATA.films || []).map((c) => `<article class="clip ${c.phone ? 'phone' : ''}"><video src="films/${c.id}.mp4" poster="films/${c.id}.jpg" controls muted playsinline preload="none" aria-label="${esc(c.title)}"></video><div class="meta"><h3>${esc(c.title)}</h3><span class="lab">${c.phone ? 'phone' : 'desktop'}</span></div><p>${esc(c.text)}</p></article>`).join('');
 
 // motion
 $('#clips').innerHTML = DATA.motion.map((c) => `<article class="clip ${c.phone ? 'phone' : ''}"><video src="motion/${c.id}.mp4" poster="motion/${c.id}.jpg" controls muted playsinline preload="none" aria-label="${esc(c.title)}"></video><div class="meta"><h3>${esc(c.title)}</h3><span class="lab">${c.journey}${c.phone ? ' · phone' : ''}</span></div><p>${esc(c.text)}</p><a class="muted" style="font-size:13.5px" href="${appLink(c.as, c.route)}" target="_blank" rel="noopener">Try it in the prototype</a></article>`).join('');

@@ -608,3 +608,15 @@ registerSkill({
 
 // Untrusted content: email text is data, never instructions. Exposed for the reply card.
 export { looksLikeInstruction, contentHash, personOf, actorOf, CAN_SEND, KIND_LABEL, finalizeSend };
+
+/** "what can you do with my email?" / "can you read my inbox?": what Q may do with each account, per scope (E01-02). */
+registerSkill({
+  id: 'email.access', side: 'both',
+  match: (c) => /\b(what can (you|q) (do|see) (with|in) my (e-?mail|mail|mailbox|inbox|gmail|outlook)|can (you|q) read my (e-?mail|mail|inbox|gmail|outlook)|what (access|permission)s? (do (you|q) have|does q have) (to|on|for) my (e-?mail|mail|mailbox|inbox))\b/.test(c.norm) ? 0.96 : 0,
+  handle: (c) => {
+    const boxes = sendersFor(c.w, c.actor.id).filter((m) => m.kind !== 'SERVICE');
+    if (!boxes.length) return { msgs: [{ kind: 'reply', text: 'No email account is connected for you, so I can’t send or read anything. You can connect Google, Microsoft or other business email in Email settings (simulated here).', actions: [{ label: 'Open Email settings', act: { t: 'nav', to: '/settings/email' } }] }] };
+    const lines = boxes.map((m) => `${m.address} (${PROVIDER_NAME[m.provider]}${m.state === 'EXPIRED' ? ', sign-in expired' : ''}): ${canRead(m) ? 'send what you approve, and read replies in recruiting threads to summarise them' : 'send what you approve only; I can’t see replies there'}`);
+    return { msgs: [{ kind: 'reply', text: `${lines.join('. ')}. I never delete, forward or read unrelated mail, and nothing is sent without your yes. All of this is simulated in the prototype.` }] };
+  },
+});

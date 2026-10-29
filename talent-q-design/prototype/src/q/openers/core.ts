@@ -87,3 +87,27 @@ registerOpener({
     return has ? [] : [{ subject: 'candidate.start', text: 'Tell me one thing you’ve done that you’re proud of. Anything counts.', action: { label: 'Start with Q', primary: true, act: { t: 'say', text: 'help me build my profile' } } }];
   },
 });
+
+registerOpener({
+  id: 'r.rubric', side: 'recruiter', match: (p) => /^\/r\/roles\/[^/]+\/rubric$/.test(p),
+  build: (w, _a, p) => {
+    const id = p.split('/')[3];
+    const rub = (w.areas.rubrics as { list: { mandateId: string; versions: { v: number; state: string }[] }[] } | undefined)?.list.find((r) => r.mandateId === id);
+    const title = id === w.mandate.mandateId ? w.mandate.title : w.mandates.find((m) => m.id === id)?.title ?? 'this role';
+    const draft = rub?.versions.find((v) => v.state === 'Q_PROPOSED');
+    if (!rub) return [{ subject: `rubric:${id}`, text: 'I can draft the criteria from the approved brief. You edit them, then approve.', action: { label: 'Propose a rubric', primary: true, act: { t: 'say', text: `propose a rubric for the ${title.toLowerCase()} role` } } }];
+    if (draft) return [{ subject: `rubric:${id}`, text: `Draft v${draft.v} isn’t in use until you approve it.`, action: { label: 'Approve the rubric', primary: true, act: { t: 'say', text: 'approve the rubric' } } }];
+    return [];
+  },
+});
+
+registerOpener({
+  id: 'settings.email', side: 'both', match: (p) => p === '/settings/email',
+  build: (w, a) => {
+    const boxes = (w.areas.mail as { mailboxes: { address: string; sendAs: string[]; state: string }[] } | undefined)?.mailboxes.filter((m) => m.sendAs.includes(a.id)) ?? [];
+    const exp = boxes.find((m) => m.state === 'EXPIRED');
+    return exp
+      ? [{ subject: `mailbox:${exp.address}`, text: `${exp.address} needs you to sign in again. Approved drafts are kept.`, action: { label: 'How do I reconnect?', act: { t: 'say', text: 'reconnect my email' } } }]
+      : boxes.length ? [{ subject: 'mail.what', text: 'Ask what I may do with each account before you change anything.', action: { label: 'What can Q do with my email?', act: { t: 'say', text: 'what can you do with my email?' } } }] : [];
+  },
+});

@@ -5,12 +5,12 @@ import { mkdirSync } from 'node:fs';
 const [BASE = 'http://localhost:4174/', OUT = 'review', ONLY = ''] = process.argv.slice(2);
 export const PAGES = {
   u_funmi: ['/r/home', '/r/roles'],
-  u_ada: ['/r/home', '/r/plan', '/r/compare', '/r/people/p_tobi', '/r/interviews', '/r/pipeline', '/r/messages', '/r/calendar', '/r/team', '/r/setup', '/r/roles', '/r/audit', '/r/memory', '/r/mandate', '/r/sourcing', '/settings'],
+  u_ada: ['/r/home', '/r/plan', '/r/compare', '/r/people/p_tobi', '/r/interviews', '/r/pipeline', '/r/messages', '/r/calendar', '/r/team', '/r/setup', '/r/roles', '/r/audit', '/r/memory', '/r/mandate', '/r/sourcing', '/settings', '/settings/email', '/r/campaigns', '/r/campaigns/c_q4_eng', '/r/roles/m_backend/rubric'],
   u_bayo: ['/r/home', '/r/roles', '/r/audit', '/r/memory'],
   u_dele: ['/r/home', '/r/agency/agents', '/r/agency/campaigns', '/r/agency/clients', '/r/agency/client/org_kora', '/r/agency/compare', '/r/agency/docs', '/r/agency/mandate/m_ops', '/r/agency/notes', '/r/agency/pools', '/r/agency/reports', '/r/agency/searches', '/r/agency/submittals'],
   p_amaka: ['/c/home', '/c/welcome', '/c/jobs'],
   p_chidi: ['/c/career', '/c/growth'],
-  p_tobi: ['/c/passport', '/c/jobs/j_kora_backend', '/c/prep', '/c/memory', '/c/interview'],
+  p_tobi: ['/c/messages', '/c/passport', '/c/jobs/j_kora_backend', '/c/prep', '/c/memory', '/c/interview'],
   p_grace: ['/c/home', '/c/start', '/c/interview', '/c/slots'],
   p_zara: ['/c/jobs', '/c/applications', '/c/messages', '/settings'],
   public: ['/signup', '/gallery/states'],
