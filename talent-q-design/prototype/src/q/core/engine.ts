@@ -1,3 +1,4 @@
+import { matchRoute } from '../../routes/registry';
 // Q's engine for the prototype: one conversation per person, skills that understand turns, serialisable
 // actions, undo, navigation with view-state, and an optional model gateway. Everything goes through the
 // one store (World v4), so the conversation and its effects survive navigation, reloads and other tabs.
@@ -182,7 +183,10 @@ export function labelFor(path: string) {
   const person = path.match(/people\/(p_\w+)/)?.[1];
   if (person) return `${w.people.find((p) => p.personId === person)?.name ?? 'Profile'}’s profile`;
   const M: Record<string, string> = { '/r/home': 'Q home', '/r/compare': 'the comparison', '/r/plan': 'plans and agents', '/r/pipeline': 'the pipeline', '/r/messages': 'messages', '/r/calendar': 'the calendar', '/r/mandate': 'the role', '/r/interviews': 'interviews', '/c/career': 'your career atlas', '/c/passport': 'your Evidence Passport', '/c/jobs': 'jobs', '/c/applications': 'your applications', '/c/welcome': 'getting started', '/c/home': 'Q home' };
-  return M[path] ?? path;
+  if (M[path]) return M[path];
+  const iv = path.match(/interviews\/(i_\w+)/)?.[1];
+  if (iv) { const pid = w.interviews.find((i) => i.id === iv)?.personId; return `the interview with ${w.people.find((x) => x.personId === pid)?.name ?? 'a candidate'}`; }
+  return matchRoute(path)?.def.label ?? path;
 }
 
 /** Page view-state that survives navigation (e.g. the comparison's focus). Stored per person and route. */
