@@ -133,6 +133,49 @@ function Moods() {
   return <Thread><ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 12 }}>{moods.map((m) => <li key={m} style={{ display: 'flex', gap: 8, alignItems: 'center' }}><QMark mood={m} size={28} agents={m === 'working' ? [{ label: 'a', done: 1, total: 3 }, { label: 'b', done: 2, total: 2 }] : []} /><span className="t14">{MOOD_LABEL[m]}</span></li>)}</ul></Thread>;
 }
 
+
+function NoResults() {
+  const [widen, setWiden] = useState<'none' | 'remote' | 'drop'>('none');
+  const n = widen === 'none' ? 0 : widen === 'remote' ? 4 : 7;
+  return <div className="ds-sheet gs-pad"><b>{n === 0 ? 'No one matched in 3 sources' : `${n} people match now`}</b>
+    <p className="t14" style={{ margin: 0 }}>{n === 0 ? 'Every profile missed the same must-have: “on-site in Lagos, 5 days a week”. Nothing is wrong with the search; the brief is narrow.' : widen === 'remote' ? 'Widened to hybrid and remote in Nigeria. The brief now says so (v2), and you can undo it.' : 'Postgres moved from must-have to nice-to-have (brief v2). Undo is one click.'}</p>
+    {n === 0 ? <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><button type="button" className="ds-btn" onClick={() => setWiden('remote')}>Allow hybrid or remote</button><button type="button" className="ds-btn quiet" onClick={() => setWiden('drop')}>Make Postgres nice-to-have</button></div>
+      : <button type="button" className="ds-btn quiet" style={{ justifySelf: 'start' }} onClick={() => setWiden('none')}>Undo</button>}</div>;
+}
+
+function QChart({ k }: { k: number }) {
+  // dataviz: the title states the finding; direct labels, no legend; the same data is available as a table.
+  const rows = [['Applied', 46], ['Screened', 18], ['Interviewed', 7], ['Offered', 2]] as const;
+  const [table, setTable] = useState(false);
+  const reduce = useReducedMotion();
+  useEffect(() => setTable(false), [k]);
+  return <Thread><p className="ds-me">how is the support lead role doing</p><QLine><p className="say">Most people drop out before screening: 18 of 46 applicants were screened this month.</p>
+    <div className="gs-chartcard"><div className="gs-charthead"><b>Customer Support Lead, October</b><button type="button" className="ds-linkbtn" aria-pressed={table} onClick={() => setTable(!table)}>{table ? 'Show chart' : 'Show as table'}</button></div>
+      {table ? <table className="gs-table"><thead><tr><th scope="col">Stage</th><th scope="col">People</th></tr></thead><tbody>{rows.map(([l, v]) => <tr key={l}><td>{l}</td><td>{v}</td></tr>)}</tbody></table> : (
+        <div className="gs-bars" role="img" aria-label={rows.map(([l, v]) => `${l} ${v}`).join(', ')}>{rows.map(([l, v], i) => (
+          <div key={l} className="gs-barrow"><span className="l">{l}</span><motion.span className="b" initial={{ width: reduce ? `${(v / 46) * 100}%` : 0 }} animate={{ width: `${(v / 46) * 100}%` }} transition={{ duration: 0.3, delay: reduce ? 0 : i * 0.06, ease: [0, 0, 0.2, 1] }} /><span className="v">{v}</span></div>))}</div>)}
+      <span className="t14" style={{ color: 'var(--moon-2)' }}>Source: Kora’s pipeline, 1–29 Oct. Simulated data.</span></div></QLine></Thread>;
+}
+
+function FileCheck({ k }: { k: number }) {
+  const s = useSteps<'scan' | 'ok' | 'blocked'>([[0, 'scan'], [1200, k % 2 ? 'blocked' : 'ok']], k);
+  return <div className="ds-sheet gs-pad"><b>portfolio-kemi.zip</b>
+    {s === 'scan' && <p className="t14" aria-live="polite" style={{ margin: 0 }}>Checking the file before anyone opens it…</p>}
+    {s === 'ok' && <><p className="t14" aria-live="polite" style={{ margin: 0 }}>No threats found. It opens in the safe viewer: read-only, no scripts run.</p><button type="button" className="ds-btn" style={{ justifySelf: 'start' }}>Open in the safe viewer</button></>}
+    {s === 'blocked' && <p className="t14" role="alert" style={{ margin: 0, color: 'var(--risk)' }}>Blocked: the archive contains a program (setup.exe). Talent Q won’t open it. Ask Kemi for a PDF or a link instead.</p>}
+    <span className="ds-sim" style={{ justifySelf: "start" }}>Simulated scan</span></div>;
+}
+
+function Budget({ k }: { k: number }) {
+  const s = useSteps<'run' | 'warn'>([[0, 'run'], [1400, 'warn']], k);
+  const [choice, setChoice] = useState<'' | 'more' | 'stop'>('');
+  useEffect(() => setChoice(''), [k]);
+  return <Thread><div className="gs-row"><QMark mood={s === 'warn' && !choice ? 'waiting' : 'working'} agents={[{ label: 'Sourcing', done: s === 'run' ? 3 : 4, total: 5 }]} size={28} /><span className="t14" style={{ color: 'var(--moon-2)' }}>Sourcing · {s === 'run' ? '62' : '80'}% of the budget used</span></div>
+    {s === 'warn' && <QLine kind="approval"><span className="lab" style={{ color: 'var(--gold-light)' }}>Needs your yes</span><p className="say">The Medlink search has used 80% of its ₦25,000 budget with one source left. I’ve paused it so nothing more is spent without you.</p>
+      {!choice ? <div className="ds-next"><Chip go on={() => setChoice('more')}>Continue, up to ₦31,000</Chip><Chip on={() => setChoice('stop')}>Stop here and keep results</Chip></div>
+        : <p className="t14" aria-live="polite" style={{ margin: 0 }}>{choice === 'more' ? 'Continuing with a new limit of ₦31,000. You’ll see the final cost when it finishes.' : 'Stopped. The 14 people found so far are kept.'} <span className="ds-sim">Simulated cost</span></p>}</QLine>}</Thread>;
+}
+
 const SPECS: Spec[] = [
   { id: 'GS-01', title: 'Thinking, working, streaming, done', covers: 'Q presence (M-01–M-04); truthful progress; streaming reply', body: (k) => <Streaming k={k} /> },
   { id: 'GS-02', title: 'Clarifying question', covers: 'Ask only what’s needed; answers reused', body: (k) => <Clarify k={k} /> },
@@ -149,6 +192,10 @@ const SPECS: Spec[] = [
   { id: 'GS-13', title: 'Sources disagree', covers: 'Source conflicts shown, not resolved silently', body: () => <Conflict /> },
   { id: 'GS-14', title: 'Evidence marks', covers: 'Verification states; practice ≠ proof', body: () => <Evidence /> },
   { id: 'GS-15', title: 'Q moods', covers: 'Q presence system', body: () => <Moods /> },
+  { id: 'GS-16', title: 'Search found nobody', covers: 'SC-046 search empty state; widen the brief with undo', body: () => <NoResults /> },
+  { id: 'GS-17', title: 'Q answers with a chart', covers: 'SC-124 chart result, MO-031 graphic from Q; table view; source line', body: (k) => <QChart k={k} /> },
+  { id: 'GS-18', title: 'File checked before opening', covers: "MO-034 download scanned; safe viewer (future capability C5). Replay alternates passed and blocked", body: (k) => <FileCheck k={k} /> },
+  { id: 'GS-19', title: 'Budget nearly used', covers: 'MO-035 agent budget warning; cost approval', body: (k) => <Budget k={k} /> },
 ];
 
 export function StatesGallery() {

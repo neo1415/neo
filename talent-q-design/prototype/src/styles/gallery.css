@@ -24,3 +24,12 @@
 @media (prefers-reduced-motion: reduce) { .gs-skel, .gs-caret { animation: none; } }
 .gs-h { font-family: var(--voice); font-weight: 400; font-size: 19px; line-height: 1.25; }
 .gs-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.gs-chartcard { display: grid; gap: 10px; background: var(--night-2); border: 1px solid var(--night-3); border-radius: 12px; padding: 12px 14px; }
+.gs-charthead { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.gs-bars { display: grid; gap: 8px; }
+.gs-barrow { display: grid; grid-template-columns: 84px 1fr 28px; gap: 8px; align-items: center; font-size: 13px; }
+.gs-barrow .b { display: block; height: 10px; border-radius: 99px; background: var(--gold-light); }
+.gs-barrow .v { font-variant-numeric: tabular-nums; text-align: right; }
+.gs-table { border-collapse: collapse; font-size: 14px; }
+.gs-table th, .gs-table td { text-align: left; padding: 4px 12px 4px 0; border-bottom: 1px solid var(--night-3); }
+.gs-card .ds-sheet { box-shadow: none; border: 1px solid var(--rule); }
