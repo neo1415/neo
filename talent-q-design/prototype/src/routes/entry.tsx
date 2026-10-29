@@ -220,7 +220,7 @@ function Settings() {
           <div>{([['email', 'Email', 'Updates and messages from employers you’re talking to.'], ['sms', 'Text message (SMS)', 'Only for interviews and anything urgent.'], ['inApp', 'In Talent Q', 'Shown when you open the app.']] as const).map(([k, l, h]) => <SwitchRow key={k} label={l} help={h} on={c.notifications[k]} onChange={(v) => setC({ notifications: { ...c.notifications, [k]: v } })} />)}</div>
           <fieldset style={{ border: 0, padding: 0, margin: 0, display: 'grid', gap: 6 }}><legend className="t14" style={{ fontWeight: 600, marginBottom: 6 }}>Job digest</legend>
             <div style={{ display: 'flex', gap: 8 }}>{(['DAILY', 'WEEKLY', 'OFF'] as const).map((v) => <button key={v} type="button" className="ds-filter" aria-pressed={c.notifications.digest === v} onClick={() => setC({ notifications: { ...c.notifications, digest: v } })}>{v === 'OFF' ? 'Off' : v[0] + v.slice(1).toLowerCase()}</button>)}</div></fieldset>
-          <div className="ds-switchrow"><div className="txt"><b>Who can find you in search</b><span className="t14 muted">{findRule(w, a.personId!)}</span></div><Link className="ds-btn" to="/c/passport">Change</Link></div>
+          <div className="ds-switchrow"><div className="txt"><b>Who can find you in search</b><span className="t14 muted">{findRule(w, a.personId!)}</span></div><Link className="ds-btn" to="/c/passport?tab=discovery">Change</Link></div>
           <SwitchRow label="Lite mode" help="Fewer images and animations and bigger buttons, for slow connections." on={c.lite} onChange={(v) => setC({ lite: v })} />
           <Link to="/c/memory" className="ds-btn" style={{ justifySelf: 'start' }}>What Q remembers about me</Link>
         </section>

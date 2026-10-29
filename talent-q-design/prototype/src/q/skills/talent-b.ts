@@ -6,7 +6,7 @@ import type { Evidence } from '@contracts';
 import { registerOp, registerSkill } from '../core/engine';
 import type { QCtx, QReply } from '../core/types';
 import type { Job, QAction } from '../../state/domain';
-import { emit, simNow, uid, now, type World } from '../../mock/world';
+import { emit, simNow, uid, now, visibleEvidence, type World } from '../../mock/world';
 import {
   APP_LABEL, NEED_LABEL, VER, adviceFor, appExplain, cellOf, deletionPlan, discoveryOf, evById, findMemories, fitLine, followupText, isCode, matchFor,
   memoriesOf, myEvidence, orgName, ensureRedacted, signalsOf, startCheck, startUpload, summaryFor, tb, verOf, verifiedEmployer, viewerOrgs, defaultName, PSCOPE, fmtDate,
@@ -136,7 +136,7 @@ registerSkill({
   match: (c) => (cand(c) && orgIn(c.norm) && /(what|how much|which|everything).*(see|sees|seeing|view|visible)|view as|preview|through .* eyes|as \w+ sees/.test(c.norm) && !REVOKE_RE.test(c.norm) ? 0.9 : 0),
   handle: (c) => {
     const pid = pidOf(c); const org = orgIn(c.norm)!;
-    const vis = myEvidence(c.w, pid).filter((e) => ['SHARED', 'PUBLIC'].includes(cellOf(c.w, e, org)));
+    const vis = visibleEvidence(c.w, pid, org); // the same rule the recruiter pages and the Passport preview read
     const total = myEvidence(c.w, pid).length;
     return { msgs: [reply(`${orgName(c.w, org)} sees ${vis.length} of your ${total} items${vis.length ? `: ${vis.map((e) => e.title).join('; ')}` : ''}. Nothing else, and never your practice or anything confidential. The page now shows exactly their view.`, { used: ['Sharing settings'] })], nav: { to: `/c/passport?as=${org}`, label: `what ${orgName(c.w, org)} sees` } };
   },

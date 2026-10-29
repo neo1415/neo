@@ -21,18 +21,16 @@ function JobPrep({ job, pid }: { job: Job; pid: string }) {
   const w = useWorld((x) => x);
   const m = matchFor(w, pid, job);
   return (
-    <ul className="tb-needs">
+    <ol className="tb-prep">
       {m.map((n) => (
         <li key={n.need}>
-          <Glyph k={NEED_GLYPH[n.state]} size={20} />
-          <span><b>{n.need}</b> · {NEED_LABEL[n.state].toLowerCase()}
-            <span style={{ display: 'block' }}>Likely question: “{QUESTION.find(([re]) => re.test(n.need))?.[1] ?? `Tell us about your experience with ${n.need.toLowerCase()}.`}”</span>
-            <span className="t14" style={{ display: 'block' }}>{n.used.length ? <>Point to: {[...n.used].sort((x, y) => Number(y.verified) - Number(x.verified)).slice(0, 3).map((e) => e.title).join('; ')}.</> : n.told ? <>You said: “{n.told}”. Have one concrete example ready, with a number.</> : <>Nothing shown yet. Prepare a short story: the situation, what you did, what changed.</>}</span>
-            <button type="button" className="ds-btn quiet" onClick={() => prefillQ(`Let's practise the ${n.need.toLowerCase()} question`)}>Practise with Q</button>
-          </span>
+          <div className="tb-need-h"><Glyph k={NEED_GLYPH[n.state]} size={18} /><b>{n.need}</b><span className="tb-need-state">{NEED_LABEL[n.state]}</span></div>
+          <blockquote className="tb-question"><span className="lab">Likely question</span>{QUESTION.find(([re]) => re.test(n.need))?.[1] ?? `Tell us about your experience with ${n.need.toLowerCase()}.`}</blockquote>
+          <p className="t14" style={{ margin: 0 }}>{n.used.length ? <><b>Point to:</b> {[...n.used].sort((x, y) => Number(y.verified) - Number(x.verified)).slice(0, 3).map((e) => e.title).join('; ')}.</> : n.told ? <>You said: “{n.told}”. Have one concrete example ready, with a number.</> : <>Nothing shown yet. Prepare a short story: the situation, what you did, what changed.</>}</p>
+          <button type="button" className="tb-linkbtn" onClick={() => prefillQ(`Let's practise the ${n.need.toLowerCase()} question`)}>Practise this with Q</button>
         </li>
       ))}
-    </ul>
+    </ol>
   );
 }
 
@@ -44,17 +42,18 @@ export function PrepPage() {
   const job = ev ? w.jobs.find((j) => j.mandateId && j.mandateId === ev.mandateId) : undefined;
   const live = w.applications.filter((x) => x.personId === pid && ['SUBMITTED', 'VIEWED'].includes(x.status)).map((x) => w.jobs.find((j) => j.id === x.jobId)).filter((j): j is Job => !!j && j.status === 'OPEN');
   return (
-    <Canvas title="Interview prep" kicker={`${a.first} · private to you`} open onClose={() => navigate('/c/home')}>
+    <Canvas title="Interview prep" kicker="Private to you" open onClose={() => navigate('/c/home')}>
       {ev && job ? (
         <>
-          <section className="ds-sheet tb-stack" aria-labelledby="tb-pr-h">
-            <h2 id="tb-pr-h" className="voice t24" style={{ margin: 0 }}>{orgName(w, job.orgId)} · {job.title}</h2>
-            <p style={{ margin: 0 }}><b>{new Date(ev.start).toLocaleString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: a.timezone })}</b> your time · {Math.round((new Date(ev.end).getTime() - new Date(ev.start).getTime()) / 60000)} minutes · video call <span className="ds-sim">Simulated invite</span></p>
+          <section className="ds-sheet tb-stack tb-prephero" aria-labelledby="tb-pr-h">
+            <span className="lab">Next interview · {orgName(w, job.orgId)}</span>
+            <h2 id="tb-pr-h" className="tb-h2">{job.title}</h2>
+            <p className="tb-when"><b>{new Date(ev.start).toLocaleString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: a.timezone })}</b><span>{new Date(ev.start).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: a.timezone })} your time · {Math.round((new Date(ev.end).getTime() - new Date(ev.start).getTime()) / 60000)} minutes · video call</span><span className="ds-sim">Simulated invite</span></p>
             <p className="t14 muted" style={{ margin: 0 }}>Q prepares this only from the job’s stated needs, your own Passport and the invite. It never sees the employer’s private notes or scoring.</p>
-            <div className="tb-actions"><Link className="ds-btn" to="/c/slots">Need a different time?</Link><Link className="ds-btn" to="/c/interview">Open the practice room</Link></div>
+            <div className="tb-actions"><Link className="ds-btn primary" to="/c/interview">Open the practice room</Link><Link className="ds-btn" to="/c/slots">Ask for a different time</Link></div>
           </section>
           <section className="ds-sheet tb-stack" aria-labelledby="tb-pr-t">
-            <h2 id="tb-pr-t" className="voice t24" style={{ margin: 0 }}>What they’ll probably ask, and your proof</h2>
+            <h2 id="tb-pr-t" className="tb-h2">What they’ll probably ask, and your proof</h2>
             <JobPrep job={job} pid={pid} />
           </section>
         </>
@@ -64,8 +63,8 @@ export function PrepPage() {
           {!live.length && <Link className="ds-btn" style={{ justifySelf: 'start' }} to="/c/jobs">Find jobs</Link>}
         </section>
       )}
-      {!ev && live.map((j) => <section key={j.id} className="ds-sheet tb-stack" aria-label={`Prep for ${j.title}`}><h2 className="voice t24" style={{ margin: 0 }}>{orgName(w, j.orgId)} · {j.title}</h2><JobPrep job={j} pid={pid} /></section>)}
-      <p className="t14 muted" style={{ margin: 0 }}>Practice is private and never counts as proof. Nothing here is shared.</p>
+      {!ev && live.map((j) => <section key={j.id} className="ds-sheet tb-stack" aria-label={`Prep for ${j.title}`}><h2 className="tb-h2">{orgName(w, j.orgId)} · {j.title}</h2><JobPrep job={j} pid={pid} /></section>)}
+      <p className="t14 muted" style={{ margin: 0 }}>Practice with Q is private and never counts as proof. Nothing here is shared.</p>
     </Canvas>
   );
 }

@@ -5,12 +5,10 @@ import { actorOf, useWorld } from '../../mock/world';
 import { Canvas } from '../../ds/Workspace';
 import { runAction } from '../../q/core/engine';
 import { Link, navigate } from '../../ui/router';
-import { APP_LABEL, appExplain, evById, fmtDate, tb } from './logic';
-import type { Application } from '../../state/domain';
+import { APP_K as K, APP_LABEL, appExplain, evById, fmtDate, tb } from './logic';
 
 const act = (op: string, args: Record<string, unknown> = {}) => void runAction({ label: op, act: { t: 'do', op, args } });
 const say = (text: string) => void runAction({ label: text, act: { t: 'say', text } });
-const K: Record<Application['status'], 'ok' | 'warn' | 'risk' | 'busy' | undefined> = { DRAFT: undefined, SUBMITTED: undefined, VIEWED: 'busy', INTERVIEW: 'ok', OFFER: 'ok', NOT_PROGRESSING: 'risk', WITHDRAWN: undefined, JOB_CLOSED: 'warn' };
 
 export function ApplicationsPage() {
   const w = useWorld((x) => x);
@@ -19,10 +17,10 @@ export function ApplicationsPage() {
   const moved = (id: string) => tb(w).followups.find((f) => f.appId === id)?.state === 'MOVED_ON';
   const sorted = [...apps].sort((x, y) => Number(moved(x.id)) - Number(moved(y.id)) || (y.timeline[0]?.at ?? '').localeCompare(x.timeline[0]?.at ?? ''));
   return (
-    <Canvas title="Your applications" kicker={`${a.first} · ${apps.length} ${apps.length === 1 ? 'application' : 'applications'}`} open onClose={() => navigate('/c/home')}>
-      <p className="t14 muted" style={{ margin: 0, maxWidth: 720 }}>Statuses come only from what employers actually did in Talent Q. Q never guesses a decision and can’t promise one.</p>
+    <Canvas title="Your applications" kicker={`${apps.length} ${apps.length === 1 ? 'application' : 'applications'}`} open onClose={() => navigate('/c/home')}>
+      <p className="t14 muted" style={{ margin: 0, maxWidth: 720 }}>Every status here comes from something the employer did in Talent Q. Q never guesses a decision and can’t promise one.</p>
       {apps.length === 0 ? (
-        <section className="ds-sheet tb-stack"><p style={{ margin: 0 }}>You haven’t applied for anything yet.</p><Link className="ds-btn" style={{ justifySelf: 'start' }} to="/c/jobs">Find jobs</Link></section>
+        <section className="ds-sheet tb-empty"><h2 className="tb-h2">No applications yet</h2><p className="t14 muted" style={{ margin: 0 }}>When you apply, you’ll see each one here with exactly what the employer has done, including nothing.</p><Link className="ds-btn primary" style={{ justifySelf: 'start' }} to="/c/jobs">Find jobs</Link></section>
       ) : (
         <ul className="tb-stack" style={{ listStyle: 'none', margin: 0, padding: 0 }} aria-label="Applications">
           {sorted.map((app) => {
@@ -36,24 +34,26 @@ export function ApplicationsPage() {
                   <span className="lab">{x.org}{x.job?.status === 'CLOSED' ? ' · listing closed' : ''}</span>
                   <span className="ds-tag" data-k={K[app.status]}>{APP_LABEL[app.status]}</span>
                 </div>
-                <h2 className="tb-title">{x.job ? <Link to={`/c/jobs/${x.job.id}`}>{x.job.title}</Link> : 'Job removed'}</h2>
+                <h2 className="tb-title tb-apptitle">{x.job ? <Link to={`/c/jobs/${x.job.id}`}>{x.job.title}</Link> : 'Job removed'}</h2>
                 <p style={{ margin: 0 }}>{x.plain}</p>
-                {live && app.status !== 'INTERVIEW' && <p className="t14" style={{ margin: 0 }}><b>{x.days} days</b> since {app.lastEmployerActivity ? `${x.org} last did anything` : 'you applied'}.</p>}
+                {live && app.status !== 'INTERVIEW' && <p className="tb-days"><b className="num">{x.days}</b><span className="t14">{x.days === 1 ? 'day' : 'days'} since {app.lastEmployerActivity ? `${x.org} last did anything` : 'you applied'}</span></p>}
                 {x.waiting && (
-                  <div className="ds-banner" data-k="warn"><span aria-hidden="true">…</span><span>No reply in {x.days} days. That’s common and says nothing about you. A short, polite follow-up is fine, or you can move on.</span><span /></div>
+                  <div className="ds-banner" data-k="warn"><span aria-hidden="true">◷</span><span>No reply in {x.days} days. That’s common and says nothing about you. A short, polite follow-up is fine, or you can move on.</span><span /></div>
                 )}
-                {x.followup && <p className="t14 muted" style={{ margin: 0 }}>{x.followup.state === 'MOVED_ON' ? 'You moved on. It stays open on their side.' : `You followed up on ${fmtDate(x.followup.at)} (simulated).`}</p>}
-                <details>
+                {x.followup && <p className="t14 muted" style={{ margin: 0 }}>{x.followup.state === 'MOVED_ON' ? 'You moved on. It stays open on their side, so a reply would still reach you.' : `You followed up on ${fmtDate(x.followup.at)} (simulated).`}</p>}
+                {(x.waiting || thread) && (
+                  <div className="tb-actions">
+                    {x.waiting && <button type="button" className="ds-btn primary" onClick={() => say(`follow up with ${x.org}`)}>Draft a follow-up</button>}
+                    {x.waiting && <button type="button" className="ds-btn" onClick={() => act('tb.followup.moveon', { appId: app.id })}>Move on</button>}
+                    {thread ? <Link className="ds-btn" to="/c/messages">Messages ({thread.messages.length})</Link> : null}
+                  </div>
+                )}
+                <details className="tb-details">
                   <summary className="t14">Timeline and what you shared</summary>
-                  <ol className="tb-timeline">{app.timeline.map((t, i) => <li key={i}><span className="t14 muted num">{fmtDate(t.at)}</span><span>{t.text}</span></li>)}</ol>
+                  <ol className="tb-timeline">{app.timeline.map((t, i) => <li key={i} data-by={t.by}><span className="t14 muted num">{fmtDate(t.at)}</span><span>{t.text}</span></li>)}</ol>
                   <p className="t14" style={{ margin: 0 }}>Shared with this application: {shared.length ? shared.map((e) => e!.title).join('; ') : 'nothing from your Passport'}.</p>
+                  {live && <button type="button" className="tb-linkbtn" onClick={() => say(`withdraw my application to ${x.org}`)}>Withdraw this application…</button>}
                 </details>
-                <div className="tb-actions">
-                  {x.waiting && <button type="button" className="ds-btn primary" onClick={() => say(`follow up with ${x.org}`)}>Draft a follow-up</button>}
-                  {x.waiting && <button type="button" className="ds-btn" onClick={() => act('tb.followup.moveon', { appId: app.id })}>Move on</button>}
-                  {thread ? <Link className="ds-btn" to="/c/messages">Messages ({thread.messages.length})</Link> : null}
-                  {live && <button type="button" className="ds-btn quiet" onClick={() => say(`withdraw my application to ${x.org}`)}>Withdraw</button>}
-                </div>
               </li>
             );
           })}

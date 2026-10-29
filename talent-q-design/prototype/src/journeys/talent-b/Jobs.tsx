@@ -22,11 +22,27 @@ function Signals({ job, compact }: { job: Job; compact?: boolean }) {
   const s = signalsOf(w, job); const ok = verifiedEmployer(w, job);
   if (compact) return <span className="ds-tag" data-k={ok ? 'ok' : 'warn'}>{ok ? <Glyph k="verified" size={14} /> : <span aria-hidden="true">?</span>}{ok ? 'Verified employer' : 'Not verified'}</span>;
   return (
-    <ul className="tb-signals">
-      {s.map((x) => <li key={x.k}><span className="ds-tag" data-k={x.on ? 'ok' : 'warn'}>{x.on ? '✓' : '–'} {x.k}: {x.on ? 'yes' : 'no'}</span><span className="t14 muted">{x.plain}</span></li>)}
-      <li><span className="ds-tag">{job.signals.replies}</span><span className="t14 muted">From this employer’s past replies on Talent Q. It isn’t a promise that you’ll hear back.</span></li>
-    </ul>
+    <dl className="tb-signals">
+      {s.map((x) => <div key={x.k} data-on={x.on || undefined}><dt><span className="tb-sigmark" aria-hidden="true">{x.on ? '✓' : '–'}</span>{x.k}<span className="sr">: {x.on ? 'yes' : 'no'}</span><span className="tb-sigval" aria-hidden="true">{x.on ? 'Yes' : 'No'}</span></dt><dd className="t14 muted">{x.plain}</dd></div>)}
+      <div><dt><span className="tb-sigmark" aria-hidden="true">↺</span>{job.signals.replies}</dt><dd className="t14 muted">From this employer’s past replies on Talent Q. It isn’t a promise that you’ll hear back.</dd></div>
+    </dl>
   );
+}
+
+/** How many of the job's stated needs the person's proof shows. Shape carries the state (never colour alone),
+ *  with the count as a direct label. */
+function FitLine({ m }: { m: ReturnType<typeof matchFor> }) {
+  const checked = m.filter((n) => n.state === 'VERIFIED').length;
+  return (
+    <p className="tb-fit">
+      <span className="tb-pips" aria-hidden="true">{m.map((n) => <Glyph key={n.need} k={NEED_GLYPH[n.state]} size={16} />)}</span>
+      <b>{fitLine(m)}</b>{checked ? <span className="muted"> · {checked} checked</span> : null}
+      <span className="sr">{m.map((n) => `${n.need}: ${NEED_LABEL[n.state]}`).join('; ')}</span>
+    </p>
+  );
+}
+function FitKey() {
+  return <ul className="tb-fitkey" aria-label="Key">{(['VERIFIED', 'SHOWN', 'TOLD', 'NONE'] as const).map((k) => <li key={k}><Glyph k={NEED_GLYPH[k]} size={14} />{NEED_LABEL[k]}</li>)}</ul>;
 }
 
 export function JobsPage() {
@@ -37,33 +53,46 @@ export function JobsPage() {
   const filter: F = (query.get('f') as F | null) ?? f;
   const saved = tb(w).saved[pid] ?? [];
   // Fit first; at equal fit, verified employers before unverified ones.
-  const score = (j: Job, m: ReturnType<typeof matchFor>) => m.filter((n) => n.state !== 'NONE').length / Math.max(1, m.length) + (verifiedEmployer(w, j) ? 0.01 : 0);
+  const share = (m: ReturnType<typeof matchFor>) => m.filter((n) => n.state !== 'NONE').length / Math.max(1, m.length);
+  const score = (j: Job, m: ReturnType<typeof matchFor>) => share(m) + (verifiedEmployer(w, j) ? 0.01 : 0);
   const open = w.jobs.filter((j) => j.status === 'OPEN');
   const shown = open.filter((j) => filter === 'all' || (filter === 'verified' && verifiedEmployer(w, j)) || (filter === 'saved' && saved.includes(j.id)) || (filter === 'remote' && j.workMode === 'REMOTE'))
     .map((j) => ({ j, m: matchFor(w, pid, j) })).sort((x, y) => score(y.j, y.m) - score(x.j, x.m));
+  const close = shown.filter((x) => share(x.m) > 0); const rest = shown.filter((x) => share(x.m) === 0);
   const closedSaved = saved.map((id) => w.jobs.find((j) => j.id === id)).filter((j): j is Job => !!j && j.status === 'CLOSED');
+  const card = ({ j, m }: { j: Job; m: ReturnType<typeof matchFor> }) => (
+    <li key={j.id} className="ds-sheet tb-card tb-jobcard">
+      <div className="tb-row-between"><span className="lab">{orgName(w, j.orgId)}</span><Signals job={j} compact /></div>
+      <h3 className="tb-title"><Link to={`/c/jobs/${j.id}`}>{j.title}</Link></h3>
+      <p className="t14 tb-meta" style={{ margin: 0 }}>{where(j.location, j.workMode)} · <span className="num">{j.pay}</span></p>
+      <FitLine m={m} />
+      <div className="tb-card-foot">
+        <p className="t14 muted" style={{ margin: 0 }}>{j.signals.replies}</p>
+        <div className="tb-actions">
+          <Link className="ds-btn" to={`/c/jobs/${j.id}`} aria-label={`View ${j.title} at ${orgName(w, j.orgId)}`}>View job</Link>
+          <button type="button" className="ds-btn quiet tb-save" aria-pressed={saved.includes(j.id)} onClick={() => act('tb.save', { jobId: j.id })}>{saved.includes(j.id) ? <><span aria-hidden="true">★</span> Saved</> : <><span aria-hidden="true">☆</span> Save</>}</button>
+        </div>
+      </div>
+    </li>
+  );
   return (
-    <Canvas title="Jobs" kicker={`${a.first} · ${open.length} open`} open onClose={() => navigate('/c/home')}>
+    <Canvas title="Jobs" kicker={`${open.length} open roles`} open onClose={() => navigate('/c/home')}>
       {closedSaved.map((j) => <div key={j.id} className="ds-banner" data-k="warn" role="status"><span aria-hidden="true">⚠</span><span><b>Closed:</b> {orgName(w, j.orgId)}’s {j.title}, which you saved. Closing a listing isn’t a decision about you.</span><button type="button" className="ds-btn" onClick={() => act('tb.save', { jobId: j.id })}>Remove</button></div>)}
       <div className="tb-filters" role="group" aria-label="Filter jobs">
         {([['all', 'All'], ['verified', 'Verified employers'], ['saved', `Saved (${saved.filter((id) => open.some((j) => j.id === id)).length})`], ['remote', 'Remote']] as const).map(([v, l]) => <button key={v} type="button" className="ds-filter" aria-pressed={filter === v} onClick={() => { setF(v); if (query.get('f')) navigate('/c/jobs'); }}>{l}</button>)}
       </div>
-      {shown.length === 0 ? <section className="ds-sheet"><p style={{ margin: 0 }}>{filter === 'saved' ? 'No saved jobs are open right now.' : 'No jobs match this filter.'} <button type="button" className="ds-btn quiet" onClick={() => setF('all')}>Show all jobs</button></p></section> : (
-        <ul className="tb-grid" aria-label="Open jobs">
-          {shown.map(({ j, m }) => (
-            <li key={j.id} className="ds-sheet tb-card">
-              <div className="tb-row-between"><span className="lab">{orgName(w, j.orgId)}</span><Signals job={j} compact /></div>
-              <h2 className="tb-title"><Link to={`/c/jobs/${j.id}`}>{j.title}</Link></h2>
-              <p className="t14" style={{ margin: 0 }}>{where(j.location, j.workMode)} · {j.pay}</p>
-              <p className="t14" style={{ margin: 0, display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'wrap' }}>{m.map((n) => <Glyph key={n.need} k={NEED_GLYPH[n.state]} size={16} title={`${n.need}: ${NEED_LABEL[n.state]}`} />)}<b>{fitLine(m)}</b></p>
-              <p className="t14 muted" style={{ margin: 0 }}>{j.signals.replies}</p>
-              <div className="tb-actions">
-                <Link className="ds-btn primary" to={`/c/jobs/${j.id}`}>Open</Link>
-                <button type="button" className="ds-btn" aria-pressed={saved.includes(j.id)} onClick={() => act('tb.save', { jobId: j.id })}>{saved.includes(j.id) ? 'Saved' : 'Save'}</button>
-              </div>
-            </li>
-          ))}
-        </ul>
+      {shown.length === 0 ? (
+        <section className="ds-sheet tb-empty">
+          <h2 className="tb-h2">{filter === 'saved' ? 'No saved jobs are open right now' : 'No jobs match this filter'}</h2>
+          <p className="t14 muted" style={{ margin: 0 }}>{filter === 'saved' ? 'Save a job and Q tells you if it closes.' : 'New roles appear here as employers post them.'}</p>
+          <button type="button" className="ds-btn" style={{ justifySelf: 'start' }} onClick={() => setF('all')}>Show all jobs</button>
+        </section>
+      ) : (
+        <div className="tb-jobs" aria-label="Open jobs">
+          <FitKey />
+          {close.length > 0 && <section className="tb-group" aria-labelledby="tb-jg-close"><header className="tb-group-h"><h2 id="tb-jg-close" className="tb-h2">Closest to your proof <span className="tb-count num">{close.length}</span></h2></header><ul className="tb-grid">{close.map(card)}</ul></section>}
+          {rest.length > 0 && <section className="tb-group" aria-labelledby="tb-jg-rest"><header className="tb-group-h"><h2 id="tb-jg-rest" className="tb-h2">Other open roles <span className="tb-count num">{rest.length}</span></h2><p className="t14 muted">Your Passport doesn’t show these needs yet. That isn’t the same as not having them.</p></header><ul className="tb-grid">{rest.map(card)}</ul></section>}
+        </div>
       )}
       <details className="ds-sheet tb-details">
         <summary><b>What the employer signals mean, and what they don’t</b></summary>
@@ -96,11 +125,13 @@ export function JobDetailPage({ id }: { id: string }) {
       aside={<div className="tb-actions"><button type="button" className="ds-btn" aria-pressed={saved} onClick={() => act('tb.save', { jobId: job.id })}>{saved ? 'Saved' : 'Save'}</button>{!app && !applying && !closed && <button type="button" className="ds-btn primary" onClick={() => act('tb.apply.start', { jobId: job.id })}>Apply</button>}</div>}>
       {closed && <div className="ds-banner" data-k="warn" role="status"><span aria-hidden="true">⚠</span><span><b>This listing has closed.</b> It isn’t taking applications. {applying ? 'Nothing was sent; your choices are kept below in case it reopens.' : ''}</span><button type="button" className="ds-btn" onClick={() => void runAction({ label: 'similar', act: { t: 'say', text: 'show me similar jobs that are still open' } })}>Similar open jobs</button></div>}
       {app && <div className="ds-banner" role="status"><Glyph k="full" /><span>You applied. Status: <b>{APP_LABEL[app.status]}</b>.</span><Link className="ds-btn" to="/c/applications">Track it</Link></div>}
-      <p style={{ margin: 0 }}>{where(job.location, job.workMode)} · {job.pay} · posted {new Date(job.posted).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</p>
+      <ul className="tb-facts" aria-label="About this job">
+        <li>{where(job.location, job.workMode)}</li><li className="num">{job.pay}</li><li>Posted {new Date(job.posted).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</li><li><Signals job={job} compact /></li>
+      </ul>
 
       {applying && (
         <section className="ds-sheet tb-stack tb-apply" aria-labelledby="tb-ap-h">
-          <div className="tb-row-between"><h2 id="tb-ap-h" className="voice t24" style={{ margin: 0 }}>Your application</h2><span className="ds-sim">Simulated send</span></div>
+          <div className="tb-row-between"><h2 id="tb-ap-h" className="tb-h2">Your application</h2><span className="ds-sim">Simulated send</span></div>
           <p className="t14" style={{ margin: 0 }}>Choose exactly what {orgName(w, job.orgId)} sees. Nothing else in your Passport is shared.{!verifiedEmployer(w, job) && ' This employer isn’t verified: share as little as you can.'}</p>
           <div className="tb-stack" role="group" aria-label="Items to share">
             {[...new Set([...m.flatMap((n) => n.used.map((e) => e.evidenceId)), ...applying.shared])].map((eid) => { const e = evById(w, eid); if (!e) return null; const on = applying.shared.includes(eid); return <button key={eid} type="button" className="ds-opt" aria-pressed={on} disabled={closed} onClick={() => act('tb.apply.set', { toggle: eid })}><span><b>{e.title}</b><span className="t14 muted" style={{ display: 'block' }}>{KIND[e.kind]} · {on ? 'will be shared' : 'not shared'}</span></span></button>; })}
@@ -116,16 +147,17 @@ export function JobDetailPage({ id }: { id: string }) {
       )}
 
       <section className="ds-sheet tb-stack" aria-labelledby="tb-why-h">
-        <div className="tb-row-between"><h2 id="tb-why-h" className="voice t24" style={{ margin: 0 }}>Why this might fit: {fitLine(m)}</h2><button type="button" className="ds-btn" onClick={() => prefillQ('That match is wrong: ')}>Challenge this match</button></div>
+        <div className="tb-row-between"><h2 id="tb-why-h" className="tb-h2">Why this might fit: {fitLine(m)}</h2><button type="button" className="ds-btn" onClick={() => prefillQ('That match is wrong: ')}>Challenge this match</button></div>
         <ul className="tb-needs">
           {m.map((n) => (
-            <li key={n.need}>
+            <li key={n.need} data-state={n.state}>
               <Glyph k={NEED_GLYPH[n.state]} size={20} />
-              <span><b>{n.need}</b>: {NEED_LABEL[n.state]}
-                {n.used.length > 0 && <span className="t14" style={{ display: 'block' }}>Evidence used: {n.used.map((e, i) => <span key={e.evidenceId}>{i ? '; ' : ''}<Link to={`/c/passport?item=${e.evidenceId}`}>{e.title}</Link> <VerTag e={e} /></span>)}</span>}
-                {n.told && <span className="t14 muted" style={{ display: 'block' }}>You told me: “{n.told}”. Employers see this as your statement, not checked proof.</span>}
-                {n.state === 'NONE' && <span className="t14 muted" style={{ display: 'block' }}>Nothing in your Passport shows this yet. That isn’t the same as not having it.</span>}
-              </span>
+              <div className="tb-need">
+                <p className="tb-need-h"><b>{n.need}</b><span className="tb-need-state">{NEED_LABEL[n.state]}</span></p>
+                {n.used.length > 0 && <ul className="tb-evchips" aria-label={`Evidence used for ${n.need}`}>{n.used.map((e) => <li key={e.evidenceId}><Link to={`/c/passport?item=${e.evidenceId}`}>{e.title}</Link><VerTag e={e} /></li>)}</ul>}
+                {n.told && <p className="t14 muted">You told me: “{n.told}”. Employers see this as your statement, not checked proof.</p>}
+                {n.state === 'NONE' && <p className="t14 muted">Nothing in your Passport shows this yet. That isn’t the same as not having it.</p>}
+              </div>
             </li>
           ))}
         </ul>
@@ -133,20 +165,20 @@ export function JobDetailPage({ id }: { id: string }) {
       </section>
 
       <section className="ds-sheet tb-stack" aria-labelledby="tb-mf-h">
-        <h2 id="tb-mf-h" className="voice t24" style={{ margin: 0 }}>Does it fit you?</h2>
-        <ul className="tb-needs">{fit.map((x) => <li key={x.k}><span className="ds-tag" data-k={x.ok === true ? 'ok' : x.ok === false ? 'risk' : undefined}>{x.ok === true ? 'Fits' : x.ok === false ? 'Doesn’t fit' : 'Unknown'}</span><span><b>{x.k}</b>: {x.text}</span></li>)}</ul>
+        <h2 id="tb-mf-h" className="tb-h2">Does it fit you?</h2>
+        <ul className="tb-fittiles">{fit.map((x) => <li key={x.k} data-ok={x.ok === true ? 'yes' : x.ok === false ? 'no' : 'unknown'}><div className="tb-row-between"><span className="lab">{x.k}</span><span className="ds-tag" data-k={x.ok === true ? 'ok' : x.ok === false ? 'risk' : undefined}>{x.ok === true ? '✓ Fits' : x.ok === false ? '✕ Doesn’t fit' : '? Not sure'}</span></div><span className="t14">{x.text}</span></li>)}</ul>
         <p className="t14 muted" style={{ margin: 0 }}>From what you’ve told Q. <Link to="/c/memory">See or delete what Q remembers</Link>.</p>
       </section>
 
       <section className="ds-sheet tb-stack" aria-labelledby="tb-emp-h">
-        <h2 id="tb-emp-h" className="voice t24" style={{ margin: 0 }}>About {orgName(w, job.orgId)}</h2>
+        <h2 id="tb-emp-h" className="tb-h2">About {orgName(w, job.orgId)}</h2>
         <Signals job={job} />
       </section>
 
       {!closed && (
         <section className="ds-sheet tb-stack" aria-labelledby="tb-adv-h">
-          <h2 id="tb-adv-h" className="voice t24" style={{ margin: 0 }}>Q’s suggestions</h2>
-          <ul className="tb-needs">{advice.map((x) => <li key={x.key}><span aria-hidden="true">·</span><span>{x.text} <button type="button" className="ds-btn quiet" onClick={() => act('tb.advice.decline', { key: x.key, label: x.key === 'cover_note' ? 'cover letters or cover notes' : x.text.toLowerCase().slice(0, 40) })}>Not for me</button></span></li>)}</ul>
+          <h2 id="tb-adv-h" className="tb-h2">Q’s suggestions</h2>
+          <ul className="tb-advice">{advice.map((x) => <li key={x.key}><span>{x.text}</span><button type="button" className="tb-linkbtn" aria-label={`Not for me: ${x.text}`} onClick={() => act('tb.advice.decline', { key: x.key, label: x.key === 'cover_note' ? 'cover letters or cover notes' : x.text.toLowerCase().slice(0, 40) })}>Not for me</button></li>)}</ul>
           {declined.length > 0 && <p className="t14 muted" style={{ margin: 0 }}>Left out because you asked: {declined.length} suggestion{declined.length === 1 ? '' : 's'}.</p>}
         </section>
       )}

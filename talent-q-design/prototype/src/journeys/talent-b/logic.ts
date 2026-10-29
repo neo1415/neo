@@ -2,7 +2,7 @@
 // simulated uploads and issuer checks, matching with its basis, honest application status, and candidate
 // memory with deletion receipts. Everything mutates the one store; nothing is really uploaded, checked or sent.
 import type { Evidence } from '@contracts';
-import { canDiscover, emit, getWorld, now, simNow, uid, update, type World } from '../../mock/world';
+import { canDiscover, canSeeCandidate, discoveryRule, emit, getWorld, now, relationshipWith, simNow, uid, update, type World } from '../../mock/world';
 import type { Actor, Application, Job } from '../../state/domain';
 import { appendQ, pushUndo, registerOp } from '../../q/core/engine';
 import { tb, type CandMemory, type Upload, type UploadKind } from '../../state/areas/talent-b';
@@ -35,16 +35,57 @@ export function viewerOrgs(w: World, pid: string) {
   for (const a of w.applications.filter((x) => x.personId === pid)) { const o = w.jobs.find((j) => j.id === a.jobId)?.orgId; if (o && !ids.includes(o)) ids.push(o); }
   return ids.filter((id) => w.orgs.some((o) => o.id === id));
 }
-export type Cell = 'SHARED' | 'PUBLIC' | 'REVOKED' | 'NONE' | 'LOCKED' | 'WITHDRAWN';
+export type Cell = 'SHARED' | 'PUBLIC' | 'PUBLIC_UNSEEN' | 'REVOKED' | 'NONE' | 'LOCKED' | 'WITHDRAWN';
 export function cellOf(w: World, e: Evidence, org: string): Cell {
   if (e.confidential) return 'LOCKED';
   if (w.consents[e.ownerId]?.withdrawnFrom.includes(org)) return 'WITHDRAWN';
   if (e.revokedFrom?.includes(org)) return 'REVOKED';
-  if (e.visibility === 'PUBLIC_PROFILE') return 'PUBLIC';
+  // Public items reach only organisations the store lets see the person at all (same rule as visibleEvidence).
+  if (e.visibility === 'PUBLIC_PROFILE') return canSeeCandidate(w, e.ownerId, org) ? 'PUBLIC' : 'PUBLIC_UNSEEN';
   if (e.visibility === 'SHARED_WITH' && e.sharedWith.includes(org)) return 'SHARED';
   return 'NONE';
 }
-export const CELL_LABEL: Record<Cell, string> = { SHARED: 'Shared', PUBLIC: 'Public', REVOKED: 'Access ended', NONE: 'Not shared', LOCKED: 'Confidential', WITHDRAWN: 'All access withdrawn' };
+export const CELL_LABEL: Record<Cell, string> = { SHARED: 'Shared', PUBLIC: 'Public', PUBLIC_UNSEEN: 'Public, can’t see you', REVOKED: 'Access ended', NONE: 'Not shared', LOCKED: 'Confidential', WITHDRAWN: 'Consent withdrawn' };
+export const cellOn = (c: Cell) => c === 'SHARED' || c === 'PUBLIC';
+
+/** Proof at a glance: how much of the Passport is checked, waiting, the person's own, or confidential. */
+export function passportStats(items: Evidence[]) {
+  const n = { VERIFIED: 0, WAITING: 0, FAILED: 0, OWN: 0, CONFIDENTIAL: 0 };
+  for (const e of items) {
+    const v = verOf(e);
+    if (e.confidential) n.CONFIDENTIAL++;
+    else if (v === 'VERIFIED') n.VERIFIED++;
+    else if (v === 'PENDING' || v === 'UNDER_REVIEW') n.WAITING++;
+    else if (v === 'FAILED') n.FAILED++;
+    else n.OWN++;
+  }
+  return n;
+}
+
+// ---------------- Who can see or find the person (explains the store's policy; never decides it) ----------------
+export interface Reach { org: string; name: string; agency: boolean; sees: boolean; via: 'LINK' | 'SEARCH' | null; hidden: boolean; reason: string }
+/** One row per organisation. The verdict comes only from canSeeCandidate / relationshipWith / canDiscover in
+ *  mock/world.ts, so this preview can't drift from what's enforced; the reason only explains which rule applied. */
+export function reachOf(w: World, pid: string): Reach[] {
+  const c = w.consents[pid]; const rule = discoveryRule(w, pid);
+  return w.orgs.map((o) => {
+    const sees = canSeeCandidate(w, pid, o.id); const link = relationshipWith(w, pid, o.id); const search = canDiscover(w, pid, o.id);
+    const hidden = rule.hideFrom.includes(o.id); const agency = o.kind !== 'EMPLOYER';
+    const why = c?.registeredWith?.includes(o.id) ? 'You registered with them.' : w.applications.some((a) => a.personId === pid && w.jobs.find((j) => j.id === a.jobId)?.orgId === o.id) ? 'You applied to them.' : 'You shared items with them.';
+    let reason: string;
+    if (c?.withdrawnFrom.includes(o.id)) reason = 'You withdrew your consent, so they see nothing at all.';
+    else if (link && search) reason = `${why} They can also find you in search.`;
+    else if (link) reason = `${why} Your search setting doesn’t change that.`;
+    else if (search) reason = agency ? 'A checked agency. Your setting lets agencies find you.' : 'A checked employer. They can find you in search.';
+    else if (!c?.discoverable || rule.who === 'NOBODY') reason = 'Search is off, and you’ve no link with them.';
+    else if (hidden) reason = 'You hid your profile from them.';
+    else if (rule.who === 'VERIFIED_EMPLOYERS' && agency) reason = 'An agency. Your setting allows employers only.';
+    else if (!o.verified.domain) reason = 'Their web domain isn’t checked, so they can’t search for anyone.';
+    else if (rule.who === 'VERIFIED_EMPLOYERS' && o.verified.registry !== 'VERIFIED') reason = 'Their business registration isn’t confirmed yet. Your setting needs both checks.';
+    else reason = 'They can’t find you.';
+    return { org: o.id, name: o.name, agency, sees, via: link ? 'LINK' : search ? 'SEARCH' : null, hidden, reason };
+  });
+}
 
 function share(_w: World, e: Evidence, org: string) {
   e.revokedFrom = (e.revokedFrom ?? []).filter((x) => x !== org);
@@ -293,6 +334,7 @@ export const verifiedEmployer = (w: World, job: Job) => signalsOf(w, job).slice(
 
 // ---------------- Applications: honest status, no promises ----------------
 export const APP_LABEL: Record<Application['status'], string> = { DRAFT: 'Draft', SUBMITTED: 'Sent', VIEWED: 'Viewed', INTERVIEW: 'Interview', OFFER: 'Offer', NOT_PROGRESSING: 'Not progressing', WITHDRAWN: 'Withdrawn', JOB_CLOSED: 'Listing closed' };
+export const APP_K: Record<Application['status'], 'ok' | 'warn' | 'risk' | 'busy' | undefined> = { DRAFT: undefined, SUBMITTED: undefined, VIEWED: 'busy', INTERVIEW: 'ok', OFFER: 'ok', NOT_PROGRESSING: 'risk', WITHDRAWN: undefined, JOB_CLOSED: 'warn' };
 export function appExplain(w: World, a: Application) {
   const job = w.jobs.find((j) => j.id === a.jobId); const org = job ? orgName(w, job.orgId) : 'The employer';
   const applied = a.timeline.find((t) => t.by === 'YOU')?.at ?? a.timeline[0]?.at;

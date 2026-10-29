@@ -106,7 +106,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   await closeQ(); await page.goto(`${BASE}#/c/passport?as=org_tb`); await page.waitForTimeout(500);
   step('Talentbridge preview no longer lists the code', !(await page.locator('.tb-viewas').innerText()).includes('Payout retry worker'));
   await shot('06-revoked-viewas');
-  await page.goto(`${BASE}#/c/passport?tab=sharing`); await page.waitForTimeout(400); await page.locator('.ds-views button', { hasText: 'Who sees what' }).click(); await page.waitForTimeout(300);
+  await page.goto(`${BASE}#/c/passport?tab=sharing`); await page.waitForTimeout(400); await page.locator('.ds-views button', { hasText: 'Sharing' }).click(); await page.waitForTimeout(300);
   await page.getByRole('button', { name: 'Me (everything)' }).click(); await page.waitForTimeout(300);
   await page.locator('#tb-mx-h').scrollIntoViewIfNeeded(); await overflow('matrix'); await shot('07-matrix');
 

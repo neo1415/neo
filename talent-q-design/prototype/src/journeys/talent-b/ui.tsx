@@ -5,7 +5,7 @@ import { useWorld } from '../../mock/world';
 import { registerRef } from '../../q/refs';
 import { Link } from '../../ui/router';
 import { Glyph } from '../../ds/Glyph';
-import { APP_LABEL, KIND, NEED_GLYPH, NEED_LABEL, VER, appExplain, cellOf, matchFor, orgName, summaryFor, tb, verOf, viewerOrgs } from './logic';
+import { APP_K, APP_LABEL, KIND, NEED_GLYPH, NEED_LABEL, VER, appExplain, cellOf, cellOn, matchFor, orgName, summaryFor, tb, verOf, viewerOrgs } from './logic';
 import type { Upload } from '../../state/areas/talent-b';
 
 export function VerTag({ e }: { e: Evidence }) {
@@ -34,11 +34,12 @@ export function UploadRow({ u, onRetry, onCancel }: { u: Upload; onRetry?: () =>
 
 export function SeenBy({ e }: { e: Evidence }) {
   const w = useWorld((x) => x);
-  if (e.confidential) return <span className="t14 muted">Only you. Confidential originals can’t be shared.</span>;
+  if (e.confidential) return <p className="tb-seen" data-k="none"><span aria-hidden="true">🔒</span>Only you. Confidential originals can’t be shared.</p>;
   const orgs = viewerOrgs(w, e.ownerId);
-  const seen = orgs.filter((o) => ['SHARED', 'PUBLIC'].includes(cellOf(w, e, o))).map((o) => orgName(w, o));
+  const seen = orgs.filter((o) => cellOn(cellOf(w, e, o))).map((o) => orgName(w, o));
   const ended = orgs.filter((o) => cellOf(w, e, o) === 'REVOKED').map((o) => orgName(w, o));
-  return <span className="t14 muted">{e.visibility === 'PUBLIC_PROFILE' ? 'Public on your profile' : seen.length ? `Seen by ${seen.join(', ')}` : 'Only you'}{ended.length ? ` · access ended: ${ended.join(', ')}` : ''}</span>;
+  const text = e.visibility === 'PUBLIC_PROFILE' ? `Public on your profile${seen.length ? ` · seen by ${seen.join(', ')}` : ''}` : seen.length ? `Seen by ${seen.join(', ')}` : 'Only you';
+  return <p className="tb-seen" data-k={seen.length || e.visibility === 'PUBLIC_PROFILE' ? 'shared' : 'none'}><Glyph k={seen.length || e.visibility === 'PUBLIC_PROFILE' ? 'full' : 'none'} size={12} />{text}{ended.length ? ` · access ended: ${ended.join(', ')}` : ''}</p>;
 }
 
 registerRef('tb.evidence', ({ id }) => {
@@ -71,13 +72,21 @@ registerRef('tb.match', ({ id }) => {
   const m = useMemo(() => (job ? matchFor(w, pid, job) : []), [w, pid, job]);
   if (!job) return null;
   return (
-    <ul className="tb-ref tb-reflist" aria-label={`Match for ${job.title}`}>
-      {m.map((n) => <li key={n.need} className="tb-refrow"><Glyph k={NEED_GLYPH[n.state]} size={16} /><span><b>{n.need}</b>: {NEED_LABEL[n.state].toLowerCase()}{n.used.length ? <span className="t14" style={{ display: 'block' }}>Used: {n.used.map((e) => e.title).join('; ')}</span> : null}{n.told ? <span className="t14" style={{ display: 'block' }}>You said: “{n.told}”</span> : null}</span></li>)}
-    </ul>
+    <div className="tb-ref">
+      <div className="tb-row-between"><span className="lab">{orgName(w, job.orgId)}</span><Link to={`/c/jobs/${job.id}`} className="t14" style={{ color: 'inherit' }}>Open the job</Link></div>
+      <ul className="tb-reflist" aria-label={`Match for ${job.title}`}>
+        {m.map((n) => <li key={n.need} className="tb-refrow"><Glyph k={NEED_GLYPH[n.state]} size={16} /><span><b>{n.need}</b> <span className="t14">· {NEED_LABEL[n.state].toLowerCase()}</span>{n.used.length ? <span className="t14 tb-refsub">Used: {n.used.map((e) => e.title).join('; ')}</span> : null}{n.told ? <span className="t14 tb-refsub">You said: “{n.told}”</span> : null}</span></li>)}
+      </ul>
+    </div>
   );
 });
 registerRef('tb.apps', ({ id }) => {
   const w = useWorld((x) => x);
   const rows = useMemo(() => w.applications.filter((a) => a.personId === id).map((a) => ({ a, x: appExplain(w, a) })), [w, id]);
-  return <ul className="tb-ref tb-reflist">{rows.map(({ a, x }) => <li key={a.id}><b>{x.job?.title} · {x.org}</b><span className="t14">{APP_LABEL[a.status]}{['SUBMITTED', 'VIEWED'].includes(a.status) ? ` · ${x.days} days since last activity` : ''}</span></li>)}<li><Link to="/c/applications" className="t14" style={{ color: 'inherit' }}>All applications</Link></li></ul>;
+  return (
+    <div className="tb-ref">
+      <ul className="tb-reflist">{rows.map(({ a, x }) => <li key={a.id} className="tb-refapp"><span><b>{x.job?.title}</b><span className="t14 tb-refsub">{x.org}{['SUBMITTED', 'VIEWED'].includes(a.status) ? ` · ${x.days} days since last activity` : ''}</span></span><span className="ds-tag" data-k={APP_K[a.status]}>{APP_LABEL[a.status]}</span></li>)}</ul>
+      <Link to="/c/applications" className="t14" style={{ color: 'inherit' }}>All applications</Link>
+    </div>
+  );
 });
