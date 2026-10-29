@@ -112,7 +112,8 @@ try {
   r = await ask(page, 'hold the first one');
   step('Hold the first slot', /Held/.test(r), r.slice(0, 100));
   await go(page, '/r/calendar');
-  await page.locator('.ds-opt', { hasText: 'Someone takes the proposed time' }).click(); await sleep(200);
+  // Design pass: the test toggle is a switch now (role="switch"); same behaviour.
+  await page.getByRole('switch', { name: /Someone takes the proposed time/ }).click(); await sleep(200);
   r = await ask(page, 'draft the invite for kunle');
   step('Draft uses the held time', /draft interview invitation to Kunle/i.test(r), r.slice(0, 140));
   r = await ask(page, 'send it');

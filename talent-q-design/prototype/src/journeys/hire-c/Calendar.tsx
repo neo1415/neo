@@ -1,77 +1,89 @@
 // /r/calendar: next week for the hiring team across Lagos and London (busy/free only), holds, invitations,
 // confirmations and requests to move, interview panels with who changed them, and a test switch for
 // "the proposed time is taken before it's sent".
+// Design pass: the week is a chart (WeekOverlap) instead of a text table; Q's proposals sit above it with
+// one action per row; requests to move lead the bookings list because they need someone.
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import { actorOf, emit, personOf, update, useWorld } from '../../mock/world';
 import { Canvas } from '../../ds/Workspace';
+import { arrive } from '../../ds/motion';
+import { SwitchRow } from '../../ds/Switch';
 import { runAction } from '../../q/core/engine';
 import { Link } from '../../ui/router';
 import { hc } from '../../state/areas/hire-c';
-import { CAN_MOVE, city, dateIn, evStatusLabel, firstOf, interviewHours, LAGOS, listNames, nameOf, nextWeek, orgMembers, tDay, tTime, tzNote } from './lib';
+import { CAN_MOVE, city, evStatusLabel, firstOf, interviewHours, LAGOS, listNames, nameOf, nextWeek, orgMembers, tDay, tTime, tzNote, whenText } from './lib';
+import { WeekOverlap } from './WeekOverlap';
+
+const ORDER: Record<string, number> = { RESCHEDULE_REQUESTED: 0, HOLD: 1, INVITED: 2, CONFIRMED: 3 };
 
 export function Calendar() {
   const w = useWorld((x) => x);
   const a = actorOf(w);
   const days = nextWeek(w);
   const mem = orgMembers(w, a.orgId).filter((m) => m.role !== 'VIEWER');
-  const [h0, h1] = interviewHours(w, a.orgId);
-  const mine = w.calendar.filter((e) => e.orgId === a.orgId);
-  const events = mine.filter((e) => e.status !== 'CANCELLED' && (e.status === 'HOLD' || e.personId)).sort((x, y) => x.start.localeCompare(y.start));
+  const win = interviewHours(w, a.orgId);
+  const mine = w.calendar.filter((e) => e.orgId === a.orgId && e.status !== 'CANCELLED');
+  const events = mine.filter((e) => e.status === 'HOLD' || e.personId).sort((x, y) => (ORDER[x.status] ?? 9) - (ORDER[y.status] ?? 9) || x.start.localeCompare(y.start));
   const prop = hc(w).proposals[a.id];
   const ivs = w.interviews.filter((i) => i.orgId === a.orgId && i.status !== 'CANCELLED');
   const changes = hc(w).panelChanges;
   const can = CAN_MOVE.includes(a.role ?? 'VIEWER');
   const fmt = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  const abroad = mem.filter((m) => m.timezone !== LAGOS);
+  const asks = events.filter((e) => e.status === 'RESCHEDULE_REQUESTED').length;
   return (
-    <Canvas title="Next week across Lagos and London" kicker="Calendar · busy times only" open onClose={() => {}} aside={<Link to="/r/calendar/connect" className="ds-btn">Calendar connections</Link>}>
-      <section className="ds-sheet" aria-labelledby="tz-h" style={{ display: 'grid', gap: 10 }}>
-        <h2 id="tz-h" className="lab" style={{ margin: 0 }}>Who’s where</h2>
-        <ul className="hc-zones">
-          {mem.map((m) => <li key={m.id}><b>{m.first}</b> <span className="t14 muted">{city(m.timezone)}{m.timezone !== LAGOS ? ` · ${tzNote(m.timezone, `${days[0]}T12:00:00Z`)}` : ''}</span></li>)}
-        </ul>
-        <p className="t14 muted" style={{ margin: 0 }}>Interview hours: {fmt(h0)}–{fmt(h1)} Lagos (from the organisation’s guidelines). Q only offers times inside everyone’s working day, 09:00–18:00 local.</p>
-      </section>
+    <Canvas title="Calendar" kicker="Next week · Lagos and London" open onClose={() => {}} aside={<Link to="/r/calendar/connect" className="ds-btn">Calendar connections</Link>}>
+      {asks > 0 && <div className="ds-banner" data-k="warn" role="status"><span aria-hidden="true">↻</span><span><b>{asks === 1 ? 'A candidate has' : `${asks} candidates have`} asked to move an interview.</b> Their current time stays held until you send a new one.</span><span /></div>}
       {prop && (
-        <section className="ds-sheet" aria-labelledby="pr-h" style={{ display: 'grid', gap: 8 }}>
-          <h2 id="pr-h" className="lab" style={{ margin: 0 }}>Q’s proposed times for {nameOf(w, prop.personId)} · {prop.label}</h2>
-          <div className="ds-table-wrap" tabIndex={0} role="region" aria-label="Calendar table, scrolls sideways"><table className="ds-table">
-            <thead><tr><th scope="col">Day</th>{[...prop.panel, prop.personId].map((id) => <th key={id} scope="col">{firstOf(w, id)} <span className="t14 muted">({city(w.actors.find((x) => x.id === id && x.side === 'recruiter')?.timezone ?? personOf(w, id)?.timezone ?? LAGOS)})</span></th>)}<th scope="col"><span className="sr">Actions</span></th></tr></thead>
-            <tbody>{prop.slots.map((s, i) => <tr key={s.start}><th scope="row">{tDay(s.start, LAGOS)}</th>{s.notes.map((n) => <td key={n.id} className="num">{n.local}</td>)}
-              <td><div className="ds-actions"><button type="button" className="ds-btn" onClick={() => void runAction({ label: 'Hold', act: { t: 'do', op: 'hire-c.useSlot', args: { i, mode: 'hold' } } })}>Hold</button><button type="button" className="ds-btn quiet" onClick={() => void runAction({ label: 'Draft', act: { t: 'do', op: 'hire-c.useSlot', args: { i, mode: 'draft' } } })}>Draft invitation</button></div></td></tr>)}</tbody>
-          </table></div>
-        </section>
+        <motion.section className="ds-sheet hc-propsec" aria-labelledby="pr-h" {...arrive}>
+          {/* MO-042: a proposal arriving is orientation motion (rise and fade, 200 ms). */}
+          <div className="hc-sec-head"><h2 id="pr-h" className="voice t24" style={{ margin: 0 }}>Times for {nameOf(w, prop.personId)}</h2><span className="t14 muted">Q’s search · {prop.label} · 45 min</span></div>
+          <ol className="hc-proplist">
+            {prop.slots.map((s, i) => (
+              <li key={s.start}>
+                <span className="hc-opt" aria-hidden="true">{i + 1}</span>
+                <span className="hc-propwhen"><b>{tDay(s.start, LAGOS)}, {tTime(s.start, LAGOS)}</b><span className="t14 muted">{s.notes.filter((n) => n.tz !== LAGOS).map((n) => `${n.name} ${n.local} ${city(n.tz)}`).join(' · ') || 'Everyone in Lagos time'}</span></span>
+                <span className="ds-actions">
+                  <button type="button" className="ds-btn" onClick={() => void runAction({ label: 'Hold', act: { t: 'do', op: 'hire-c.useSlot', args: { i, mode: 'hold' } } })}>Hold<span className="sr"> option {i + 1}</span></button>
+                  <button type="button" className="ds-btn quiet" onClick={() => void runAction({ label: 'Draft', act: { t: 'do', op: 'hire-c.useSlot', args: { i, mode: 'draft' } } })}>Draft invitation<span className="sr"> for option {i + 1}</span></button>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </motion.section>
       )}
-      <section className="ds-sheet" aria-labelledby="wk-h" style={{ display: 'grid', gap: 8 }}>
-        <h2 id="wk-h" className="lab" style={{ margin: 0 }}>Busy and booked, Mon {tDay(`${days[0]}T12:00:00Z`, LAGOS).split(' ').slice(1).join(' ')} – Fri (Lagos time)</h2>
-        <div className="ds-table-wrap" tabIndex={0} role="region" aria-label="Calendar table, scrolls sideways"><table className="ds-table hc-week">
-          <thead><tr><th scope="col">Person</th>{days.map((d) => <th key={d} scope="col">{tDay(`${d}T12:00:00Z`, LAGOS)}</th>)}</tr></thead>
-          <tbody>{mem.map((m) => <tr key={m.id}><th scope="row">{m.first}<span className="t14 muted" style={{ display: 'block' }}>{city(m.timezone)}</span></th>
-            {days.map((d) => { const evs = mine.filter((e) => e.status !== 'CANCELLED' && e.attendees.includes(m.id) && dateIn(e.start, LAGOS) === d).sort((x, y) => x.start.localeCompare(y.start)); return (
-              <td key={d}>{evs.length ? <ul className="hc-blocks">{evs.map((e) => <li key={e.id} data-s={e.status}>{tTime(e.start, LAGOS)}–{tTime(e.end, LAGOS)} <span className="t14">{e.personId ? `${evStatusLabel[e.status]}: ${firstOf(w, e.personId)}` : 'Busy'}</span></li>)}</ul> : <span className="t14 muted">Free</span>}</td>); })}</tr>)}</tbody>
-        </table></div>
-        <p className="t14 muted" style={{ margin: 0 }}>“Busy” blocks come from connected calendars as times only; Q never reads what they are. <span className="ds-sim">Simulated</span></p>
+      <section className="ds-sheet hc-wksec" aria-labelledby="wk-h">
+        <div className="hc-sec-head">
+          <h2 id="wk-h" className="voice t24" style={{ margin: 0 }}>When the team is free</h2>
+          <span className="t14 muted">Interview hours {fmt(win[0])}–{fmt(win[1])} Lagos{abroad.length ? ` · ${abroad.map((m) => `${m.first} is in ${city(m.timezone)}, ${tzNote(m.timezone, `${days[0]}T12:00:00Z`)}`).join(' · ')}` : ''}</span>
+        </div>
+        <WeekOverlap w={w} days={days} mem={mem} events={mine} win={win} prop={prop} />
+        <p className="t14 muted" style={{ margin: 0 }}>Busy times come from connected calendars as times only; Q never reads what a meeting is. Q offers only times inside everyone’s 09:00–18:00 working day.</p>
       </section>
-      <section className="ds-sheet" aria-labelledby="ev-h" style={{ display: 'grid', gap: 10 }}>
-        <h2 id="ev-h" className="voice t24" style={{ margin: 0 }}>Interviews, holds and invitations</h2>
-        {!events.length && <p style={{ margin: 0 }}>Nothing booked yet. Ask Q: “find a time for Tobi with Seyi and Musa next week”.</p>}
+      <section className="ds-sheet" aria-labelledby="ev-h" style={{ display: 'grid', gap: 12 }}>
+        <div className="hc-sec-head"><h2 id="ev-h" className="voice t24" style={{ margin: 0 }}>Interviews and holds</h2><span className="t14 muted">{events.length ? `${events.length} booked or held` : ''}</span></div>
+        {!events.length && <div className="hc-empty"><b>Nothing booked yet.</b><span className="t14 muted">Ask Q: “find a time for Tobi with Seyi and Musa next week”. Holds block the time for your team only.</span></div>}
         <ul className="hc-events">
-          {events.map((e) => { const iv = ivs.find((i) => i.eventId === e.id); const pc = iv ? changes.filter((x) => x.interviewId === iv.id) : []; const p = e.personId ? personOf(w, e.personId) : undefined; return (
-            <li key={e.id}>
-              <div className="hc-msg-head"><b>{p ? p.name : e.title}</b><span className="hc-status" data-s={e.status}>{evStatusLabel[e.status]}</span></div>
-              <span className="t14">{tDay(e.start, LAGOS)}, {tTime(e.start, LAGOS)}–{tTime(e.end, LAGOS)} Lagos{[...new Set(e.attendees.map((x) => w.actors.find((y) => y.id === x)?.timezone ?? personOf(w, x)?.timezone ?? LAGOS))].filter((tz) => tz !== LAGOS).map((tz) => ` · ${tTime(e.start, tz)} ${city(tz)}`).join('')}</span>
-              <span className="t14 muted">{iv ? `Panel: ${listNames(iv.panel.map((x) => nameOf(w, x)))}` : `With ${listNames(e.attendees.filter((x) => !x.startsWith('p_')).map((x) => firstOf(w, x)))}`}</span>
-              {pc.map((x) => <span key={x.id} className="t14">Panel changed by {nameOf(w, x.by)}, {tDay(x.at, LAGOS)} {tTime(x.at, LAGOS)}: {listNames(x.from.map((y) => firstOf(w, y)))} → {listNames(x.to.map((y) => firstOf(w, y)))}. {x.holds}</span>)}
-              {iv && can && <PanelEditor ivId={iv.id} panel={iv.panel} />}
-              {e.status === 'HOLD' && can && <div className="ds-actions"><button type="button" className="ds-btn quiet" onClick={() => update((d) => { const x = d.calendar.find((y) => y.id === e.id); if (x) x.status = 'CANCELLED'; emit(d, a.id, 'calendar.hold.released', `ORG:${a.orgId}`, `${a.name} released a hold.`); })}>Release hold</button></div>}
-              {e.status === 'RESCHEDULE_REQUESTED' && p && <div className="ds-actions"><button type="button" className="ds-btn primary" onClick={() => void runAction({ label: 'Find', act: { t: 'say', text: `find a new time for ${p.name.split(' ')[0]}` } })}>Find a new time for {p.name.split(' ')[0]}</button></div>}
+          {events.map((e) => { const iv = ivs.find((i) => i.eventId === e.id); const pc = iv ? changes.filter((x) => x.interviewId === iv.id) : []; const p = e.personId ? personOf(w, e.personId) : undefined; const panel = iv ? iv.panel : e.attendees.filter((x) => !x.startsWith('p_')); return (
+            <li key={e.id} data-s={e.status}>
+              <div className="hc-ev-when"><b className="num">{tDay(e.start, LAGOS)}</b><span className="num">{tTime(e.start, LAGOS)}–{tTime(e.end, LAGOS)}</span></div>
+              <div className="hc-ev-main">
+                <div className="hc-msg-head"><b>{p ? p.name : e.title}</b><span className="hc-status" data-s={e.status}>{evStatusLabel[e.status]}</span></div>
+                <span className="t14 muted">{whenText(w, e.start, [...e.attendees, ...(e.personId ? [e.personId] : [])]).replace(/^[^,]*, /, '')} · Panel: {listNames(panel.map((x) => firstOf(w, x)))}</span>
+                {pc.map((x) => <span key={x.id} className="t14 hc-change">Panel changed by {firstOf(w, x.by)}, {tDay(x.at, LAGOS)}: {listNames(x.from.map((y) => firstOf(w, y)))} → {listNames(x.to.map((y) => firstOf(w, y)))}. {x.holds}</span>)}
+                <div className="ds-actions">
+                  {e.status === 'RESCHEDULE_REQUESTED' && p && <button type="button" className="ds-btn primary" onClick={() => void runAction({ label: 'Find', act: { t: 'say', text: `find a new time for ${p.name.split(' ')[0]}` } })}>Find a new time for {p.name.split(' ')[0]}</button>}
+                  {iv && can && <PanelEditor ivId={iv.id} panel={iv.panel} />}
+                  {e.status === 'HOLD' && can && <button type="button" className="ds-btn quiet" onClick={() => update((d) => { const x = d.calendar.find((y) => y.id === e.id); if (x) x.status = 'CANCELLED'; emit(d, a.id, 'calendar.hold.released', `ORG:${a.orgId}`, `${a.name} released a hold.`); })}>Release hold</button>}
+                </div>
+              </div>
             </li>); })}
         </ul>
       </section>
-      <section className="ds-sheet" aria-labelledby="ts-h" style={{ display: 'grid', gap: 8 }}>
-        <h2 id="ts-h" className="lab" style={{ margin: 0 }}>Test the hard cases</h2>
-        <button type="button" className="ds-opt" aria-pressed={w.scenarios.slotTakenAfterProposal} onClick={() => update((d) => { d.scenarios.slotTakenAfterProposal = !d.scenarios.slotTakenAfterProposal; })}>
-          <span><b>Someone takes the proposed time before it’s sent</b><span className="t14 muted" style={{ display: 'block' }}>The next time Q checks a draft, one panel member’s calendar fills that slot. Q must notice and offer another time.</span></span>
-        </button>
+      <section className="ds-sheet hc-testing" aria-labelledby="ts-h">
+        <h2 id="ts-h" className="lab" style={{ margin: 0 }}>Testing</h2>
+        <SwitchRow label="Someone takes the proposed time before it’s sent" help="The next time Q checks a draft, one panel member’s calendar fills that slot. Q must notice and offer another time." on={w.scenarios.slotTakenAfterProposal} onChange={(v) => update((d) => { d.scenarios.slotTakenAfterProposal = v; })} />
       </section>
     </Canvas>
   );
@@ -83,11 +95,11 @@ function PanelEditor({ ivId, panel }: { ivId: string; panel: string[] }) {
   const [open, setOpen] = useState(false);
   const [sel, setSel] = useState<string[]>(panel);
   const pool = orgMembers(w, a.orgId).filter((m) => m.role !== 'VIEWER');
-  if (!open) return <div className="ds-actions"><button type="button" className="ds-btn quiet" onClick={() => { setSel(panel); setOpen(true); }}>Change panel</button></div>;
+  if (!open) return <button type="button" className="ds-btn quiet" onClick={() => { setSel(panel); setOpen(true); }}>Change panel</button>;
   return (
-    <fieldset className="hc-fs"><legend className="t14"><b>Panel</b></legend>
-      <div className="hc-filters">{pool.map((m) => <button key={m.id} type="button" className="ds-filter" aria-pressed={sel.includes(m.id)} onClick={() => setSel(sel.includes(m.id) ? sel.filter((x) => x !== m.id) : [...sel, m.id])}>{m.first}</button>)}</div>
-      <div className="ds-actions"><button type="button" className="ds-btn primary" disabled={!sel.length} onClick={() => { void runAction({ label: 'Save panel', act: { t: 'do', op: 'hire-c.panelSet', args: { interviewId: ivId, panel: sel } } }); setOpen(false); }}>Save panel</button><button type="button" className="ds-btn quiet" onClick={() => setOpen(false)}>Cancel</button></div>
+    <fieldset className="hc-fs hc-panelfs"><legend className="t14"><b>Who’s on the panel</b></legend>
+      <div className="hc-filters">{pool.map((m) => <button key={m.id} type="button" className="ds-filter" aria-pressed={sel.includes(m.id)} onClick={() => setSel(sel.includes(m.id) ? sel.filter((x) => x !== m.id) : [...sel, m.id])}>{m.first}{m.timezone !== LAGOS ? ` (${city(m.timezone)})` : ''}</button>)}</div>
+      <div className="ds-actions"><button type="button" className="ds-btn primary" disabled={!sel.length} onClick={() => { void runAction({ label: 'Save panel', act: { t: 'do', op: 'hire-c.panelSet', args: { interviewId: ivId, panel: sel } } }); setOpen(false); }}>Save and re-check holds</button><button type="button" className="ds-btn quiet" onClick={() => setOpen(false)}>Cancel</button></div>
     </fieldset>
   );
 }

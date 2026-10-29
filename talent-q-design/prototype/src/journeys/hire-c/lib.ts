@@ -1,7 +1,7 @@
 // R3 logic shared by Q's skills and the pages: time zones, free/busy, slot finding, drafting templates,
 // the pre-send checks (approval and delegation, candidate, calendar, guidelines, consent) and the simulated send.
 // Nothing here really sends or books: statuses say SENT_SIMULATED and receipts are fake.
-import { actorOf, emit, now, orgOf, personOf, simNow, uid, type World } from '../../mock/world';
+import { actorOf, emit, now, orgLimits, orgOf, outreachThisWeek, personOf, simNow, uid, type World } from '../../mock/world';
 import { appendQ } from '../../q/core/engine';
 import type { Actor, CalEvent, Msg, OrgRole, Stage, Thread } from '../../state/domain';
 import { STAGE_LABEL } from '../../state/domain';
@@ -334,6 +334,11 @@ export function runChecks(w: World, actor: Actor, msgId: string): Check[] {
       out.push({ id: g.id, group: 'Guidelines', label: g.text, ok, detail: ok ? 'Nothing personal or non-job-related in the wording.' : 'The wording asks about something that isn’t job-related. Remove it before sending.' });
     } else if (g.check === 'APPROVE_EACH') out.push({ id: g.id, group: 'Guidelines', label: g.text, ok: true, detail: 'I’ll ask for your yes on this exact version.' });
   }
+  // D1: unverified organisations have a weekly allowance; show what's left as a check.
+  const al = allowance(w, d.orgId);
+  if (!al.verified) out.push(al.left > 0
+    ? { id: 'allowance', group: 'Approval', label: 'Weekly message allowance', ok: true, detail: `${al.left} of ${al.limit} messages left this week (unverified). Verifying ${o.name} lifts the limit. The candidate will see “${UNVERIFIED_LINE}”` }
+    : { id: 'allowance', group: 'Approval', label: 'Weekly message allowance', ok: false, detail: `0 of ${al.limit} messages left this week (unverified).${al.resetsAt ? ` The next one frees up on ${tDay(al.resetsAt, LAGOS)}.` : ''} Verifying ${o.name} lifts the limit.` });
   // Consent
   const c = w.consents[d.personId];
   if (c?.withdrawnFrom.includes(d.orgId)) out.push({ id: 'consent', group: 'Consent', label: `${pFirst}’s contact consent`, ok: false, detail: `${pFirst} withdrew consent for ${o.name} to contact them. This can’t be sent.` });
@@ -367,11 +372,31 @@ export function checkDraft(w: World, actor: Actor, msgId: string) {
 }
 
 /** The simulated send: status, receipt, calendar invite, interview record, pipeline. Never a real send. */
+// ---------------- Unverified organisations (founder decision D1) ----------------
+export const UNVERIFIED_LINE = 'This employer isn’t verified yet on Talent Q.';
+/** Weekly outreach allowance. Verified organisations have no cap; unverified ones get orgLimits().outreachPerWeek
+ *  messages in any rolling 7 days, and the oldest send in the window decides when the next one frees up. */
+export function allowance(w: World, orgId: string) {
+  const lim = orgLimits(w, orgId);
+  if (lim.verified) return { verified: true as const, limit: Infinity, used: 0, left: Infinity, resetsAt: undefined as string | undefined };
+  const used = outreachThisWeek(w, orgId); const since = simNow(w).getTime() - 7 * 864e5;
+  const sent = w.threads.filter((t) => t.orgId === orgId).flatMap((t) => t.messages).filter((m) => m.status === 'SENT_SIMULATED' && new Date(m.at).getTime() >= since && !m.from.startsWith('p_')).map((m) => m.at).sort();
+  const resetsAt = sent[0] ? new Date(new Date(sent[0]).getTime() + 7 * 864e5).toISOString() : undefined;
+  return { verified: false as const, limit: lim.outreachPerWeek, used, left: Math.max(0, lim.outreachPerWeek - used), resetsAt };
+}
+export function allowanceRefusal(w: World, orgId: string) {
+  const al = allowance(w, orgId); if (al.verified || al.left > 0) return undefined;
+  const org = orgOf(w, orgId)?.name ?? 'Your organisation';
+  return `I haven’t sent it. ${org} isn’t verified yet, so it can send ${al.limit} messages to candidates a week, and all ${al.limit} are used: 0 left.${al.resetsAt ? ` The next one frees up on ${tDay(al.resetsAt, LAGOS)} at ${tTime(al.resetsAt, LAGOS)}.` : ''} Verifying ${org} (email domain and company registry) lifts the limit. The draft stays waiting; nothing was sent.`;
+}
+
 export function finalizeSend(w: World, msgId: string, approver: string) {
   const f0 = findMsg(w, msgId); const d = hcw(w).drafts[msgId]; if (!f0) return;
   const { t, m } = f0;
   m.status = 'SENT_SIMULATED'; m.at = now(); m.approvedBy = approver; m.receipt = `sim_${Math.random().toString(36).slice(2, 10)}`;
   const org = orgOf(w, t.orgId)!;
+  // D1: every message from an unverified organisation carries the notice in its body, so it travels with it.
+  if (!orgLimits(w, t.orgId).verified && !m.body.includes(UNVERIFIED_LINE)) m.body = `${m.body}\n\n— ${UNVERIFIED_LINE}`;
   if (d && d.slot && (d.kind === 'INVITE' || d.kind === 'RESCHEDULE')) {
     const title = `Interview: ${nameOf(w, d.personId)} (${mandateTitle(w, d.mandateId)})`;
     let ev = (d.eventId && w.calendar.find((e) => e.id === d.eventId)) || w.calendar.find((e) => e.personId === d.personId && e.orgId === d.orgId && e.status !== 'CANCELLED' && e.status !== 'HOLD' && e.title.startsWith('Interview'));
@@ -402,6 +427,7 @@ export function approveAndSend(w: World, actor: Actor, msgId: string, v?: number
   if (f0.m.status === 'QUEUED_OFFLINE') return { ok: false, text: `It’s already queued and will go when you’re back online.` };
   if (!CAN_SEND.includes(actor.role ?? 'VIEWER')) return { ok: false, text: `Only an admin or recruiter can approve sends at ${orgOf(w, d.orgId)?.name}. I’ve left it waiting for approval; nothing was sent.` };
   if (f0.m.status !== 'AWAITING_APPROVAL' || (v !== undefined && latestV(d).v !== v) || d.checkedV !== latestV(d).v) return { ok: false, text: `This draft hasn’t been checked and approved in its current version, so I haven’t sent it. Say “send it” and I’ll check it again and ask for your yes.` };
+  const over = allowanceRefusal(w, d.orgId); if (over) return { ok: false, text: over };
   if (w.network === 'offline') {
     f0.m.status = 'QUEUED_OFFLINE'; f0.m.approvedBy = actor.id;
     emit(w, actor.id, 'message.queued', `ORG:${d.orgId}`, `${actor.name} approved a message to ${nameOf(w, d.personId)} while offline; queued, not sent.`, { msgId });
@@ -410,7 +436,7 @@ export function approveAndSend(w: World, actor: Actor, msgId: string, v?: number
   finalizeSend(w, msgId, actor.id);
   markUsed(w, d.orgId, ['APPROVE_EACH', 'PAY_BAND', 'JOB_RELATED'], `Message to ${pFirst}`);
   const ch = f0.m.channel === 'EMAIL' ? 'by email' : f0.m.channel === 'SMS' ? 'by text' : 'in Talent Q';
-  return { ok: true, text: `Simulated send: the ${KIND_LABEL[d.kind]} went to ${pFirst} ${ch} (receipt ${f0.m.receipt}). Nothing really left Talent Q.${d.slot && d.kind !== 'REJECTION' && d.kind !== 'REPLY' ? ` The calendar invite is out to ${listNames(d.panel.map((id) => firstOf(w, id)))}, status “invited” until ${pFirst} confirms.` : ''}` };
+  return { ok: true, text: `Simulated send: the ${KIND_LABEL[d.kind]} went to ${pFirst} ${ch}. Nothing really left Talent Q.${d.slot && d.kind !== 'REJECTION' && d.kind !== 'REPLY' ? ` The calendar invite is out to ${listNames(d.panel.map((id) => firstOf(w, id)))}, status “invited” until ${pFirst} confirms.` : ''}` };
 }
 
 /** Flush messages approved while offline: re-check the calendar first, then send. */
@@ -420,6 +446,8 @@ export function flushQueued(w: World) {
     if (m.from.startsWith('p_')) { m.status = 'RECEIVED'; m.at = now(); emit(w, m.from, 'message.received', `SHARED:${t.orgId}:${t.personId}`, `${nameOf(w, m.from)} sent a message (queued offline, delivered on reconnect).`); appendQ(w, m.from, { who: 'q', kind: 'notice', engine: 'system', text: `Back online: your message to ${orgOf(w, t.orgId)?.name} was delivered (simulated).` }); continue; }
     const d = hc(w).drafts[m.id]; const approver = m.approvedBy ?? actorOf(w).id;
     const clash = d?.slot ? d.panel.find((id) => busyAt(w, id, d.slot!.start, d.slot!.end, d.eventId ? [d.eventId] : [])) : undefined;
+    const over = allowanceRefusal(w, t.orgId);
+    if (over) { m.status = 'AWAITING_APPROVAL'; appendQ(w, approver, { who: 'q', kind: 'notice', engine: 'system', text: `Back online. ${over}` }); continue; }
     if (clash) { m.status = 'DRAFT'; appendQ(w, approver, { who: 'q', kind: 'notice', engine: 'system', text: `Back online. Before sending, I re-checked: ${firstOf(w, clash)} became busy at that time while you were offline, so I did not send the message to ${firstOf(w, t.personId)}. It’s back in drafts. Say “send it” to pick a new time.`, ref: { type: 'hire-c.draft', id: `${m.id}@${d ? latestV(d).v : 1}` } }); continue; }
     finalizeSend(w, m.id, approver);
     appendQ(w, approver, { who: 'q', kind: 'notice', engine: 'system', text: `Back online. I re-checked the calendar and sent the queued message to ${firstOf(w, t.personId)}. Simulated send (receipt ${m.receipt}).` });
@@ -470,3 +498,35 @@ export function diffWords(a: string, b: string): { t: 'same' | 'add' | 'del'; s:
   while (i < n) push('del', A[i++]); while (j < m) push('add', B[j++]);
   return out;
 }
+
+// ---------------- Presentation helpers (pages and Q's cards) ----------------
+export const CHANNEL_LABEL: Record<Msg['channel'], string> = { EMAIL: 'email', SMS: 'text message', IN_APP: 'Talent Q' };
+/** "Fri 6 Nov, 10:00 Lagos · 09:00 London": the Lagos time first, then any other zone among the people involved. */
+export function whenText(w: World, start: string, ids: string[]) {
+  const zones = [...new Set(ids.map((id) => tzOf(w, id)))].filter((tz) => tz !== LAGOS && offsetOf(start, tz) !== offsetOf(start, LAGOS));
+  return `${tDay(start, LAGOS)}, ${tTime(start, LAGOS)} Lagos${zones.map((tz) => ` · ${tTime(start, tz)} ${city(tz)}`).join('')}`;
+}
+/** Short names for guideline checks, for compact check lists. */
+export const GUIDE_SHORT: Record<Guide['check'], string> = { PAY_BAND: 'Pay band named', PANEL_TWO: 'Panel of two', APPROVE_EACH: 'Approval before sending', JOB_RELATED: 'Job-related wording only', HOURS: 'Inside interview hours', NONE: 'Guidance' };
+const TONE_LABEL: Record<Tone, string> = { neutral: 'Neutral', friendlier: 'Friendlier', formal: 'Formal', shorter: 'Shorter' };
+/** What changed between two versions, as plain rows (the summary above a diff). */
+export function versionChanges(w: World, d: DraftMeta, prev: DraftMeta['versions'][number], cur: DraftMeta['versions'][number]) {
+  const rows: { k: string; from?: string; to: string }[] = [];
+  const ids = [...(cur.panel ?? d.panel), d.personId];
+  if (cur.slot && prev.slot?.start !== cur.slot.start) rows.push({ k: 'When', from: prev.slot ? whenText(w, prev.slot.start, ids) : undefined, to: whenText(w, cur.slot.start, ids) });
+  if (cur.tone && prev.tone !== cur.tone) rows.push({ k: 'Tone', from: prev.tone ? TONE_LABEL[prev.tone] : undefined, to: TONE_LABEL[cur.tone] });
+  if (cur.panel && prev.panel && cur.panel.join() !== prev.panel.join()) rows.push({ k: 'Panel', from: listNames(prev.panel.map((x) => firstOf(w, x))), to: listNames(cur.panel.map((x) => firstOf(w, x))) });
+  const band = payBand(w, d.mandateId);
+  if (band && cur.body.includes(band) && !prev.body.includes(band)) rows.push({ k: 'Pay band', to: `Added: ${band}` });
+  if (prev.subject !== cur.subject) rows.push({ k: 'Subject', from: prev.subject, to: cur.subject });
+  if (cur.manual && cur.note && !rows.length) rows.push({ k: 'Wording', to: cur.note });
+  return rows;
+}
+
+/** A failing check as a short phrase for Q's sentence; the card carries the detail. */
+export function problemOf(w: World, orgId: string, b: { id: string; group: string }, first: string) {
+  const g = guidesOf(w, orgId).find((x) => x.id === b.id);
+  if (g) return ({ PAY_BAND: 'the pay band is missing', PANEL_TWO: 'the panel has only one interviewer', HOURS: 'the time is outside interview hours', JOB_RELATED: 'some wording isn’t job-related', APPROVE_EACH: 'it needs approval', NONE: g.text.toLowerCase() } as const)[g.check];
+  return ({ cal: 'someone on the panel is now busy', cand: `the time doesn’t suit ${first}`, role: 'it needs an approver', deleg: 'Q is set to draft only', allowance: 'this week’s message allowance is used up', consent: `${first}’s contact choices` } as Record<string, string>)[b.id] ?? b.group.toLowerCase();
+}
+

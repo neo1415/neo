@@ -12,7 +12,7 @@ import type { QCtx, QReply } from '../core/types';
 import { hc, hcw, type DraftKind, type Guide, type Tone } from '../../state/areas/hire-c';
 import {
   approveAndSend, busyAt, CAN_MOVE, CAN_SEND, changePanel, checkDraft, city, colleaguesIn, createDraft, currentDraft, dateIn, defaultPanel, entryFor, findMsg, findSlots, firstOf,
-  flushQueued, guide, guideChip, guidesOf, IS_ADMIN, KIND_LABEL, LAGOS, latestV, listNames, mandateTitle, nameOf, nextWeek, orgMembers, parseTime, partOf, payBand, resolveDays,
+  flushQueued, guide, guideChip, problemOf, guidesOf, IS_ADMIN, KIND_LABEL, LAGOS, latestV, listNames, mandateTitle, nameOf, nextWeek, orgMembers, parseTime, partOf, payBand, resolveDays,
   reviseDraft, ROLE_CAN, ROLE_LABEL, setStage, STAGE_WORDS, syncOrgGuidelines, tDay, tTime, tzNote, tzOf,
 } from '../../journeys/hire-c/lib';
 
@@ -86,10 +86,12 @@ function checkAndPost(w: World, a: Actor, msgId: string, lead = '') {
   const d = hc(w).drafts[msgId]; if (!d) return;
   const { checks, pass, queuedForApproval } = checkDraft(w, a, msgId);
   const first = firstOf(w, d.personId); const v = latestV(d).v;
-  const used = [...checks.filter((c) => c.group === 'Guidelines').map((c) => { const g = guidesOf(w, d.orgId).find((x) => x.id === c.id); return g ? guideChip(g) : c.label; }), `${first}’s notification choices`, ...(d.slot ? [`Calendars: ${listNames(d.panel.map((id) => firstOf(w, id)))}`] : [])];
+  // The checks card lists every guideline it applied, so the context chips stay short (design pass: no chip wall).
+  const nG = checks.filter((c) => c.group === 'Guidelines').length;
+  const used = [`${orgOf(w, d.orgId)?.name ?? 'Organisation'} guidelines (${nG})`, `${first}’s contact choices`, ...(d.slot ? [`Calendars: ${listNames(d.panel.map((id) => firstOf(w, id)))}`] : [])];
   const ref = { type: 'hire-c.checks', id: `${msgId}@${v}` };
   if (pass) {
-    post(w, a, { kind: 'approval', text: `${lead}I checked v${v} of the ${KIND_LABEL[d.kind]} to ${first}: approval rules, ${first}’s time zone and availability, everyone’s calendars, Kora’s guidelines and ${first}’s contact choices. All clear. Approve this exact version and I’ll send it. The send is simulated.`, used, ref,
+    post(w, a, { kind: 'approval', text: `${lead}v${v} of the ${KIND_LABEL[d.kind]} to ${first} passed every check. Approve this exact version and I’ll send it.`, used, ref,
       actions: [{ label: 'Approve and send', primary: true, act: { t: 'do', op: 'hire-c.approve', args: { msgId, v } } }, { label: 'Edit first', act: { t: 'do', op: 'hire-c.openMsg', args: { msgId } } }, { label: 'Not now', act: { t: 'say', text: 'not now' } }] });
     w.q.frames[a.id] = frame('hire-c.draft', { msgId }, 'approval');
   } else if (queuedForApproval) {
@@ -100,7 +102,7 @@ function checkAndPost(w: World, a: Actor, msgId: string, lead = '') {
     w.q.frames[a.id] = null;
   } else {
     const bad = checks.filter((c) => !c.ok);
-    post(w, a, { kind: 'reply', text: `${lead}I haven’t sent it. ${bad.length === 1 ? 'One thing needs' : `${bad.length} things need`} sorting first: ${bad.map((b) => b.detail).join(' ')}`, used, ref,
+    post(w, a, { kind: 'reply', text: `${lead}I haven’t sent it. ${bad.length === 1 ? 'One thing needs' : `${bad.length} things need`} sorting first: ${listNames(bad.map((b) => problemOf(w, d.orgId, b, first)))}. ${bad.some((b) => b.fix) ? 'The details and fixes are below.' : 'The details are below.'}`, used, ref,
       actions: [...bad.filter((b) => b.fix).map((b, i) => ({ label: b.fix!.label, primary: i === 0, act: { t: 'do' as const, op: b.fix!.op, args: b.fix!.args } })), { label: 'Open the draft', act: { t: 'do', op: 'hire-c.openMsg', args: { msgId } } }] });
     w.q.frames[a.id] = frame('hire-c.draft', { msgId }, 'fix');
   }

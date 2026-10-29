@@ -6,9 +6,14 @@ import { Canvas } from '../../ds/Workspace';
 import { runAction } from '../../q/core/engine';
 import { Link } from '../../ui/router';
 import type { Org } from '../../state/domain';
+import type { Guide } from '../../state/areas/hire-c';
+import { SwitchRow } from '../../ds/Switch';
 import { guidesOf, IS_ADMIN } from './lib';
 
 const CHECK_LABEL = { PAY_BAND: 'Q checks every first message', PANEL_TWO: 'Q checks every engineering panel', APPROVE_EACH: 'Q asks for a yes on each send', JOB_RELATED: 'Q checks the wording', HOURS: 'Q only proposes times inside these hours', NONE: 'Guidance: Q cites it, can’t check it' } as const;
+function GuideMeta({ g }: { g: Guide }) {
+  return <><span className="hc-gtag" data-k={g.check === 'NONE' ? 'guide' : 'check'}>{g.on ? CHECK_LABEL[g.check] : 'Off: Q ignores it'}</span> {g.source} · v{g.v} · <span>{g.used ? `Used by Q ${g.used} time${g.used === 1 ? '' : 's'}${g.lastUsed ? `, last in “${g.lastUsed}”` : ''}` : 'Not used yet'}</span></>;
+}
 const DELEG: [Org['delegation'], string, string][] = [['DRAFT_ONLY', 'Draft only', 'Q writes; people send it themselves.'], ['APPROVE_EACH_SEND', 'Approve each send', 'Q sends each message only after an approver says yes.'], ['APPROVED_CAMPAIGN', 'Approved campaigns', 'Q sends within limits an admin sets: template, audience, number and end date.']];
 
 export function Setup() {
@@ -22,14 +27,15 @@ export function Setup() {
   if (!o) return <Canvas title="Organisation" kicker="Setup" open onClose={() => {}}><p>Tell Q about your business to set up your organisation.</p></Canvas>;
   const setDeleg = (v: Org['delegation']) => update((d) => { const oo = d.orgs.find((x) => x.id === o.id)!; oo.delegation = v; if (o.id === 'org_kora') d.org.delegation = v; emit(d, a.id, 'org.delegation.changed', `ORG:${o.id}`, `${a.name} set what Q may do alone to “${DELEG.find((x) => x[0] === v)![1]}”.`); });
   return (
-    <Canvas title={`${o.name}: the rules Q follows`} kicker="Organisation and policy" open onClose={() => {}} aside={<Link to="/r/setup/handbook" className="ds-btn">Read a handbook</Link>}>
+     <Canvas title="Organisation and policy" kicker={o.name} open onClose={() => {}} aside={<Link to="/r/setup/handbook" className="ds-btn">Read a handbook</Link>}>
       {!admin && <div className="ds-banner" role="note"><span aria-hidden="true">i</span><span>Only admins change these. Q follows them for everyone at {o.name}, including you.</span><span /></div>}
-      <section className="ds-sheet" aria-labelledby="org-h" style={{ display: 'grid', gap: 6 }}>
+      <section className="ds-sheet hc-orgcard" aria-labelledby="org-h">
         <h2 id="org-h" className="voice t24" style={{ margin: 0 }}>{o.name}</h2>
-        <p className="t14 muted" style={{ margin: 0 }}>{o.industry} · {o.size} · {o.city} · {o.verified.domain ? 'email domain verified' : 'domain not verified'} · company registry {o.verified.registry.toLowerCase()}</p>
+        <span className="t14 muted">{o.industry} · {o.size} · {o.city}</span>
+        <span className="hc-tags"><span className="ds-tag" data-k={o.verified.domain ? 'ok' : 'warn'}>{o.verified.domain ? '✓ Email domain verified' : 'Email domain not verified'}</span><span className="ds-tag" data-k={o.verified.registry === 'VERIFIED' ? 'ok' : 'warn'}>{o.verified.registry === 'VERIFIED' ? '✓ Company registry verified' : `Company registry: ${o.verified.registry.toLowerCase()}`}</span></span>
       </section>
       <section className="ds-sheet" aria-labelledby="gl-h" style={{ display: 'grid', gap: 12 }}>
-        <div><h2 id="gl-h" className="voice t24" style={{ margin: 0 }}>Guidelines</h2><p className="t14 muted" style={{ margin: '4px 0 0' }}>Q shows these as “used” chips when it drafts, and checks the ones it can before anything is sent.</p></div>
+        <div><h2 id="gl-h" className="voice t24" style={{ margin: 0 }}>Guidelines</h2><p className="t14 muted" style={{ margin: '4px 0 0' }}>Q cites these when it drafts and checks the ones it can before anything is sent. Turning one off changes the next draft, not ones already written.</p></div>
         <ul className="hc-guides">
           {gs.map((g) => (
             <li key={g.id} data-on={g.on ? '1' : '0'}>
@@ -40,17 +46,15 @@ export function Setup() {
                   <div className="ds-actions"><button type="submit" className="ds-btn primary">Save as v{g.v + 1}</button><button type="button" className="ds-btn quiet" onClick={() => setEdit(null)}>Cancel</button></div>
                 </form>
               ) : (
-                <>
-                  <div style={{ display: 'grid', gap: 4, minWidth: 0 }}>
-                    <b>{g.text}</b>
-                    <span className="t14 muted">{g.source} · v{g.v} · {g.on ? CHECK_LABEL[g.check] : 'Off: Q ignores it'}</span>
-                    <span className="t14">{g.used ? `Used by Q ${g.used} time${g.used === 1 ? '' : 's'}${g.lastUsed ? `, last in “${g.lastUsed}”` : ''}` : 'Not used yet'}</span>
-                  </div>
-                  {admin && <div className="ds-actions">
-                    <button type="button" className="ds-btn" aria-pressed={g.on} onClick={() => void runAction({ label: 'Toggle', act: { t: 'do', op: 'hire-c.guide', args: { action: 'toggle', id: g.id } } })}>{g.on ? 'On' : 'Off'}<span className="sr">: {g.text}</span></button>
-                    <button type="button" className="ds-btn quiet" onClick={() => { setEdit(g.id); setDraft(g.text); }}>Edit<span className="sr"> {g.text}</span></button>
-                  </div>}
-                </>
+                <div className="hc-guide">
+                  {admin ? (
+                    <SwitchRow label={g.text} on={g.on} onChange={() => void runAction({ label: 'Toggle', act: { t: 'do', op: 'hire-c.guide', args: { action: 'toggle', id: g.id } } })}
+                      help={<GuideMeta g={g} />} />
+                  ) : (
+                    <div className="ds-switchrow"><div className="txt"><b>{g.text}</b><span className="t14 muted"><GuideMeta g={g} /></span></div><span className="ds-tag" data-k={g.on ? 'ok' : undefined}>{g.on ? 'On' : 'Off'}</span></div>
+                  )}
+                  {admin && <button type="button" className="hc-more hc-gedit-btn" onClick={() => { setEdit(g.id); setDraft(g.text); }}>Edit wording<span className="sr">: {g.text}</span></button>}
+                </div>
               )}
             </li>
           ))}
