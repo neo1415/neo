@@ -265,3 +265,10 @@
 .ds-switch[aria-checked='true'] .knob::after { transform: translateX(18px); }
 .ds-switch .state { min-width: 2.2em; }
 .ds-switch:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; border-radius: 8px; }
+/* Phones: a page's views wrap into a pill group instead of scrolling sideways inside a strip, so every
+   view stays visible and reachable (talent-a design note; affects every area). */
+@media (max-width: 600px) {
+  .ds-views { display: flex; flex-wrap: wrap; overflow: visible; background: transparent; padding: 0; gap: 6px; }
+  .ds-views button { border: 1px solid var(--rule-2); border-radius: 999px; min-height: 40px; padding: 6px 12px; }
+  .ds-views button[aria-pressed='true'] { background: var(--ink); color: var(--paper); border-color: var(--ink); box-shadow: none; }
+}

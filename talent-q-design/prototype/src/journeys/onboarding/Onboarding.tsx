@@ -33,9 +33,9 @@ export function Onboarding() {
     : view === 'cv' ? (cv ? `${cv.lines.length} CV lines, all from your own words` : 'Your CV, from your own words')
     : view === 'form' ? 'The short form' : p.answered.length ? `Your profile, ${a.first}: ${claims} ${claims === 1 ? 'claim' : 'claims'} so far` : `Welcome, ${a.first}. Let’s show what you can do.`;
   return (
-    <Canvas title={title} kicker={<span>Your profile · private to you</span>} open onClose={() => {}}
+    <Canvas title={title} kicker={<span>Your profile</span>} open onClose={() => {}}
       views={[{ id: 'profile', label: 'Profile' }, { id: 'form', label: 'Short form' }, { id: 'jobs', label: 'Jobs that fit' }, { id: 'cv', label: 'CV' }]} view={view} setView={setView}
-      aside={p.done ? <span className="ds-tag" data-k="ok">Profile set up</span> : p.answered.length ? <span className="ds-tag">{p.answered.length + p.none.length} of 6 · {missingOf(p).length} missing</span> : null}>
+      aside={<span className="ds-actions"><span className="ds-tag">Private to you</span>{p.done ? <span className="ds-tag" data-k="ok">Profile set up</span> : null}</span>}>
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={view} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2, ease: 'easeOut' }} style={{ display: 'grid', gap: 16, minWidth: 0 }}>
           {view === 'profile' && <ProfileView p={p} pid={pid} offline={offline} />}
@@ -65,11 +65,22 @@ function Ways({ p }: { p: Profile }) {
 }
 
 const SOURCE: Record<string, string> = { CV: 'From your CV', CONVERSATION: 'From our conversation', YOU: 'Added by you' };
-function sectionStatus(p: Profile, s: Section): { label: string; k: 'none' | 'unclear' | 'partial'; tone?: string } {
-  if (p.answered.includes(s)) return { label: 'Answered · claim', k: 'none' };
-  if (p.none.includes(s)) return { label: 'None, and that’s fine', k: 'partial' };
-  if (p.skipped.includes(s)) return { label: 'Skipped · noted as missing', k: 'unclear', tone: 'warn' };
-  return { label: 'Not yet', k: 'unclear' };
+// Profile sections use their own marks, not the evidence glyphs: an answer is a claim in your words, and
+// borrowing the "not shown yet" circle for it made answered sections look empty (design-critique, H4).
+type Mark = 'answered' | 'none' | 'skipped' | 'todo';
+function sectionStatus(p: Profile, s: Section): { label: string; m: Mark } {
+  if (p.answered.includes(s)) return { label: 'Answered · your words', m: 'answered' };
+  if (p.none.includes(s)) return { label: 'None, and that’s fine', m: 'none' };
+  if (p.skipped.includes(s)) return { label: 'Skipped · you can add it any time', m: 'skipped' };
+  return { label: 'Not yet', m: 'todo' };
+}
+function SectionMark({ m, label }: { m: Mark; label: string }) {
+  return (
+    <span className="talent-a-mark" data-m={m} role="img" aria-label={label}>
+      {m === 'answered' && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12.5 10 17.5 19 7" /></svg>}
+      {m === 'none' && <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg>}
+    </span>
+  );
 }
 function ProfileView({ p, pid, offline }: { p: Profile; pid: string; offline: boolean }) {
   const files = samplesFor(pid);
@@ -92,7 +103,13 @@ function ProfileView({ p, pid, offline }: { p: Profile; pid: string; offline: bo
       )}
       {offline && <p className="ds-banner" data-k="warn" role="status" style={{ margin: 0 }}><Glyph k="unclear" /><span>You’re offline. Your profile is saved on this device; CV reading waits until you reconnect.</span><span /></p>}
       <section className="ds-sheet" aria-labelledby="prof-h" style={{ display: 'grid', gap: 4 }}>
-        <h2 id="prof-h" className="voice t24" style={{ margin: '0 0 8px' }}>{p.answered.length ? 'What you’ve told Q, in your words' : 'Your profile will build here as you talk to Q'}</h2>
+        <div style={{ display: 'grid', gap: 8, marginBottom: 8 }}>
+          <h2 id="prof-h" className="voice t24" style={{ margin: 0 }}>{p.answered.length ? 'What you’ve told Q, in your words' : 'Your profile will build here as you talk to Q'}</h2>
+          <div className="talent-a-planmeter">
+            <div className="talent-a-segs" aria-hidden="true">{SECTIONS.map((x) => <span key={x} data-done={p.answered.includes(x) || p.none.includes(x) ? '1' : undefined} />)}</div>
+            <p className="t14" style={{ margin: 0 }}><b className="num">{p.answered.length + p.none.length} of {SECTIONS.length}</b> {p.answered.length + p.none.length === SECTIONS.length ? 'done. Nice work.' : `done · ${missingOf(p).length} still to add, whenever you like`}</p>
+          </div>
+        </div>
         <ul className="talent-a-sections">
           {SECTIONS.map((s) => {
             const st = sectionStatus(p, s);
@@ -100,7 +117,7 @@ function ProfileView({ p, pid, offline }: { p: Profile; pid: string; offline: bo
             const jobs = s === 'project' ? p.experience.filter((e) => e.kind === 'job') : [];
             return (
               <li key={s}>
-                <Glyph k={st.k} title={st.label} />
+                <SectionMark m={st.m} label={st.label} />
                 <div style={{ minWidth: 0, display: 'grid', gap: 4 }}>
                   <p style={{ margin: 0 }}><b>{QUESTIONS[s].label}</b> <span className="t14 muted">· {st.label}</span></p>
                   {s === 'study' && p.study && <p style={{ margin: 0 }}>{p.study}</p>}

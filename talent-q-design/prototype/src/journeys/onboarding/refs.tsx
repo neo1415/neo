@@ -47,6 +47,7 @@ function Assess({ id }: { id: string }) {
   return (
     <div className="talent-a-ref" aria-label="Assessment result">
       <p className="talent-a-ref-h">{compById(P, comp).label} · level {as.length > 1 ? `${as[as.length - 2].level} → ` : ''}{last.level} of 4 · simulated reviewer</p>
+      <div className="talent-a-pips" role="img" aria-label={`Level ${last.level} of 4`}>{[1, 2, 3, 4].map((l) => <span key={l} data-on={l <= last.level ? '1' : undefined} data-was={as.length > 1 && l <= as[as.length - 2].level ? '1' : undefined} />)}<span className="talent-a-ref-proof">Counts as proof</span></div>
       <ul>{last.rubric.map((r) => <li key={r.c}><Glyph k={r.ok ? 'full' : 'partial'} size={14} /><span>{r.c} · {r.ok ? 'met' : 'not yet'}</span></li>)}</ul>
       <p className="talent-a-ref-more">Private in your Passport. Not shared with anyone.</p>
     </div>
