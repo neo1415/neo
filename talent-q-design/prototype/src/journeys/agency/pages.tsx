@@ -25,6 +25,7 @@ import {
 import { needsYou } from '../../q/skills/agency';
 import { CP, parentOfOutreach } from '../campaigns/model';
 import { campaignsFor as hiringCampaignsFor } from '../../state/areas/campaigns';
+import { mail } from '../../state/areas/mail';
 
 const doOp = (op: string, args: Record<string, unknown> = {}, label = op) => void runAction({ label, act: { t: 'do', op, args } });
 const ask = (text: string) => void sendToQ(text);
@@ -488,6 +489,8 @@ export function Campaigns() {
             <div className="agency-row"><h2 id={`cp-${c.id}`} className="t19">{c.name}</h2><span className="ds-tag" data-k={c.status === 'RUNNING' ? 'busy' : c.status === 'DONE' ? 'ok' : undefined}>{CAMP_STATUS[c.status]}</span></div>
             <p className="t14 muted">To the {pool.name} pool · for {mandateOf(w, c.mandateId)?.title}</p>
             {/* Hiring vs outreach (addendum §D, AD-D-04): this outreach run is a child of a role; the role sits in a hiring campaign. */}
+            {/* E-01 (R4): outreach sends from the client sender for that client only, never another client's address. */}
+            {(() => { const snd = mail(w).mailboxes.find((m) => m.kind === 'CLIENT' && m.clientOrgId === c.clientOrgId && m.state !== 'REVOKED'); return <p className="t14 cp-parent">{snd ? <>Sends from <b>{snd.address}</b> (client sender, simulated). <Link to="/settings/email">Email accounts</Link></> : <>No client sender is set up for this client, so nothing can be sent. <Link to="/settings/email">Set one up</Link></>}</p>; })()}
             {(() => { const parent = parentOfOutreach(w, c.mandateId); return <p className="t14 cp-parent">{parent ? <>Part of the hiring campaign <Link to={CP.one(parent.id)}>{parent.name}</Link></> : <>This role isn’t in a hiring campaign yet. <Link to={CP.list}>Hiring campaigns</Link></>}</p>; })()}
             <dl className="agency-facts">
               <div><dt>Per run</dt><dd className="num">{c.limits.perRun}</dd></div><div><dt>Per day</dt><dd className="num">{c.limits.perDay}</dd></div><div><dt>Words per message</dt><dd className="num">≤ {c.limits.maxWords}</dd></div><div><dt>Follow-ups</dt><dd className="num">{c.limits.followUps}</dd></div>

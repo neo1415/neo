@@ -3,6 +3,7 @@
 // version (stacked with a "Q proposed / Your version" switch on phones) → approve, which freezes a version →
 // revisions as a diff. A material change after people were rated raises a change notice with two principled
 // choices. Q refuses protected characteristics and proxies with a reason and an alternative.
+import { PageIndex } from '../../ds/PageIndex';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { actorOf, useWorld, type World } from '../../mock/world';
@@ -125,7 +126,8 @@ export function Studio({ id }: { id: string }) {
 
       <div className="ds-banner rb-valid" role="note"><Glyph k="unclear" /><span><b>Not a validated test.</b> These weights, minimums and the index are a prototype starting point. Before they inform hiring decisions they need a job analysis with people who do the work, and monitoring for adverse impact. A person reviews every consequential decision.</span><span /></div>
 
-      <section className="ds-sheet rb-grid" aria-labelledby="rb-w">
+      <PageIndex items={[{ id: 'rbs-weights', label: 'Weights' }, { id: 'rbs-criteria', label: 'Criteria' }, ...(editing ? [{ id: 'rbs-approve', label: 'Approve' }] : []), { id: 'rbs-revisions', label: 'Revisions' }, { id: 'rbs-sources', label: 'Sources' }]} />
+      <section id="rbs-weights" className="ds-sheet rb-grid" aria-labelledby="rb-w">
         <div className="rb-row"><h2 id="rb-w" className="voice t24" style={{ margin: 0 }}>How much each part counts</h2><span className="t14 muted">Share of the index</span></div>
         <ul className="rb-shares">
           {ver.criteria.filter(scored).map((c) => { const s = share(c, ver.criteria); const q = qCrit.find((x) => x.id === c.id); return (
@@ -138,7 +140,7 @@ export function Studio({ id }: { id: string }) {
         <p className="t14 muted" style={{ margin: 0 }}>Not in the index: {unscored.map((c) => c.label).join('; ') || 'nothing'} (see “Conditions and the candidate’s side”). A minimum flags a person for a human review; it never rejects anyone automatically.</p>
       </section>
 
-      <section className="rb-grid" aria-labelledby="rb-c">
+      <section id="rbs-criteria" className="rb-grid" aria-labelledby="rb-c">
         <div className="rb-row"><h2 id="rb-c" className="voice t24" style={{ margin: 0 }}>Criteria</h2>
           {narrow ? (
             <div className="ds-views rb-side" role="group" aria-label="Which version to show">
@@ -188,7 +190,7 @@ export function Studio({ id }: { id: string }) {
       </section>
 
       {editing && (
-        <section className="ds-sheet rb-approve rb-grid" aria-labelledby="rb-a">
+        <section id="rbs-approve" className="ds-sheet rb-approve rb-grid" aria-labelledby="rb-a">
           <h2 id="rb-a" className="voice t24" style={{ margin: 0 }}>{base ? `Approve v${ver.v}?` : 'Approve the rubric'}</h2>
           {changes.length ? <ul className="rb-diff">{changes.map((d, i) => <li key={i} data-k={d.kind}><span className="rb-dk" aria-hidden="true">{d.kind === 'added' ? '+' : d.kind === 'removed' ? '−' : '~'}</span>{d.text}{d.material ? '' : <span className="muted"> (wording only)</span>}</li>)}</ul>
             : <p className="t14 muted" style={{ margin: 0 }}>{base ? `No changes from v${base.v} yet.` : 'You haven’t changed Q’s proposal. That’s fine if it’s right.'}</p>}
@@ -202,7 +204,7 @@ export function Studio({ id }: { id: string }) {
         </section>
       )}
 
-      <section className="ds-sheet rb-grid" aria-labelledby="rb-r">
+      <section id="rbs-revisions" className="ds-sheet rb-grid" aria-labelledby="rb-r">
         <h2 id="rb-r" className="voice t24" style={{ margin: 0 }}>Revisions</h2>
         <ol className="rb-revs">
           {[...versions].reverse().map((v) => {
@@ -222,7 +224,7 @@ export function Studio({ id }: { id: string }) {
       </section>
 
       {prop && (
-        <section className="ds-sheet rb-grid" aria-labelledby="rb-s">
+        <section id="rbs-sources" className="ds-sheet rb-grid" aria-labelledby="rb-s">
           <h2 id="rb-s" className="voice t24" style={{ margin: 0 }}>What Q used</h2>
           <ul className="rb-plain t14">{prop.sources.map((s) => <li key={s}>{s}</li>)}</ul>
           <p className="t14 muted" style={{ margin: 0 }}>ESCO references are illustrative ids for this prototype; production maps to the published ESCO release. Q’s drafting here is rule-based, not a trained model.</p>

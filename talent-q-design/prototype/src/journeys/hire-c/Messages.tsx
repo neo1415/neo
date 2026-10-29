@@ -18,6 +18,9 @@ import { CHANNEL_LABEL, city, delivered, firstOf, LAGOS, mandateTitle, nameOf, t
 import { addressOf, deliveryView, pendingMatch, readableInbound } from './email';
 import { Composer } from './Composer';
 import { Attempts, BatchReview, ReadScope, ReplyCard } from './ReplyIntel';
+import { Body } from './refs';
+import { ConfirmButton } from '../../ds/ConfirmButton';
+import { PageIndex } from '../../ds/PageIndex';
 import './email.css';
 
 type Filter = 'all' | 'approval' | 'drafts' | 'reply' | 'awaiting' | 'problems' | 'queued' | 'sent';
@@ -205,17 +208,18 @@ function ThreadView({ g, onBack }: { g: G; onBack?: () => void }) {
           <span className="em-tactions" role="group" aria-label="Conversation controls">
             {t.state === 'MUTED' ? <button type="button" className="hc-more" onClick={() => act('unmute')}>Unmute</button> : <button type="button" className="hc-more" onClick={() => act('mute')}>Mute</button>}
             {t.state !== 'REPORTED' && t.state !== 'BLOCKED' && <button type="button" className="hc-more" onClick={() => act('report')}>Report as unwanted</button>}
-            {t.state !== 'BLOCKED' && <button type="button" className="hc-more" onClick={() => act('block')}>Block</button>}
+            {t.state !== 'BLOCKED' && <ConfirmButton className="hc-more" label="Block" question={`Block ${p.name.split(' ')[0]} from starting new conversations with ${orgOf(w, a.orgId)?.name}?`} yes="Block" onConfirm={() => act('block')} />}
           </span>
         )}
       </div>
+      {(() => { const draft = items.find((x) => (x.m.status === 'DRAFT' || x.m.status === 'AWAITING_APPROVAL') && x.m.from !== pid); return <PageIndex label="In this conversation" items={[...(lastInbound ? [{ id: 'thread-reply', label: 'Their reply' }] : []), { id: 'thread-msgs', label: `Messages (${items.filter((x) => x.m.status !== 'DRAFT' && x.m.status !== 'AWAITING_APPROVAL').length})` }, ...(draft ? [{ id: `draft-${draft.m.id}`, label: draft.m.delivery === 'FAILED' ? 'Not sent: fix' : 'Draft' }] : [])]} />; })()}
       <ReadScope t={g.thread} />
-      {lastInbound && <ReplyCard t={lastInbound.t} m={lastInbound.m} />}
+      {lastInbound && <div id="thread-reply"><ReplyCard t={lastInbound.t} m={lastInbound.m} /></div>}
       {waitDays >= 1 && <p className="hc-wait" role="status">{p.name.split(' ')[0]} has been waiting {waitDays} day{waitDays === 1 ? '' : 's'} for a reply.</p>}
-      <ol className="hc-msgs" aria-label="Messages, oldest first">
+      <ol className="hc-msgs" id="thread-msgs" aria-label="Messages, oldest first">
         <AnimatePresence initial={false}>
           {items.map(({ m }) => (
-            <motion.li key={m.id} className="hc-msg" data-from={m.from === pid ? 'them' : 'us'} data-s={m.status} {...arrive} layout="position">
+            <motion.li key={m.id} id={`draft-${m.id}`} className="hc-msg" data-from={m.from === pid ? 'them' : 'us'} data-s={m.status} {...arrive} layout="position">
               {(m.status === 'DRAFT' || m.status === 'AWAITING_APPROVAL') && m.from !== pid ? <Composer msgId={m.id} m={m} /> : <SentMsg m={m} pid={pid} />}
             </motion.li>
           ))}
@@ -234,7 +238,7 @@ function SentMsg({ m, pid }: { m: Msg; pid: string }) {
       <div className="hc-msg-head"><b>{theirs ? p.name.split(' ')[0] : nameOf(w, m.from)}</b><span className="t14 muted">{when(m.at)} · {CHANNEL_LABEL[m.channel]}</span>{dv && !theirs && <span className="ds-tag em-dtag" data-k={dv.tone}>{dv.label}</span>}</div>
       {m.channel === 'EMAIL' && <p className="t14 muted em-envline">{theirs ? <>From {addressOf(w, pid)} to {mailboxOf(w, m.inbound?.mailbox)?.address ?? m.to}</> : <>From {mb?.address ?? '—'} to {addressOf(w, pid)}{m.cc?.length ? ` · Cc ${m.cc.join(', ')}` : ''}{m.bcc?.length ? ` · Bcc ${m.bcc.length}` : ''}</>}{m.attachments?.length ? ` · ${m.attachments.length} attachment${m.attachments.length === 1 ? '' : 's'}` : ''}</p>}
       {m.subject && <p className="hc-subj">{m.subject}</p>}
-      <div className="hc-body">{m.body}</div>
+      <Body text={m.body} />
       {m.attachments?.length ? <ul className="em-attlist">{m.attachments.map((x) => <li key={x.id}>📎 {x.label}</li>)}</ul> : null}
       {!theirs && m.status === 'SENT_SIMULATED' && (
         <p className="hc-receiptline"><span className="hc-ok" aria-hidden="true">✓</span><span>{m.channel === 'EMAIL' && m.acceptedAt ? <>{dv?.label} · {dv?.detail}</> : <>Sent</>} · approved by {m.approvedBy ? firstOf(w, m.approvedBy) : '—'}{m.idempotencyKey ? <> · key <span className="hc-mono">{m.idempotencyKey}</span></> : <> · <span className="hc-mono">{m.receipt}</span></>}</span><span className="ds-sim">Simulated send</span></p>

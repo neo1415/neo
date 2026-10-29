@@ -214,6 +214,11 @@ function Settings() {
         <SwitchRow label="Voice input" help="Uses your device’s speech recognition when it’s available. You can always type." on={p.voice} onChange={(v) => setP({ voice: v })} /></div>
         <p className="t14 muted" style={{ margin: 0 }}>Snoozed or dismissed suggestions: {w.q.suggestions.filter((s) => s.actor === a.id && s.state !== 'OPEN').length}. <button type="button" className="ds-linkbtn" style={{ color: 'var(--ink-2)' }} onClick={() => update((d) => { d.q.suggestions = d.q.suggestions.filter((s) => s.actor !== a.id); })}>Bring them back</button></p>
       </section>
+      <section className="ds-sheet" aria-labelledby="st-e" style={{ display: 'grid', gap: 8, maxWidth: 760 }}>
+        <h2 id="st-e" className="voice t24" style={{ margin: 0 }}>Email</h2>
+        <p className="t14 muted" style={{ margin: 0 }}>The email accounts Q may send from for you, and whether it can read replies. Connections are simulated in this prototype.</p>
+        <Link className="ds-btn" to="/settings/email" style={{ justifySelf: 'start' }}>Connected email</Link>
+      </section>
       {c && (
         <section className="ds-sheet" aria-labelledby="st-n" style={{ display: 'grid', gap: 14, maxWidth: 760 }}>
           <h2 id="st-n" className="voice t24" style={{ margin: 0 }}>Notifications and privacy</h2>

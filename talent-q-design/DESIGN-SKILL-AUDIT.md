@@ -76,6 +76,23 @@ What the skills changed, in short (detail in each area file):
 
 The permanent rule is in `handoff/DESIGN-QUALITY-GATE.md`: skills first, then build, then the gate's checks.
 
+## Addenda round (29 Oct, evening): skills invoked before any change
+
+Counted from the transcripts, not from the builders' notes. Skill → screen → change, critique findings and before/after pairs are in `journeys/design/{email,campaigns,rubric,media}.md`.
+
+| Who | Feature | Skills invoked |
+|---|---|---|
+| Lead | Connected journey J11, the shared model and statecharts, Q's page-aware opening, the rendered J11 critique | `journey-mapping` (J11 service blueprint), `interaction-design` (statecharts in `handoff/ADDENDUM-HANDOFF.md` §2), `ux-writing` (opener rules), `design-critique` (19 desktop + 19 phone J11 screens) |
+| Builder | Connected email and candidate contact | `design-critique`, `design-elevation`, `interaction-design`, `ux-writing`. No `dataviz`: there are no charts, as noted in its design file |
+| Builder | Hiring campaigns | `design-critique`, `design-elevation`, `interaction-design`, `ux-writing`, `dataviz` |
+| Builder | Evaluation rubrics and scoring | `design-critique`, `design-elevation`, `interaction-design`, `ux-writing`, `dataviz` |
+| Builder | Video and voice evidence | `design-critique`, `design-elevation`, `interaction-design`, `ux-writing`, `dataviz` |
+
+What the lead's J11 critique changed:
+- **H8 (minimalist design).** Q's rubric proposal no longer repeats every criterion and weight that the canvas already shows.
+- **Long phone page.** The rubric studio gained the in-page index.
+- **Severity 3–4.** None found. Every disruption in the journey has a visible state and a recovery path (H1, H9).
+
 ## Present but unusable here
 
 | Tool | Reason |

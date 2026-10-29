@@ -585,6 +585,6 @@ export function versionChanges(w: World, d: DraftMeta, prev: DraftMeta['versions
 export function problemOf(w: World, orgId: string, b: { id: string; group: string }, first: string) {
   const g = guidesOf(w, orgId).find((x) => x.id === b.id);
   if (g) return ({ PAY_BAND: 'the pay band is missing', PANEL_TWO: 'the panel has only one interviewer', HOURS: 'the time is outside interview hours', JOB_RELATED: 'some wording isn’t job-related', APPROVE_EACH: 'it needs approval', NONE: g.text.toLowerCase() } as const)[g.check];
-  return ({ cal: 'someone on the panel is now busy', cand: `the time doesn’t suit ${first}`, role: 'it needs an approver', deleg: 'Q is set to draft only', allowance: 'this week’s message allowance is used up', consent: `${first}’s contact choices` } as Record<string, string>)[b.id] ?? b.group.toLowerCase();
+  return ({ cal: 'someone on the panel is now busy', cand: `the time doesn’t suit ${first}`, role: 'it needs an approver', deleg: 'Q is set to draft only', allowance: 'this week’s message allowance is used up', consent: `${first}’s contact choices`, sender: 'the sending address needs attention', suppressed: `${first} asked not to be contacted`, disclosure: 'someone outside the organisation is in Cc', addr: 'a copied address is incomplete', to: `there’s no address for ${first}`, limit: 'today’s sending limit is reached' } as Record<string, string>)[b.id] ?? (b.id.startsWith('att_') ? 'an attachment is no longer available' : b.group.toLowerCase());
 }
 

@@ -112,10 +112,10 @@ function MailboxRow({ m, mine, onReconnect }: { m: MailboxConnection; mine: bool
       <span className="es-logo" aria-hidden="true">{LOGO[m.provider]}</span>
       <div className="es-mbmain">
         <span className="es-addr">{m.address}</span>
-        <span className="t14 muted">{providerWord(m)} · {KIND_WORD[m.kind]}{m.kind === 'CLIENT' ? ` for ${orgOf(w, m.clientOrgId)?.name}` : ''} · connected {m.connectedAt}</span>
+        <span className="t14 muted">{providerWord(m)} · {KIND_WORD[m.kind]}{m.kind === 'CLIENT' ? ` for ${orgOf(w, m.clientOrgId)?.name}` : ''} · connected {new Date(`${m.connectedAt.slice(0, 10)}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
         <span className="hc-tags"><span className="ds-tag" data-k={st.k}>{st.label}</span><span className="ds-tag">{scopeWord(m)}</span>{fail && <span className="ds-tag" data-k="warn">Demo: next send {fail === 'AUTH_EXPIRED' ? 'finds the sign-in expired' : fail === 'BOUNCED' ? 'bounces' : fail === 'RATE_LIMITED' ? 'is rate-limited' : 'is refused'}</span>}</span>
         <ul className="es-can" aria-label="What Q can do with this address">
-          <li>Send messages you approve{m.kind === 'SERVICE' ? ' (Talent Q notices only)' : ''}</li>
+          <li>{m.kind === 'SERVICE' ? 'Sends Talent Q’s own notices (invitations, receipts, reminders), never as you' : 'Send messages you approve'}</li>
           <li data-no={read ? undefined : '1'}>{read ? 'See replies in recruiting threads, so it can summarise them and suggest next steps' : 'Can’t see replies: Q will say so instead of guessing'}</li>
           <li data-no="1">Never deletes, forwards or reads unrelated mail</li>
           {m.kind !== 'SERVICE' && <li>Who may send as it: {listNames(m.sendAs.map((x) => (x === a.id || x === a.personId ? 'you' : firstOf(w, x))))}</li>}
