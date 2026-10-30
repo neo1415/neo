@@ -1062,9 +1062,9 @@
     },
     "SC-106": {
       "status": "INTEGRATED",
-      "route": "/r/interviews/:id/transcript; /c/assess/record/:id",
+      "route": "/r/interviews/:id/transcript",
       "evidence": "prototype/src/journeys/assess/Record.tsx, model.ts (transcriptFor, liveOp excerpt); features/assess.mjs steps 'SC-106 …'",
-      "note": "Consent-scoped: only turns recorded after consent are shown, gaps are stated; declined recording → no transcript, not held against them. Panel and the role's recruiter only (Ngozi refused, agency refused). Recorded answers can be marked as evidence per requirement (unrecorded refused); excerpts feed the score review. The candidate reads their own transcript and can request a correction (approval first, audited). (Cluster patch: assess.)"
+      "note": "Consent-scoped: only turns recorded after consent are shown, gaps are stated; declined recording → no transcript, not held against them. Panel and the role's recruiter only (Ngozi refused, agency refused). Recorded answers can be marked as evidence per requirement (unrecorded refused); excerpts feed the score review. The candidate reads their own transcript and can request a correction (approval first, audited). (Cluster patch: assess.) Also: /c/assess/record/:id."
     },
     "SC-107": {
       "status": "INTEGRATED",
@@ -1080,21 +1080,21 @@
     },
     "SC-111": {
       "status": "INTEGRATED",
-      "route": "/c/assess/ex/ex_code_seyio; /r/exercises",
+      "route": "/c/assess/ex/ex_code_seyio",
       "evidence": "prototype/src/journeys/assess/Exercises.tsx, model.ts (runSql, exerciseOp, linkedReuse); features/assess.mjs steps 'SC-111 …'",
-      "note": "Postgres slow-query exercise with a fake test run (shape checks, simulated planner estimate; nothing executed). Submission is SELF_REPORTED; when Kora sent a J12 bounded-sample request for the same requirement it is answered through journeys/evidence/ops (startSample/submitSample/reviewSample), so the decision, comparison and Passport update. Review by a person → ASSESSED (partial) with a note; the note reaches the candidate only if shared. (Cluster patch: assess.)"
+      "note": "Postgres slow-query exercise with a fake test run (shape checks, simulated planner estimate; nothing executed). Submission is SELF_REPORTED; when Kora sent a J12 bounded-sample request for the same requirement it is answered through journeys/evidence/ops (startSample/submitSample/reviewSample), so the decision, comparison and Passport update. Review by a person → ASSESSED (partial) with a note; the note reaches the candidate only if shared. (Cluster patch: assess.) Also: /r/exercises."
     },
     "SC-112": {
       "status": "INTEGRATED",
-      "route": "/c/assess/ex/ex_cyber_tobi; /r/exercises",
+      "route": "/c/assess/ex/ex_cyber_tobi",
       "evidence": "prototype/src/journeys/assess/Exercises.tsx, model.ts (LOGS, checkCyber); features/assess.mjs steps 'SC-112 …'",
-      "note": "Synthetic SIEM-style log timeline (keyboard-operable checklist), cause and first action; reviewer checks shown. Produces SELF_REPORTED work-sample evidence shared only with Kora and a PROPOSED link to on-call; a reviewer's 'shows it' makes it ASSESSED and counts in the comparison. (Cluster patch: assess.)"
+      "note": "Synthetic SIEM-style log timeline (keyboard-operable checklist), cause and first action; reviewer checks shown. Produces SELF_REPORTED work-sample evidence shared only with Kora and a PROPOSED link to on-call; a reviewer's 'shows it' makes it ASSESSED and counts in the comparison. (Cluster patch: assess.) Also: /r/exercises."
     },
     "SC-113": {
       "status": "INTEGRATED",
-      "route": "/c/assess/ex/ex_sales_grace; /r/exercises",
+      "route": "/c/assess/ex/ex_sales_grace",
       "evidence": "prototype/src/journeys/assess/Exercises.tsx, model.ts (CUSTOMER, checkSales); features/assess.mjs steps 'SC-113 …'",
-      "note": "Scripted customer (labelled) on chat, turn by turn, with a four-point conversation rubric read from the words only (no tone or typing speed). Same evidence path as the other exercises; declining is recorded as declined, not failed, and creates no evidence. (Cluster patch: assess.)"
+      "note": "Scripted customer (labelled) on chat, turn by turn, with a four-point conversation rubric read from the words only (no tone or typing speed). Same evidence path as the other exercises; declining is recorded as declined, not failed, and creates no evidence. (Cluster patch: assess.) Also: /r/exercises."
     },
     "SC-033": {
       "status": "INTEGRATED",
@@ -1776,7 +1776,53 @@
     "/r/agency/searches": "SC-043",
     "/r/agency/campaigns": "SC-050",
     "/r/agency/agents": "SC-044",
-    "/r/agency/reports": "SC-125"
+    "/r/agency/reports": "SC-125",
+    "/site": "SC-001",
+    "/site/how": "SC-002",
+    "/site/employers": "SC-003",
+    "/site/talent": "SC-004",
+    "/site/pricing": "SC-005",
+    "/site/trust": "SC-006",
+    "/sign-in": "SC-008",
+    "/site/ask": "SC-013",
+    "/r/admin/instructions": "SC-020",
+    "/r/admin/templates": "SC-021",
+    "/r/admin/channels": "SC-023",
+    "/r/admin/billing": "SC-024",
+    "/r/admin/retention": "SC-025",
+    "/r/sourcing/scope": "SC-033",
+    "/r/explore": "SC-034",
+    "/r/calendar/book/:id": "SC-053",
+    "/r/pipeline/:mandateId/:personId": "SC-056",
+    "/r/offer/:mandateId/:personId": "SC-058",
+    "/r/outcomes": "SC-060",
+    "/c/work-permit": "SC-071",
+    "/c/work/critique": "SC-076",
+    "/c/work/versions": "SC-077",
+    "/c/jobs/:id/letter": "SC-087",
+    "/c/learn/:id": "SC-092",
+    "/r/questions": "SC-095",
+    "/c/assess/avatar": "SC-102",
+    "/r/interviews/:id/live": "SC-103",
+    "/r/interviews/:id/review": "SC-107",
+    "/r/coaching": "SC-109",
+    "/q/artifacts/:id": "SC-124",
+    "/q/browse/:id": "SC-128",
+    "/q/downloads": "SC-130",
+    "/q/sources": "SC-136",
+    "/r/admin/placements": "SC-140",
+    "/r/admin/compliance": "SC-141",
+    "/r/admin/reports": "SC-142",
+    "/r/admin/models": "SC-144",
+    "/r/admin/quality": "SC-145",
+    "/r/admin/sources": "SC-146",
+    "/r/reminders": "SC-159",
+    "/c/career/improve": "SC-172",
+    "/c/applications/:id/recovery": "SC-175",
+    "/r/interviews/:id/transcript": "SC-106",
+    "/c/assess/ex/ex_code_seyio": "SC-111",
+    "/c/assess/ex/ex_cyber_tobi": "SC-112",
+    "/c/assess/ex/ex_sales_grace": "SC-113"
   },
   "design_refs": {
     "SC-117": "Direction review: /x/{a,b,c}/home + captures/directions",
