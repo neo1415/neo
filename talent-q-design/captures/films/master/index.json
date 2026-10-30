@@ -1,0 +1,1523 @@
+{
+ "commit": "0cdc6bf",
+ "films": [
+  {
+   "film": "A",
+   "kind": "desktop",
+   "journey": "R1",
+   "steps": 47,
+   "passed": 47
+  },
+  {
+   "film": "A",
+   "kind": "desktop",
+   "journey": "R2",
+   "steps": 37,
+   "passed": 37
+  },
+  {
+   "film": "A",
+   "kind": "desktop",
+   "journey": "R3",
+   "steps": 14,
+   "passed": 14
+  },
+  {
+   "film": "A",
+   "kind": "desktop",
+   "journey": "R4",
+   "steps": 18,
+   "passed": 18
+  },
+  {
+   "film": "A",
+   "kind": "desktop",
+   "journey": "R5",
+   "steps": 33,
+   "passed": 33
+  },
+  {
+   "film": "A",
+   "kind": "desktop",
+   "journey": "J12",
+   "steps": 35,
+   "passed": 35
+  },
+  {
+   "film": "A",
+   "kind": "phone",
+   "journey": "R1",
+   "steps": 47,
+   "passed": 47
+  },
+  {
+   "film": "A",
+   "kind": "phone",
+   "journey": "R2",
+   "steps": 37,
+   "passed": 37
+  },
+  {
+   "film": "A",
+   "kind": "phone",
+   "journey": "R3",
+   "steps": 8,
+   "passed": 8
+  },
+  {
+   "film": "A",
+   "kind": "phone",
+   "journey": "R4",
+   "steps": 18,
+   "passed": 18
+  },
+  {
+   "film": "A",
+   "kind": "phone",
+   "journey": "R5",
+   "steps": 33,
+   "passed": 33
+  },
+  {
+   "film": "A",
+   "kind": "phone",
+   "journey": "J12",
+   "steps": 36,
+   "passed": 36
+  },
+  {
+   "film": "B",
+   "kind": "desktop",
+   "journey": "T1",
+   "steps": 38,
+   "passed": 38
+  },
+  {
+   "film": "B",
+   "kind": "desktop",
+   "journey": "T2",
+   "steps": 31,
+   "passed": 31
+  },
+  {
+   "film": "B",
+   "kind": "desktop",
+   "journey": "T3",
+   "steps": 27,
+   "passed": 27
+  },
+  {
+   "film": "B",
+   "kind": "desktop",
+   "journey": "T4",
+   "steps": 3,
+   "passed": 3
+  },
+  {
+   "film": "B",
+   "kind": "desktop",
+   "journey": "T5",
+   "steps": 25,
+   "passed": 25
+  },
+  {
+   "film": "B",
+   "kind": "desktop",
+   "journey": "J11",
+   "steps": 32,
+   "passed": 32
+  },
+  {
+   "film": "B",
+   "kind": "phone",
+   "journey": "T1",
+   "steps": 38,
+   "passed": 38
+  },
+  {
+   "film": "B",
+   "kind": "phone",
+   "journey": "T2",
+   "steps": 31,
+   "passed": 31
+  },
+  {
+   "film": "B",
+   "kind": "phone",
+   "journey": "T3",
+   "steps": 27,
+   "passed": 27
+  },
+  {
+   "film": "B",
+   "kind": "phone",
+   "journey": "T4",
+   "steps": 40,
+   "passed": 40
+  },
+  {
+   "film": "B",
+   "kind": "phone",
+   "journey": "T5",
+   "steps": 25,
+   "passed": 25
+  },
+  {
+   "film": "B",
+   "kind": "phone",
+   "journey": "J11",
+   "steps": 32,
+   "passed": 32
+  }
+ ],
+ "clips": [
+  {
+   "file": "clips/R1-desktop-01.mp4",
+   "journey": "R1",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Explains “mandate” in plain words",
+   "film": "film-A-desktop.mp4",
+   "at": 62.9,
+   "seconds": 10.4,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-desktop-02.mp4",
+   "journey": "R1",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Role re-planned to part-time bookkeeper as v2",
+   "film": "film-A-desktop.mp4",
+   "at": 70.7,
+   "seconds": 11.8,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-desktop-03.mp4",
+   "journey": "R1",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Shared answers kept (budget ₦80k, Ikeja)",
+   "film": "film-A-desktop.mp4",
+   "at": 73.1,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-desktop-04.mp4",
+   "journey": "R1",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Budget below market is raised with options",
+   "film": "film-A-desktop.mp4",
+   "at": 75.5,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-desktop-05.mp4",
+   "journey": "R1",
+   "kind": "desktop",
+   "label": "Curveball · interruption or recovery",
+   "text": "Wrong click discards the draft",
+   "film": "film-A-desktop.mp4",
+   "at": 85.1,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-desktop-06.mp4",
+   "journey": "R1",
+   "kind": "desktop",
+   "label": "Curveball · interruption or recovery",
+   "text": "Undo restores the draft exactly",
+   "film": "film-A-desktop.mp4",
+   "at": 91.6,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-desktop-07.mp4",
+   "journey": "R1",
+   "kind": "desktop",
+   "label": "Curveball · interruption or recovery",
+   "text": "Q resumes from where she stopped",
+   "film": "film-A-desktop.mp4",
+   "at": 102.3,
+   "seconds": 10,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-desktop-08.mp4",
+   "journey": "R1",
+   "kind": "desktop",
+   "label": "Curveball · interruption or recovery",
+   "text": "Outreach cap hit: 3 planned, the 4th left out and named",
+   "film": "film-A-desktop.mp4",
+   "at": 133.9,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-desktop-09.mp4",
+   "journey": "R1",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Posting refused: only verified businesses can post",
+   "film": "film-A-desktop.mp4",
+   "at": 143.5,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-desktop-10.mp4",
+   "journey": "R1",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Registry check fails plainly, nothing verified",
+   "film": "film-A-desktop.mp4",
+   "at": 154.2,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-desktop-01.mp4",
+   "journey": "R2",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Criteria changed mid-comparison",
+   "film": "film-A-desktop.mp4",
+   "at": 208.2,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-desktop-02.mp4",
+   "journey": "R2",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Challenge: Q shows reasoning and evidence",
+   "film": "film-A-desktop.mp4",
+   "at": 214.8,
+   "seconds": 10.6,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-desktop-03.mp4",
+   "journey": "R2",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Q accepts the correction",
+   "film": "film-A-desktop.mp4",
+   "at": 221.6,
+   "seconds": 10.9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-desktop-04.mp4",
+   "journey": "R2",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "GitHub outage shown honestly with cache date",
+   "film": "film-A-desktop.mp4",
+   "at": 242.6,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-desktop-05.mp4",
+   "journey": "R2",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Retry #1 still down, said honestly",
+   "film": "film-A-desktop.mp4",
+   "at": 247.4,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-desktop-06.mp4",
+   "journey": "R2",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Retry #2 recovers",
+   "film": "film-A-desktop.mp4",
+   "at": 249.8,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-desktop-07.mp4",
+   "journey": "R2",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "CV vs evidence: unknown separated from weak",
+   "film": "film-A-desktop.mp4",
+   "at": 273.2,
+   "seconds": 17.4,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-desktop-08.mp4",
+   "journey": "R2",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Last-year filter on, notes rewritten",
+   "film": "film-A-desktop.mp4",
+   "at": 279.4,
+   "seconds": 10.3,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-desktop-09.mp4",
+   "journey": "R2",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Proactive: dispute raised from real state",
+   "film": "film-A-desktop.mp4",
+   "at": 285.9,
+   "seconds": 10.5,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-desktop-10.mp4",
+   "journey": "R2",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Q explains the dispute",
+   "film": "film-A-desktop.mp4",
+   "at": 291.9,
+   "seconds": 10,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-desktop-11.mp4",
+   "journey": "R2",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Disputed result excluded from comparison",
+   "film": "film-A-desktop.mp4",
+   "at": 307.4,
+   "seconds": 13.5,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-desktop-12.mp4",
+   "journey": "R2",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Withdrawn consent: permission state with reason",
+   "film": "film-A-desktop.mp4",
+   "at": 377.5,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R3-desktop-01.mp4",
+   "journey": "R3",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Undo the move",
+   "film": "film-A-desktop.mp4",
+   "at": 480.5,
+   "seconds": 10.9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R3-desktop-02.mp4",
+   "journey": "R3",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Reschedule requested (event RESCHEDULE_REQUESTED)",
+   "film": "film-A-desktop.mp4",
+   "at": 531.4,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R4-desktop-01.mp4",
+   "journey": "R4",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "D 2 provider outage: agent fails, retries once, Q explains",
+   "film": "film-A-desktop.mp4",
+   "at": 612.4,
+   "seconds": 21.9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R4-desktop-02.mp4",
+   "journey": "R4",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "D 3 interrupt: \"stop the medlink search, kora is urgent\"",
+   "film": "film-A-desktop.mp4",
+   "at": 619.6,
+   "seconds": 11.2,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R4-desktop-03.mp4",
+   "journey": "R4",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "D 8 consent withdrawn: Halima drops out with a visible reason; Q tells Dele",
+   "film": "film-A-desktop.mp4",
+   "at": 665.3,
+   "seconds": 12.6,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R4-desktop-04.mp4",
+   "journey": "R4",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "D 12 conflicting requirements: Kora on-site vs Medlink remote",
+   "film": "film-A-desktop.mp4",
+   "at": 745.2,
+   "seconds": 10.6,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R4-desktop-05.mp4",
+   "journey": "R4",
+   "kind": "desktop",
+   "label": "Curveball · interruption or recovery",
+   "text": "D 15 Tunde (Viewer) is denied the confidential Kora record and requests access",
+   "film": "film-A-desktop.mp4",
+   "at": 796.4,
+   "seconds": 23,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R5-desktop-01.mp4",
+   "journey": "R5",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Q points out the contradiction and asks which to keep",
+   "film": "film-A-desktop.mp4",
+   "at": 927.8,
+   "seconds": 9.8,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R5-desktop-02.mp4",
+   "journey": "R5",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Senior-but-cheap trade-off named",
+   "film": "film-A-desktop.mp4",
+   "at": 939.3,
+   "seconds": 10.1,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R5-desktop-03.mp4",
+   "journey": "R5",
+   "kind": "desktop",
+   "label": "Curveball · interruption or recovery",
+   "text": "Offer refused, names who can",
+   "film": "film-A-desktop.mp4",
+   "at": 947.3,
+   "seconds": 12,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R5-desktop-04.mp4",
+   "journey": "R5",
+   "kind": "desktop",
+   "label": "Curveball · interruption or recovery",
+   "text": "Bulk send prepared as drafts, nothing sent",
+   "film": "film-A-desktop.mp4",
+   "at": 962.6,
+   "seconds": 9.9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R5-desktop-05.mp4",
+   "journey": "R5",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Non-job criterion declined",
+   "film": "film-A-desktop.mp4",
+   "at": 968.4,
+   "seconds": 9.8,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R5-desktop-06.mp4",
+   "journey": "R5",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Both sources shown, none picked silently",
+   "film": "film-A-desktop.mp4",
+   "at": 1003.4,
+   "seconds": 9.1,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-phone-01.mp4",
+   "journey": "R1",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Explains “mandate” in plain words",
+   "film": "film-A-phone.mp4",
+   "at": 93,
+   "seconds": 17.5,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-phone-02.mp4",
+   "journey": "R1",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Role re-planned to part-time bookkeeper as v2",
+   "film": "film-A-phone.mp4",
+   "at": 104,
+   "seconds": 15.1,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-phone-03.mp4",
+   "journey": "R1",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Shared answers kept (budget ₦80k, Ikeja)",
+   "film": "film-A-phone.mp4",
+   "at": 106.4,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-phone-04.mp4",
+   "journey": "R1",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Budget below market is raised with options",
+   "film": "film-A-phone.mp4",
+   "at": 108.8,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-phone-05.mp4",
+   "journey": "R1",
+   "kind": "phone",
+   "label": "Curveball · interruption or recovery",
+   "text": "Wrong click discards the draft",
+   "film": "film-A-phone.mp4",
+   "at": 124.1,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-phone-06.mp4",
+   "journey": "R1",
+   "kind": "phone",
+   "label": "Curveball · interruption or recovery",
+   "text": "Undo restores the draft exactly",
+   "film": "film-A-phone.mp4",
+   "at": 137.4,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-phone-07.mp4",
+   "journey": "R1",
+   "kind": "phone",
+   "label": "Curveball · interruption or recovery",
+   "text": "Q resumes from where she stopped",
+   "film": "film-A-phone.mp4",
+   "at": 149.8,
+   "seconds": 11.8,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-phone-08.mp4",
+   "journey": "R1",
+   "kind": "phone",
+   "label": "Curveball · interruption or recovery",
+   "text": "Outreach cap hit: 3 planned, the 4th left out and named",
+   "film": "film-A-phone.mp4",
+   "at": 206.4,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-phone-09.mp4",
+   "journey": "R1",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Posting refused: only verified businesses can post",
+   "film": "film-A-phone.mp4",
+   "at": 228.7,
+   "seconds": 13.5,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R1-phone-10.mp4",
+   "journey": "R1",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Registry check fails plainly, nothing verified",
+   "film": "film-A-phone.mp4",
+   "at": 255.4,
+   "seconds": 15,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-phone-01.mp4",
+   "journey": "R2",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Criteria changed mid-comparison",
+   "film": "film-A-phone.mp4",
+   "at": 329.2,
+   "seconds": 11,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-phone-02.mp4",
+   "journey": "R2",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Challenge: Q shows reasoning and evidence",
+   "film": "film-A-phone.mp4",
+   "at": 339.2,
+   "seconds": 14.1,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-phone-03.mp4",
+   "journey": "R2",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Q accepts the correction",
+   "film": "film-A-phone.mp4",
+   "at": 349.6,
+   "seconds": 14.4,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-phone-04.mp4",
+   "journey": "R2",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "GitHub outage shown honestly with cache date",
+   "film": "film-A-phone.mp4",
+   "at": 376,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-phone-05.mp4",
+   "journey": "R2",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Retry #1 still down, said honestly",
+   "film": "film-A-phone.mp4",
+   "at": 380.8,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-phone-06.mp4",
+   "journey": "R2",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Retry #2 recovers",
+   "film": "film-A-phone.mp4",
+   "at": 383.2,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-phone-07.mp4",
+   "journey": "R2",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "CV vs evidence: unknown separated from weak",
+   "film": "film-A-phone.mp4",
+   "at": 423.3,
+   "seconds": 24.7,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-phone-08.mp4",
+   "journey": "R2",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Last-year filter on, notes rewritten",
+   "film": "film-A-phone.mp4",
+   "at": 433.2,
+   "seconds": 14,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-phone-09.mp4",
+   "journey": "R2",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Proactive: dispute raised from real state",
+   "film": "film-A-phone.mp4",
+   "at": 443.2,
+   "seconds": 14,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-phone-10.mp4",
+   "journey": "R2",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Q explains the dispute",
+   "film": "film-A-phone.mp4",
+   "at": 452.7,
+   "seconds": 13.5,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-phone-11.mp4",
+   "journey": "R2",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Disputed result excluded from comparison",
+   "film": "film-A-phone.mp4",
+   "at": 479,
+   "seconds": 20.6,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R2-phone-12.mp4",
+   "journey": "R2",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Withdrawn consent: permission state with reason",
+   "film": "film-A-phone.mp4",
+   "at": 584.7,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R4-phone-01.mp4",
+   "journey": "R4",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "M 2 provider outage: agent fails, retries once, Q explains",
+   "film": "film-A-phone.mp4",
+   "at": 674.2,
+   "seconds": 26.9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R4-phone-02.mp4",
+   "journey": "R4",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "M 3 interrupt: \"stop the medlink search, kora is urgent\"",
+   "film": "film-A-phone.mp4",
+   "at": 682.9,
+   "seconds": 12.7,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R4-phone-03.mp4",
+   "journey": "R4",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "M 8 consent withdrawn: Halima drops out with a visible reason; Q tells Dele",
+   "film": "film-A-phone.mp4",
+   "at": 749.4,
+   "seconds": 16.1,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R4-phone-04.mp4",
+   "journey": "R4",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "M 12 conflicting requirements: Kora on-site vs Medlink remote",
+   "film": "film-A-phone.mp4",
+   "at": 856.5,
+   "seconds": 12.2,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R4-phone-05.mp4",
+   "journey": "R4",
+   "kind": "phone",
+   "label": "Curveball · interruption or recovery",
+   "text": "M 15 Tunde (Viewer) is denied the confidential Kora record and requests access",
+   "film": "film-A-phone.mp4",
+   "at": 921.6,
+   "seconds": 30,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R5-phone-01.mp4",
+   "journey": "R5",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Q points out the contradiction and asks which to keep",
+   "film": "film-A-phone.mp4",
+   "at": 1084.8,
+   "seconds": 13.3,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R5-phone-02.mp4",
+   "journey": "R5",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Senior-but-cheap trade-off named",
+   "film": "film-A-phone.mp4",
+   "at": 1107.1,
+   "seconds": 13.7,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R5-phone-03.mp4",
+   "journey": "R5",
+   "kind": "phone",
+   "label": "Curveball · interruption or recovery",
+   "text": "Offer refused, names who can",
+   "film": "film-A-phone.mp4",
+   "at": 1122.4,
+   "seconds": 19.3,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R5-phone-04.mp4",
+   "journey": "R5",
+   "kind": "phone",
+   "label": "Curveball · interruption or recovery",
+   "text": "Bulk send prepared as drafts, nothing sent",
+   "film": "film-A-phone.mp4",
+   "at": 1152,
+   "seconds": 13.5,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R5-phone-05.mp4",
+   "journey": "R5",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Non-job criterion declined",
+   "film": "film-A-phone.mp4",
+   "at": 1161.4,
+   "seconds": 13.4,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/R5-phone-06.mp4",
+   "journey": "R5",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Both sources shown, none picked silently",
+   "film": "film-A-phone.mp4",
+   "at": 1221.5,
+   "seconds": 12.6,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-desktop-01.mp4",
+   "journey": "T1",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Unreadable scan is named, nothing saved, alternatives offered",
+   "film": "film-B-desktop.mp4",
+   "at": 40.7,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-desktop-02.mp4",
+   "journey": "T1",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Q asks a smaller, concrete question",
+   "film": "film-B-desktop.mp4",
+   "at": 48.9,
+   "seconds": 9.5,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-desktop-03.mp4",
+   "journey": "T1",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "No work history is fine; Q never invents a job",
+   "film": "film-B-desktop.mp4",
+   "at": 80.5,
+   "seconds": 10.6,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-desktop-04.mp4",
+   "journey": "T1",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Skipping allowed; Q remembers without nagging",
+   "film": "film-B-desktop.mp4",
+   "at": 93.1,
+   "seconds": 9.1,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-desktop-05.mp4",
+   "journey": "T1",
+   "kind": "desktop",
+   "label": "Curveball · interruption or recovery",
+   "text": "Form mistake explained, with a suggested fix",
+   "film": "film-B-desktop.mp4",
+   "at": 104.5,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-desktop-06.mp4",
+   "journey": "T1",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Q refuses to fabricate an internship or Python",
+   "film": "film-B-desktop.mp4",
+   "at": 182.7,
+   "seconds": 11.6,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-desktop-07.mp4",
+   "journey": "T1",
+   "kind": "desktop",
+   "label": "Curveball · interruption or recovery",
+   "text": "“go back” returns to the previous page",
+   "film": "film-B-desktop.mp4",
+   "at": 211.8,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T2-desktop-01.mp4",
+   "journey": "T2",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Goal changes to BA, PM archived",
+   "film": "film-B-desktop.mp4",
+   "at": 271.5,
+   "seconds": 11.7,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T2-desktop-02.mp4",
+   "journey": "T2",
+   "kind": "desktop",
+   "label": "Curveball · interruption or recovery",
+   "text": "Undo restores the PM goal",
+   "film": "film-B-desktop.mp4",
+   "at": 278.7,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T2-desktop-03.mp4",
+   "journey": "T2",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Q shows its reasoning before changing anything",
+   "film": "film-B-desktop.mp4",
+   "at": 292.8,
+   "seconds": 11.1,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T2-desktop-04.mp4",
+   "journey": "T2",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Q refuses to treat practice as proof",
+   "film": "film-B-desktop.mp4",
+   "at": 315.9,
+   "seconds": 11,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T3-desktop-01.mp4",
+   "journey": "T3",
+   "kind": "desktop",
+   "label": "Curveball · interruption or recovery",
+   "text": "Upload drops at 60% · FAILED 60%",
+   "film": "film-B-desktop.mp4",
+   "at": 401.2,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T3-desktop-02.mp4",
+   "journey": "T3",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Issuer unreachable, still PENDING",
+   "film": "film-B-desktop.mp4",
+   "at": 417.8,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T3-desktop-03.mp4",
+   "journey": "T3",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Q refuses to share the confidential original",
+   "film": "film-B-desktop.mp4",
+   "at": 431.8,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T3-desktop-04.mp4",
+   "journey": "T3",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Undo re-shares",
+   "film": "film-B-desktop.mp4",
+   "at": 451.7,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T3-desktop-05.mp4",
+   "journey": "T3",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Q shows its basis and corrects the summary",
+   "film": "film-B-desktop.mp4",
+   "at": 470.4,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T5-desktop-01.mp4",
+   "journey": "T5",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Challenge recorded as “you told me”, not proof",
+   "film": "film-B-desktop.mp4",
+   "at": 532.9,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T5-desktop-02.mp4",
+   "journey": "T5",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Q accepts and remembers",
+   "film": "film-B-desktop.mp4",
+   "at": 541.8,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T5-desktop-03.mp4",
+   "journey": "T5",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Listing closes mid-application",
+   "film": "film-B-desktop.mp4",
+   "at": 551.9,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T5-desktop-04.mp4",
+   "journey": "T5",
+   "kind": "desktop",
+   "label": "Curveball · interruption or recovery",
+   "text": "Back on the job, closed banner and choices kept",
+   "film": "film-B-desktop.mp4",
+   "at": 558,
+   "seconds": 10.1,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T5-desktop-05.mp4",
+   "journey": "T5",
+   "kind": "desktop",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Honest status, no blame",
+   "film": "film-B-desktop.mp4",
+   "at": 569.9,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T5-desktop-06.mp4",
+   "journey": "T5",
+   "kind": "desktop",
+   "label": "Curveball · change of mind",
+   "text": "Notifications changed through Q",
+   "film": "film-B-desktop.mp4",
+   "at": 583.4,
+   "seconds": 9.2,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-phone-01.mp4",
+   "journey": "T1",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Unreadable scan is named, nothing saved, alternatives offered",
+   "film": "film-B-phone.mp4",
+   "at": 43.4,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-phone-02.mp4",
+   "journey": "T1",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Q asks a smaller, concrete question",
+   "film": "film-B-phone.mp4",
+   "at": 54.9,
+   "seconds": 9.4,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-phone-03.mp4",
+   "journey": "T1",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "No work history is fine; Q never invents a job",
+   "film": "film-B-phone.mp4",
+   "at": 86.1,
+   "seconds": 10.4,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-phone-04.mp4",
+   "journey": "T1",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Skipping allowed; Q remembers without nagging",
+   "film": "film-B-phone.mp4",
+   "at": 98.5,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-phone-05.mp4",
+   "journey": "T1",
+   "kind": "phone",
+   "label": "Curveball · interruption or recovery",
+   "text": "Form mistake explained, with a suggested fix",
+   "film": "film-B-phone.mp4",
+   "at": 111.3,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-phone-06.mp4",
+   "journey": "T1",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Q refuses to fabricate an internship or Python",
+   "film": "film-B-phone.mp4",
+   "at": 203,
+   "seconds": 14.8,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T1-phone-07.mp4",
+   "journey": "T1",
+   "kind": "phone",
+   "label": "Curveball · interruption or recovery",
+   "text": "“go back” returns to the previous page",
+   "film": "film-B-phone.mp4",
+   "at": 231.4,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T2-phone-01.mp4",
+   "journey": "T2",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Goal changes to BA, PM archived",
+   "film": "film-B-phone.mp4",
+   "at": 304.6,
+   "seconds": 14.8,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T2-phone-02.mp4",
+   "journey": "T2",
+   "kind": "phone",
+   "label": "Curveball · interruption or recovery",
+   "text": "Undo restores the PM goal",
+   "film": "film-B-phone.mp4",
+   "at": 314.9,
+   "seconds": 11.9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T2-phone-03.mp4",
+   "journey": "T2",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Q shows its reasoning before changing anything",
+   "film": "film-B-phone.mp4",
+   "at": 328.8,
+   "seconds": 11,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T2-phone-04.mp4",
+   "journey": "T2",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Q refuses to treat practice as proof",
+   "film": "film-B-phone.mp4",
+   "at": 355.2,
+   "seconds": 11,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T3-phone-01.mp4",
+   "journey": "T3",
+   "kind": "phone",
+   "label": "Curveball · interruption or recovery",
+   "text": "Upload drops at 60% · FAILED 60%",
+   "film": "film-B-phone.mp4",
+   "at": 460.6,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T3-phone-02.mp4",
+   "journey": "T3",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Issuer unreachable, still PENDING",
+   "film": "film-B-phone.mp4",
+   "at": 479.6,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T3-phone-03.mp4",
+   "journey": "T3",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Q refuses to share the confidential original",
+   "film": "film-B-phone.mp4",
+   "at": 494.4,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T3-phone-04.mp4",
+   "journey": "T3",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Undo re-shares",
+   "film": "film-B-phone.mp4",
+   "at": 516,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T3-phone-05.mp4",
+   "journey": "T3",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Q shows its basis and corrects the summary",
+   "film": "film-B-phone.mp4",
+   "at": 535.7,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T5-phone-01.mp4",
+   "journey": "T5",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Challenge recorded as “you told me”, not proof",
+   "film": "film-B-phone.mp4",
+   "at": 723.8,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T5-phone-02.mp4",
+   "journey": "T5",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Q accepts and remembers",
+   "film": "film-B-phone.mp4",
+   "at": 734.4,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T5-phone-03.mp4",
+   "journey": "T5",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Listing closes mid-application",
+   "film": "film-B-phone.mp4",
+   "at": 744.6,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T5-phone-04.mp4",
+   "journey": "T5",
+   "kind": "phone",
+   "label": "Curveball · interruption or recovery",
+   "text": "Back on the job, closed banner and choices kept",
+   "film": "film-B-phone.mp4",
+   "at": 752.5,
+   "seconds": 11.9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T5-phone-05.mp4",
+   "journey": "T5",
+   "kind": "phone",
+   "label": "Curveball · missing, conflicting or revoked information",
+   "text": "Honest status, no blame",
+   "film": "film-B-phone.mp4",
+   "at": 767.6,
+   "seconds": 9,
+   "commit": "0cdc6bf"
+  },
+  {
+   "file": "clips/T5-phone-06.mp4",
+   "journey": "T5",
+   "kind": "phone",
+   "label": "Curveball · change of mind",
+   "text": "Notifications changed through Q",
+   "film": "film-B-phone.mp4",
+   "at": 781.8,
+   "seconds": 10.8,
+   "commit": "0cdc6bf"
+  }
+ ],
+ "film-A-desktop": {
+  "minutes": 19.6,
+  "chapters": [
+   {
+    "title": "R1 · Funmi, first-time employer",
+    "at": 5
+   },
+   {
+    "title": "R2 · Ada, technical recruiter",
+    "at": 182.7
+   },
+   {
+    "title": "R3 · Ngozi, busy HR team",
+    "at": 380.5
+   },
+   {
+    "title": "R4 · Dele, high-volume agency",
+    "at": 585.7
+   },
+   {
+    "title": "R5 · Bayo, sceptical hiring manager",
+    "at": 861
+   },
+   {
+    "title": "J12 · Evidence-first hiring",
+    "at": 1027.6
+   }
+  ]
+ },
+ "film-A-phone": {
+  "minutes": 23.9,
+  "chapters": [
+   {
+    "title": "R1 · Funmi, first-time employer",
+    "at": 5
+   },
+   {
+    "title": "R2 · Ada, technical recruiter",
+    "at": 294.8
+   },
+   {
+    "title": "R3 · Ngozi, busy HR team",
+    "at": 587.1
+   },
+   {
+    "title": "R4 · Dele, high-volume agency",
+    "at": 642.5
+   },
+   {
+    "title": "R5 · Bayo, sceptical hiring manager",
+    "at": 979.7
+   },
+   {
+    "title": "J12 · Evidence-first hiring",
+    "at": 1264.6
+   }
+  ]
+ },
+ "film-B-desktop": {
+  "minutes": 13.4,
+  "chapters": [
+   {
+    "title": "T1 · Amaka, first-time graduate",
+    "at": 5
+   },
+   {
+    "title": "T2 · Chidi, sales to product or business analysis",
+    "at": 218.5
+   },
+   {
+    "title": "T3 · Tobi, experienced specialist",
+    "at": 386.9
+   },
+   {
+    "title": "T4 · Grace, low-bandwidth phone",
+    "at": 485.6
+   },
+   {
+    "title": "T5 · Zara, sceptical job seeker",
+    "at": 507.8
+   },
+   {
+    "title": "J11 · One connected journey",
+    "at": 598.6
+   }
+  ]
+ },
+ "film-B-phone": {
+  "minutes": 17.6,
+  "chapters": [
+   {
+    "title": "T1 · Amaka, first-time graduate",
+    "at": 5
+   },
+   {
+    "title": "T2 · Chidi, sales to product or business analysis",
+    "at": 241.8
+   },
+   {
+    "title": "T3 · Tobi, experienced specialist",
+    "at": 446.2
+   },
+   {
+    "title": "T4 · Grace, low-bandwidth phone",
+    "at": 552.7
+   },
+   {
+    "title": "T5 · Zara, sceptical job seeker",
+    "at": 696.5
+   },
+   {
+    "title": "J11 · One connected journey",
+    "at": 799.5
+   }
+  ]
+ }
+}
