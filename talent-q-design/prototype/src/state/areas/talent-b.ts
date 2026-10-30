@@ -56,6 +56,8 @@ export const area = {
     discovery: {
       p_tobi: { who: 'VERIFIED_EMPLOYERS', hideFrom: [], showSalary: false },
       p_zara: { who: 'VERIFIED_EMPLOYERS', hideFrom: [], showSalary: false },
+      // J12: Seyi Okoro gets the same safe rule; with no rule the prototype falls back to ANYONE (ledger CL-40).
+      p_seyio: { who: 'VERIFIED_EMPLOYERS', hideFrom: [], showSalary: false },
     },
     saved: { p_zara: ['j_harbour_backend', 'j_kora_backend'] },
     declined: {},

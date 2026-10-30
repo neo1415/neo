@@ -30,7 +30,7 @@ Method: `design-skills:journey-mapping` (usage story, peak-end). This is a proto
   - a project he describes but hasn't shown.
 
   Not to be confused with Seyi Balogun, Kora's engineering manager (ledger CL-03).
-- **Dele** (agency): must not see Kora's rubric, Kora-only evidence, or Tobi (whose discovery excludes agencies).
+- **Dele** (agency): must not see Kora's rubric (not even whether one exists), Seyi Okoro (verified employers only), or anything Tobi shared only with Kora. Tobi chose to share three items with Talentbridge himself; Dele sees exactly those.
 
 ## Steps (desktop and phone)
 

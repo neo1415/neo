@@ -305,6 +305,8 @@ registerSkill({
   id: 'rubric.open', side: 'recruiter',
   match: (c) => (recruiter(c) && /\b(open|show|go to|see|take me to|where is)\b/.test(c.norm) && /\b(rubric|evaluation studio)\b/.test(c.norm) && !who(c).length && !onStudio(c) ? 0.9 : 0),
   handle: (c) => { const id = roleIn(c.w, c.norm, c.route); const v = approvedVersion(c.w, id); const d = draftVersion(c.w, id);
+    // Another organisation's role: refuse without saying whether a rubric (or a draft, or a version) exists (J12 step 14).
+    if (roleOf(c.w, id)?.orgId !== c.actor.orgId) return { msgs: [{ kind: 'refusal', text: `I can only open rubrics for roles at ${c.w.orgs.find((o) => o.id === c.actor.orgId)?.name ?? 'your organisation'}. Name one of your roles and I’ll open its rubric.` }] };
     return { msgs: [{ kind: 'reply', text: d ? `Opening draft v${d.v} of the ${roleOf(c.w, id)!.title} rubric.` : v ? `Opening the ${roleOf(c.w, id)!.title} rubric (v${v.v}, in force).` : `There’s no rubric for ${roleOf(c.w, id)!.title} yet. I’ve opened the studio; say “propose a rubric” and I’ll draft one.` }], nav: { to: studioPath(id), label: 'the evaluation rubric' } }; },
 });
 void editable;

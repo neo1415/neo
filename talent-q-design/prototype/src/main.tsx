@@ -6,10 +6,13 @@ import './styles/components.css';
 import { App } from './app/App';
 import { visibleSegments } from './state/areas/media';
 import { proofClass, proofReading } from './journeys/evidence/model';
+import { runAction } from './q/core/engine';
 import { canDiscover, canSeeCandidate, getWorld, orgLimits, outreachThisWeek, relationshipWith, update, visibleEvidence } from './mock/world';
 
 // QA hook for the privacy tests (qa/scripts/review/privacy.mjs). The prototype holds only simulated data.
-(window as unknown as { __tqQA: unknown }).__tqQA = { canDiscover, canSeeCandidate, relationshipWith, visibleEvidence, orgLimits, outreachThisWeek, visibleSegments, proofReading, proofClass, getWorld, update };
+(window as unknown as { __tqQA: unknown }).__tqQA = { canDiscover, canSeeCandidate, relationshipWith, visibleEvidence, orgLimits, outreachThisWeek, visibleSegments, proofReading, proofClass, getWorld, update,
+  // Run a registered op exactly as a chip or button would (gate scripts use it to drive real state transitions).
+  act: (op: string, args: Record<string, unknown> = {}) => runAction({ label: op, act: { t: 'do', op, args } } as Parameters<typeof runAction>[0]) };
 
 // Review links: "#/r/home?as=u_ada" opens any page as that person, already signed up (demo only).
 // The parameter is applied once and removed, so the address bar shows the plain route.

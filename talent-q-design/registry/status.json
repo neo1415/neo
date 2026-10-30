@@ -848,9 +848,9 @@
     },
     "MO-002": {
       "status": "PROTOTYPED",
-      "route": "/gallery/states",
-      "evidence": "prototype/src/ds/QMark.tsx (listening mood: core grows with input level); prototype/src/journeys/gallery/StatesGallery.tsx (Q moods)",
-      "note": "Listening mood exists in the Q mark and is shown as a live specimen. Not yet driven by the microphone in the rebuilt /c/interview, whose mic button changes label and colour without motion. Re-pointed from /c/interview."
+      "route": "/c/interview",
+      "evidence": "prototype/src/journeys/talent-c/shared.tsx (MicButton shows QMark listening mood while recording); prototype/src/ds/QMark.tsx",
+      "note": "Driven by the microphone on /c/interview: the listening mood runs while recording. It follows recording state, not input level.\r (Reconciled 30 Oct: was recorded only in the generated CSV; code checked and moved into status.json.)"
     },
     "MO-003": {
       "status": "PROTOTYPED",
@@ -907,16 +907,16 @@
       "note": "Clarification (repeat or simpler words) re-animates the question text. Dedicated clip not recorded."
     },
     "MO-024": {
-      "status": "RESEARCHED",
-      "route": "",
-      "evidence": "",
-      "note": "Was shown by the earlier interview screen (film F5); the rebuilt /c/interview pauses honestly with a text banner but has no pause motion in code."
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx (pause and lost-connection banners)",
+      "note": "Pause and lost-connection states arrive with the enter token; the answer is kept and shown as saved on the phone.\r (Reconciled 30 Oct: was recorded only in the generated CSV; code checked and moved into status.json.)"
     },
     "MO-025": {
-      "status": "RESEARCHED",
-      "route": "",
-      "evidence": "",
-      "note": "Was shown by the earlier interview screen (film F5); the rebuilt /c/interview completion has no motion in code."
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx (completion mark, tips)",
+      "note": "Completion mark scales in once, tips follow with a short stagger; static under reduced motion or lite.\r (Reconciled 30 Oct: was recorded only in the generated CSV; code checked and moved into status.json.)"
     },
     "MO-027": {
       "status": "PROTOTYPED",
@@ -1067,6 +1067,18 @@
       "route": "/r/people/:id",
       "evidence": "prototype/src/journeys/hire-b/ProjectViewer.tsx (ds-skeleton while the source is checked, then preview); prototype/src/ds/ds.css (ds-shimmer)",
       "note": "Safe preview loads behind a skeleton while the (simulated) source is checked, including the GitHub outage and retry. Dedicated clip not recorded."
+    },
+    "MO-021": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx (saved note after each answer)",
+      "note": "A short \"saved\" note arrives on the next question and never blocks input. Clip: motion/05-interview-follow-up.\r (Reconciled 30 Oct: was recorded only in the generated CSV; code checked and moved into status.json.)"
+    },
+    "MO-022": {
+      "status": "PROTOTYPED",
+      "route": "/c/interview",
+      "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx (segmented progress)",
+      "note": "One segment per question; the text \"Question x of y\" carries the meaning.\r (Reconciled 30 Oct: was recorded only in the generated CSV; code checked and moved into status.json.)"
     }
   },
   "vision": {
