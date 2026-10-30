@@ -58,10 +58,11 @@ export function QThread({ onClose }: { onClose?: () => void }) {
       <p className="ds-context" aria-live="polite"><span className="sr">Q can see: </span>On {labelFor(path)} · {actor.first}{actor.orgId ? ` · ${actor.orgId.replace('org_', '').replace(/^\w/, (c) => c.toUpperCase())}` : ''}</p>
       <div className="ds-log" ref={log} role="log" aria-label="Messages">
         <AnimatePresence initial={false}>
-          {sugg.slice(0, allSugg ? 3 : 1).map((s) => <SuggestionCard key={s.id} s={s} />)}
+          {sugg.slice(0, allSugg ? sugg.length : 1).map((s) => <SuggestionCard key={s.id} s={s} />)}
         </AnimatePresence>
-        {/* One card at a time keeps the conversation in view; the rest wait one tap away, most urgent first. */}
-        {sugg.length > 1 && <button type="button" className="ds-linkbtn ds-suggest-more" aria-expanded={allSugg} onClick={() => setAllSugg(!allSugg)}>{allSugg ? 'Show fewer' : `${Math.min(sugg.length, 3) - 1} more thing${Math.min(sugg.length, 3) > 2 ? 's' : ''} Q noticed`}</button>}
+        {/* One card at a time keeps the conversation in view; the rest wait one tap away, most urgent first. The count is
+            the true number and expanding shows every card, so nothing Q noticed is hidden without the person knowing. */}
+        {sugg.length > 1 && <button type="button" className="ds-linkbtn ds-suggest-more" aria-expanded={allSugg} onClick={() => setAllSugg(!allSugg)}>{allSugg ? 'Show fewer' : `${sugg.length - 1} more thing${sugg.length > 2 ? 's' : ''} Q noticed`}</button>}
         {msgs.length === 0 && <Welcome shown={sugg.map((s) => s.subject)} />}
         {msgs.map((m, i) => <Msg key={m.id} m={m} live={!task && i >= lastQIdx - 1 && i >= msgs.length - 3} />)}
         {task && (

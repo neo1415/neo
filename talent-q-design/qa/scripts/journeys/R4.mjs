@@ -38,7 +38,8 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   const overflow = async (x) => { const o = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth); if (o > 0) errors.push(`${v}/${x}: horizontal overflow ${o}px`); };
   const go = async (r) => { await page.goto(`${BASE}#${r}`); await page.waitForTimeout(700); await overflow(r); };
   const openQ = async () => { if (phone && !(await page.locator('#q-ask').isVisible().catch(() => false))) { await page.locator('.ds-askbar button').click(); await page.waitForTimeout(300); } };
-  const closeQ = async () => { if (phone) { const x = page.getByRole('button', { name: 'Close Q' }); if (await x.isVisible().catch(() => false)) { await x.click(); await page.waitForTimeout(250); } } };
+  // Waits for the sheet's close button (a long reply can delay it) and confirms the sheet is really gone.
+  const closeQ = async () => { if (!phone) return; const x = page.getByRole('button', { name: 'Close Q' }); for (let i = 0; i < 6 && await page.locator('.ds-qsheet').count(); i++) { if (await x.isVisible().catch(() => false)) await x.click().catch(() => {}); await page.waitForTimeout(250); } };
   const thread = () => page.locator('.ds-thread').first();
   // Q's reply to the person's latest message (background notices from agents may arrive after it).
   const lastQ = async () => { await openQ(); return page.evaluate(() => {

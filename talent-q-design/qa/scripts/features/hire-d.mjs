@@ -142,7 +142,7 @@ for (const [v, vp] of [['d', { width: 1440, height: 900 }], ['m', { width: 390, 
   w = await world();
   step(v, 'MO-046 delivered only after a (simulated) receipt; shared state updated', await rail.getAttribute('data-last') === 'delivered' && w.threads.flatMap((x) => x.messages).find((m) => m.id === bk.msgId)?.delivery === 'DELIVERED');
   const tr = await page.evaluate(() => [getComputedStyle(document.querySelector('.hd-rail-dot')).transitionDuration, getComputedStyle(document.documentElement).getPropertyValue('--motion-base').trim()]);
-  step(v, 'MO-046 CSS motion uses the motion token (--motion-base)', tr[0].split(',')[0].trim() === tr[1] || (tr[1].endsWith('ms') && parseFloat(tr[0]) * 1000 === parseFloat(tr[1])), tr.join(' / '));
+  step(v, 'MO-046 CSS motion uses the motion token (--motion-base)', (() => { const sec = (x) => (x.trim().endsWith('ms') ? parseFloat(x) / 1000 : parseFloat(x)); return Math.abs(sec(tr[0].split(',')[0]) - sec(tr[1])) < 0.001; })(), tr.join(' / '));
   await ask('did zara get the invitation?');
   r = await lastQ();
   step(v, 'MO-046 by Q: accepted ≠ delivered ≠ read, said plainly', /accepted by the provider, delivered/.test(r) && /isn’t read|Not tracked/.test(r), r);

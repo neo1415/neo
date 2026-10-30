@@ -7,7 +7,7 @@
 //  4. The identity menu switches between the prototype's demo people (one per journey), each with
 //     their own Q conversation, memory and preferences.
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { AnimatePresence, MotionConfig, motion } from 'motion/react';
+import { MotionConfig, motion } from 'motion/react';
 import { Link, navigate } from '../ui/router';
 import { actorOf, resetWorld, update, useWorld } from '../mock/world';
 import { allRoutes, type RouteDef } from '../routes/registry';
@@ -114,14 +114,14 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
         {narrow ? <InShell.Provider value>{page}</InShell.Provider> : <Split id="app" thread={<QThread />} canvas={page} />}
       </div>
       {narrow && !qOpen && <AskBar onOpen={() => setQOpen(true)} />}
-      <AnimatePresence>
-        {narrow && qOpen && (
-          <motion.div className="ds-qsheet" role="dialog" aria-modal="true" aria-label="Q" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 40, opacity: 0 }} transition={{ duration: 0.22, ease: 'easeOut' }}
-            >
-            <QThread onClose={() => { setQOpen(false); setTimeout(() => document.querySelector<HTMLButtonElement>('.ds-askbar button')?.focus(), 60); }} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* The sheet animates in and is removed at once on close. An exit animation could be held open by something
+          inside the thread (a looping "speaking" pulse), leaving an invisible sheet that catches every tap. */}
+      {narrow && qOpen && (
+        <motion.div className="ds-qsheet" role="dialog" aria-modal="true" aria-label="Q" initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.22, ease: 'easeOut' }}
+          >
+          <QThread onClose={() => { setQOpen(false); setTimeout(() => document.querySelector<HTMLButtonElement>('.ds-askbar button')?.focus(), 60); }} />
+        </motion.div>
+      )}
       <nav className="ds-tabs" aria-label="Tabs">
         <button type="button" aria-expanded={qOpen} onClick={() => setQOpen(!qOpen)} aria-current={qOpen ? 'page' : undefined}><QMark mood={qm.mood} agents={qm.agents} size={22} /><span>Q</span></button>
         {tabs.slice(0, 3).map((t) => <Link key={t.path} to={t.path} current={current(t)}>{ICONS[t.nav!.icon]}<span>{t.nav!.label.split(' ')[0]}</span></Link>)}
