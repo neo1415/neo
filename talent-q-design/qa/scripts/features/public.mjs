@@ -67,13 +67,13 @@ async function run(viewport, v) {
     let panel = await qPanel(page);
     step('SC-013: empty state is the page opener with suggested questions', /Try me on a role/.test(await panel.innerText()) && (await panel.locator('.ds-chip').count()) >= 3);
     let r = await askQ(page, panel, 'Compare two sample candidates');
-    step('SC-013: comparison is labelled fictional and sample, with no overall score', /fictional/i.test(r) && /Sample/.test(r) && /Strong claims, limited supporting evidence/.test(r) && /never turns it into one score/.test(r), r);
+    step('SC-013: comparison is labelled fictional and sample, with no overall score', /fictional/i.test(r) && /sample/i.test(r) && /Strong claims, limited supporting evidence/.test(r) && /never turns it into one score/.test(r), r);
     r = await askQ(page, panel, 'show me real candidates in Lagos');
     step('SC-013: permission denied: it refuses to show or search real people', /can’t search or show real people/.test(r) && /not allowed here/i.test(r), r);
     r = await askQ(page, panel, 'is it accurate? better than linkedin?');
     step('SC-013: no unproven claims: accuracy is "not proven yet"', /isn’t proven yet/.test(r) && /don’t claim it finds better people than LinkedIn/.test(r), r);
     r = await askQ(page, panel, 'what does it cost');
-    step('SC-013: prices are given as hypotheses, no payment', /Hypothesis/.test(r) && /not proven prices/i.test(r) && /\$149–\$399/.test(r), r);
+    step('SC-013: prices are given as hypotheses, no payment', /hypothesis/i.test(r) && /not proven prices/i.test(r) && /\$149–\$399/.test(r), r);
     r = await askQ(page, panel, 'a backend engineer who can fix slow postgres queries');
     step('SC-013: a described role becomes sample criteria the recruiter approves', /PostgreSQL/.test(r) && /you approve or change every line/.test(r), r);
     r = await askQ(page, panel, 'what is the weather like');
@@ -169,7 +169,7 @@ async function run(viewport, v) {
 
     // ---- SC-008 sign in ----
     await open(page, '/sign-in');
-    step('SC-008: email code, Google and Microsoft, each labelled simulated', /Email me a code/.test(await text(page)) && (await page.locator('.si-providers .ds-sim').count()) === 2 && /Simulated sign-in/.test(await text(page)));
+    step('SC-008: email code, Google and Microsoft, each labelled simulated', /Email me a code/.test(await text(page)) && (await page.locator('.si-providers .ds-sim').count()) === 2 && /simulated sign-in/i.test(await text(page)));
     await page.fill('#si-email', 'ada@kora'); await page.locator('button[type="submit"]').click(); await sleep(150);
     step('SC-008: error: incomplete email', /doesn’t look complete/.test(await page.locator('#si-err').innerText()));
     await page.fill('#si-email', 'nobody@example.com'); await page.locator('button[type="submit"]').click(); await sleep(150);
@@ -185,6 +185,13 @@ async function run(viewport, v) {
     await page.fill('#si-code', '123456'); await page.locator('button[type="submit"]').click(); await page.waitForSelector('.ds-app'); await sleep(400);
     w = await world(page);
     step('SC-008: email code signs Ada in and lands on the recruiter home', (await route(page)) === '/r/home' && w.session.actor === 'u_ada' && w.events.some((e) => e.type === 'auth.signed_in' && e.actor === 'u_ada' && e.scope === 'ORG:org_kora'));
+    if (!phone) {
+      const n0 = await page.locator('.ds-thread .ds-log > .ds-q').count();
+      await page.fill('#q-ask', 'how much does talent q cost'); await page.press('#q-ask', 'Enter');
+      for (let i = 0; i < 40 && (await page.locator('.ds-thread .ds-log > .ds-q').count()) <= n0; i++) await sleep(100);
+      await sleep(400); const qs = page.locator('.ds-thread .ds-log > .ds-q'); const a = await qs.nth((await qs.count()) - 1).innerText();
+      step('SC-005: signed-in Q gives Talent Q’s prices as hypotheses and links the pricing page', /hypotheses, not proven prices/.test(a) && /Team plan \$149–\$399/.test(a) && /Open the pricing page/.test(a), a);
+    }
     await open(page, '/sign-in');
     await page.locator('.si-providers button', { hasText: 'Google' }).click(); await sleep(350);
     step('SC-008: Google chooser lists cast accounts, not Talentbridge (Microsoft only)', (await page.locator('.si-accounts li').count()) > 5 && !/talentbridge/.test(await page.locator('.si-accounts').innerText()));

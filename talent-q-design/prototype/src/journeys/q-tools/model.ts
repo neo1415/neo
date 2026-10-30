@@ -23,7 +23,8 @@ export function ageWords(w: World, iso: string) {
 }
 /** Freshness of what a source says (published date), not of when Q read it. */
 export function freshness(w: World, s: QSource): { k: 'live' | 'fresh' | 'ageing' | 'old'; word: string } {
-  if (s.kind === 'TALENTQ') return { k: 'live', word: 'Live: read again each time it’s shown' };
+  if (s.kind === 'TALENTQ') return { k: 'live', word: 'Live · read again each time it’s shown' };
+  if (s.kind === 'FILE') return { k: 'fresh', word: `Copy · downloaded ${ageWords(w, s.fetchedAt)}` };
   if (!s.publishedAt) return { k: 'ageing', word: 'Publication date unknown' };
   const d = (simNow(w).getTime() - new Date(s.publishedAt).getTime()) / 864e5;
   return d <= 45 ? { k: 'fresh', word: `Fresh · published ${ageWords(w, s.publishedAt)}` } : d <= 180 ? { k: 'ageing', word: `Ageing · published ${ageWords(w, s.publishedAt)}` } : { k: 'old', word: `Old · published ${ageWords(w, s.publishedAt)}` };
@@ -188,7 +189,7 @@ const BUILD: Partial<Record<ArtKind, number>> = { VIDEO: 3200, DOWNLOAD: 3600, B
 /** Make an artifact for the signed-in person. Returns it (with `denied` when the request couldn't be met). */
 export function makeArtifact(w: World, a: Actor, kind: ArtKind, scope: Record<string, string>, id?: string): QArtifact {
   const st = qtw(w);
-  const art: QArtifact = { id: id ?? uid('art'), kind, owner: a.id, tenant: tenantOf(a), title: '', at: new Date().toISOString(), scope, buildMs: BUILD[kind] ?? 0, sources: [], visibility: 'ME' };
+  const art: QArtifact = { id: id ?? uid('art'), kind, owner: a.id, tenant: tenantOf(a), title: '', at: new Date().toISOString(), day: simNow(w).toISOString(), scope, buildMs: BUILD[kind] ?? 0, sources: [], visibility: 'ME' };
   const deny = (why: string) => { art.denied = why; };
   if ((kind === 'CHART' || kind === 'MAP') && !a.orgId) deny('Charts and maps of a pipeline are for the organisation doing the hiring. Your own data is on your Passport and Applications.');
   if ((kind === 'CHART' || kind === 'MAP') && a.orgId && scope.org && scope.org !== a.orgId) deny(`That pipeline belongs to ${orgName(w, scope.org)}. Each organisation sees only its own hiring, so I can’t chart or map it for ${orgName(w, a.orgId)}.`);
@@ -205,7 +206,8 @@ export function makeArtifact(w: World, a: Actor, kind: ArtKind, scope: Record<st
     }
     if (kind === 'VIDEO') { const sb = storyboard(w, scope); if (!sb) deny('I couldn’t find that role.'); else art.sources.push(upsertSource(w, a, { key: `talentq:role:${scope.mandate ?? scope.job}`, kind: 'TALENTQ', title: sb.basis, licence: scope.job ? 'Public job post' : `${orgName(w, a.orgId)}’s own records`, visibility: scope.job ? 'ME' : 'TEAM' }, art.id)); }
     if (kind === 'BROWSE') { const s = webSource(scope.url); if (!s) deny(`I couldn’t reach ${domainOf(scope.url)}: the page didn’t load (simulated fetch failed). Nothing was saved.`); else art.sources.push(upsertSource(w, a, s, art.id)); }
-    if (kind === 'DOWNLOAD') { const f = fileOf(scope.file); if (f) art.sources.push(upsertSource(w, a, { key: `file:${f.id}`, kind: 'FILE', title: f.name, domain: domainOf(f.url), url: f.url, licence: f.outcome === 'CLEAN' ? 'Downloaded copy; same terms as its page' : 'Not opened' }, art.id)); }
+    // Only a clean file becomes a source; blocked and quarantined files never enter the workspace.
+    if (kind === 'DOWNLOAD') { const f = fileOf(scope.file); if (f && f.outcome === 'CLEAN') art.sources.push(upsertSource(w, a, { key: `file:${f.id}`, kind: 'FILE', title: f.name, domain: domainOf(f.url), url: f.url, licence: f.outcome === 'CLEAN' ? 'Downloaded copy; same terms as its page' : 'Not opened' }, art.id)); }
   }
   st.artifacts.push(art);
   emit(w, a.id, art.denied ? 'q.artifact.denied' : 'q.artifact.made', art.tenant, art.denied ? `Q declined to make a ${KIND_WORD[kind].toLowerCase()}: ${art.denied}` : `Q made ${KIND_WORD[kind].toLowerCase()} “${art.title}” for ${a.first}.`, { artifactId: art.id, kind });

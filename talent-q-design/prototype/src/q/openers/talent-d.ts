@@ -29,7 +29,7 @@ registerOpener({
   build: (w, a) => {
     const x = worksOf(w, a.personId ?? '')[0]; if (!x) return [];
     const behind = Object.entries(x.sharedV).filter(([, v]) => v < latest(x).v);
-    return behind.length ? [{ subject: `td.v.behind.${x.id}`, text: `${orgNm(w, behind[0][0])} has version ${behind[0][1]}; yours is ${latest(x).v}.`, action: { label: 'What changed?', act: { t: 'say', text: 'what changed in my versions' } } }] : [];
+    return behind.length ? [{ subject: `td.v.behind.${x.id}`, text: 'Compare any two versions, or bring an old one back. Nothing is ever deleted.', action: { label: 'What changed?', act: { t: 'say', text: 'what changed in my versions' } } }] : [];
   },
 });
 

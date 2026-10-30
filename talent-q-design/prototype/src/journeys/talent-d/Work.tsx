@@ -53,7 +53,7 @@ export function CritiquePage() {
         ) : (
           <div className="td-page">
             <WorkSwitch mine={mine} cur={x} base="/c/work/critique" />
-            <div className="td-grid2">
+            <div className="td-grid2 td-taskfirst">
               <section className="td-stack" aria-labelledby="td-doc-h">
                 <div className="tb-row-between"><h2 id="td-doc-h" className="tb-h2">{x.title}</h2><Link className="t14" style={{ color: 'inherit' }} to={`/c/work/versions?w=${x.id}`}>{x.versions.length} versions</Link></div>
                 <div className="td-doc" aria-label={`Version ${cur.v}`}>
@@ -211,8 +211,8 @@ export function VersionsPage() {
                       {t.paras.map((p, i) => p === f.paras[i] ? null : (
                         <li key={i}>
                           <span className="td-ck">¶{i + 1}</span>
-                          <span><span className="sr">Was: </span>{wordDiff(f.paras[i] ?? '', p).map((x2, k) => <span key={k}>{x2.changed ? <span className="td-del">{x2.t}</span> : x2.t} </span>)}</span>
-                          <span><span className="sr">Now: </span>{wordDiff(p, f.paras[i] ?? '').map((x2, k) => <span key={k}>{x2.changed ? <span className="td-add">{x2.t}</span> : x2.t} </span>)}</span>
+                          <span><span className="evc-was-k">Was</span> {wordDiff(f.paras[i] ?? '', p).map((x2, k) => <span key={k}>{x2.changed ? <span className="td-del">{x2.t}</span> : x2.t} </span>)}</span>
+                          <span><span className="evc-was-k">Now</span> {wordDiff(p, f.paras[i] ?? '').map((x2, k) => <span key={k}>{x2.changed ? <span className="td-add">{x2.t}</span> : x2.t} </span>)}</span>
                         </li>
                       ))}
                       {t.paras.every((p, i) => p === f.paras[i]) && <li>No differences in the text.</li>}

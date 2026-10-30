@@ -3,7 +3,7 @@
 import { registerSkill } from '../core/engine';
 import { OFFERS } from '../../journeys/public/content';
 
-const ABOUT_US = /\b(talent ?q|this (app|product|platform|service)|you guys|your)\b/;
+const ABOUT_US = /\b(talent ?q|this (app|product|platform|service))\b/;
 registerSkill({
   id: 'public.pricing', side: 'both',
   match: (c) => (/\b(pric\w*|cost|how much|subscription|plans?)\b/.test(c.norm) && ABOUT_US.test(c.norm) && !/\b(role|candidate|salary|offer)\b/.test(c.norm) ? 0.9 : 0),
@@ -17,7 +17,7 @@ registerSkill({
 });
 registerSkill({
   id: 'public.trust', side: 'both',
-  match: (c) => (/\b(what (do|does|can) (you|q) decide|do you (decide|reject)|can (you|q) reject|score (faces|accents|emotion)|trust page)\b/.test(c.norm) ? 0.9 : 0),
+  match: (c) => (/\b(what (do|does|can) (you|q) decide|do you score (faces|accents|emotion)|trust page)\b/.test(c.norm) ? 0.9 : 0),
   handle: () => ({ msgs: [{ kind: 'reply', text: 'I don’t decide who is hired or turned down, and I never reject anyone or send anything without a person’s yes. I don’t score faces, accents, emotion or personality.',
     actions: [{ label: 'Read how Q is kept honest', primary: true, act: { t: 'nav', to: '/site/trust' } }] }] }),
 });

@@ -41,7 +41,7 @@ export function Scope() {
                 <td>{s.basis}</td><td className="t14">{s.licence}</td>
                 <td><span className="hd-fresh" data-s={f.state}>{STATE_WORD[f.state]}</span><span className="t14 muted hd-block">{f.label}</span></td>
                 <td className="num">{n === null ? 'Unknown' : n}{s.id === 'records' && <span className="t14 muted hd-block">simulated count</span>}</td>
-                <td>{edit ? <button type="button" role="switch" aria-checked={on.includes(s.id)} className="ds-switch" aria-label={`Use ${s.label.toLowerCase()}`} onClick={() => set(s.id, !on.includes(s.id))}><span className="knob" aria-hidden="true" /><span className="state">{on.includes(s.id) ? 'On' : 'Off'}</span></button> : <span>{on.includes(s.id) ? 'On' : 'Off'}</span>}</td>
+                <td>{edit ? <button type="button" role="switch" aria-checked={on.includes(s.id)} className="ds-switch" aria-label={`Use ${s.label}`} onClick={() => set(s.id, !on.includes(s.id))}><span className="knob" aria-hidden="true" /><span className="state">{on.includes(s.id) ? 'On' : 'Off'}</span></button> : <span>{on.includes(s.id) ? 'On' : 'Off'}</span>}</td>
               </tr>); })}</tbody>
           </table>
         </div>
@@ -56,7 +56,7 @@ export function Scope() {
       </section>
       <section className="ds-sheet hd-sec" aria-labelledby="nu-h">
         <div className="hd-head"><h2 id="nu-h" className="voice t24">Not used</h2><span className="t14 muted">Decided 30 Oct</span></div>
-        <ul className="hd-list">{NOT_USED.map((x) => <li key={x.id} className="hd-row" data-src={x.id}><span className="hd-rowmain"><b><Glyph k="none" size={14} /> {x.label}</b><span className="t14">{x.why}</span></span></li>)}</ul>
+        <ul className="hd-list hd-notused">{NOT_USED.map((x) => <li key={x.id} className="hd-row" data-src={x.id}><span className="hd-rowmain"><b><Glyph k="none" size={14} /> {x.label}</b><span className="t14">{x.why}</span></span></li>)}</ul>
       </section>
       <section className="ds-sheet hd-testing" aria-labelledby="sc-t">
         <h2 id="sc-t" className="lab" style={{ margin: 0 }}>Testing</h2>

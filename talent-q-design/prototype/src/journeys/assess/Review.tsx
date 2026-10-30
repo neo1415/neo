@@ -50,7 +50,7 @@ export function ScoreReview({ id }: { id: string }) {
           <motion.section className="as-unc" data-hl={hl && !reduce ? '1' : undefined} aria-labelledby="rv-unc" initial={reduce ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: DUR.slow, ease: EASE.enter }}>
             <h2 id="rv-unc" className="as-h2">Read this first: what’s uncertain</h2>
             <ul className="as-list">
-              {p.unknown.length > 0 && <li><b>Unknown, not zero:</b> {p.unknown.map((u) => u.label).join(', ')}. Nothing in this interview or {first}’s shared evidence shows these. They’re left out of the index, which lowers its coverage instead.</li>}
+              {p.unknown.length > 0 && <li><b>Unknown, not zero:</b> {p.unknown.map((u) => u.label).join(', ')}. No marked interview answer covers these and they have no rating yet. They’re left out of the index, which lowers its coverage instead. {first}’s shared evidence may cover some: Q can rate it on <Link to={`/r/people/${iv.personId}`}>the profile scorecard</Link>.</li>}
               {high.length > 0 && <li><b>High uncertainty:</b> {high.map((x) => crit(x.criterionId)?.label).join(', ')}. The answer was general; a follow-up or a work sample would tell you more.</li>}
               {p.list.some((x) => x.existing && !x.existing.refs.some((ref) => ref.evidenceId === `iv_${id}`)) && <li><b>Already rated from shared evidence:</b> {p.list.filter((x) => x.existing && !x.existing.refs.some((ref) => ref.evidenceId === `iv_${id}`)).map((x) => x.label).join(', ')}. The interview doesn’t replace those ratings.</li>}
               {sim && <li><b>Simulated answers:</b> some marked answers were scripted for this prototype.</li>}

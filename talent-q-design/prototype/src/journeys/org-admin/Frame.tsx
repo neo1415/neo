@@ -82,7 +82,7 @@ export function AdminFrame({ sec, title, lede, aside, index, empty, children }: 
     <Canvas title={title} kicker={kicker} open onClose={() => {}} aside={aside}>
       <Sections sec={sec} />
       {lede && <p className="voice t19 oa-lede">{lede}</p>}
-      {lv === 'VIEW' && sec !== 'instructions' && <div className="ds-banner" role="note"><span aria-hidden="true">i</span><span>You can read this. {isAdmin(a) ? '' : `Changes are made by an admin.`}</span><span /></div>}
+      {lv === 'VIEW' && sec !== 'instructions' && sec !== 'reports' && <div className="ds-banner" role="note"><span aria-hidden="true">i</span><span>You can read this. {isAdmin(a) ? '' : `Changes are made by an admin.`}</span><span /></div>}
       {st === 'loading' ? <Skeleton />
         : st === 'error' ? <div className="ds-banner" data-k="risk" role="alert"><span aria-hidden="true">!</span><span>Couldn’t load {secOf(sec).label.toLowerCase()}. The service didn’t answer (simulated). Your settings are unchanged.</span><button type="button" className="ds-btn" onClick={retry}>Try again</button></div>
         : st === 'empty' || (empty !== undefined && empty !== null) ? (empty ?? <Empty title="Nothing here yet" />)
@@ -92,12 +92,12 @@ export function AdminFrame({ sec, title, lede, aside, index, empty, children }: 
 }
 
 // ---------------- MO-035: the agent budget warning (used on billing and as a live card in Q's thread) ----------------
-export function BudgetWarning({ orgId, compact }: { orgId?: string; compact?: boolean }) {
+export function BudgetWarning({ orgId, compact, flat }: { orgId?: string; compact?: boolean; /** Inside a sheet: no second box (one elevation). */ flat?: boolean }) {
   const w = useWorld((x) => x); const a = actorOf(w); const b = billingOf(w, orgId); if (!b) return null;
-  const share = budgetShare(b); const over = share >= b.budget.warnAt; const admin = isAdmin(a) && a.orgId === orgId;
+  const share = budgetShare(b); const over = share >= b.budget.warnAt || b.budget.paused; const admin = isAdmin(a) && a.orgId === orgId;
   if (!over && compact) return null;
   return (
-    <motion.div className="oa-budget" data-over={over ? '1' : undefined} data-paused={b.budget.paused ? '1' : undefined} role={over && !b.budget.decision ? 'alert' : 'group'} aria-label="Agent budget" {...(over ? arrive : {})}>
+    <motion.div className="oa-budget" data-flat={flat ? '1' : undefined} data-over={over ? '1' : undefined} data-paused={b.budget.paused ? '1' : undefined} role={over && !b.budget.decision ? 'alert' : 'group'} aria-label="Agent budget" {...(over ? arrive : {})}>
       <div className="oa-budget-row">
         <span className="lab">Agent budget this month</span>
         <span className="num"><b>{usd(b.budget.spent)}</b> of {usd(b.budget.cap)} · {Math.round(share * 100)}%</span>

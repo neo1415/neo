@@ -26,12 +26,13 @@ function Turns({ id, viewer }: { id: string; viewer: 'INT' | 'CAND' }) {
   return (
     <ol className="as-turns" aria-label="What was said" aria-live="polite">
       {turns.map((t) => (
+        t.who === 'SYS' ? <motion.li key={t.id} className="as-turn" data-who="SYS" {...arrive}><span><span className="num">{fmtTime(t.at)}</span> · {t.text}</span></motion.li> :
         <motion.li key={t.id} className="as-turn" data-who={t.who} {...arrive}>
           <span className="as-turn-h">
             <b>{t.who === 'INT' ? actorFirst(w, t.by ?? '') : t.who === 'CAND' ? personFirst(w, iv.personId) : 'Room'}</b>
             <span className="num">{fmtTime(t.at)}</span>
             {t.reqId && <span>{reqLabel(w, t.reqId)}</span>}
-            {t.who !== 'SYS' && <span>{t.recorded ? 'Recorded' : 'Not recorded'}</span>}
+            {<span>{t.recorded ? 'Recorded' : 'Not recorded'}</span>}
             {t.simulated && <span className="ds-sim">Simulated answer</span>}
           </span>
           <p>{t.text}</p>
@@ -66,8 +67,8 @@ export function LiveRoomRecruiter({ id }: { id: string }) {
       {!onPanel && <div className="ds-banner" role="status"><Glyph k="none" /><span><b>You’re not on this panel.</b> Only {iv.panel.map((p) => actorName(w, p)).join(' and ')} can run this room.</span><span /></div>}
       {state === 'INTERRUPTED' && <div className="ds-banner" data-k="warn" role="alert"><Glyph k="partial" /><span><b>The connection dropped.</b> Everything said so far is kept. Recording is paused until you turn it back on.</span><button type="button" className="ds-btn primary" onClick={() => live('resume')}>Reconnect</button></div>}
       <div className="as-live">
-        <div className="as-grid">
-          <section className="ds-sheet as-grid" aria-labelledby="lv-plan">
+        <div className="as-grid as-col">
+          <section className="ds-sheet as-grid" aria-labelledby="lv-plan" style={{ order: state === 'LOBBY' ? 1 : 3 }}>
             <div className="as-row"><h2 id="lv-plan" className="as-h2">Question plan</h2>{plan && <span className="t14 muted">{plan.v ? `From locked bank v${plan.v}` : 'Q’s suggestions (no locked bank)'} · must-haves first</span>}</div>
             {!plan ? (
               <div className="as-grid" style={{ gap: 8 }}>
@@ -75,6 +76,18 @@ export function LiveRoomRecruiter({ id }: { id: string }) {
                 <div className="as-actions"><button type="button" className="ds-btn primary" disabled={!onPanel} onClick={() => run((x, a) => { buildPlan(x, a, id); })}>Build the question plan</button></div>
               </div>
             ) : (
+              state !== 'LOBBY' ? (
+                <ol className="as-list" aria-label="Questions by requirement">
+                  {plan.cards.map((c) => c.qs.map((q) => (
+                    <li key={q.id} className="as-li">
+                      <div className="as-row"><span className="t14"><b>{c.label}</b> · {c.mustHave ? 'must have' : 'nice to have'} · before: {(LEVEL_WORD[c.level as Level] ?? c.level).toLowerCase()}</span>{askedReq.has(c.reqId) && <span className="t14 muted">Asked</span>}</div>
+                      <p className="as-p" style={{ fontFamily: 'var(--voice)', fontSize: 17 }}>{q.text}</p>
+                      <div className="as-actions">{q.locked ? <Stamp>Locked v{plan.v}</Stamp> : <span className="t14 muted">Q suggested, not in the locked bank</span>}
+                        {state === 'LIVE' && onPanel && <button type="button" className={`ds-btn ${askedReq.has(c.reqId) ? 'quiet' : ''}`} disabled={!!r?.awaiting} onClick={() => live('ask', { text: q.text, reqId: c.reqId, qid: q.id })}>{askedReq.has(c.reqId) ? 'Ask again' : 'Ask this'}</button>}</div>
+                    </li>
+                  )))}
+                </ol>
+              ) : (
               <ol className="as-plan" aria-label="Plan by requirement">
                 {plan.cards.map((c, i) => (
                   <motion.li key={c.reqId} className="as-card" initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: DUR.slow, ease: EASE.enter, delay: reduce ? 0 : i * 0.08 }}>
@@ -84,15 +97,15 @@ export function LiveRoomRecruiter({ id }: { id: string }) {
                       <div key={q.id} className="as-grid" style={{ gap: 6 }}>
                         <p className="as-p" style={{ fontFamily: 'var(--voice)', fontSize: 17 }}>{q.text}</p>
                         <span className="t14 muted">{q.locked && <><Stamp>Locked v{plan.v}</Stamp>{' '}</>}{q.why}</span>
-                        {state === 'LIVE' && onPanel && <button type="button" className={`ds-btn ${askedReq.has(c.reqId) ? 'quiet' : ''}`} disabled={!!r?.awaiting} onClick={() => live('ask', { text: q.text, reqId: c.reqId, qid: q.id })}>{askedReq.has(c.reqId) ? 'Ask again' : 'Ask this'}</button>}
                       </div>
                     ))}
                   </motion.li>
                 ))}
               </ol>
+              )
             )}
           </section>
-          <section className="ds-sheet as-grid" aria-labelledby="lv-said">
+          <section className="ds-sheet as-grid" aria-labelledby="lv-said" style={{ order: 2 }}>
             <div className="as-row"><h2 id="lv-said" className="as-h2">What was said</h2>{r?.consent.recording === 'YES' && r.recording === 'ON' ? <span className="as-rec" data-on="1"><i aria-hidden="true" />Recording</span> : <span className="as-rec"><i aria-hidden="true" />Not recording</span>}</div>
             <Turns id={id} viewer="INT" />
             {state === 'LIVE' && onPanel && (
@@ -114,10 +127,10 @@ export function LiveRoomRecruiter({ id }: { id: string }) {
             )}
           </section>
         </div>
-        <div className="as-grid">
+        <div className="as-grid as-col">
           {/* MO-023: Q's follow-ups slide in beside the transcript, never over it; hidden on request; a static card under reduced motion. */}
           {r && state !== 'ENDED' && (
-            <section className="as-qpanel" aria-labelledby="lv-q">
+            <section className="as-qpanel" aria-labelledby="lv-q" style={{ order: 0 }}>
               <div className="as-row"><span id="lv-q" className="as-qlab"><span className="as-qdot" aria-hidden="true" />Q · follow-ups</span><button type="button" className="ds-btn quiet" aria-expanded={r.panel === 'OPEN'} onClick={() => live('panel')}>{r.panel === 'OPEN' ? 'Hide' : `Show${sugs.length ? ` (${sugs.length})` : ''}`}</button></div>
               <p className="t14 as-p"><b>Only interviewers see this.</b> {first} was told Q is here for you. Q reads the answers as words; it doesn’t score {first} or read their face or voice.</p>
               {r.panel === 'OPEN' && (
@@ -136,7 +149,7 @@ export function LiveRoomRecruiter({ id }: { id: string }) {
               )}
             </section>
           )}
-          <section className="ds-sheet as-grid" aria-labelledby="lv-who">
+          <section className="ds-sheet as-grid" aria-labelledby="lv-who" style={{ order: 5 }}>
             <h2 id="lv-who" className="as-h2">In the room</h2>
             <ul className="as-people">
               {iv.panel.map((p) => <li key={p}><span className="as-av" aria-hidden="true">{w.actors.find((a) => a.id === p)?.initials}</span><span><b>{actorName(w, p)}</b>{p === me.id ? ' (you)' : ''}<br /><span className="t14 muted">Interviewer</span></span></li>)}
@@ -144,7 +157,7 @@ export function LiveRoomRecruiter({ id }: { id: string }) {
               <li><span className="as-av" data-q="1" aria-hidden="true">Q</span><span><b>Q</b><br /><span className="t14 muted">Suggests follow-ups to interviewers only. Doesn’t score.</span></span></li>
             </ul>
           </section>
-          <section className="ds-sheet as-grid" aria-labelledby="lv-rec">
+          <section className="ds-sheet as-grid" aria-labelledby="lv-rec" style={{ order: state === 'LOBBY' ? 0 : 4 }}>
             <h2 id="lv-rec" className="as-h2">Consent and recording</h2>
             <dl className="as-kv">
               <dt>Told Q is here</dt><dd>{r?.consent.told ? `Yes, before joining` : `When ${first} joins`}</dd>
@@ -161,12 +174,12 @@ export function LiveRoomRecruiter({ id }: { id: string }) {
             <p className="t14 muted as-p">Transcripts keep only the recorded parts, for 90 days, for the panel and the role’s recruiter. {first} can read their own.</p>
           </section>
           {onPanel && state !== 'ENDED' && (
-            <Demo note={`${first} acts from their own side (#/c/assess/live/${id}?as=${iv.personId}). Here you can simulate them.`}>
+            <div style={{ order: 6 }}><Demo note={`${first} acts from their own side (#/c/assess/live/${id}?as=${iv.personId}). Here you can simulate them.`}>
               {!r?.candidateJoined && <button type="button" className="ds-btn quiet" onClick={() => live('join')}>Simulate: {first} joins</button>}
               {r?.consent.recording === 'PENDING' && <><button type="button" className="ds-btn quiet" onClick={() => live('consent', { yes: true })}>Simulate: {first} agrees</button><button type="button" className="ds-btn quiet" onClick={() => live('consent', { yes: false })}>Simulate: {first} says no</button></>}
               {r?.awaiting && <button type="button" className="ds-btn quiet" onClick={() => live('answer')}>Simulate: {first} answers</button>}
               {state === 'LIVE' && <button type="button" className="ds-btn quiet" onClick={() => live('drop')}>Simulate: connection drops</button>}
-            </Demo>
+            </Demo></div>
           )}
         </div>
       </div>

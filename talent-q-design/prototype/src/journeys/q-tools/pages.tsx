@@ -48,7 +48,7 @@ export function Library() {
         <section className="ds-sheet qt-stack"><h2 className="qt-h">Try asking</h2><div className="ds-next qt-asks">{ASKS(a).map((t) => <button key={t} type="button" className="ds-btn" onClick={() => say(t)}>“{t}”</button>)}</div></section>
       ) : (
         <ul className="qt-cards">{arts.map((x) => (
-          <li key={x.id}><Link to={`/q/artifacts/${x.id}`} className="qt-card"><span className="lab">{KIND_WORD[x.kind]}{x.denied ? ' · not made' : ''}</span><b>{x.title}</b><span className="t14 muted">{fmtDay(x.at)}{x.visibility === 'TEAM' ? ` · shared with ${orgName(w, a.orgId)}` : ' · only you'}</span></Link></li>
+          <li key={x.id}><Link to={`/q/artifacts/${x.id}`} className="qt-card"><span className="lab">{KIND_WORD[x.kind]}{x.denied ? ' · not made' : ''}</span><b>{x.title}</b><span className="t14 muted">{fmtDay(x.day ?? x.at)}{x.visibility === 'TEAM' ? ` · shared with ${orgName(w, a.orgId)}` : ' · only you'}</span></Link></li>
         ))}</ul>
       )}
     </Canvas>
@@ -80,7 +80,7 @@ export function ArtifactPage({ id }: { id: string }) {
   const srcs = qt(w).sources.filter((s) => x.sources.includes(s.id));
   const removed = x.sources.length - srcs.length;
   return (
-    <Canvas title={x.title} kicker={`${KIND_WORD[x.kind]} · made by Q for ${x.owner === a.id ? 'you' : w.actors.find((y) => y.id === x.owner)?.first} · ${fmtDay(x.at)}`} open onClose={noop}
+    <Canvas title={x.title} kicker={`${KIND_WORD[x.kind]} · made by Q for ${x.owner === a.id ? 'you' : w.actors.find((y) => y.id === x.owner)?.first} · ${fmtDay(x.day ?? x.at)}`} open onClose={noop}
       aside={<div className="qt-row"><Handoff w={w} a={a} id={x.id} position={frame} /></div>}>
       <Tools here="/q/artifacts" />
       <Handoff w={w} a={a} id={x.id} position={frame} banner />
@@ -186,7 +186,7 @@ export function SourcesPage() {
             <li key={s.id} className="qt-source">
               <div className="qt-source-main"><span className="lab">{s.kind === 'WEB' ? 'Web page · untrusted' : s.kind === 'FILE' ? 'File' : 'Talent Q records'}</span><b>{s.title}</b>{s.domain && <span className="qt-domain">{s.url}</span>}</div>
               <dl className="qt-source-meta">
-                <div><dt>Freshness</dt><dd><span className="ds-tag" data-k={fr.k === 'old' ? 'warn' : fr.k === 'fresh' || fr.k === 'live' ? 'ok' : undefined}>{fr.k === 'live' ? 'Live' : fr.k === 'fresh' ? 'Fresh' : fr.k === 'ageing' ? 'Ageing' : 'Old'}</span> {fr.word.replace(/^\w+ · /, '')}{s.kind !== 'TALENTQ' ? ` · read ${fmtDay(s.fetchedAt)}` : ''}</dd></div>
+                <div><dt>Freshness</dt><dd><span className="ds-tag" data-k={fr.k === 'old' ? 'warn' : fr.k === 'fresh' || fr.k === 'live' ? 'ok' : undefined}>{fr.word.split(' · ')[0]}</span> {fr.word.split(' · ').slice(1).join(' · ')}{s.kind !== 'TALENTQ' ? ` · read ${fmtDay(s.fetchedAt)}` : ''}</dd></div>
                 <div><dt>Licence</dt><dd>{s.licence}</dd></div>
                 <div><dt>Who can see it</dt><dd>{s.visibility === 'TEAM' ? `Everyone at ${orgName(w, a.orgId)}` : s.addedBy === a.id ? 'Only you' : 'Only the person who added it'}</dd></div>
                 <div><dt>Used in</dt><dd>{s.usedIn.map(artTitle).join(', ')}</dd></div>

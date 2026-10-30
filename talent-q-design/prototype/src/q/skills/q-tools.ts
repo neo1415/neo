@@ -47,7 +47,7 @@ registerSkill({
       const d = pipelineData(c.w, c.actor, scope.mandate);
       const top = [...d.rows].sort((p, q) => q.n - p.n)[0];
       return {
-        text: d.total ? `Here’s ${x.title.charAt(0).toLowerCase()}${x.title.slice(1)}: ${d.total} ${d.total === 1 ? 'person' : 'people'}, most at ${top.label} (${top.n}).${d.hidden ? ` ${d.hidden} more aren’t shown because of their privacy settings.` : ''} It redraws from live records, and there’s a table view.` : 'There’s no one in this pipeline yet, so the chart is empty. It fills as people are found or apply.',
+        text: d.total ? `Here’s the chart: ${d.total} ${d.total === 1 ? 'person' : 'people'}, most at ${top.label} (${top.n}).${d.hidden ? ` ${d.hidden} more ${d.hidden === 1 ? 'isn’t' : 'aren’t'} shown because of their privacy settings.` : ''} It redraws from live records, and there’s a table view.` : 'There’s no one in this pipeline yet, so the chart is empty. It fills as people are found or apply.',
         used: ['Pipeline records (live)', 'Privacy settings applied'], actions: [srcAction, { label: 'Map where they are', act: { t: 'say', text: 'map where our candidates are' } }],
       };
     });
@@ -66,7 +66,7 @@ registerSkill({
       const d = mapData(c.w, c.actor, scope.mandate);
       const lead = d.places[0];
       return {
-        text: d.total ? `${d.total} ${d.total === 1 ? 'person' : 'people'} across ${d.places.length} ${d.places.length === 1 ? 'city' : 'cities'}${lead ? `, most in ${lead.city} (${lead.people.length})` : ''}.${d.unknown.length ? ` ${d.unknown.length} haven’t shared a location; that’s unknown, not zero.` : ''}${d.hidden ? ` ${d.hidden} aren’t shown because of their privacy settings.` : ''} City level only, with a list view.` : 'No one to place yet.',
+        text: d.total ? `${d.total} ${d.total === 1 ? 'person' : 'people'} across ${d.places.length} ${d.places.length === 1 ? 'city' : 'cities'}${lead ? `, most in ${lead.city} (${lead.people.length})` : ''}.${d.unknown.length ? ` ${d.unknown.length} ${d.unknown.length === 1 ? 'hasn’t' : 'haven’t'} shared a location; that’s unknown, not zero.` : ''}${d.hidden ? ` ${d.hidden} ${d.hidden === 1 ? 'isn’t' : 'aren’t'} shown because of their privacy settings.` : ''} City level only, with a list view.` : 'No one to place yet.',
         used: ['City from each profile', 'Privacy settings applied'], actions: [srcAction],
       };
     });
@@ -157,7 +157,7 @@ registerSkill({
   id: 'qt.sources', side: 'both',
   match: (c) => (/\b(what|which) sources\b|\bsources (did|do) you use\b|\bwhere did (you|that|this|these|those)( numbers?| figures?| data)? (get|come)|\bcite (your|the) sources\b|\byour sources\b|\bshow (me )?(the |your )?sources\b/.test(c.norm) ? 0.95 : 0),
   handle: (c) => {
-    const last = mine(c.w, c.actor).find((x) => !x.denied);
+    const last = mine(c.w, c.actor).find((x) => !x.denied && qt(c.w).sources.some((s) => s.usedIn.includes(x.id)));
     const n = qt(c.w).sources.filter((s) => last && s.usedIn.includes(last.id)).length;
     if (!last) return { msgs: [reply('I haven’t used any sources for you yet. When I look something up or make a chart, I list exactly what I read, how fresh it is and who can see it.', { actions: [{ label: 'Open sources', act: { t: 'nav', to: '/q/sources' } }] })] };
     return { msgs: [reply(`For “${last.title}” I used ${n} ${n === 1 ? 'source' : 'sources'}, below with freshness, licence and who can see them. Web pages count as untrusted until you check them.`, { ref: { type: 'qt.sources', id: last.id }, actions: [{ label: 'All sources', act: { t: 'nav', to: '/q/sources' } }] })] };

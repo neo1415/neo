@@ -7,6 +7,8 @@ import type { World } from '../../mock/world';
 export type ArtKind = 'CHART' | 'MAP' | 'DIAGRAM' | 'VIDEO' | 'BROWSE' | 'DOWNLOAD';
 export interface QArtifact {
   id: string; kind: ArtKind; owner: string; tenant: string; title: string; at: string;
+  /** The simulated day it was made (the product clock), for display; `at` is the real time used for progress. */
+  day?: string;
   /** What was asked: e.g. { mandate: 'm_backend' } for a chart, { url } for a page, { file } for a download. */
   scope: Record<string, string>;
   /** Simulated build time in ms (video storyboard, download scan); progress is derived from `at`, never faked by a timer. */

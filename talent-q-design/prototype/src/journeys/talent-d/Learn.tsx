@@ -48,8 +48,9 @@ function Player({ r, pid }: { r: Resource; pid: string }) {
           {captions && <p className="td-cap" aria-hidden="true">{cue.text}</p>}
         </div>
         <div className="td-controls">
-          <button type="button" aria-pressed={playing} onClick={() => setPlaying((p) => !p)} aria-label={playing ? 'Pause' : pos >= r.video.length ? 'Replay' : 'Play'}>{playing ? '❚❚ Pause' : pos >= r.video.length ? '↺ Replay' : '▶ Play'}</button>
+          <button type="button" onClick={() => { if (pos >= r.video.length) seek(0); setPlaying((p) => !p); }} aria-label={playing ? 'Pause' : pos >= r.video.length ? 'Replay' : 'Play'}>{playing ? '❚❚ Pause' : pos >= r.video.length ? '↺ Replay' : '▶ Play'}</button>
           <button type="button" onClick={() => seek(pos - 10)} aria-label="Back 10 seconds">−10s</button>
+          <button type="button" onClick={() => seek(pos + 10)} aria-label="Forward 10 seconds">+10s</button>
           <input type="range" min={0} max={r.video.length} value={pos} onChange={(e) => seek(Number(e.target.value))} aria-label="Position" aria-valuetext={`${mmss(pos)} of ${mmss(r.video.length)}`} />
           <span className="td-time" aria-hidden="true">{mmss(pos)} / {mmss(r.video.length)}</span>
           <button type="button" aria-pressed={captions} onClick={() => set({ captions: !captions })}>Captions</button>

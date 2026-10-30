@@ -74,7 +74,7 @@ export function Reports() {
         <Sheet id="rp-tts" title="Days from opening to first shortlist" note="From the role’s first version to the first person shortlisted. Read from your pipeline; nothing is estimated.">
           {view === 'chart' ? <ul className="oa-bars" aria-label="Days to first shortlist by role">{rows.map((r) => (
             <li key={r.id} title={r.days === null ? `${r.title}: no shortlist yet` : `${r.title}: ${r.days} days`}><span className="oa-bar-l">{r.title}</span>
-              {r.days === null ? <span className="t14 muted">No shortlist yet</span> : <span className="oa-bar-w"><span className="oa-bar" style={{ width: `${Math.max(4, (100 * r.days) / max)}%` }} /><span className="num t14">{r.days} d</span></span>}</li>))}</ul>
+              {r.days === null ? <span className="t14 muted">No shortlist yet</span> : <span className="oa-bar-w"><span className="oa-bar" style={{ width: `${Math.max(4, (100 * r.days) / max)}%` }} /><span className="num t14 oa-nowrap">{r.days} day{r.days === 1 ? '' : 's'}</span></span>}</li>))}</ul>
             : <div className="ds-table-wrap" tabIndex={0} role="region" aria-label="Days to first shortlist"><table className="ds-table oa-table"><thead><tr><th scope="col">Role</th><th scope="col">Opened</th><th scope="col">First shortlist</th><th scope="col" className="num">Days</th></tr></thead>
               <tbody>{rows.map((r) => <tr key={r.id}><th scope="row">{r.title}</th><td>{r.opened ? d10(r.opened) : 'Not recorded'}</td><td>{r.shortlistedAt ? d10(r.shortlistedAt) : 'Not yet'}</td><td className="num">{r.days ?? '—'}</td></tr>)}</tbody></table></div>}
         </Sheet>
@@ -110,7 +110,8 @@ export function Models() {
               <span className="oa-li-tags"><Tag k="busy">Simulated</Tag><Tag k={r.rollout === 'PAUSED' ? 'warn' : r.rollout === 'ALL' ? 'ok' : undefined}>{r.version} · {r.rollout === 'ALL' ? 'everyone' : r.rollout === 'PILOT' ? 'pilot' : 'paused'}</Tag>{r.issues.length > 0 && <Tag k="warn">! {r.issues.length} issue</Tag>}</span>
               <b>{r.task}</b><span className="t14 muted">{r.plain}</span>
               <ol className="oa-route" aria-label={`Route for ${r.task}`}>{r.route.map((s, i) => <li key={s}>{i === 0 ? 'First: ' : 'Then: '}{s}</li>)}<li>Last resort: {r.fallback}</li></ol>
-              <dl className="oa-dl oa-dl-tight"><dt>Tier</dt><dd>{r.tier}</dd><dt>Budget per call</dt><dd>{r.budget}</dd><dt>Timeout</dt><dd className="num">{r.timeoutMs >= 1000 ? `${r.timeoutMs / 1000} s` : `${r.timeoutMs} ms`}</dd><dt>Cache</dt><dd>{r.cache}</dd>{r.issues.length > 0 && <><dt>Issues</dt><dd>{r.issues.join('; ')}</dd></>}</dl>
+              <details className="oa-more"><summary className="t14">Budget {r.budget} · timeout {r.timeoutMs >= 1000 ? `${r.timeoutMs / 1000} s` : `${r.timeoutMs} ms`}{r.issues.length ? ' · issues' : ''}</summary>
+                <dl className="oa-dl oa-dl-tight"><dt>Tier</dt><dd>{r.tier}</dd><dt>Budget per call</dt><dd>{r.budget}</dd><dt>Timeout</dt><dd className="num">{r.timeoutMs >= 1000 ? `${r.timeoutMs / 1000} s` : `${r.timeoutMs} ms`}</dd><dt>Cache</dt><dd>{r.cache}</dd>{r.issues.length > 0 && <><dt>Issues</dt><dd>{r.issues.join('; ')}</dd></>}</dl></details>
               {r.lastTrace && open === r.id && <ol className="oa-trace" aria-label="Last simulated run">{r.lastTrace.steps.map((s) => <li key={s}>{s}</li>)}</ol>}
             </div>
               <div className="oa-row"><button type="button" className="ds-btn quiet" onClick={() => { act('oa.model.trace', { id: r.id }); setOpen(r.id); }}>Simulate a timeout</button>

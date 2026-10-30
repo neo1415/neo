@@ -18,6 +18,8 @@ export const daysBetween = (a: Date, b: string) => Math.round((new Date(b.length
 // ---------------- SC-033 sources ----------------
 export type SourceId = 'applicants' | 'shared' | 'discoverable' | 'registered' | 'records' | 'evidence';
 export interface SourceDef { id: SourceId; label: string; basis: string; licence: string; freshness: (w: World, orgId: string) => { at: string; live: boolean }; agencyOnly?: boolean; employerOnly?: boolean; enrich?: boolean }
+/** Short names for running text (labels keep their own capitals, e.g. Talent Q). */
+export const SOURCE_SHORT: Record<SourceId, string> = { applicants: 'your applicants', shared: 'people who shared with you', discoverable: 'Talent Q members open to being found', registered: 'people registered with you', records: 'your past candidates', evidence: 'candidates’ evidence links' };
 export const SOURCES: SourceDef[] = [
   { id: 'applicants', label: 'People who applied to your roles', basis: 'They applied to you', licence: 'Their own application, under Talent Q’s candidate terms', freshness: (w) => ({ at: simNow(w).toISOString(), live: true }) },
   { id: 'shared', label: 'People who shared evidence with you', basis: 'They chose to share with you', licence: 'Their share, until they stop it', freshness: (w) => ({ at: simNow(w).toISOString(), live: true }) },
@@ -53,7 +55,7 @@ export function coverage(w: World, orgId: string, s: SourceId): number | null {
 export function freshness(w: World, orgId: string, s: SourceDef): { label: string; state: 'LIVE' | 'OK' | 'STALE' | 'ERROR' } {
   if (s.id === 'evidence' && hd(w).sourceDown) return { label: 'Couldn’t refresh: the repository host didn’t answer', state: 'ERROR' };
   const f = s.freshness(w, orgId);
-  if (f.live) return { label: 'Live: checked each time a result is shown', state: 'LIVE' };
+  if (f.live) return { label: 'Checked each time a result is shown', state: 'LIVE' };
   const d = -daysBetween(simNow(w), f.at);
   return { label: `Last refreshed ${fmtDay(f.at)} (${d <= 0 ? 'today' : d === 1 ? 'yesterday' : `${d} days ago`})`, state: d > 14 ? 'STALE' : 'OK' };
 }
@@ -92,7 +94,7 @@ export function emptyReasons(w: World, orgId: string, q: string) {
   if (city.length && noCity.length) { reasons.push(`${noCity.length} ${noCity.length === 1 ? 'person matches' : 'people match'} the skills, but not in ${city.map((c) => c[0].toUpperCase() + c.slice(1)).join(' or ')}.`); repairs.push({ label: `Search without “${city.join(', ')}”`, query: words.join(' ') }); }
   const off = all.filter((s) => !on.includes(s));
   const offHits = off.length ? search(w, orgId, q, all) .filter((h) => !h.sources.some((s) => on.includes(s))) : [];
-  if (offHits.length) { const src = off.find((s) => offHits.some((h) => h.sources.includes(s)))!; reasons.push(`${offHits.length} more ${offHits.length === 1 ? 'person is' : 'people are'} in a source you switched off (${SOURCES.find((s) => s.id === src)!.label.toLowerCase()}).`); repairs.push({ label: `Include ${SOURCES.find((s) => s.id === src)!.label.toLowerCase()}`, include: src }); }
+  if (offHits.length) { const src = off.find((s) => offHits.some((h) => h.sources.includes(s)))!; reasons.push(`${offHits.length} more ${offHits.length === 1 ? 'person is' : 'people are'} in a source you switched off (${SOURCE_SHORT[src]}).`); repairs.push({ label: `Include ${SOURCE_SHORT[src]}`, include: src }); }
   const unknown = words.filter((x) => !w.people.some((p) => canSeeCandidate(w, p.personId, orgId) && hay(w, p.personId, orgId).includes(x)));
   for (const u of unknown) { reasons.push(`Nobody you can see mentions “${u}” in their profile or shared evidence.`); if (RELATED[u]) repairs.push({ label: `Try a related skill: ${RELATED[u]}`, query: [...words.filter((x) => x !== u), RELATED[u].toLowerCase(), ...city].join(' ') }); }
   if (!reasons.length) reasons.push('No one matches all of those words together.');
@@ -115,7 +117,7 @@ export const availOf = (w: World, pid: string): Availability | undefined => hd(w
 /** Team-free times (hire-c's search across time zones and calendars), marked by whether they fit what the candidate said. */
 export function bookingSlots(w: World, a: Actor, pid: string, panel: string[]): BookSlot[] {
   const av = availOf(w, pid);
-  const s = findSlots(w, { attendees: panel, personId: pid, dates: nextWeek(w), orgId: a.orgId, limit: 30, perDay: 6 });
+  const s = findSlots(w, { attendees: panel, personId: pid, dates: nextWeek(w), orgId: a.orgId, limit: 30, perDay: 3 });
   const tz = tzOf(w, pid);
   return s.map((x) => {
     if (!av) return { ...x, fits: null };

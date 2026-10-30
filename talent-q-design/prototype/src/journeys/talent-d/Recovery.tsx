@@ -37,7 +37,7 @@ export function RecoveryPage({ appId }: { appId: string }) {
         ) : app && job && (
           <div className="td-page">
             <div className="tb-row-between"><span className="t14">Status: <StageTag status={app.status} by={org} /></span>{decided && <span className="t14 muted">{org} updated it on {dayMonth(decided.at)}</span>}</div>
-            <div className="td-qline"><QMark mood="idle" size={20} /><p>I’m sorry, {a.first}. This is one team’s decision about one role.{verified.length ? ` It doesn’t change what your record shows, like ${verified[0].title.split(',')[0].toLowerCase()} confirmed by your employer.` : ''} {r.feedback ? `${org} shared some feedback, and I’ll only use their words.` : `${org} didn’t say why, and I won’t guess.`}</p></div>
+            <div className="td-qline"><QMark mood="idle" size={20} /><p>I’m sorry, {a.first}. This is one team’s decision about one role.{verified.length ? ` It doesn’t change what your record shows: “${verified[0].title.split(',').slice(0, 2).join(',')}” is still confirmed.` : ''} {r.feedback ? `${org} shared some feedback, and I’ll only use their words.` : `${org} didn’t say why, and I won’t guess.`}</p></div>
 
             <section className="ds-sheet td-stack" aria-labelledby="td-fb-h">
               <h2 id="td-fb-h" className="tb-h2">What {org} told you</h2>

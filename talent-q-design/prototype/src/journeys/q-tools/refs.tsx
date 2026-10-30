@@ -19,7 +19,8 @@ const pathOf = (kind: string, id: string) => kind === 'BROWSE' ? `/q/browse/${id
 function ArtCard({ id }: { id: string }) {
   const w = useWorld((x) => x); const a = actorOf(w);
   const x = artOf(w, id);
-  if (!x || !canOpen(a, x)) return null;
+  // A refusal is said in Q's words; an empty "not made" card would only repeat it.
+  if (!x || !canOpen(a, x) || x.denied) return null;
   return (
     <div className="hire-b-qcard qt-qcard" role="group" aria-label={`${KIND_WORD[x.kind]}: ${x.title}`}>
       <div className="hire-b-qcard-head"><span className="lab">{KIND_WORD[x.kind]}{x.denied ? ' · not made' : ''}</span><Link to={pathOf(x.kind, x.id)} className="qt-open">Open</Link></div>

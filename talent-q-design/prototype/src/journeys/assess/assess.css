@@ -39,11 +39,11 @@
 
 /* Live room: transcript left, controls right; one column on phones. */
 .as-live { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; align-items: start; }
-@media (max-width: 1100px) { .as-live { grid-template-columns: minmax(0, 1fr); } }
-.as-turns { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; max-height: 520px; overflow: auto; }
+@media (max-width: 1100px) { .as-live { grid-template-columns: minmax(0, 1fr); } .as-live > .as-col { display: contents; } }
+.as-turns { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .as-turn { display: grid; gap: 4px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--rule); background: var(--sheet); }
 .as-turn[data-who='INT'] { background: var(--wash); border-color: transparent; }
-.as-turn[data-who='SYS'] { border-style: dashed; font-size: 14px; color: var(--ink-3); }
+.as-turn[data-who='SYS'] { border: 0; background: none; padding: 0 12px; font-size: 13px; color: var(--ink-3); }
 .as-turn-h { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 13px; color: var(--ink-3); }
 .as-turn p { margin: 0; }
 .as-people { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
@@ -82,7 +82,8 @@
 .as-log input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--moon); }
 .as-log [data-lvl='WARN'] { text-decoration: underline dotted; }
 .as-log [data-lvl='ERROR'] { text-decoration: underline; font-weight: 600; }
-@media (max-width: 760px) { .as-log li label { grid-template-columns: 24px minmax(0, 1fr); } .as-log .t, .as-log .src { grid-column: 2; } .as-log .t { font-size: 12px; color: var(--moon-2); } }
+@media (max-width: 760px) { .as-log li label { grid-template-columns: 24px minmax(0, 1fr); } .as-log input { grid-row: 1 / span 3; } .as-log .t, .as-log .src, .as-log .msg { grid-column: 2; } .as-log .t, .as-log .src { font-size: 12px; color: var(--moon-2); } }
+.as-newtag { border-color: var(--ink); color: var(--ink); font-weight: 600; }
 .as-chat { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .as-chat li { max-width: 80%; padding: 10px 12px; border-radius: 14px; line-height: 1.45; }
 .as-chat li[data-who='CUST'] { background: var(--wash); justify-self: start; border-bottom-left-radius: 4px; }

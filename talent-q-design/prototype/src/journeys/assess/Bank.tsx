@@ -63,7 +63,7 @@ export function QuestionBank() {
         <ol className="as-list">
           {shown.questions.map((q) => (
             <li key={q.id} className="as-li" data-new={newIds.has(q.id) ? '1' : undefined}>
-              <div className="as-row"><span className="as-tags">{q.reqId && <span className="ds-tag">{reqLabel(w, q.reqId)}</span>}{q.tags.filter((t) => !/^(payments|go|postgres|on-call|mentoring)$/.test(t)).map((t) => <span key={t} className="ds-tag">{t}</span>)}{newIds.has(q.id) && <span className="ds-tag" data-k="busy">new in v{draft!.v}</span>}</span>
+              <div className="as-row"><span className="as-tags">{q.reqId && <span className="ds-tag">{reqLabel(w, q.reqId)}</span>}{q.tags.filter((t) => !/^(payments|go|postgres|on-call|mentoring)$/.test(t)).map((t) => <span key={t} className="ds-tag">{t}</span>)}{newIds.has(q.id) && <span className="ds-tag as-newtag">New in v{draft!.v}</span>}</span>
                 {draft && editable && <button type="button" className="ds-btn quiet" onClick={() => run((x, a) => removeQuestion(x, a, b.id, q.id))} aria-label={`Remove from draft: ${q.text}`}>Remove</button>}</div>
               <p className="as-q">{q.text}</p>
               {q.followUp && <p className="t14 muted as-p">Agreed follow-up: {q.followUp}</p>}
@@ -136,7 +136,7 @@ export function QuestionBank() {
         {ivs.length === 0 ? <p className="t14 muted as-p">No interviews for this role yet.</p> : (
           <ul className="as-list">{ivs.map((i) => { const plan = assess(w).plans[i.id]; return (
             <li key={i.id} className="as-li"><div className="as-row"><b>{personName(w, i.personId)}</b><span className="t14 muted">{plan ? `Planned from v${plan.v || '–'}` : 'No plan yet'}</span></div>
-              <div className="as-actions"><Link className="ds-btn" to={`/r/interviews/${i.id}/live`}>{plan ? 'Open the live room' : 'Plan and open the room'}</Link><Link className="ds-btn quiet" to={`/r/interviews/${i.id}`}>Interview page</Link></div></li>); })}</ul>
+              <div className="as-actions"><Link className="ds-btn" to={`/r/interviews/${i.id}/live`}>{assess(w).rooms[i.id]?.state === 'ENDED' ? 'See the room record' : plan ? 'Open the live room' : 'Plan and open the room'}</Link><Link className="ds-btn quiet" to={`/r/interviews/${i.id}`}>Interview page</Link></div></li>); })}</ul>
         )}
       </section>
 

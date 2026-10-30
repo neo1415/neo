@@ -5,7 +5,7 @@ import type { Actor } from '../../state/domain';
 import { hd, hdw, keyOf, type Format, type HiringOutcome, type Offer } from '../../state/areas/hire-d';
 import { busyAt, CAN_MOVE, CAN_SEND, createDraft, entryFor, findMsg, firstOf, LAGOS, mandateTitle, nameOf, setStage, tDay, tTime } from '../hire-c/lib';
 import { hcw } from '../../state/areas/hire-c';
-import { allowedChannels, approversFor, bandOf, can, CH_WORD, curV, FORMAT_BODY, FORMAT_WORD, mandateOrg, money, offerOf, reminderQueue, reminderText, sharedPay, simSend, SOURCES, scopeOn, sourcesFor, type SourceId } from './model';
+import { allowedChannels, approversFor, bandOf, can, CH_WORD, curV, FORMAT_BODY, FORMAT_WORD, mandateOrg, money, offerOf, reminderQueue, reminderText, sharedPay, simSend, SOURCES, SOURCE_SHORT, scopeOn, sourcesFor, type SourceId } from './model';
 
 const scope = (a: Actor) => `ORG:${a.orgId}`;
 const say = (w: World, a: Actor, text: string, extra: Record<string, unknown> = {}) => appendQ(w, a.id, { who: 'q', kind: 'reply', engine: 'rules', text, ...extra });
@@ -28,9 +28,9 @@ op('hd.scope.set', (w, args, a) => {
   const cur = scopeOn(w, a.orgId); const next = on ? [...new Set([...cur, s])] : cur.filter((x) => x !== s);
   if (!next.some((x) => x !== 'evidence')) return { say: 'Q needs at least one source of people to search. Switch another one on first.' };
   hdw(w).scope[a.orgId] = { on: next, by: a.id, at: now() };
-  pushUndo(w, a.id, `${on ? 'Included' : 'Left out'} ${SOURCES.find((x) => x.id === s)?.label.toLowerCase()}`, 'hd.scope.set', { source: s, on: !on });
+  pushUndo(w, a.id, `${on ? 'Included' : 'Left out'} ${SOURCE_SHORT[s]}`, 'hd.scope.set', { source: s, on: !on });
   emit(w, a.id, 'search.scope.changed', scope(a), `${a.name} ${on ? 'included' : 'left out'} “${SOURCES.find((x) => x.id === s)?.label}” in searches.`);
-  return { say: `${on ? 'Included' : 'Left out'}: ${SOURCES.find((x) => x.id === s)?.label.toLowerCase()}. Searches use ${next.length} of ${sourcesFor(w, a.orgId).length} sources now. Say “undo” to change it back.` };
+  return { say: `${on ? 'Included' : 'Left out'}: ${SOURCE_SHORT[s]}. Searches use ${next.length} of ${sourcesFor(w, a.orgId).length} sources now. Say “undo” to change it back.` };
 });
 op('hd.scope.recheck', (w, _args, a) => {
   if (!a.orgId) return;

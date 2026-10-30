@@ -5,7 +5,7 @@
 // derived from real steps, and every animation is caused by an event (MO-031 bars grow once when the data arrives).
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { actorOf, useWorld, type World } from '../../mock/world';
+import { actorOf, simNow, useWorld, type World } from '../../mock/world';
 import type { Actor } from '../../state/domain';
 import { QMark } from '../../ds/QMark';
 import { DUR, EASE, arrive } from '../../ds/motion';
@@ -83,6 +83,9 @@ export function MapView({ w, a, art, compact }: { w: World; a: Actor; art: QArti
   const d = mapData(w, a, art.scope.mandate);
   const [view, setView] = useState<'map' | 'list'>('map');
   const [sel, setSel] = useState<string | null>(null);
+  const [wref, ww] = useWidth<HTMLDivElement>(W);
+  // Text stays at real 12–15 px whatever the map's rendered width (viewBox units scale with it).
+  const k = Math.max(1, W / Math.max(1, ww));
   if (!d.total) return <p className="qt-empty">{d.hidden ? `No one to place: ${d.hidden} ${d.hidden === 1 ? 'person isn’t' : 'people aren’t'} shown because of their privacy settings.` : 'No candidates yet, so there’s nothing to map.'}</p>;
   const inView = d.places.filter((p) => p.inView), outside = d.places.filter((p) => !p.inView);
   const cur = d.places.find((p) => p.city === sel);
@@ -100,20 +103,20 @@ export function MapView({ w, a, art, compact }: { w: World; a: Actor; art: QArti
     <div className="qt-stack">
       <Toggle label="Show as" value={view} set={setView} options={[{ id: 'map', label: 'Map' }, { id: 'list', label: 'List' }]} />
       {view === 'list' ? list : (
-        <div className="qt-mapwrap">
+        <div className="qt-mapwrap" ref={wref}>
           <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="group" aria-label={`Candidates by city, ${inView.length} cities on the map`} className="qt-map">
             {[4, 6, 8, 10, 12].map((lat) => <line key={lat} x1={0} x2={W} y1={proj([lat, 0]).y} y2={proj([lat, 0]).y} className="qt-grat" />)}
             {[0, 2, 4, 6, 8].map((lon) => <line key={lon} y1={0} y2={H} x1={proj([0, lon]).x} x2={proj([0, lon]).x} className="qt-grat" />)}
-            {Object.entries(CITIES).filter(([c, ll]) => !d.places.some((p) => p.city === c) && proj(ll).x > 0 && proj(ll).x < W && proj(ll).y > 0 && proj(ll).y < H).map(([c, ll]) => <g key={c} aria-hidden="true"><circle cx={proj(ll).x} cy={proj(ll).y} r={2.5} className="qt-ghost" /><text x={proj(ll).x + 7} y={proj(ll).y + 4} className="qt-ghosttxt">{c}</text></g>)}
+            {Object.entries(CITIES).filter(([c, ll]) => !d.places.some((p) => p.city === c) && proj(ll).x > 0 && proj(ll).x < W && proj(ll).y > 0 && proj(ll).y < H).map(([c, ll]) => <g key={c} aria-hidden="true"><circle cx={proj(ll).x} cy={proj(ll).y} r={2.5 * k} className="qt-ghost" />{k < 1.3 && <text x={proj(ll).x > W - 90 ? proj(ll).x - 7 : proj(ll).x + 7} textAnchor={proj(ll).x > W - 90 ? 'end' : 'start'} y={proj(ll).y + (c === 'Uyo' ? -6 : 4)} className="qt-ghosttxt" style={{ fontSize: 12 * k }}>{c}</text>}</g>)}
             {inView.map((p, i) => {
-              const { x, y } = proj(p.ll); const r = 7 + Math.sqrt(p.people.length) * 6;
-              const left = x > W - 130;
+              const { x, y } = proj(p.ll); const r = (7 + Math.sqrt(p.people.length) * 6) * Math.sqrt(k);
+              const left = x > W - 130 * k;
               return (
                 <g key={p.city}>
                   <motion.circle cx={x} cy={y} initial={{ r: 0 }} animate={{ r }} transition={{ duration: DUR.slow, ease: EASE.enter, delay: i * 0.04 }} className="qt-dot" data-on={sel === p.city ? '1' : undefined} />
-                  <text x={left ? x - r - 6 : x + r + 6} y={y - 2} textAnchor={left ? 'end' : 'start'} className="qt-cityname">{p.city}</text>
-                  <text x={left ? x - r - 6 : x + r + 6} y={y + 15} textAnchor={left ? 'end' : 'start'} className="qt-citynum num">{p.people.length} {p.people.length === 1 ? 'person' : 'people'}</text>
-                  <circle cx={x} cy={y} r={Math.max(22, r + 4)} fill="transparent" tabIndex={0} role="button" aria-label={`${p.city}: ${p.people.length} ${p.people.length === 1 ? 'person' : 'people'}`} className="qt-hit"
+                  <text x={left ? x - r - 6 : x + r + 6} y={y - 2 * k} textAnchor={left ? 'end' : 'start'} className="qt-cityname" style={{ fontSize: 15 * k }}>{p.city}</text>
+                  <text x={left ? x - r - 6 : x + r + 6} y={y + 15 * k} textAnchor={left ? 'end' : 'start'} className="qt-citynum num" style={{ fontSize: 13 * k }}>{p.people.length} {p.people.length === 1 ? 'person' : 'people'}</text>
+                  <circle cx={x} cy={y} r={Math.max(22 * k, r + 4)} fill="transparent" tabIndex={0} role="button" aria-label={`${p.city}: ${p.people.length} ${p.people.length === 1 ? 'person' : 'people'}`} className="qt-hit"
                     onMouseEnter={() => setSel(p.city)} onMouseLeave={() => setSel(null)} onFocus={() => setSel(p.city)} onBlur={() => setSel(null)} />
                 </g>
               );
@@ -213,7 +216,7 @@ export function VideoView({ w, art, compact, start = 0, onFrame }: { w: World; a
       <span className="qt-simtag">Simulated video · storyboard</span>
       <AnimatePresence mode="wait"><motion.div key={i} className="qt-frame" {...arrive}>
         <span className="lab">{i + 1} / {sb.frames.length}</span>
-        <h3 className="voice">{f.title}</h3>
+        <h2 className="voice">{f.title}</h2>
         <ul>{f.lines.map((l) => <li key={l}>{l}</li>)}</ul>
       </motion.div></AnimatePresence>
       <p className="qt-caption" aria-live={playing ? 'off' : 'polite'}>{words.slice(0, said).join(' ')}<span className="qt-unsaid">{said < words.length ? ` ${words.slice(said).join(' ')}` : ''}</span></p>
@@ -252,8 +255,8 @@ export function LinkRow({ l, onPick, picked }: { l: WebLink; onPick: (l: WebLink
       <button type="button" className="qt-linkbtn" aria-describedby={`pv-${l.url}`} onClick={() => onPick(l)} onFocus={() => onPick(l)} onMouseEnter={() => onPick(l)}>{l.label}</button>
       <span id={`pv-${l.url}`} className="qt-preview t14">
         <span className="qt-domain">{domainOf(l.url)}</span>
-        {ok ? <span className="ds-tag" data-k="ok">On the allowed list</span> : <span className="ds-tag" data-k="risk">Not allowed</span>}
-        {f && <span className="muted">{f.type} · {f.sizeMb} MB · scanned before anyone can open it</span>}
+        {!ok && <span className="ds-tag" data-k="risk">Not allowed</span>}
+        {f && <span className="muted">{f.type} · {f.sizeMb} MB · {f.sizeMb > 25 ? 'over the 25 MB limit' : 'scanned before anyone can open it'}</span>}
         {!f && ok && pageOf(l.url) && <span className="muted">Page: {pageOf(l.url)!.title}</span>}
       </span>
     </li>
@@ -282,21 +285,22 @@ export function BrowseView({ w, art, compact }: { w: World; art: QArtifact; comp
         <span className="qt-domain">{p.url}</span>
         <span className="qt-tags"><span className="ds-tag">Sandboxed</span><span className="ds-tag">Read-only</span><span className="ds-tag">Scripts off</span><span className="ds-sim">Simulated fetch</span></span>
       </div>
+      {!loading && <div className="ch-q qt-qline qt-qread"><QMark mood="idle" size={24} /><p className="voice"><span className="sr">Q’s reading: </span>{p.summary}{inj.length ? ' One paragraph tries to instruct me; I ignored it.' : ''}</p></div>}
       {loading ? <div className="qt-fence" aria-busy="true"><p className="muted">Fetching a read-only copy…</p><div className="ds-skeleton" style={{ height: 14, width: '70%' }} /><div className="ds-skeleton" style={{ height: 14, width: '90%' }} /></div> : (
         <section className="qt-fence" aria-label="Fetched page text, untrusted">
           <p className="qt-fence-lab"><span className="lab">Fetched text · untrusted</span><span className="t14">Q reads this as data. Nothing on a page can instruct Q.</span></p>
-          <h3 className="voice qt-pagetitle">{p.title}</h3>
+          <h2 className="voice qt-pagetitle">{p.title}</h2>
           {p.blocks.map((b, k) => b.injection ? (
             <div key={k} className="qt-inject" role="note">
               <p><s>{b.text}</s></p>
               <p className="t14"><b>Ignored.</b> This text tries to give Q an instruction. Q treats page text as information only, so it did nothing, sent nothing and told you here.</p>
             </div>
-          ) : b.t === 'h' ? <h4 key={k}>{b.text}</h4> : <p key={k} className={b.t === 'meta' ? 't14 muted' : undefined}>{b.text}</p>)}
+          ) : b.t === 'h' ? <h3 key={k}>{b.text}</h3> : <p key={k} className={b.t === 'meta' ? 't14 muted' : undefined}>{b.text}</p>)}
         </section>
       )}
       {!loading && p.links.length > 0 && (
         <section className="qt-links" aria-labelledby="qt-links-h">
-          <h3 id="qt-links-h" className="lab">Links on this page</h3>
+          <h2 id="qt-links-h" className="lab">Links on this page</h2>
           <ul>{p.links.map((l) => <LinkRow key={l.url} l={l} picked={pick?.url === l.url} onPick={setPick} />)}</ul>
           {pick && (
             <div className="qt-pickbar" role="status">
@@ -337,7 +341,7 @@ export function DownloadCard({ w, art, compact }: { w: World; art: QArtifact; co
         <motion.div className="qt-receipt" {...arrive} role="status">
           <span className="ds-tag" data-k={s.stage === 'CLEAN' ? 'ok' : 'risk'}>{STAGE_WORD[s.stage]}</span>
           <p className="t14" style={{ margin: 0 }}>{f.reason}</p>
-          {!compact && <p className="t14 muted" style={{ margin: 0 }}>Scan receipt · simulated · {fmtDay(w.session.now)} · {s.stage === 'CLEAN' ? `${f.pages} pages of text extracted` : 'file kept out of your workspace'}</p>}
+          {!compact && <p className="t14 muted" style={{ margin: 0 }}>Scan receipt · simulated · {fmtDay(simNow(w).toISOString())} · {s.stage === 'CLEAN' ? `${f.pages} pages of text extracted` : 'file kept out of your workspace'}</p>}
           {s.stage === 'CLEAN' && !compact && (opened ? <span className="ds-tag">Opened</span> : <button type="button" className="ds-btn" onClick={() => act('qt.open', { id: art.id })}>Open read-only</button>)}
         </motion.div>
       )}

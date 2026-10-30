@@ -43,9 +43,9 @@ export function ExerciseCandidate({ id }: { id: string }) {
   const note = e.review?.shared ? e.review.note : reuse?.candidateNote;
   return (
     <Canvas title={e.state === 'ASSIGNED' ? `${org} asked for one short exercise` : e.state === 'IN_PROGRESS' ? e.title : e.state === 'SUBMITTED' ? 'Sent. Waiting for a reviewer.' : e.state === 'REVIEWED' ? `${org} reviewed your exercise` : 'You declined this exercise'}
-      kicker={`${KIND_WORD[e.kind]} · ${org} · ${roleTitle(w, e.mandateId)}`} open onClose={() => history.back()} aside={<span className="ds-sim">Simulated exercise</span>}>
+      kicker={`${KIND_WORD[e.kind]} · ${org}`} open onClose={() => history.back()} aside={<span className="ds-sim">Simulated exercise</span>}>
       <section className="ds-sheet as-grid" aria-labelledby="ex-a">
-        <h2 id="ex-a" className="as-h2">{e.title}</h2>
+        <h2 id="ex-a" className="as-h2">{e.state === 'ASSIGNED' ? e.title : 'The brief'}</h2>
         <dl className="as-kv">
           <dt>About</dt><dd>{e.minutes} minutes, no clock. Synthetic data only: nothing real is touched.</dd>
           {e.reqId && <dt>Shows</dt>}{e.reqId && <dd>{reqLabel(w, e.reqId)}{reuse ? ` · this answers ${org}’s request for one short sample instead of a full assessment` : ''}</dd>}
@@ -83,7 +83,7 @@ export function ExerciseCandidate({ id }: { id: string }) {
             {LOGS.map((l) => (
               <li key={l.id}><label htmlFor={`lg-${l.id}`}>
                 <input id={`lg-${l.id}`} type="checkbox" checked={(e.marked ?? []).includes(l.id)} onChange={() => op('mark', { log: l.id })} />
-                <span className="t num">{l.t}</span><span className="src">{l.src} · {l.lvl}</span><span data-lvl={l.lvl}>{l.msg}</span>
+                <span className="t num">{l.t}</span><span className="src">{l.src} · {l.lvl}</span><span className="msg" data-lvl={l.lvl}>{l.msg}</span>
               </label></li>
             ))}
           </ol>

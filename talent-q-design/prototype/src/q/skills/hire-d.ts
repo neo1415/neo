@@ -14,7 +14,7 @@ import { isFounder } from '../../journeys/hire-a/model';
 import { peopleIn } from './hire-c';
 import { hd } from '../../state/areas/hire-d';
 import { entryFor, firstOf, LAGOS, tDay, tTime } from '../../journeys/hire-c/lib';
-import { availOf, bookingSlots, CH_WORD, coverage, daysBetween, fmtDay, MILESTONE_WORD, NOT_USED, nextMilestone, offerOf, railOf, reminderQueue, scopeOn, search, sourcesFor, type SourceId } from '../../journeys/hire-d/model';
+import { availOf, bookingSlots, CH_WORD, coverage, daysBetween, fmtDay, MILESTONE_WORD, NOT_USED, nextMilestone, offerOf, railOf, reminderQueue, scopeOn, search, sourcesFor, SOURCE_SHORT, type SourceId } from '../../journeys/hire-d/model';
 import { defaultPanel } from '../../journeys/hire-c/lib';
 import { simNow } from '../../mock/world';
 import { runHd } from '../../journeys/hire-d/ops';
@@ -35,6 +35,7 @@ registerSkill({
   match: (c) => {
     if (!hirer(c) || /\b(disagree|conflict|differ)\b/.test(c.norm)) return 0;
     if (/\blinked ?in\b/.test(c.norm)) return 0.9;
+    if (/\b(leave out|exclude|stop using|start using|switch (off|on)|turn (off|on)|include)\b/.test(c.norm) && SRC_WORDS.some(([re]) => re.test(c.norm)) && /\bsearch\w*\b/.test(c.norm)) return 0.91;
     if (/\b(sources?|search scope|where (do|does) (you|q) (search|look))\b/.test(c.norm) && /\b(search|use|which|what|where|scope|include|exclude|leave out|turn (off|on)|stop using)\b/.test(c.norm)) return 0.9;
     return 0;
   },
@@ -44,7 +45,7 @@ registerSkill({
     if (src && (off || on)) return opReply('hd.scope.set', { source: src, on: !off });
     const list = sourcesFor(c.w, a.orgId!); const cur = scopeOn(c.w, a.orgId!);
     const li = /\blinked ?in\b/.test(c.norm);
-    return { msgs: [{ kind: 'reply', text: `${li ? `${NOT_USED[0].why} ` : ''}I search ${cur.length} of ${list.length} permitted sources for ${c.w.orgs.find((o) => o.id === a.orgId)?.name}: ${list.filter((s) => cur.includes(s.id)).map((s) => `${s.label.toLowerCase()} (${coverage(c.w, a.orgId!, s.id) ?? 'unknown'})`).join('; ')}. Each shows its licence and how fresh it is.`, used: ['Your search sources', 'Decision 30 Oct: no LinkedIn extraction'], actions: [go('Open the sources', '/r/sourcing/scope', true), go('Explore talent', '/r/explore')] }] };
+    return { msgs: [{ kind: 'reply', text: `${li ? `${NOT_USED[0].why} ` : ''}I search ${cur.length} of ${list.length} permitted sources for ${c.w.orgs.find((o) => o.id === a.orgId)?.name}: ${list.filter((s) => cur.includes(s.id)).map((s) => `${SOURCE_SHORT[s.id]} (${coverage(c.w, a.orgId!, s.id) ?? 'unknown'})`).join('; ')}. Each shows its licence and how fresh it is.`, used: ['Your search sources', 'Decision 30 Oct: no LinkedIn extraction'], actions: [go('Open the sources', '/r/sourcing/scope', true), go('Explore talent', '/r/explore')] }] };
   },
 });
 

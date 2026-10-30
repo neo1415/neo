@@ -56,7 +56,7 @@ export function AvatarRoom({ orgId = 'org_kora' }: { orgId?: string }) {
     </Canvas>
   );
   return (
-    <Canvas title={title} kicker={`${org} · ${qs.role} · first round`} open onClose={() => history.back()} aside={<span className="ds-sim">Simulated</span>}>
+    <Canvas title={title} kicker={`${org} · first round`} open onClose={() => history.back()} aside={step === 'LIVE' || step === 'INTERRUPTED' ? undefined : <span className="ds-sim">Simulated</span>}>
       {step === 'CHOOSE' && (
         <section className="ds-sheet as-grid" aria-labelledby="av-ch">
           <h2 id="av-ch" className="as-h2">Pick the way that suits you. All of them count the same.</h2>

@@ -76,7 +76,7 @@ registerOp('td.auth.doc', (w, a, actor) => {
 const AUTH_RE = /(work (permit|authori[sz]ation|visa)|right to work|visa|permit|allowed to work|can i work in|sponsor)/;
 registerSkill({
   id: 'td.auth', side: 'candidate',
-  match: (c) => (cand(c) && AUTH_RE.test(c.norm) ? 0.86 : 0),
+  match: (c) => (cand(c) && (AUTH_RE.test(c.norm) || (/\b(citizen|nationality|national of)\b/.test(c.norm) && /(ghana|nigeria|kenya|south africa|united kingdom|\buk\b|british)/.test(c.norm))) ? 0.86 : 0),
   handle: (c) => {
     const pid = pidOf(c); const au = authOf(c.w, pid); const org = orgIn(c.norm);
     const country = COUNTRIES.find((x) => c.norm.includes(x.toLowerCase())) ?? (/\buk\b|britain|england/.test(c.norm) ? 'United Kingdom' : undefined);

@@ -7,7 +7,7 @@ import { Link } from '../../ui/router';
 import { ConfirmButton } from '../../ds/ConfirmButton';
 import { oa, type InstrKind, type TplKind } from '../../state/areas/org-admin';
 import { orgMailPolicy } from '../../state/areas/mail';
-import { mandateTitle, nameOf, tDay } from '../hire-c/lib';
+import { listNames, mandateTitle, nameOf, tDay } from '../hire-c/lib';
 import { act, AdminFrame, BudgetWarning, Empty, Sheet, Tag } from './Frame';
 import {
   admins, billingOf, budgetShare, callChecks, CH_LABEL, CH_STATE, choiceOf, conflictOf, contactable, DEMO_CODE, flagsOf, INV_TXT, isAdmin, KIND_LABEL, latestTpl,
@@ -110,7 +110,7 @@ export function Channels() {
   const canApprove = ['ADMIN', 'OWNER', 'RECRUITER'].includes(a.role ?? '');
   const notOk = chans.filter((c) => c.state !== 'VERIFIED');
   return (
-    <AdminFrame sec="channels" title="Channels" lede={notOk.length ? `${notOk.map((c) => CH_LABEL[c.kind]).join(' and ')} ${notOk.length === 1 ? 'isn’t' : 'aren’t'} verified yet. Candidates choose which channels they accept.` : 'Every channel is verified. Each candidate still chooses which ones they accept.'}
+    <AdminFrame sec="channels" title="Channels" lede={notOk.length ? `${listNames(notOk.map((c, i) => (i === 0 ? CH_LABEL[c.kind] : CH_LABEL[c.kind].replace(/^\w/, (x) => x.toLowerCase()))))} ${notOk.length === 1 ? 'isn’t' : 'aren’t'} verified yet. Candidates choose which channels they accept.` : 'Every channel is verified. Each candidate still chooses which ones they accept.'}
       index={[{ id: 'ch-ver', label: 'Verification' }, { id: 'ch-opt', label: 'Who agreed' }, { id: 'ch-wa', label: 'WhatsApp' }, { id: 'ch-call', label: 'Calls' }]}>
       {(lv) => (<>
         <Sheet id="ch-ver" title="Verification" note="Providers are simulated. A verified channel lets you ask; it never lets you message someone who said no.">
@@ -175,14 +175,15 @@ export function Billing() {
     <AdminFrame sec="billing" title="Billing and usage" lede={share >= b.budget.warnAt ? `The agent budget is at ${Math.round(share * 100)}%. ${b.budget.decision ? 'A decision is recorded.' : admin ? 'Decide whether to pause or allow more.' : 'An admin decides what happens next.'}` : `Usage is within the plan. ${usd(b.budget.cap - b.budget.spent)} of agent budget is left this month.`}
       index={[{ id: 'bl-budget', label: 'Budget' }, { id: 'bl-usage', label: 'Usage' }, { id: 'bl-req', label: 'Requests' }, { id: 'bl-plan', label: 'Plan' }]}>
       {(lv) => (<>
-        <Sheet id="bl-budget" title="Agent budget" note="Simulated compute cost of Q’s agent runs, against a cap the admin sets. Nothing is charged." aside={<button type="button" className="ds-btn quiet" onClick={() => act('oa.bill.simulate', { runs: 3 })}>Demo: 3 more runs</button>}>
-          <BudgetWarning orgId={a.orgId} />
+        <Sheet id="bl-budget" title="Agent budget" note="Simulated compute cost of Q’s agent runs, against a cap the admin sets. Nothing is charged.">
+          <BudgetWarning orgId={a.orgId} flat />
+          <button type="button" className="ds-btn quiet oa-demo" onClick={() => act('oa.bill.simulate', { runs: 3 })}>Demo: record 3 more runs</button>
         </Sheet>
         <Sheet id="bl-usage" title="Usage this period" note={b.period} aside={<div className="ds-views" role="group" aria-label="Show usage as"><button type="button" aria-pressed={view === 'bars'} onClick={() => setView('bars')}>Bars</button><button type="button" aria-pressed={view === 'table'} onClick={() => setView('table')}>Table</button></div>}>
           {view === 'bars' ? <ul className="oa-meters">{b.meters.map((m) => { const p = m.included ? m.used / m.included : 0; return (
             <li key={m.id}><div className="oa-budget-row"><b>{m.label}</b><span className="num">{m.used} of {m.included} {m.unit}</span></div>
               <div className="oa-meter" role="img" aria-label={`${m.label}: ${m.used} of ${m.included} ${m.unit}, ${Math.round(p * 100)}%`}><span className="fill" style={{ width: `${Math.min(100, p * 100)}%` }} data-over={p >= 0.8 ? '1' : undefined} /></div>
-              <span className="t14 muted">{m.hint}</span></li>); })}</ul>
+              <span className="t14 muted">{p >= 0.8 && <b className="oa-near">Near the limit · {Math.round(p * 100)}%. </b>}{m.hint}</span></li>); })}</ul>
             : <div className="ds-table-wrap" tabIndex={0} role="region" aria-label="Usage table"><table className="ds-table oa-table"><thead><tr><th scope="col">What</th><th scope="col" className="num">Used</th><th scope="col" className="num">Included</th><th scope="col" className="num">Share</th></tr></thead>
               <tbody>{b.meters.map((m) => <tr key={m.id}><th scope="row">{m.label}</th><td className="num">{m.used}</td><td className="num">{m.included}</td><td className="num">{m.included ? Math.round((100 * m.used) / m.included) : 0}%</td></tr>)}</tbody></table></div>}
         </Sheet>

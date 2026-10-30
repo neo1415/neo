@@ -64,7 +64,7 @@
 .pq-me { justify-self: end; max-width: 85%; margin: 0; background: var(--night-3); color: var(--moon); padding: 10px 14px; border-radius: 14px 14px 4px 14px; font-size: 15px; }
 .pq-q { display: grid; gap: 8px; }
 .pq-q > p { margin: 0; font-size: 17px; line-height: 1.45; color: var(--moon); }
-.pq-label { font-family: var(--data); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-light); }
+.pq-label { font-family: var(--data); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-light); }
 .pq-q[data-kind='refusal'] .pq-label { color: var(--moon-2); }
 .pq-q[data-kind='refusal'] > p { border-left: 2px solid var(--moon-2); padding-left: 12px; }
 .pq-chips { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -87,11 +87,11 @@
 .pq-crit li { display: grid; grid-template-columns: 48px 1fr; gap: 8px; font-size: 14px; }
 .pq-crit li div { display: grid; gap: 2px; }
 .pq-crit li span:not(.pq-must) { color: var(--moon-2); font-size: 13px; }
-.pq-must { font-family: var(--data); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--moon-2); padding-top: 2px; }
+.pq-must { font-family: var(--data); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--moon-2); padding-top: 2px; }
 .pq-foot { margin: 0; font-size: 13px; color: var(--moon-2); }
 .pq-cmp { width: 100%; border-collapse: collapse; font-size: 13px; }
 .pq-cmp th, .pq-cmp td { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--night-3); font-weight: 400; vertical-align: top; }
-.pq-cmp thead th { color: var(--moon-2); font-family: var(--data); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+.pq-cmp thead th { color: var(--moon-2); font-family: var(--data); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
 .pq-cls { display: inline-flex; gap: 6px; align-items: center; white-space: nowrap; }
 .pq-read { margin: 0; display: grid; gap: 8px; font-size: 14px; }
 .pq-read div { display: grid; grid-template-columns: 72px 1fr; gap: 8px; }
@@ -189,7 +189,7 @@
 .pp-offer[data-free] { background: #fffaf2; border-radius: 20px; }
 .pp-offer-h { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
 .pp-offer-h h2 { margin: 0; }
-.pp-stamp { font-family: var(--data); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); border: 1px dashed var(--ink-3); border-radius: 4px; padding: 2px 6px; }
+.pp-stamp { font-family: var(--data); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); border: 1px dashed var(--ink-3); border-radius: 4px; padding: 2px 6px; }
 .pp-offer[data-free] .pp-stamp { border-style: solid; }
 .pp-price { display: grid; gap: 2px; }
 .pp-price b { font-family: var(--voice); font-weight: 400; font-size: 34px; line-height: 1.1; letter-spacing: -.01em; }

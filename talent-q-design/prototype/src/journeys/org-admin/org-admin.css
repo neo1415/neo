@@ -108,3 +108,14 @@
   .ds .oa-hub { grid-template-columns: 1fr; }
   .ds .oa-head > .ds-views, .ds .oa-head > .ds-field { width: 100%; }
 }
+
+/* Design-pass fixes (critique): one elevation inside sheets, words beside the darker meter, nowrap values,
+   progressive disclosure for route details. */
+.ds .oa-budget[data-flat='1'] { border: 0; padding: 0; background: transparent; }
+.ds .oa-budget[data-flat='1'][data-over='1'] { padding-left: 12px; border-left: 4px solid var(--warn); border-radius: 0; }
+.ds .oa-demo { justify-self: start; }
+.ds .oa-near { color: var(--ink); }
+.ds .oa-nowrap { white-space: nowrap; }
+.ds .oa-more summary { cursor: pointer; min-height: 32px; display: flex; align-items: center; color: var(--ink-2); }
+.ds .oa-more[open] summary { margin-bottom: 6px; }
+@media (max-width: 860px) { .ds .oa-dl-tight { grid-template-columns: max-content 1fr; gap: 2px 12px; } .ds .oa-dl-tight dd { margin-bottom: 0; } }

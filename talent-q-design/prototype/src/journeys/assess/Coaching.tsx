@@ -28,6 +28,7 @@ export function CoachingPage() {
     ...(c.offBank ? [{ key: 'off', h: `${c.offBank} question${c.offBank === 1 ? '' : 's'} not from the locked bank`, body: <span className="t14">That’s allowed. They’re marked as extra so every candidate’s interview can still be compared on the same core questions.</span> }] : []),
   ] : [];
   const open = items.filter((x) => !acked.has(x.key));
+  const good = c ? [c.talk.share <= 50 && `The candidate did most of the talking (${100 - c.talk.share}%).`, !c.leading.length && 'Every question was open: none suggested an answer.', !c.unasked.length && 'You covered every must-have.', c.usedSug > 0 && !c.noFollowUp.length && 'You followed up when an answer was general.'].filter(Boolean) as string[] : [];
   const title = !mine.length ? 'No interviews to learn from yet' : !c ? 'Coaching is private to each interviewer' : open.length ? `${open.length} thing${open.length === 1 ? '' : 's'} to try next time` : 'Nothing new to work on from this interview';
   return (
     <Canvas title={title} kicker="Your interview coaching · private to you" open onClose={() => history.back()}>
@@ -49,6 +50,12 @@ export function CoachingPage() {
               <dt>Counted from</dt><dd>Words in the room record, not recordings of anyone’s voice.</dd>
             </dl>
           </section>
+          {good.length > 0 && (
+            <section className="ds-sheet as-grid" aria-labelledby="co-good">
+              <h2 id="co-good" className="as-h2">What worked</h2>
+              <ul className="as-list">{good.map((g) => <li key={g} className="as-note"><Glyph k="full" size={16} /><span>{g}</span></li>)}</ul>
+            </section>
+          )}
           <section className="ds-sheet as-grid" aria-labelledby="co-try">
             <h2 id="co-try" className="as-h2">To try next time</h2>
             {!items.length && <p className="as-p"><Glyph k="full" size={14} /> Open questions, a fair share of talking, every must-have covered. Nothing to change.</p>}

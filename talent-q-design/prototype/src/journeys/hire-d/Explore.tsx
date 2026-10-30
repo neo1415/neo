@@ -11,7 +11,7 @@ import { runAction, useViewState } from '../../q/core/engine';
 import { Link } from '../../ui/router';
 import { hd } from '../../state/areas/hire-d';
 import { STATUS_PLAIN } from '../hire-a/model';
-import { emptyReasons, mandatesOf, newSince, pipelineCount, scopeOn, search, SOURCES, sourcesFor, type Hit, type SourceId } from './model';
+import { emptyReasons, mandatesOf, newSince, pipelineCount, scopeOn, search, SOURCE_SHORT, SOURCES, sourcesFor, type Hit, type SourceId } from './model';
 
 const SRC_SHORT: Record<SourceId, string> = { applicants: 'Applied', shared: 'Shared with you', discoverable: 'Open to being found', registered: 'Registered with you', records: 'Your records', evidence: 'Evidence link' };
 
@@ -41,7 +41,7 @@ export function Explore() {
           <button type="submit" className="ds-btn primary">Search</button>
           {q && <button type="button" className="ds-btn quiet" onClick={() => { setText(''); setQ(''); }}>Clear</button>}
         </div>
-        <p className="t14 muted" style={{ margin: 0 }}>Searches {on.length} permitted source{on.length === 1 ? '' : 's'}: {all.filter((s) => on.includes(s.id)).map((s) => s.label.toLowerCase()).join('; ')}. LinkedIn isn’t used. Nobody is contacted.</p>
+        <p className="t14 muted" style={{ margin: 0 }}>Searches {on.length} permitted source{on.length === 1 ? '' : 's'}: {all.filter((s) => on.includes(s.id)).map((s) => SOURCE_SHORT[s.id]).join(', ')}. LinkedIn isn’t used. Nobody is contacted.</p>
       </form>
       {hd(w).sourceDown && <div className="ds-banner" data-k="warn" role="status"><Glyph k="unclear" /><span><b>One source didn’t refresh.</b> Evidence links show their last good check. Everything else is live.</span><Link to="/r/sourcing/scope" className="ds-btn quiet">See sources</Link></div>}
 
@@ -61,7 +61,7 @@ export function Explore() {
                     <span className="ds-actions">
                       <Link to={`/r/roles/${m.id}`} className="ds-btn quiet">Brief<span className="sr"> for {m.title}</span></Link>
                       <Link to="/r/pipeline" className="ds-btn quiet">Pipeline<span className="sr"> for {m.title}</span></Link>
-                      <button type="button" className="ds-btn" onClick={() => run(m.title.replace(/\(.*\)/, '').split(' ').slice(-2).join(' '))}>Explore<span className="sr"> people for {m.title}</span></button>
+                      <button type="button" className="ds-btn" onClick={() => run(m.title.replace(/\(.*\)|,.*$/g, '').replace(/\b(senior|junior|lead|i|ii)\b/gi, '').trim())}>Explore<span className="sr"> people for {m.title}</span></button>
                     </span>
                   </li>); })}
               </ul>
@@ -120,7 +120,7 @@ function EmptySearch({ q, orgId, onQuery }: { q: string; orgId: string; onQuery:
         <div><h3 className="lab">Try</h3><div className="hd-stack">{r.repairs.map((x) => <button key={x.label} type="button" className="ds-btn" onClick={() => { if (x.include) void runAction({ label: x.label, act: { t: 'do', op: 'hd.scope.set', args: { source: x.include, on: true } } }); if (x.query !== undefined) onQuery(x.query); }}>{x.label}</button>)}</div></div>
         <div><h3 className="lab">Other ways to find people</h3><div className="hd-stack">{r.alternates.map((x) => 'to' in x && x.to ? <Link key={x.label} to={x.to} className="ds-btn quiet">{x.label}</Link> : <button key={x.label} type="button" className="ds-btn quiet" onClick={() => void runAction({ label: x.label, act: { t: 'say', text: (x as { say: string }).say } })}>{x.label}</button>)}</div></div>
       </div>
-      <p className="t14 muted" style={{ margin: 0 }}>Sources searched: {SOURCES.filter((s) => scopeOn(w, orgId).includes(s.id)).map((s) => s.label.toLowerCase()).join('; ')}. <Link to="/r/sourcing/scope">Change sources</Link></p>
+      <p className="t14 muted" style={{ margin: 0 }}>Sources searched: {SOURCES.filter((s) => scopeOn(w, orgId).includes(s.id)).map((s) => SOURCE_SHORT[s.id]).join(', ')}. <Link to="/r/sourcing/scope">Change sources</Link></p>
     </motion.section>
   );
 }

@@ -58,13 +58,14 @@ export function WorkPermitPage() {
                 {(Object.keys(AUTH_LABEL) as AuthStatus[]).map((k) => <button key={k} type="button" role="radio" aria-checked={status === k} className="ds-opt" aria-pressed={status === k} onClick={() => setStatus(k)}><span><b>{AUTH_LABEL[k]}</b></span></button>)}
               </div>
               <label>Permit type or end date <span className="t14 muted" style={{ fontWeight: 400 }}>(optional, only if you want)</span><input value={detail} onChange={(e) => setDetail(e.target.value)} placeholder="e.g. residence permit until March 2027" /></label>
-              {REGION_NOTE[country] && <p className="td-region"><b>General information, not advice.</b> {REGION_NOTE[country]} Rules change; the employer confirms what they need.</p>}
+              {REGION_NOTE[country] && <p className="td-region"><b>General information, not advice.</b> {REGION_NOTE[country]} Rules change.</p>}
               <div className="tb-actions"><button type="button" className="ds-btn primary" disabled={!status} onClick={save}>Save {country}</button>{!status && <span className="t14 muted">Choose what applies to you.</span>}</div>
             </div>
           </section>
 
           <section className="ds-sheet td-stack" aria-labelledby="td-au-share">
             <div className="tb-row-between"><h2 id="td-au-share" className="tb-h2">Who can see it</h2><span className="t14 muted">Changes take effect straight away</span></div>
+            {empty && <p id="td-au-need" className="t14" style={{ margin: 0 }}>Add a country first; then you can share it.</p>}
             <p className="td-note">Only employers you’ve applied to or shared work with are listed. Search never shows this, to anyone.</p>
             {orgs.length === 0 ? <p style={{ margin: 0 }}>No employers yet. When you apply somewhere, you can choose to share it with them.</p> : (
               <div>
@@ -88,7 +89,7 @@ export function WorkPermitPage() {
                       <div className="tb-actions">
                         {live
                           ? <ConfirmButton label={`End ${orgNm(w, o)}’s access`} question={`End ${orgNm(w, o)}’s access now?`} yes="End access" onConfirm={() => act('td.auth.unshare', { org: o })} />
-                          : <ConfirmButton className="ds-btn" label={`Share with ${orgNm(w, o)}`} question={empty ? 'Add a country first.' : `Share your statement with ${orgNm(w, o)} only?`} yes={empty ? 'OK' : 'Share'} onConfirm={() => { if (!empty) act('td.auth.share', { org: o }); }} />}
+                          : (empty ? <button type="button" className="ds-btn" disabled aria-describedby="td-au-need">Share with {orgNm(w, o)}</button> : <ConfirmButton className="ds-btn" label={`Share with ${orgNm(w, o)}`} question={`Share your statement with ${orgNm(w, o)} only?`} yes="Share" onConfirm={() => act('td.auth.share', { org: o })} />)}
                       </div>
                     </div>
                   );

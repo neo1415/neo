@@ -4,7 +4,11 @@
 .ds .hd-sec { display: grid; gap: 12px; min-width: 0; }
 .ds .hd-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; }
 .ds .hd-head h2 { margin: 0; }
-.ds .hd-empty { display: grid; gap: 8px; justify-items: start; padding: 4px 0; }
+.ds .hd-empty { display: grid; gap: 8px; justify-items: start; }
+.ds .hd-empty:not(.ds-sheet) { padding: 4px 0; }
+/* A radio group of filter chips shows its choice the same way a pressed filter does. */
+.ds .ds-filter[role='radio'][aria-checked='true'] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.ds .hd-notused b { display: inline-flex; align-items: center; gap: 8px; }
 .ds .hd-block { display: block; }
 .ds .hd-list { list-style: none; margin: 0; padding: 0; display: grid; }
 .ds .hd-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding: 12px 0; border-top: 1px solid var(--rule); min-width: 0; }

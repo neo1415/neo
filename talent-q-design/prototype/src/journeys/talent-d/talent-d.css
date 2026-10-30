@@ -127,3 +127,6 @@
 
 /* MO-040 stage tag. */
 .td-stage { display: inline-flex; position: relative; }
+/* Phones are task-first: on the critique page Q's read (the task) comes before the long document. */
+@media (max-width: 860px) { .td-taskfirst > :last-child { order: -1; } }
+.td-screen:focus-visible { outline: 3px solid var(--gold-light); outline-offset: -3px; }
