@@ -102,7 +102,7 @@ export function ReusePanel({ w, pid }: { w: World; pid: string }) {
 export function ReviewPanel({ w, pid }: { w: World; pid: string }) {
   const d = decisionsFor(w, pid).find((x) => x.decision === 'BOUNDED_SAMPLE' && (x.state === 'SUBMITTED' || x.state === 'REVIEWED') && x.resultEvidenceId);
   const [outcome, setOutcome] = useState<keyof typeof OUTCOME_WORD | ''>('');
-  const [note, setNote] = useState(''); const [tried, setTried] = useState(false);
+  const [note, setNote] = useState(''); const [tried, setTried] = useState(false); const [share, setShare] = useState(false);
   if (!d) return null;
   const e = w.evidence.find((x) => x.evidenceId === d.resultEvidenceId);
   const f = firstName(w, pid);
@@ -113,11 +113,13 @@ export function ReviewPanel({ w, pid }: { w: World; pid: string }) {
       <section id="pf-review" className="ds-sheet hire-b-grid evr-review" data-done="1" aria-labelledby="pf-review-h">
         <div className="hire-b-row"><h2 id="pf-review-h" className="voice t24" style={{ margin: 0 }}>{shortLabel(w, d.reqId)} sample, reviewed</h2><ProofTag c={proofClass(w, e)} /></div>
         <p className="t14" style={{ margin: 0 }}>{ev?.text ?? 'Reviewed.'}</p>
+        {d.candidateNote ? <p className="t14 muted" style={{ margin: 0 }}>Your note is shared with {f}.</p>
+          : <div className="ds-actions"><button type="button" className="ds-btn quiet" onClick={() => void runAction({ label: 'Share the note', act: { t: 'do', op: 'ev.feedback.share', args: { id: d.id } } })}>Share the note with {f}</button><span className="t14 muted">Not shared: {f} sees the outcome, not your note.</span></div>}
       </section>
     );
   }
   const err = tried && (!outcome || !note.trim());
-  const submit = () => { setTried(true); if (!outcome || !note.trim()) return; void runAction({ label: 'Record review', act: { t: 'do', op: 'evr.review', args: { id: d.id, outcome, note: note.trim() } } }); };
+  const submit = () => { setTried(true); if (!outcome || !note.trim()) return; void runAction({ label: 'Record review', act: { t: 'do', op: 'evr.review', args: { id: d.id, outcome, note: note.trim(), share } } }); };
   return (
     <section id="pf-review" className="ds-sheet hire-b-grid evr-review" aria-labelledby="pf-review-h">
       <div className="hire-b-row"><h2 id="pf-review-h" className="voice t24" style={{ margin: 0 }}>Review {f}’s {shortLabel(w, d.reqId)} sample</h2><ProofTag c={proofClass(w, e)} /></div>
@@ -138,6 +140,7 @@ export function ReviewPanel({ w, pid }: { w: World; pid: string }) {
       <label className="evr-note"><span className="lab">Your note</span><span className="t14 muted">It goes on the record with your name, so the decision can be explained later.</span>
         <textarea className="ds-input" rows={3} value={note} onChange={(x) => setNote(x.target.value)} aria-invalid={err && !note.trim() ? true : undefined} aria-describedby={err ? `rv-err-${d.id}` : undefined} placeholder="What the work showed, in a sentence or two" />
       </label>
+      <label className="evr-share"><input type="checkbox" checked={share} onChange={(x) => setShare(x.target.checked)} /> <span>Share this note with {f}</span></label>
       {err && <p id={`rv-err-${d.id}`} className="evr-err" role="alert">{!outcome ? 'Choose what the sample shows.' : 'Add a short note so the decision can be explained later.'}</p>}
       <div className="ds-actions"><button type="button" className="ds-btn primary" onClick={submit}>Record the review</button></div>
     </section>

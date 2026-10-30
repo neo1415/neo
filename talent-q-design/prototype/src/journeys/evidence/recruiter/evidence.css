@@ -147,3 +147,5 @@
 /* ---------- Q Home ---------- */
 .evr-task { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
 .evr-task p { margin: 0; max-width: 60ch; }
+.evr-share { display: inline-flex; gap: 10px; align-items: center; min-height: 44px; font-size: 15px; cursor: pointer; }
+.evr-share input { width: 18px; height: 18px; accent-color: var(--ink); }

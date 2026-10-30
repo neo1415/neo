@@ -82,17 +82,17 @@ registerOp('evr.verify', (w, args, a) => askVerification(w, a, String(args.perso
 
 // ---------- Step 8: a person reviews the sample ----------
 export const OUTCOME_WORD = { SHOWS_IT: 'Shows it', PARTLY: 'Shows part of it', NOT_SHOWN: 'Didn’t show it' } as const;
-export function recordReview(w: World, a: Actor, id: string, outcome: keyof typeof OUTCOME_WORD, note: string) {
+export function recordReview(w: World, a: Actor, id: string, outcome: keyof typeof OUTCOME_WORD, note: string, share = false) {
   const d = proof(w).reuse.find((x) => x.id === id);
   if (!d || d.state !== 'SUBMITTED') { post(w, a, { kind: 'reply', text: 'That sample isn’t waiting for a review any more.' }); return; }
   if (!note) { post(w, a, { kind: 'reply', text: 'Add a short note on what the sample showed before recording the review. The note goes on the record with your name.' }); return; }
-  reviewSample(w, a, id, outcome, note);
+  reviewSample(w, a, id, outcome, note, share);
   const fn = firstName(w, d.personId);
   const lvl = cellFor(w, d.personId, d.reqId).level;
-  post(w, a, { kind: 'notice', text: `Recorded: ${OUTCOME_WORD[outcome].toLowerCase()}. ${outcome === 'NOT_SHOWN' ? `The sample doesn’t count towards ${reqLabel(w, d.reqId)}, and that’s about this sample, not a verdict on ${fn}.` : `${fn}’s sample is now Assessed${outcome === 'PARTLY' ? ' (partial)' : ''}, reviewed by you, and the comparison reads ${reqLabel(w, d.reqId)} as “${lvl === 'verified' ? 'verified' : lvl === 'partial' ? 'partial' : lvl}”.`} Your note is on the record.`,
+  post(w, a, { kind: 'notice', text: `Recorded: ${OUTCOME_WORD[outcome].toLowerCase()}. ${outcome === 'NOT_SHOWN' ? `The sample doesn’t count towards ${reqLabel(w, d.reqId)}, and that’s about this sample, not a verdict on ${fn}.` : `${fn}’s sample is now Assessed${outcome === 'PARTLY' ? ' (partial)' : ''}, reviewed by you, and the comparison reads ${reqLabel(w, d.reqId)} as “${lvl === 'verified' ? 'verified' : lvl === 'partial' ? 'partial' : lvl}”.`} Your note is on the record${share ? ` and shared with ${fn}` : `; ${fn} doesn’t see it unless you share it`}.`,
     actions: [{ label: 'See the CV and proof view', act: { t: 'do', op: 'evr.cmp.proof', args: {} } }, { label: 'Move both to interview', act: { t: 'say', text: 'move both to interview' } }] });
 }
-registerOp('evr.review', (w, args, a) => recordReview(w, a, String(args.id), args.outcome as keyof typeof OUTCOME_WORD, String(args.note ?? '').trim()));
+registerOp('evr.review', (w, args, a) => recordReview(w, a, String(args.id), args.outcome as keyof typeof OUTCOME_WORD, String(args.note ?? '').trim(), args.share === true));
 
 // ---------- Step 8: move people on, each on their own evidence (audited, undoable) ----------
 export function moveTo(w: World, a: Actor, pids: string[], stage: Stage) {
