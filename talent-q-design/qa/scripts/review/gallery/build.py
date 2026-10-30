@@ -32,10 +32,14 @@ AREAS = [
     ('campaigns', 'J11 · §D', 'Hiring campaigns', 'Kora’s Q4 Engineering Expansion and Talentbridge’s client campaigns'),
     ('rubric', 'J11 · §E', 'Evaluation rubrics and scoring', 'Ada agreeing how to judge Senior Backend, and Tobi’s scorecard'),
     ('media', 'J11 · §F', 'Video and voice evidence', 'Tobi’s consented walkthrough and Ada’s evidence report'),
+    ('evidence-recruiter', 'J12', 'Evidence-first hiring: the recruiter', 'Ada finding people by what they have shown, not by CV wording'),
+    ('evidence-candidate', 'J12', 'Evidence-first hiring: the candidate', 'Seyi Okoro’s bounded sample and Tobi’s way forward'),
 ]
 def captions(area):
     md = open(f'{ROOT}/journeys/design/{area}.md').read()
-    sec = re.search(r'^## [^\n]*[Pp]airs[^\n]*\n(.*?)(?=^## |\Z)', md, re.S | re.M).group(1)
+    m = re.search(r'^## [^\n]*[Pp]airs[^\n]*\n(.*?)(?=^## |\Z)', md, re.S | re.M)
+    if not m: return {}
+    sec = m.group(1)
     items = re.findall(r'^- (\d\d):?\s*(.*?)(?=^- |^\S|\Z)', sec, re.S | re.M)
     return {n: re.sub(r'\s+', ' ', t).strip().replace('`', '') for n, t in items}
 
@@ -49,6 +53,15 @@ for key, jn, title, who in AREAS:
         for side, src in (('before', b), ('after', a)):
             sizes[side] = webp(src, f'{out}/pairs/{key}/{n}-{side}.webp', 780 if phone else 1280, max_h=2600)
         pairs.append({'n': n, 'phone': phone, 'text': cap_text.get(n, ''), 'size': sizes})
+    # Second layout: pairs/<area>/before/<name>.png and after/<name>.png (same file names), captioned by name.
+    for b in sorted(glob.glob(f'{ROOT}/captures/review/pairs/{key}/before/*.png')):
+        name = os.path.basename(b)[:-4]; a = b.replace('/before/', '/after/')
+        if not os.path.exists(a): continue
+        phone = Image.open(b).size[0] < 1000; sizes = {}
+        for side, src in (('before', b), ('after', a)):
+            sizes[side] = webp(src, f'{out}/pairs/{key}/{name}-{side}.webp', 780 if phone else 1280, max_h=2600)
+        label = re.sub(r'^[dm]-\d+-', '', name).replace('-', ' ')
+        pairs.append({'n': name, 'phone': phone, 'text': ('Phone · ' if phone else 'Desktop · ') + label[:1].upper() + label[1:], 'size': sizes})
     areas.append({'key': key, 'journeys': jn, 'title': title, 'who': who, 'pairs': pairs})
 
 # ---- every screen now, from the final build
@@ -57,7 +70,7 @@ PEOPLE = {
     'u_bayo': ('R5', 'Bayo', 'Hiring manager, Kora Pay'), 'u_dele': ('R4', 'Dele', 'Agency director, Talentbridge'),
     'p_amaka': ('T1', 'Amaka', 'Graduate'), 'p_chidi': ('T2', 'Chidi', 'Sales executive'),
     'p_tobi': ('T3', 'Tobi', 'Backend engineer'), 'p_grace': ('T4', 'Grace', 'Care assistant'),
-    'p_zara': ('T5', 'Zara', 'Backend engineer'), 'public': ('—', 'Anyone', 'Sign-up and the states gallery'),
+    'p_zara': ('T5', 'Zara', 'Backend engineer'), 'p_seyio': ('J12', 'Seyi Okoro', 'Backend engineer, polished CV'), 'public': ('—', 'Anyone', 'Sign-up and the states gallery'),
 }
 screens = []
 for vp in ('desktop', 'phone'):
@@ -67,8 +80,10 @@ for vp in ('desktop', 'phone'):
         if not person: continue
         route = '/' + name[len(person) + 1:].replace('_', '/')
         route = route.replace('/c/jobs/j/kora/backend', '/c/jobs/j_kora_backend').replace('/client/org/kora', '/client/org_kora').replace('/mandate/m/ops', '/mandate/m_ops').replace('/people/p/tobi', '/people/p_tobi').replace('/calendar/connect', '/calendar/connect')
-        thumb = webp(f, f'{out}/screens/{vp}/{name}.t.webp', 480 if vp == 'desktop' else 260, crop_h=900 if vp == 'desktop' else 1688)
         full = webp(f, f'{out}/screens/{vp}/{name}.webp', 1280 if vp == 'desktop' else 780, max_h=5200)
+        # One file per screen (the publish limit is 511 files): the grid shows the top of the full image.
+        tw = 480 if vp == 'desktop' else 260; ch = 900 if vp == 'desktop' else 1688
+        thumb = (tw, round(min(full[1] * tw / full[0], ch * tw / (1440 if vp == 'desktop' else 780))))
         screens.append({'vp': vp, 'id': name, 'person': person, 'route': route, 'thumb': thumb, 'full': full})
 
 # ---- motion previews
@@ -95,12 +110,14 @@ for cid, t, d, j, who, route in CLIPS:
 
 # ---- films: the connected journey and the email clip (recorded from the tested build)
 FILM_DIR = os.environ.get('FILMS', f'{ROOT}/captures/films/J11')
+FILM_DIRS = {'J12-evidence-first': f'{ROOT}/captures/films/J12'}
 films = []
 os.makedirs(f'{out}/films', exist_ok=True)
-for fid, title, text in [('J11-connected-journey', 'J11 · One connected journey', 'Tobi watches the role briefing and asks Kora a question; Ada files it in the Q4 campaign, agrees a rubric, reviews Tobi’s consented walkthrough and emails an invitation; Tobi replies and it’s booked. Six disruptions on the way.'),
+for fid, title, text in [('J12-evidence-first', 'J12 · Evidence-first hiring', 'Tobi’s CV is thin; his reviewed work shows Postgres. Seyi Okoro’s CV is polished; most of it is still claims. Q finds both by what they have shown, sets out CV against evidence, asks Seyi Okoro for one 40-minute sample instead of a full test, and both move to interview. Then Tobi stops sharing an item and Ada’s views update.'),
+                         ('J11-connected-journey', 'J11 · One connected journey', 'Tobi watches the role briefing and asks Kora a question; Ada files it in the Q4 campaign, agrees a rubric, reviews Tobi’s consented walkthrough and emails an invitation; Tobi replies and it’s booked. Six disruptions on the way.'),
                          ('E01-email-clip', 'Email: request to booking', 'Ask Q to email an invitation → the draft names sender and campaign → approve the exact content → Google sign-in expired → reconnect → sent once → reply with a new subject → confirm → booked.')]:
     for v in ('desktop', 'phone'):
-        src = f'{FILM_DIR}/{fid}-{v}.mp4'
+        src = f'{FILM_DIRS.get(fid, FILM_DIR)}/{fid}-{v}.mp4'
         if not os.path.exists(src): continue
         # Web copy under the 15 MB per-file publish limit; full-quality masters stay in captures/films/J11.
         subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-i', src, '-vf', 'scale=-2:720' if v == 'desktop' else 'scale=-2:1280', '-c:v', 'libx264', '-crf', '30', '-preset', 'slow', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', f'{out}/films/{fid}-{v}.mp4'], check=True)

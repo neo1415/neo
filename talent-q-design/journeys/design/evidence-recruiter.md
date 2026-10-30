@@ -54,6 +54,13 @@ desktop, 49 phone). Simulated data and simulated sends; nothing here was tested 
    colleague who shares a candidate's first name is shown with the surname; candidates likewise (`firstName`,
    hire-c `firstOf`).
 
+## Before/after pairs (`captures/review/pairs/evidence-recruiter/`)
+- 01: CV and proof, desktop: the whole CV headline quoted for every requirement, and next steps aimed at Payments → the most specific CV phrase per requirement; next steps go to the open Postgres question.
+- 02: Profile banner: "Impressive CV, thin evidence" → "Strong claims, limited supporting evidence", the pack's wording.
+- 03: Q's find reply repeated a name → two short sentences.
+- 04: Profile: "Claimed, not yet shown" while partial items existed → "Claimed, without reviewed or checked support yet".
+- 05: Phone labels in all caps read as shouting → short label plus a sentence-case helper.
+
 ## Remaining weaknesses (honest)
 - The profile is long on phones (now eight index stops). A collapsed "Close only the gaps" would help.
 - The CV margin notes stack under each line at every width; a true side margin at desktop needs the sheet wider.
