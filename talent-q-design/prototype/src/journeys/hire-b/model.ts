@@ -5,6 +5,7 @@ import type { Evidence, Requirement } from '@contracts';
 import { actorOf, canSeeCandidate, simNow, visibleEvidence, type World } from '../../mock/world';
 import type { Interview } from '../../state/domain';
 import { hireB, type Level, type Rating } from '../../state/areas/hire-b';
+import { proof } from '../../state/areas/proof';
 import { rubricWeights } from '../rubric/model';
 
 export const KORA_ROLE = 'm_backend';
@@ -60,6 +61,11 @@ export const EV_REQ: Record<string, { reqId: string; note: string; partial?: boo
   e_ha_kunle_gh: [{ reqId: 'r2', note: 'Public Go commits only since March 2024', partial: true }],
   e_zara_api: [{ reqId: 'r2', note: 'Go service that ingests GPS pings' }],
   e_zara_pg: [{ reqId: 'r3', note: 'Partitioned a 200m-row table by month' }],
+  // Evidence-first contrast (build pack 30 Oct): Tobi's reviewed debugging sample; Seyi Okoro's claims and unconfirmed items.
+  e_tobi_incident: [{ reqId: 'r3', note: 'Traced a slow API to Postgres lock contention; p95 8s → 180ms' }, { reqId: 'r4', note: 'Worked a real incident, but a sample, not an on-call rota', partial: true }],
+  e_seyio_cv: [{ reqId: 'r1', note: 'CV says payments at scale' }, { reqId: 'r2', note: 'CV says “Go at scale”' }, { reqId: 'r3', note: 'CV says “Postgres performance expert”' }, { reqId: 'r4', note: 'CV says he led on-call and incident reviews' }, { reqId: 'r5', note: 'CV says he mentored 6 engineers' }],
+  e_seyio_cert: [{ reqId: 'r3', note: '2019 entry-level certificate, issuer not yet confirmed', partial: true }],
+  e_seyio_project: [{ reqId: 'r4', note: 'His account of an API reliability programme; nothing shown', partial: true }],
 };
 
 export const LEVEL_VALUE: Record<Level, number> = { verified: 3, evidenced: 2, partial: 1, claim: 0, none: 0 };
@@ -94,7 +100,7 @@ export function cellFor(w: World, pid: string, reqId: string, o: Opts = {}): Cel
   const cutoff = simNow(w).getTime() - YEAR;
   const items: CellItem[] = [];
   for (const e of visibleEvidence(w, pid, org)) {
-    const m = EV_REQ[e.evidenceId]?.find((x) => x.reqId === reqId); if (!m) continue;
+    const m = EV_REQ[e.evidenceId]?.find((x) => x.reqId === reqId) ?? proof(w).links.find((x) => x.evidenceId === e.evidenceId && x.reqId === reqId && x.state === 'REVIEWED'); if (!m) continue;
     const level = itemLevel(w, e, m.partial);
     const excluded = e.confidential ? 'confidential' : disputed.has(e.evidenceId) ? 'review' : e.verification === 'FAILED' ? 'failed' : o.lastYear && new Date(e.observedAt).getTime() < cutoff ? 'old' : undefined;
     items.push({ e, level, note: m.note, excluded });

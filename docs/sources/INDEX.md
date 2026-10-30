@@ -44,6 +44,16 @@ Founder documents, saved as they arrive. Originals are kept as uploaded; `text/`
 | `batch-5/Talent_Q_Design_Audit_and_Feature_Addendum_2026-10-29.md` | Audit of the review ZIP plus four binding features: candidate-initiated contact, hiring campaigns and requisitions, role-specific rubrics with evidence-backed scoring, consented video and voice evidence. Requirements in `talent-q-design/registry/ADDENDUM-REQUIREMENTS.csv` (AD-*) |
 | `batch-5/Talent_Q_Email_and_Correspondence_Addendum_2026-10-29.md` | Addendum E-01, binding: connected email (Google, Microsoft, other business email) and Q-managed correspondence. Requirements E01-* in the same register |
 
+## Batch 6 (30 Oct 2026): Consolidated Build Pack (controlling for this consolidation)
+| File | What it is |
+|---|---|
+| `batch-6/00_START_HERE_PRODUCT_DECISION.md` | Launch thesis: evidence-first hiring, the Tobi (weak CV, reviewed evidence) vs Seyi (polished CV, unverified claims) example, decisions and P0–P3 sequence |
+| `batch-6/01_BUYER_EVIDENCE_AND_PRICING.md` | Buyer personas and pricing hypotheses (desk research, not validated demand) |
+| `batch-6/02_ARCHITECTURE_AND_IMPLEMENTATION_MAP.md` | `CapabilityEvidenceForRole` entities, scoring rules, state flow, runtime standards, UI improvements A–H, what not to build first |
+| `batch-6/03_CLAUDE_SINGLE_EXECUTION_DIRECTIVE.md` | The controlling assignment: Work A–D and the quality gate |
+| `batch-6/04_SOURCE_LEDGER.md` | Public sources with limits; claims that must not appear as facts |
+| `batch-6/05_DEMONSTRATION_AND_ACCEPTANCE.md` | Scenarios P1–P6, design quality checks, pilot gates |
+
 ## Other inputs
 - `neo1415/q` (public), inspected read-only at `build/int-rc` `91a8acb`. Nothing in it is changed.
 - The founder's original 4m33s film is analysed in `07_VIDEO_STORYBOARD_AND_VISUAL_REFERENCE.md`; the film file itself was not uploaded.

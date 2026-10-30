@@ -8,7 +8,7 @@ import type { Requirement } from '@contracts';
 
 export type Side = 'recruiter' | 'candidate';
 export type OrgRole = 'OWNER' | 'ADMIN' | 'RECRUITER' | 'HIRING_MANAGER' | 'INTERVIEWER' | 'VIEWER';
-export type JourneyId = 'R1' | 'R2' | 'R3' | 'R4' | 'R5' | 'T1' | 'T2' | 'T3' | 'T4' | 'T5';
+export type JourneyId = 'R1' | 'R2' | 'R3' | 'R4' | 'R5' | 'T1' | 'T2' | 'T3' | 'T4' | 'T5' | 'J12';
 
 export interface Actor {
   id: string; name: string; first: string; initials: string; side: Side; title: string; timezone: string;
@@ -200,3 +200,35 @@ export interface QSlice {
 }
 
 export interface DomainEvent { id: string; at: string; actor: string; type: string; scope: string; text: string; data?: Record<string, unknown> }
+
+// ---------- Evidence-first hiring (Consolidated Build Pack, 30 Oct: 02_ARCHITECTURE §"CapabilityEvidenceForRole") ----------
+// These extend M4/M5/M6/M7/M11/M13; they are not a separate scoring service. The role-evidence evaluation itself is
+// the existing Rating (rubrics slice) plus the comparison's per-criterion cell; no global talent score exists.
+
+/** How a piece of evidence is known. Shown on both sides with the same words (Passport and recruiter views). */
+export type ProofClass = 'CLAIM' | 'SELF_REPORTED' | 'ASSESSED' | 'ISSUER_VERIFIED' | 'DISPUTED';
+
+/** The CV as the candidate uploaded it, kept separate from evidence. `mentions` says whether the CV text names each
+ *  requirement; it is a reading of the document, never a verdict on the person (missing keywords never reject). */
+export interface CvDoc { personId: string; uploadedAt: string; polish: 'THIN' | 'POLISHED'; lines: string[]; mentions: Record<string, 'YES' | 'VAGUE' | 'NO'> }
+
+/** The employer's decision about evidence for one requirement: accept what the candidate already has, ask for it to
+ *  be verified, or ask for one bounded work sample (with its effort). Avoids repeat assessment (pack §Work A.3). */
+export interface EvidenceReuseDecision {
+  id: string; orgId: string; personId: string; mandateId: string; reqId: string;
+  decision: 'ACCEPT_PRIOR' | 'REQUEST_VERIFICATION' | 'BOUNDED_SAMPLE';
+  evidenceIds: string[]; reason: string; effortMinutes?: number; by: string; at: string;
+  state: 'PROPOSED' | 'SENT' | 'IN_PROGRESS' | 'SUBMITTED' | 'REVIEWED' | 'DECLINED';
+  /** The evidence the bounded sample produced, once reviewed. */
+  resultEvidenceId?: string;
+}
+
+/** A participating employer's confirmation that a role is really hiring (never set for discovered external posts). */
+export interface HiringIntentConfirmation { jobId: string; orgId: string; state: 'ACTIVE' | 'PAUSED' | 'CLOSED'; owner: string; confirmedAt: string; freshUntil: string; replyWithinDays: number }
+
+/** What the employer has committed to tell a candidate, and by when. Q may send approved factual updates; it never
+ *  invents an employer decision. */
+export interface ProcessCommitment { id: string; orgId: string; personId: string; applicationId?: string; mandateId: string; milestone: string; nextUpdateDue: string; owner: string; state: 'OPEN' | 'FULFILLED' | 'OVERDUE' }
+
+/** The candidate's own preferences for mutual fit. Unknown stays unknown; it is never scored against them. */
+export interface CandidateMutualPreferences { personId: string; payMin?: number; currency?: 'NGN' | 'GBP' | 'USD'; workModes?: ('ONSITE' | 'HYBRID' | 'REMOTE')[]; locations?: string[]; availableFrom?: string; updatedAt: string; shareWith: string[] }
