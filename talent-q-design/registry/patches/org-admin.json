@@ -1,0 +1,98 @@
+{
+ "screens": {
+  "SC-020": {
+   "status": "INTEGRATED",
+   "route": "/r/admin/instructions",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-020 *",
+   "note": "Per-person tone/process/limit instructions with use counts and a visible 'guideline wins' override; add/pause/remove on the page or 'from now on …' to Q. Approved V29 learnings write into it. Loading/empty/error by ?state=, read-only and denied states via the shared frame."
+  },
+  "SC-021": {
+   "status": "PROTOTYPED",
+   "route": "/r/admin/templates",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-021 *",
+   "note": "Role brief, interview-question and scorecard templates with versions, proposed→approved by an admin, Q flags protected-trait/proxy lines and blocks approval until removed; email templates are read from the email policy (not duplicated). Q: approve / remove the flagged line."
+  },
+  "SC-023": {
+   "status": "INTEGRATED",
+   "route": "/r/admin/channels",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-023 *; V09 *",
+   "note": "Email, SMS, WhatsApp and call verification with simulated code, review and failure; consent per candidate from their own settings (SMS is the shared consents.notifications.sms). Not asked ≠ yes. All provider steps simulated."
+  },
+  "SC-024": {
+   "status": "PROTOTYPED",
+   "route": "/r/admin/billing",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-024 *; MO-035 *",
+   "note": "Plan shown as a pricing hypothesis ($249 Team / $499 Agency, from batch-6 pricing doc), no payment, quote request only; usage meters with table view; agent budget with cap, budget requests approve/decline, stop/spend decision. Recruiters see usage only; hiring managers are refused."
+  },
+  "SC-025": {
+   "status": "INTEGRATED",
+   "route": "/r/admin/retention",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-025 *",
+   "note": "Every period labelled 'Proposed · D9 open'; recordings transcript-only by design (D10); NDPA/UK GDPR template; deletion request processed with a receipt (deleted vs kept + why) that removes the org's pipeline entries and emits a SHARED event the candidate can read; simulated audit export."
+  },
+  "SC-140": {
+   "status": "PROTOTYPED",
+   "route": "/r/admin/placements",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-140 *",
+   "note": "Talentbridge only: represented candidates, consent to be put forward (pending → ask), attribution with an open client dispute and its settlement, invoice draft interrupted at step 2 and resumed, paid status unknown until marked. People the agency can no longer see are counted, never named. Employers get a denied state that names no agency."
+  },
+  "SC-141": {
+   "status": "PROTOTYPED",
+   "route": "/r/admin/compliance",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-141 *",
+   "note": "Admin-only dashboard: members by role, consent counts (unknown shown as unknown), retention status, incidents with resolve-with-note (page or Q), Q refusal count; links to Team and the audit log."
+  },
+  "SC-142": {
+   "status": "PROTOTYPED",
+   "route": "/r/admin/reports",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-142 *",
+   "note": "Days from opening to first shortlist, pipeline/contacted/replied per role and Talent Q cost, all read from the store; chart with table view. Hiring managers (Bayo) see only engineering roles they hire for and no cost."
+  },
+  "SC-144": {
+   "status": "PROTOTYPED",
+   "route": "/r/admin/models",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-144 *; V03 *",
+   "note": "Per Q task: simulated tier, provider route, budget, timeout, fallback, cache, version and rollout (pause per organisation); simulated timeout trace; scoring method marked not validated (D17); rubric versions from the rubrics area; approved learnings in use."
+  },
+  "SC-145": {
+   "status": "PROTOTYPED",
+   "route": "/r/admin/quality",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-145 *",
+   "note": "Lists the checks that would run with statuses only: adverse impact not run (needs D17 and voluntary data), rater agreement 'too few to tell' from real rating counts, drift waiting, job-relatedness sign-off, refusals working, faces/accents/emotion/personality never scored. No fairness statistic is produced."
+  },
+  "SC-146": {
+   "status": "PROTOTYPED",
+   "route": "/r/admin/sources",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-146 *",
+   "note": "Sources with terms, renewal dates and simulated health (degraded, licence ending, partner pending, not licensed/never scraped); check, pause and renewal request (no payment)."
+  }
+ },
+ "motions": {
+  "MO-035": {
+   "status": "PROTOTYPED",
+   "route": "/r/admin/billing",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: MO-035 *",
+   "note": "Event-driven: crossing 80% of the agent budget (budget.threshold event) brings in the soft warning (arrive + meter eases with DUR.slow), role=alert, with stop/spend decision; proactive high-priority Q card and a live oa.budget ref card in Q. Reduced motion: no travel, warning text and state unchanged (tested). Clip not recorded."
+  }
+ },
+ "vision": {
+  "V03": {
+   "status": "PROTOTYPED",
+   "route": "/r/admin/models",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: V03 *",
+   "note": "Inspector shows which simulated model tier and provider route each Q task uses, with budget, timeout, cache and fallback; timeout simulation shows the fallback path and that the cut-off call isn't paid twice. Labelled simulated; no model is called."
+  },
+  "V09": {
+   "status": "INTEGRATED",
+   "route": "/r/admin/channels",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: V09 *",
+   "note": "WhatsApp/SMS/phone verification and per-candidate consent; WhatsApp message drafted from an approved template, kept with the existing M9 thread id, approved by a person, then accepted ≠ delivered ≠ read (simulated provider updates); call eligibility (verified number, consent, local daytime, never recorded); candidates control WhatsApp/calls/SMS at /settings/channels and see messages sent to them."
+  },
+  "V29": {
+   "status": "INTEGRATED",
+   "route": "/r/admin/learning",
+   "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: V29 *",
+   "note": "Learnings from the organisation's own consented outcomes, each with source count, exclusions, permission and a simulated evaluation; org-level learning switch; reviewer approve/reject (reason required); private practice and other tenants never used. An approved learning becomes the person's instruction (SC-020) and shows as in use on SC-144."
+  }
+ }
+}

@@ -119,3 +119,4 @@
 .ds .oa-more summary { cursor: pointer; min-height: 32px; display: flex; align-items: center; color: var(--ink-2); }
 .ds .oa-more[open] summary { margin-bottom: 6px; }
 @media (max-width: 860px) { .ds .oa-dl-tight { grid-template-columns: max-content 1fr; gap: 2px 12px; } .ds .oa-dl-tight dd { margin-bottom: 0; } }
+.ds .oa-li-main .ds-linkbtn { color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; justify-self: start; background: none; border: 0; padding: 4px 0; min-height: 32px; cursor: pointer; }

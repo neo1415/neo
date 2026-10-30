@@ -36,7 +36,7 @@ export function DeliveryRail({ msgId, testing = false }: { msgId: string; testin
         ))}
       </ol>
       <p className="sr" aria-live="polite">Status: {status}</p>
-      {testing && m && (m.status === 'SENT_SIMULATED') && (
+      {testing && m && m.status === 'SENT_SIMULATED' && (!r.delivered || (m.channel === 'IN_APP' && !r.read)) && (
         <div className="hd-testrow" role="group" aria-label="Simulate receipts (testing)">
           <span className="lab">Testing</span>
           {!r.delivered && <button type="button" className="ds-btn quiet" onClick={() => void runAction({ label: 'Delivered', act: { t: 'do', op: 'hd.receipt', args: { msgId, what: 'delivered' } } })}>Simulate the delivery receipt</button>}

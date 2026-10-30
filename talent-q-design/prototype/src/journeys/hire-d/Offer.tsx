@@ -85,7 +85,7 @@ function OfferBody({ id }: { id: string }) {
         <dl className="hd-facts"><div><dt>Monthly salary</dt><dd className="num">{o.amount == null ? 'Not set' : money(o.amount)}</dd></div><div><dt>Start date</dt><dd>{o.start ? fmtDay(o.start) : 'To agree'}</dd></div></dl>
         {editable && (
           <form className="hd-offerform" onSubmit={(x) => { x.preventDefault(); act('hd.offer.edit', { id: o.id, amount: amount === '' ? null : Number(amount.replace(/[^\d]/g, '')), start: start || null, note: 'Edited by hand', revise: o.state === 'NEGOTIATING' }); }}>
-            <div className="ds-field"><label htmlFor="of-amt">Monthly salary (₦)</label><input id="of-amt" className="ds-input num" inputMode="numeric" value={amount} onChange={(x) => setAmount(x.target.value)} placeholder="Set by your team" /></div>
+            <div className="ds-field"><label htmlFor="of-amt">Monthly salary (₦)</label><input id="of-amt" className="ds-input num" inputMode="numeric" value={amount} onChange={(x) => setAmount(x.target.value)} placeholder="Set by your team" aria-describedby="of-amt-h" /><span id="of-amt-h" className="t14 muted num">{amount && !Number.isNaN(Number(amount.replace(/[^\d]/g, ''))) ? `${money(Number(amount.replace(/[^\d]/g, '')))} a month` : 'Inside the approved band'}</span></div>
             <div className="ds-field"><label htmlFor="of-start">Start date</label><input id="of-start" type="date" className="ds-input" value={start} onChange={(x) => setStart(x.target.value)} /></div>
             <button type="submit" className="ds-btn" disabled={!dirty}>Save as v{v.v + 1}</button>
           </form>
