@@ -36,7 +36,8 @@ registerSkill({
     if (!hirer(c) || /\b(disagree|conflict|differ)\b/.test(c.norm)) return 0;
     if (/\blinked ?in\b/.test(c.norm)) return 0.9;
     if (/\b(leave out|exclude|stop using|start using|switch (off|on)|turn (off|on)|include)\b/.test(c.norm) && SRC_WORDS.some(([re]) => re.test(c.norm)) && /\bsearch\w*\b/.test(c.norm)) return 0.91;
-    if (/\b(sources?|search scope|where (do|does) (you|q) (search|look))\b/.test(c.norm) && /\b(search|use|which|what|where|scope|include|exclude|leave out|turn (off|on)|stop using)\b/.test(c.norm)) return 0.9;
+    // Only about where Q searches for people: "what sources did you use" for an artifact belongs to q-tools.
+    if (/\b(sources?|search scope|where (do|does) (you|q) (search|look))\b/.test(c.norm) && /\b(search\w*|scope|look for people|find people)\b/.test(c.norm)) return 0.9;
     return 0;
   },
   handle: (c) => {
@@ -134,7 +135,7 @@ const REM = /\b(reminders?|follow-?ups?)\b/;
 registerSkill({
   id: 'hire-d.reminders', side: 'recruiter',
   match: (c) => {
-    if (!hirer(c) || !REM.test(c.norm) || /\b(pause|resume|run|automation|automatic|stop the)\b/.test(c.norm)) return 0;
+    if (!hirer(c) || !REM.test(c.norm) || /\b(pause|resume|run|automation|automatic|stop the|learning|instruction|keep my)\b/.test(c.norm)) return 0;
     if (/\b(deliver\w*|read|receiv\w*|open(ed)?|get)\b/.test(c.norm) && peopleIn(c).length) return 0.9;
     if (/\b(approve|queue|due|waiting|need|which|what|show|list)\b/.test(c.norm)) return 0.87;
     return 0;

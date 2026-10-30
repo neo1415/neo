@@ -127,7 +127,7 @@ registerSkill({
 // ---------------------------------------------------------------- Exercises: recruiter (SC-111–113)
 registerSkill({
   id: 'as.exercise.rec', side: 'recruiter',
-  match: (c) => (rec(c) && /\b(exercise|exercises|sandbox|code test|incident investigation|customer conversation|roleplay|role-play|simulation)\b/.test(c.norm) && !/\brubric\b/.test(c.norm) ? 0.88 : 0),
+  match: (c) => (rec(c) && /\b(exercise|exercises|sandbox|code test|incident investigation|customer conversation|roleplay|role-play)\b/.test(c.norm) && !/\brubric\b/.test(c.norm) ? 0.88 : 0),
   handle: (c) => {
     const list = exercisesFor(c.w, c.actor);
     const e = list.find((x) => c.ents.people.includes(x.personId)) ?? list.find((x) => x.state === 'SUBMITTED');
@@ -183,7 +183,7 @@ registerSkill({
 
 registerSkill({
   id: 'as.c.exercise', side: 'candidate',
-  match: (c) => (cand(c) && (/\b(exercise|sandbox|run (the |my )?tests|the logs?|customer chat)\b/.test(c.norm) || (/^\/c\/assess\/ex\//.test(c.route) && /\b(submit|send|decline|run|test|help)\b/.test(c.norm))) ? 0.88 : 0),
+  match: (c) => (cand(c) && !c.route.startsWith('/c/learn') && (/\b(exercise|sandbox|run (the |my )?tests|the logs?|customer chat)\b/.test(c.norm) || (/^\/c\/assess\/ex\//.test(c.route) && /\b(submit|send|decline|run|test|help)\b/.test(c.norm))) ? 0.88 : 0),
   handle: (c) => {
     const list = exercisesFor(c.w, c.actor);
     const id = c.route.match(/ex\/(ex_\w+)/)?.[1]; const e = list.find((x) => x.id === id) ?? list.find((x) => x.state === 'IN_PROGRESS') ?? list.find((x) => x.state === 'ASSIGNED');
