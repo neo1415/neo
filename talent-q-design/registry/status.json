@@ -849,6 +849,198 @@
       "route": "/r/people/:id",
       "evidence": "prototype/src/journeys/evidence/recruiter/ProfileProof.tsx (ReviewPanel); qa/scripts/journeys/J12.mjs step 8",
       "note": "J12: a named reviewer marks a bounded sample shows it / part / not, with a required note; sharing the note with the candidate is a separate choice. Section of the profile."
+    },
+    "SC-020": {
+      "status": "INTEGRATED",
+      "route": "/r/admin/instructions",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-020 *",
+      "note": "Per-person tone/process/limit instructions with use counts and a visible 'guideline wins' override; add/pause/remove on the page or 'from now on …' to Q. Approved V29 learnings write into it. Loading/empty/error by ?state=, read-only and denied states via the shared frame. (Cluster patch: org-admin.)"
+    },
+    "SC-021": {
+      "status": "PROTOTYPED",
+      "route": "/r/admin/templates",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-021 *",
+      "note": "Role brief, interview-question and scorecard templates with versions, proposed→approved by an admin, Q flags protected-trait/proxy lines and blocks approval until removed; email templates are read from the email policy (not duplicated). Q: approve / remove the flagged line. (Cluster patch: org-admin.)"
+    },
+    "SC-023": {
+      "status": "INTEGRATED",
+      "route": "/r/admin/channels",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-023 *; V09 *",
+      "note": "Email, SMS, WhatsApp and call verification with simulated code, review and failure; consent per candidate from their own settings (SMS is the shared consents.notifications.sms). Not asked ≠ yes. All provider steps simulated. (Cluster patch: org-admin.)"
+    },
+    "SC-024": {
+      "status": "PROTOTYPED",
+      "route": "/r/admin/billing",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-024 *; MO-035 *",
+      "note": "Plan shown as a pricing hypothesis ($249 Team / $499 Agency, from batch-6 pricing doc), no payment, quote request only; usage meters with table view; agent budget with cap, budget requests approve/decline, stop/spend decision. Recruiters see usage only; hiring managers are refused. (Cluster patch: org-admin.)"
+    },
+    "SC-025": {
+      "status": "INTEGRATED",
+      "route": "/r/admin/retention",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-025 *",
+      "note": "Every period labelled 'Proposed · D9 open'; recordings transcript-only by design (D10); NDPA/UK GDPR template; deletion request processed with a receipt (deleted vs kept + why) that removes the org's pipeline entries and emits a SHARED event the candidate can read; simulated audit export. (Cluster patch: org-admin.)"
+    },
+    "SC-140": {
+      "status": "PROTOTYPED",
+      "route": "/r/admin/placements",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-140 *",
+      "note": "Talentbridge only: represented candidates, consent to be put forward (pending → ask), attribution with an open client dispute and its settlement, invoice draft interrupted at step 2 and resumed, paid status unknown until marked. People the agency can no longer see are counted, never named. Employers get a denied state that names no agency. (Cluster patch: org-admin.)"
+    },
+    "SC-141": {
+      "status": "PROTOTYPED",
+      "route": "/r/admin/compliance",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-141 *",
+      "note": "Admin-only dashboard: members by role, consent counts (unknown shown as unknown), retention status, incidents with resolve-with-note (page or Q), Q refusal count; links to Team and the audit log. (Cluster patch: org-admin.)"
+    },
+    "SC-142": {
+      "status": "PROTOTYPED",
+      "route": "/r/admin/reports",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-142 *",
+      "note": "Days from opening to first shortlist, pipeline/contacted/replied per role and Talent Q cost, all read from the store; chart with table view. Hiring managers (Bayo) see only engineering roles they hire for and no cost. (Cluster patch: org-admin.)"
+    },
+    "SC-144": {
+      "status": "PROTOTYPED",
+      "route": "/r/admin/models",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-144 *; V03 *",
+      "note": "Per Q task: simulated tier, provider route, budget, timeout, fallback, cache, version and rollout (pause per organisation); simulated timeout trace; scoring method marked not validated (D17); rubric versions from the rubrics area; approved learnings in use. (Cluster patch: org-admin.)"
+    },
+    "SC-145": {
+      "status": "PROTOTYPED",
+      "route": "/r/admin/quality",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-145 *",
+      "note": "Lists the checks that would run with statuses only: adverse impact not run (needs D17 and voluntary data), rater agreement 'too few to tell' from real rating counts, drift waiting, job-relatedness sign-off, refusals working, faces/accents/emotion/personality never scored. No fairness statistic is produced. (Cluster patch: org-admin.)"
+    },
+    "SC-146": {
+      "status": "PROTOTYPED",
+      "route": "/r/admin/sources",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: SC-146 *",
+      "note": "Sources with terms, renewal dates and simulated health (degraded, licence ending, partner pending, not licensed/never scraped); check, pause and renewal request (no payment). (Cluster patch: org-admin.)"
+    },
+    "SC-001": {
+      "status": "PROTOTYPED",
+      "route": "/site",
+      "evidence": "prototype/src/journeys/public/Landing.tsx; qa/scripts/features/public.mjs steps 'SC-001: …' (desktop and phone); captures/features/public/{d,m}-01-landing.png; captures/review/pairs/public/01",
+      "note": "Promise ('Evidence-first hiring, with Q doing the work.'), an entry for each side, both founder promises verbatim, 'what Q will never do', and an honest 'where this is today'. Q is present as the inline sample conversation (SC-013). Loading/error/permission states live in the sample Q; the list alternative is /site/ask. (Cluster patch: public.)"
+    },
+    "SC-002": {
+      "status": "PROTOTYPED",
+      "route": "/site/how",
+      "evidence": "prototype/src/journeys/public/How.tsx; public.mjs 'SC-002: …'; captures/features/public/{d,m}-05-how.png, -06-how-talent.png; pairs/public/02",
+      "note": "Audience switch (radio group, ?for=talent in the address, warm candidate paper) and a working demonstration beside each step: approve criteria, evidence classes, one targeted follow-up, receipts (accepted ≠ delivered ≠ read), sharing on/off, private practice. All fictional and labelled Sample or Simulated send. (Cluster patch: public.)"
+    },
+    "SC-003": {
+      "status": "PROTOTYPED",
+      "route": "/site/employers",
+      "evidence": "prototype/src/journeys/public/Employers.tsx; public.mjs 'SC-003: …'; captures/features/public/{d,m}-07-employers.png; pairs/public/04",
+      "note": "Outcomes stated without promising results; a 5-step sample journey (the founder's Tobi/Seyi example, fictional) with criteria, why Tobi isn't dropped, the per-criterion comparison with sources, one bounded follow-up and a simulated send; who it's for (in-house, agency, occasional founder); trust block. (Cluster patch: public.)"
+    },
+    "SC-004": {
+      "status": "PROTOTYPED",
+      "route": "/site/talent",
+      "evidence": "prototype/src/journeys/public/Talent.tsx; public.mjs 'SC-004: …'; captures/features/public/{d,m}-08-talent.png",
+      "note": "'Show what you can do, even if your CV doesn't.' Candidate outcomes, the four evidence classes in the same words employers see, growth between applications (practice is private, never proof), free to apply and to be found. (Cluster patch: public.)"
+    },
+    "SC-005": {
+      "status": "INTEGRATED",
+      "route": "/site/pricing",
+      "evidence": "prototype/src/journeys/public/Pricing.tsx, content.ts; state/areas/public.ts (interest); public.mjs 'SC-005: …'; captures/features/public/{d,m}-09-pricing.png; pairs/public/03",
+      "note": "Role pilot ($99–$299), team plan ($149–$399/team/month), agency plan ($299–$799/month or per mandate), candidate core free — every price labelled a hypothesis being tested, from 01_BUYER_EVIDENCE_AND_PRICING.md. Compare table (mandate / seat / agents / assessment) says 'not decided' instead of numbers; phone shows a list. No payment fields. 'Ask about this' records interest in the store (areas.public.interest); nothing is sent. Value check labelled a model, not a quote. Signed-in Q answers 'how much does Talent Q cost' (q/skills/public.ts). (Cluster patch: public.)"
+    },
+    "SC-006": {
+      "status": "PROTOTYPED",
+      "route": "/site/trust",
+      "evidence": "prototype/src/journeys/public/Trust.tsx; public.mjs 'SC-006: …'; captures/features/public/{d,m}-10-trust.png; pairs/public/06",
+      "note": "What Q does and does not decide, human review, the five evidence classes (shared vocabulary), privacy and revocation, simulated vs real (receipts), no face/accent/emotion/personality scoring, and the ledger's six unproven claims as 'claims we don't make'. In-page index. (Cluster patch: public.)"
+    },
+    "SC-008": {
+      "status": "INTEGRATED",
+      "route": "/sign-in",
+      "evidence": "prototype/src/journeys/public/SignIn.tsx; state/areas/public.ts (signIns, SSO_ONLY); public.mjs 'SC-008: …'; captures/features/public/{d,m}-11-signin-denied.png, -12-signin-google.png; pairs/public/05",
+      "note": "Email code (passwordless, code 123456), Google and Microsoft, all simulated and labelled. Sets the session actor, records auth.signed_in in the actor's org/person scope, and lands on /r/home or /c/home (agency home via the recruiter home). States: sending, waiting for provider, incomplete email, unknown email, wrong code, cancelled, permission denied (Talentbridge requires Microsoft; simulated org rule), unfinished account → /signup. No password option (deliberate: passwordless). (Cluster patch: public.)"
+    },
+    "SC-013": {
+      "status": "PROTOTYPED",
+      "route": "/site/ask",
+      "evidence": "prototype/src/journeys/public/qsample.ts, SampleQ.tsx, Ask.tsx, Site.tsx (dock); public.mjs 'SC-013: …'; captures/features/public/{d,m}-02-sample-q.png, -03-ask.png, -04-dock.png",
+      "note": "Sample Q on every public page: inline on the landing, an 'Ask Q' dock (desktop side panel, phone full sheet) with a page-aware opener elsewhere, full page at /site/ask. Rule-matched written answers, each labelled 'Sample answer'; fictional people labelled. Refuses real people/search (permission denied), says accuracy and results are not proven, gives prices as hypotheses, leads to /signup and /sign-in. States: empty (opener + questions), thinking (labelled), offline (question kept, Retry), fallback, and a list of every answer as the accessible alternative. Kept per tab (sessionStorage). Text only; no voice. (Cluster patch: public.)"
+    },
+    "SC-124": {
+      "status": "PROTOTYPED",
+      "route": "/q/artifacts/:id",
+      "evidence": "prototype/src/journeys/q-tools/{model.ts (pipelineData, mapData), views.tsx (ChartView, MapView)}; q/skills/q-tools.ts (qt.chart, qt.map); q-tools.mjs steps 'SC-124 …' and 'MO-031 …'; captures/features/q-tools/{d,m}-02-chart, -03-chart-privacy, -04-map, -05-map-list",
+      "note": "“chart our pipeline by stage” and “map where Kora’s candidates are” make a chart (single-series ink bars, direct labels, keyboard detail per bar, table view) and a city-level dot map with no basemap (cities outside the view listed at the edge, ‘Location not shared’ counted as unknown, list view). Both redraw from the live store through canSeeCandidate on every render: a withdrawn consent drops the person at once and they are counted, never named. States: ready, empty, permission denied (candidate; agency asking for Kora’s pipeline), accessible alternative, mobile. (Cluster patch: q-tools.)"
+    },
+    "SC-126": {
+      "status": "PROTOTYPED",
+      "route": "/q/artifacts/:id",
+      "evidence": "views.tsx (DiagramView); model.ts (processSteps); skill qt.diagram; q-tools.mjs 'SC-126 …'; captures {d,m}-06-diagram, d-23-candidate-diagram",
+      "note": "“draw the hiring process” draws an SVG flow from the org’s stages with live counts and ◇ checks where a person decides (from the org’s delegation setting and guidelines); snakes into rows by width, one column on phones; Outline view in words; Save as SVG (local file of the figure). Candidates get their own application path. (Cluster patch: q-tools.)"
+    },
+    "SC-127": {
+      "status": "PROTOTYPED",
+      "route": "/q/artifacts/:id",
+      "evidence": "views.tsx (VideoView); model.ts (storyboard); skill qt.video; q-tools.mjs 'SC-127 …', 'MO-032 …'; captures {d,m}-07-video-building, -08-video-ready, -09-video-transcript",
+      "note": "“make a short narrated explainer of this role” builds a five-frame storyboard from the brief (frames drawn one by one), labelled ‘Simulated video · storyboard’: play with word-by-word captions and Q’s speaking mark (no audio), pause → ‘Paused at frame n’, resume, offline stops playback with a resume, frame strip, transcript, provenance (source brief, synthetic voice, no people, no file). Consent: a video about a person is refused; voice cloning is refused with the synthetic voice offered. (Cluster patch: q-tools.)"
+    },
+    "SC-128": {
+      "status": "PROTOTYPED",
+      "route": "/q/browse/:id",
+      "evidence": "views.tsx (BrowseView, LinkRow); journeys/q-tools/web.ts (ALLOWLIST, PAGES); skills qt.browse, qt.injection, qt.allow; q-tools.mjs 'SC-128 …', 'V06 …'; captures {d,m}-12-browse, -13-link-blocked",
+      "note": "“look up Kora’s engineering blog” opens a read-only snapshot of a fictional .example page: Sandboxed · Read-only · Scripts off · Simulated fetch; Q’s reading sits outside a dashed ‘Fetched text · untrusted’ fence; a paragraph instructing AI assistants to email CVs is struck through and marked Ignored, Q says so, nothing is sent, and “do what the page says” is refused. Link previews show domain, allowed or not, file type/size before opening; off-list domains are never fetched and can be requested from an admin (recorded, not auto-allowed). States: loading skeleton, ready, permission denied (off-list), error (page didn’t load), mobile. (Cluster patch: q-tools.)"
+    },
+    "SC-130": {
+      "status": "PROTOTYPED",
+      "route": "/q/downloads",
+      "evidence": "views.tsx (DownloadCard); model.ts (scanStage); web.ts (FILES, MAX_MB); skill qt.download; ops qt.download, qt.open; q-tools.mjs 'SC-130 …', 'V07 …', 'MO-034 …'; captures {d,m}-14-scanning, -15-clean, -16-downloads",
+      "note": "“download this certificate” fetches the PCI certificate linked from the page: size/type check → threat scan → text extraction (page n of 2), all simulated in real steps; nobody can open it until the scan finishes; receipt then appears; clean files open read-only with extracted text. Blocked: program disguised as PDF; 182 MB video over the 25 MB limit. Quarantined: password-protected ZIP, macro spreadsheet, each with the reason and what an admin must do. Blocked/quarantined files never become sources and can’t be opened by asking. (Cluster patch: q-tools.)"
+    },
+    "SC-136": {
+      "status": "PROTOTYPED",
+      "route": "/q/sources",
+      "evidence": "pages.tsx (SourcesPage, ConflictPanel); refs.tsx (qt.sources, qt.conflict); skills qt.sources, qt.research, qt.which; ops qt.source.*; q-tools.mjs 'SC-136 …', 'MO-056 …'; captures {d,m}-17-sources, -18-conflict, -19-conflict-decided",
+      "note": "“what sources did you use” lists the sources behind the latest artifact in the thread; /q/sources lists every source with freshness (Live / Fresh / Ageing / Old, from its published date, plus when Q read it), licence, who can see it (only you / everyone at the org), what used it; filter by kind; read again, share with the team or keep private, remove (confirmed in place). Empty state invites a research question. (Cluster patch: q-tools.)"
+    },
+    "SC-071": {
+      "status": "PROTOTYPED",
+      "route": "/c/work-permit",
+      "evidence": "prototype/src/journeys/talent-d/WorkPermit.tsx; q/skills/talent-d.ts (td.auth*); qa/scripts/features/talent-d.mjs steps 'SC-071 …'",
+      "note": "Zara states her right to work per country (private by default); general regional notes labelled not advice; shared per employer with a consent receipt; never filters jobs or search (tested: same job count); an attached document is a separate step and always 'not checked' (Talent Q never verifies). Loading/error/denied/empty variants. Simulated document. (Cluster patch: talent-d.)"
+    },
+    "SC-076": {
+      "status": "INTEGRATED",
+      "route": "/c/work/critique",
+      "evidence": "prototype/src/journeys/talent-d/Work.tsx (CritiquePage); qa/scripts/features/talent-d.mjs steps 'SC-076 …'",
+      "note": "Amaka asks Q to read her own write-up: strengths first, three points anchored to paragraphs with why/try; Q offers wording only from her facts and declines where the fix needs facts only she has. Every accepted change is a new private version. Critique is authored (no model call). (Cluster patch: talent-d.)"
+    },
+    "SC-077": {
+      "status": "INTEGRATED",
+      "route": "/c/work/versions",
+      "evidence": "prototype/src/journeys/talent-d/Work.tsx (VersionsPage); seeds/talent-d.ts (e_amaka_prices); qa/scripts/features/talent-d.mjs steps 'SC-077 …', 'MO-029 …'",
+      "note": "Versions with who/when/what changed and the original source, including a seeded correction (12% → 21%); compare any two (Was/Now); restore adds a version. Employers keep the version they were given (Medlink has v1) until she shares another; access is the Passport's own tb.share/tb.revoke and visibleEvidence. (Cluster patch: talent-d.)"
+    },
+    "SC-087": {
+      "status": "PROTOTYPED",
+      "route": "/c/jobs/:id/letter",
+      "evidence": "prototype/src/journeys/talent-d/Letter.tsx; logic.ts inventedIn (wraps the P6 addedClaims guard); qa/scripts/features/talent-d.mjs steps 'SC-087 …'",
+      "note": "Grace's note for Sunrise Care's Care Coordinator from her profile and Passport only, a source under every line; the pending first-aid certificate is worded as 'completed a course', never 'certified'. Her own added lines are labelled 'Your words' and unsupported facts are pointed out. She approves; nothing is sent. Linked from the job page. (Cluster patch: talent-d.)"
+    },
+    "SC-092": {
+      "status": "PROTOTYPED",
+      "route": "/c/learn/:id",
+      "evidence": "prototype/src/journeys/talent-d/Learn.tsx; qa/scripts/features/talent-d.mjs steps 'SC-092 …'",
+      "note": "Tobi's incident-leadership lesson (and Chidi's product-brief lesson), tied to the J7 gap. Simulated video (no media plays; timeline/captions on a timer) with captions, full clickable transcript, keyboard controls, the same lesson as an article, an exercise with feedback, external links labelled not opened, and private practice next. Finishing is private and is not proof. (Cluster patch: talent-d.)"
+    },
+    "SC-172": {
+      "status": "INTEGRATED",
+      "route": "/c/career/improve",
+      "evidence": "prototype/src/journeys/talent-d/Improve.tsx; q/skills/talent-d.ts (td.wiz.*, J7 submitSample); qa/scripts/features/talent-d.mjs steps 'SC-172 …', 'MO-052 …'",
+      "note": "Chidi's product brief: reviewer's notes → suggested edits with sources (facts only he knows are his to write) → preview → simulated review → his choice. It becomes evidence only after review AND choice (J7 submitSample updates the Passport item), stays private, and is shared only after a consent receipt. (Cluster patch: talent-d.)"
+    },
+    "SC-175": {
+      "status": "INTEGRATED",
+      "route": "/c/applications/:id/recovery",
+      "evidence": "prototype/src/journeys/talent-d/Recovery.tsx; q/proactive/talent-d.ts; qa/scripts/features/talent-d.mjs steps 'SC-175 …'",
+      "note": "After Tinda's 'not progressing': warm, never guesses a reason; a polite feedback request drafted, approved and sent (simulated; 'not read yet'); a reviewer control simulates Tinda's reply, which is quoted exactly and is the only basis for next steps (improve brief, lesson, roles, private practice). Writes to the shared thread and application timeline. (Cluster patch: talent-d.)"
     }
   },
   "motions": {
@@ -943,10 +1135,10 @@
       "note": "Driven by a real state or run event; reduced-motion handled by MotionConfig/CSS. Dedicated clip not recorded yet."
     },
     "MO-029": {
-      "status": "RESEARCHED",
-      "route": "",
-      "evidence": "",
-      "note": "Was shown by the earlier Passport screen (film F8), which is no longer routed; the rebuilt /c/passport ends access without a dedicated motion."
+      "status": "PROTOTYPED",
+      "route": "/c/work/versions",
+      "evidence": "Work.tsx VersionsPage .td-preview; test 'MO-029 …'",
+      "note": "Ending an employer's access removes the preview content at once (not rendered) and settles an 'Access ended' label; access invalidated through tb.revoke/visibleEvidence. Reduced motion: the label. (Cluster patch: talent-d.)"
     },
     "MO-036": {
       "status": "PROTOTYPED",
@@ -997,10 +1189,10 @@
       "note": "Re-pointed from /c/interview. The competency mark animates when a reviewed assessment changes it and the rubric feedback expands; practice feedback itself has no dedicated motion."
     },
     "MO-052": {
-      "status": "RESEARCHED",
-      "route": "",
-      "evidence": "",
-      "note": "Was shown in the earlier interview screen (film F4); sharing J7 evidence is now an approval in the Q thread (T2) with no dedicated motion in code."
+      "status": "PROTOTYPED",
+      "route": "/c/career/improve",
+      "evidence": "Improve.tsx .td-sharestate; ui.tsx ShareReceiptLine on the Passport card (journeys/talent-b/Passport.tsx); test 'MO-052 …'",
+      "note": "Private → consent receipt → Shared: the receipt event precedes the share event (tested), and the Evidence Passport card names the receipt. Reduced motion: the sharing status text. (Cluster patch: talent-d.)"
     },
     "MO-054": {
       "status": "PROTOTYPED",
@@ -1091,6 +1283,78 @@
       "route": "/c/interview",
       "evidence": "prototype/src/journeys/talent-c/InterviewRoom.tsx (segmented progress)",
       "note": "One segment per question; the text \"Question x of y\" carries the meaning.\r (Reconciled 30 Oct: was recorded only in the generated CSV; code checked and moved into status.json.)"
+    },
+    "MO-035": {
+      "status": "PROTOTYPED",
+      "route": "/r/admin/billing",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: MO-035 *",
+      "note": "Event-driven: crossing 80% of the agent budget (budget.threshold event) brings in the soft warning (arrive + meter eases with DUR.slow), role=alert, with stop/spend decision; proactive high-priority Q card and a live oa.budget ref card in Q. Reduced motion: no travel, warning text and state unchanged (tested). Clip not recorded. (Cluster patch: org-admin.)"
+    },
+    "MO-004": {
+      "status": "PROTOTYPED",
+      "route": "global Q thread (any page)",
+      "evidence": "refs.tsx (VoiceCard); skill qt.speak; ds/QMark.tsx 'speaking' mood (additive); q-tools.mjs 'MO-004 …'; captures {d,m}-10-speaking",
+      "note": "“read it out loud”: Q speaks its last answer (or the storyboard) in the global thread; the core of the Q mark swells with a simulated amplitude derived from the word being spoken; captions follow word by word. No audio in the prototype (stated). Reduced motion: no swelling, captions and state text only. (Cluster patch: q-tools.)"
+    },
+    "MO-005": {
+      "status": "PROTOTYPED",
+      "route": "global Q thread (any page)",
+      "evidence": "refs.tsx (VoiceCard interrupt listeners); skills qt.voice.stop, qt.voice.resume; ops qt.voice.*; q-tools.mjs 'MO-005 …'; captures {d,m}-11-interrupted",
+      "note": "Typing in the composer, tapping the microphone, Escape, Stop or any new message stops Q at once: ‘Stopped · listening to you (you started typing)’, the stop point is kept, words not said are counted; “carry on” or Resume continues from there. (Cluster patch: q-tools.)"
+    },
+    "MO-031": {
+      "status": "PROTOTYPED",
+      "route": "/q/artifacts/:id",
+      "evidence": "views.tsx (ChartView motion.rect, MapView motion.circle); q-tools.mjs 'MO-031 …'; captures d-02-chart",
+      "note": "Bars and dots grow once from the numeric data when the chart arrives (DUR.slow+0.1 s, EASE.enter); bar values are checked against the store. Reduced motion: static SVG plus table (global MotionConfig). (Cluster patch: q-tools.)"
+    },
+    "MO-032": {
+      "status": "PROTOTYPED",
+      "route": "/q/artifacts/:id",
+      "evidence": "views.tsx (VideoView); q-tools.mjs 'MO-032 …'; captures {d,m}-08-video-ready",
+      "note": "When the storyboard is ready the still frame and its caption show with an optional Play; transcript always available. Frames enter with `arrive`; reduced motion swaps instantly. (Cluster patch: q-tools.)"
+    },
+    "MO-034": {
+      "status": "PROTOTYPED",
+      "route": "/q/downloads",
+      "evidence": "views.tsx (DownloadCard receipt); q-tools.mjs 'MO-034 …'; captures {d,m}-14-scanning, -15-clean",
+      "note": "The receipt (outcome, reason, simulated scan receipt line) appears only after the scan completes, with `arrive`; before that the card says nobody can open it. Fallback: the verified file state as text. (Cluster patch: q-tools.)"
+    },
+    "MO-038": {
+      "status": "PROTOTYPED",
+      "route": "/q/artifacts/:id",
+      "evidence": "pages.tsx (Handoff); ops qt.handoff, qt.handoff.picked; skill qt.handoff; q-tools.mjs 'MO-038 …' (desktop run opens a second 390×844 device with the same store); captures d-20-phone-continued",
+      "note": "“Continue on phone” (or “continue this on my phone”) records the artifact and frame; on the phone the same artifact opens at the same frame with ‘Continued from your desktop’ (arrive motion), and the Q thread is the same conversation. Fictional seed data; fallback: screenshots. (Cluster patch: q-tools.)"
+    },
+    "MO-056": {
+      "status": "PROTOTYPED",
+      "route": "/q/sources",
+      "evidence": "pages.tsx (ConflictPanel); web.ts (PAY_CONFLICT); skills qt.research, qt.which; proactive q/proactive/q-tools.ts; q-tools.mjs 'MO-056 …'; captures {d,m}-18-conflict, -19-conflict-decided",
+      "note": "Two public sources disagree on Lagos senior backend pay (survey ₦2.2m–₦2.8m vs job ads ₦3.0m–₦3.6m): shown side by side with basis, date and licence, neither styled as the winner; Q explains why they differ and won’t pick; the person chooses (one wider range naming both / side by side / leave for a colleague); the choice is recorded with who and when and both sources are kept. Complements SC-182 on /r/roles/:id. (Cluster patch: q-tools.)"
+    },
+    "MO-014": {
+      "status": "PROTOTYPED",
+      "route": "/c/jobs",
+      "evidence": "prototype/src/journeys/talent-d/motions.tsx (FilterMotion, MotionCard) hooked into journeys/talent-b/Jobs.tsx; test 'MO-014 …'",
+      "note": "Cards glide to new positions on filter:changed (layout 300 ms standard ease), leavers fade 100 ms. Reduced motion/lite: direct redraw via MotionConfig. (Cluster patch: talent-d.)"
+    },
+    "MO-030": {
+      "status": "PROTOTYPED",
+      "route": "/c/passport",
+      "evidence": "motions.tsx GrowLine hooked into journeys/evidence/candidate/Cv.tsx; test 'MO-030 …'",
+      "note": "A just-generated CV draft grows in line by line (40 ms apart, 200 ms each); controls work throughout. Reduced motion or opened later: the loaded document. (Cluster patch: talent-d.)"
+    },
+    "MO-040": {
+      "status": "PROTOTYPED",
+      "route": "/c/applications",
+      "evidence": "ui.tsx StageTag hooked into journeys/talent-b/Applications.tsx; also /c/applications/:id/recovery; test 'MO-040 …'",
+      "note": "The stage tag changes only when the employer's event lands (old slides out, new settles in, 200 ms); a polite live region states 'Status changed from Sent to Viewed'. Reduced motion: the stage text. (Cluster patch: talent-d.)"
+    },
+    "MO-041": {
+      "status": "PROTOTYPED",
+      "route": "/c/work-permit",
+      "evidence": "WorkPermit.tsx .td-view[data-access]; test 'MO-041 …'",
+      "note": "Ending consent removes the employer's preview content and its controls at once; the receipt shows the end time; 'Access ended' settles in. Reduced motion: the access update text. (Cluster patch: talent-d.)"
     }
   },
   "vision": {
@@ -1291,6 +1555,42 @@
       "route": "",
       "evidence": "scripts/q-graph.mjs; handoff/Q-DEPENDENCY-GRAPH.md; handoff/q-graph.json",
       "note": "Graphify is not installed. A generated graph from the source (Q skill → ops → state slices → pages) gives the same traceability and is designed to run in CI on the real app. A developer pilot, as the founder row says: research only."
+    },
+    "V03": {
+      "status": "PROTOTYPED",
+      "route": "/r/admin/models",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: V03 *",
+      "note": "Inspector shows which simulated model tier and provider route each Q task uses, with budget, timeout, cache and fallback; timeout simulation shows the fallback path and that the cut-off call isn't paid twice. Labelled simulated; no model is called. (Cluster patch: org-admin.)"
+    },
+    "V09": {
+      "status": "INTEGRATED",
+      "route": "/r/admin/channels",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: V09 *",
+      "note": "WhatsApp/SMS/phone verification and per-candidate consent; WhatsApp message drafted from an approved template, kept with the existing M9 thread id, approved by a person, then accepted ≠ delivered ≠ read (simulated provider updates); call eligibility (verified number, consent, local daytime, never recorded); candidates control WhatsApp/calls/SMS at /settings/channels and see messages sent to them. (Cluster patch: org-admin.)"
+    },
+    "V29": {
+      "status": "INTEGRATED",
+      "route": "/r/admin/learning",
+      "evidence": "prototype/src/journeys/org-admin/*, prototype/src/state/areas/org-admin.ts, prototype/src/routes/org-admin.tsx, prototype/src/q/{skills,openers,proactive}/org-admin.ts; qa/scripts/features/org-admin.mjs; steps: V29 *",
+      "note": "Learnings from the organisation's own consented outcomes, each with source count, exclusions, permission and a simulated evaluation; org-level learning switch; reviewer approve/reject (reason required); private practice and other tenants never used. An approved learning becomes the person's instruction (SC-020) and shows as in use on SC-144. (Cluster patch: org-admin.)"
+    },
+    "V06": {
+      "status": "PROTOTYPED",
+      "route": "/q/browse, /q/sources",
+      "evidence": "SC-128 and SC-136 above; q-tools.mjs 'V06 …', 'SC-128 …', 'SC-136 …'",
+      "note": "Look-up through Q to an allow-listed simulated web: sandboxed read-only snapshots, untrusted fence, prompt injection ignored and shown, link previews, blocked domains requestable, a source manager with freshness/licence/visibility. (Cluster patch: q-tools.)"
+    },
+    "V07": {
+      "status": "PROTOTYPED",
+      "route": "/q/downloads",
+      "evidence": "SC-130 above; q-tools.mjs 'V07 …', 'MO-034 …'",
+      "note": "Every download is checked (size, type), scanned and only then extracted; clean / blocked / quarantined with reasons; only clean files open. Simulated. (Cluster patch: q-tools.)"
+    },
+    "V26": {
+      "status": "PROTOTYPED",
+      "route": "/q/artifacts",
+      "evidence": "SC-124, SC-126, SC-127 above; Library page (pages.tsx); q-tools.mjs",
+      "note": "Agent-generated chart, map, diagram and narrated (storyboard) video, made by asking Q, rendered on the artifact canvas and as live cards in the thread, listed in ‘Q’s work’. Art beyond these (illustration) is not built. (Cluster patch: q-tools.)"
     }
   },
   "routes": {
