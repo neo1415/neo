@@ -58,6 +58,24 @@ M19 Shell: hosts every page and Q
 - **Events:** every state change emits a scoped domain event (`DomainEvent` in `prototype/src/state/domain.ts`). Q's proactive triggers, notifications and the audit log consume events. They never poll another module's tables.
 - **Read models:** search indexes and Today pages are read models built from events and always authorised through M3 at read time.
 
+## 3a. Consolidation (30 Oct): where evidence-first hiring lives
+
+No new module. The pack's `CapabilityEvidenceForRole` layer (`PRODUCTION-VERTICAL-SLICE.md` §4) is spread across existing owners. The prototype code for each entity is named in the last column.
+
+| Entity | Owner | Reads | Prototype |
+|---|---|---|---|
+| RoleCompetency (on an approved, frozen rubric version), effort budget, accepted proof | M6 | M7, M11 | `state/areas/rubrics.ts`, `journeys/rubric/*` |
+| EvidenceItem plus proof class, review | M5 | M3 (filters), M7, M13 | `mock/world.ts` evidence; `journeys/evidence/model.ts` `proofClass` |
+| CvDocument and mentions (descriptive, never scored) | M4 | M7 | `state/areas/proof.ts` `cvs` |
+| EvidenceClaimLink, RoleEvidenceEvaluation (unknown ≠ 0) | M7 | M8, M15 tools | `EV_REQ`, `cellFor`, `proof.links`; `proofReading` |
+| EvidenceReuseDecision (accept prior / verify / bounded sample) | M11 | M5, M9, M12 | `journeys/evidence/ops.ts` |
+| InterestCheck, ProcessCommitment | M12 | M8, M9, M16 | `state/areas/proof.ts` |
+| HiringIntentConfirmation | M6 | M12 | `state/areas/proof.ts` `intents` |
+| CandidateMutualPreferences | M4 | M7 (separate from suitability) | `state/areas/proof.ts` `prefs` |
+| HiringOutcome (consented, human-verified) | M8 | later evaluation | not prototyped (slice task after 10) |
+
+**Revised order for the first build.** The pack's P1 replaces "phase by phase" with one vertical slice through phases 0–4: M19, M1–M3, M18, then the M15 adapter, then M4/M5/M17 and M6/M7, then M11/M12 for reuse and interest, then M9/M10/M20 for one mail path and one calendar. The ten tasks and acceptance conditions are in `PRODUCTION-VERTICAL-SLICE.md` §8. The phases below remain the path for everything outside the slice.
+
 ## 4. Implementation roadmap
 
 | Phase | Ships | Modules | Journeys it unlocks |
