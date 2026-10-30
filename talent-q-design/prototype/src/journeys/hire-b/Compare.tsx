@@ -17,7 +17,7 @@ import { cellFor, changesSince, defaultView, firstName, headline, KORA_ROLE, LEV
 import { CvProofView } from '../evidence/recruiter/CvProof';
 import { proofReading, SHAPE_WORD } from '../evidence/model';
 import { Ledger } from './Ledger';
-import { LevelMark, VerTag, fmtDate, verOf } from './ui';
+import { ClassTag, LevelMark, fmtDate } from './ui';
 import './ops';
 import { roleIndex } from '../../state/areas/rubrics';
 import { indexLine, studioPath } from '../rubric/model';
@@ -96,7 +96,7 @@ export function Compare() {
         {ready && v.last && change && (
           <motion.section key={v.last.at} {...arrive} className="hire-b-changed-note" aria-live="polite" aria-labelledby="cmp-ch">
             <h2 id="cmp-ch" className="lab hire-b-q" style={{ margin: 0 }}>What changed</h2>
-            <p style={{ margin: 0 }}><b>{v.last.label}.</b> {change.moves.length ? change.moves.join(' ') : change.margin ?? ''}</p>
+            <p style={{ margin: 0 }}><b>{v.last.label}.</b> {lens === 'proof' ? '' : change.moves.length ? change.moves.join(' ') : change.margin ?? ''}</p>
             {change.cells.length > 0 && <ul className="hire-b-list t14">{change.cells.map((c) => <li key={`${c.pid}${c.reqId}`}><span className="hire-b-dia" aria-hidden="true" />{firstName(w, c.pid)} · {shortLabel(w, c.reqId)}: {LEVEL_WORD[c.from].toLowerCase()} → <b>{LEVEL_WORD[c.to].toLowerCase()}</b></li>)}</ul>}
           </motion.section>
         )}
@@ -149,7 +149,7 @@ export function Compare() {
           <ul className="hire-b-ev">
             {open.cell.items.map((i) => (
               <li key={i.e.evidenceId} data-out={i.excluded ? '1' : undefined}>
-                <div className="hire-b-row"><b>{i.e.confidential ? 'Confidential item (contents not shown)' : i.e.title}</b><VerTag v={verOf(i.e)} /></div>
+                <div className="hire-b-row"><b>{i.e.confidential ? 'Confidential item (contents not shown)' : i.e.title}</b><ClassTag e={i.e} /></div>
                 {!i.e.confidential && <p className="t14" style={{ margin: 0 }}>{i.e.shows}</p>}
                 <p className="t14 muted" style={{ margin: 0 }}>{i.e.source} · {fmtDate(i.e.observedAt)}</p>
                 {i.excluded && <p className="t14" style={{ margin: 0 }}><Glyph k="none" size={14} /> Left out: {({ review: 'the candidate disputed this result; it’s under review until resolved', old: 'older than a year, and you asked for the last year only', confidential: 'confidential contents aren’t used', failed: 'the check failed' })[i.excluded]}.</p>}

@@ -18,7 +18,7 @@ import { markSeen } from './ops';
 import { Ledger } from './Ledger';
 import { PROJECTS } from './projects';
 import { ProjectViewer } from './ProjectViewer';
-import { KIND, LevelMark, ORIGIN, VerTag, fmtDate, verOf } from './ui';
+import { ClassTag, KIND, LevelMark, ORIGIN, fmtDate } from './ui';
 import { PageIndex } from '../../ds/PageIndex';
 import { Scorecard } from '../rubric/Scorecard';
 import { roleIndex } from '../../state/areas/rubrics';
@@ -102,7 +102,7 @@ export function Profile({ id }: { id: string }) {
 
   const evItem = (e: Evidence) => (
     <li key={e.evidenceId} id={`ev-${e.evidenceId}`} tabIndex={-1}>
-      <div className="hire-b-row"><span className="lab">{KIND[e.kind]}{e.confidential ? ' · confidential' : ''}</span><VerTag v={verOf(e)} /></div>
+      <div className="hire-b-row"><span className="lab">{KIND[e.kind]}{e.confidential ? ' · confidential' : ''}</span><ClassTag e={e} /></div>
       {e.confidential ? (
         <>
           <b>{e.redactedOf ? 'A confidential project, shared as an attestation' : 'A confidential item'}</b>

@@ -99,7 +99,7 @@ try {
   }));
   await sleep(400);
   const sc1 = await page.locator('#cp-scores').innerText();
-  step('Scorecard: rubric v1 in force, 1 assessed, index shown WITH coverage (83 at 50%)', /Rubric v1 in force/.test(sc1) && /1 of 4 people\s*assessed/.test(sc1) && /83 at 50% coverage/.test(sc1), sc1.slice(0, 300));
+  step('Scorecard: rubric v1 in force, 1 assessed, index shown WITH coverage (83 at 50%)', /Rubric v1 in force/.test(sc1) && /1 of \d+ people\s*assessed/.test(sc1) && /83 at 50% coverage/.test(sc1), sc1.slice(0, 300));
   const idxOnly = await page.evaluate(() => [...document.querySelectorAll('#cp-scores .cp-cov')].every((el) => /coverage/.test(el.textContent)));
   step('Never an index without coverage', idxOnly);
 

@@ -26,7 +26,8 @@ const NOT_YOURS: QReply = { msgs: [{ kind: 'refusal', text: 'I can only look at 
 
 // ============ Step 1: "find someone who can troubleshoot Postgres, not just list it on a CV" ============
 const FIND = /\b(find|show|who|people|someone|anyone|anybody|search|look for|investigate|surface|any candidates?)\b/;
-const DEMO = /\b(actually|really|proven|demonstrat\w*|shown|fixed|troubleshoot\w*|done it|not just|even if|even though|in practice|hands-?on)\b/;
+// "actually"/"really" count only before a work verb ("what I really need is someone to do my books" is not a find).
+const DEMO = /\b((actually|really) (fixed|done|shown|built|solved|run|ran|handled|troubleshot|debugged|did)|proven|demonstrat\w*|shown|fixed|troubleshoot\w*|done it|not just|even if|even though|in practice|hands-?on)\b/;
 const CVW = /\b(cv|cvs|resumes?|on paper|keywords?)\b/;
 const SURPRISE = /\b(surprising|unexpected|hidden|overlooked|under-?rated)\b.*\b(fits?|candidates?|people|talent)\b|\bshows? more than (the|their) cv\b/;
 registerSkill({

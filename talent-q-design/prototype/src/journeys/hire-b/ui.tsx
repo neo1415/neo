@@ -3,6 +3,9 @@ import type { Evidence } from '@contracts';
 import { Glyph } from '../../ds/Glyph';
 import type { Level } from '../../state/areas/hire-b';
 import { GLYPH_OF, LEVEL_WORD } from './model';
+import { useWorld } from '../../mock/world';
+import { proofClass } from '../evidence/model';
+import { ProofTag } from '../evidence/recruiter/ui';
 
 export type Ver = NonNullable<Evidence['verification']>;
 export const verOf = (e: Evidence): Ver => e.verification ?? (e.verified ? 'VERIFIED' : 'UNVERIFIED');
@@ -24,3 +27,9 @@ export const ORIGIN: Record<string, string> = { ONBOARDING: 'From their profile 
 export const KIND: Record<Evidence['kind'], string> = { PROJECT: 'Project', CREDENTIAL: 'Certificate', ASSESSMENT: 'Assessment', WORK_SAMPLE: 'Work sample', REFERENCE: 'Reference', EMPLOYMENT: 'Employment', CLAIM: 'CV claim', PRACTICE: 'Practice' };
 export const fmtDate = (s: string) => new Date(s).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 export const fmtTime = (s: string) => new Date(s).toLocaleString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Lagos' });
+
+/** The item's proof class in the words both sides share (Claim, Self-reported, Assessed, Issuer-verified, Disputed). */
+export function ClassTag({ e }: { e: Evidence }) {
+  const c = useWorld((w) => proofClass(w, e));
+  return <ProofTag c={c} small />;
+}
