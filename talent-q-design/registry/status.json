@@ -1279,6 +1279,18 @@
       "route": "/r/agency/clients",
       "evidence": "qa/results/R4.log, R3.log (team roles); captures/cx/R4, captures/cx/R3/11-ngozi-team-desktop",
       "note": "Agency with multi-client isolation, consent and access requests; team roles enforced. Team invites (SC-016) missing."
+    },
+    "V32": {
+      "status": "PROTOTYPED",
+      "route": "/r/home",
+      "evidence": "qa/scripts/journeys/J12.mjs (one complete hiring loop, 71 steps); handoff/PRODUCTION-VERTICAL-SLICE.md (modular monolith, one vertical slice, no new services)",
+      "note": "\"One complete hiring loop first; scoped screens in design\": J12 runs the loop end to end in the prototype, and the production plan builds that one loop first, with no microservices and Q reused, not forked."
+    },
+    "V40": {
+      "status": "DESIGNED",
+      "route": "",
+      "evidence": "scripts/q-graph.mjs; handoff/Q-DEPENDENCY-GRAPH.md; handoff/q-graph.json",
+      "note": "Graphify is not installed. A generated graph from the source (Q skill → ops → state slices → pages) gives the same traceability and is designed to run in CI on the real app. A developer pilot, as the founder row says: research only."
     }
   },
   "routes": {

@@ -1,0 +1,5460 @@
+{
+ "generated": "2026-10-30",
+ "skills": [
+  {
+   "id": "agency.isolation",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.interrupt",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.resume",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.priority",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.cancel",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.retry",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.rerun",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.submit",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.campaign",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.note",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.report",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.conflict",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.access",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.consent",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.upload",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.compare",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.list",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.status",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "agency.open",
+   "side": "recruiter",
+   "file": "q/skills/agency.ts",
+   "ops": [
+    "agency.access.decide",
+    "agency.campaign.launch",
+    "agency.pool.add",
+    "agency.report.share",
+    "agency.run.cancel",
+    "agency.run.pause",
+    "agency.run.retry",
+    "agency.run.skip",
+    "agency.submittal.nudge",
+    "agency.submittal.sendLatest"
+   ],
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "campaigns.create",
+   "side": "recruiter",
+   "file": "q/skills/campaigns.ts",
+   "ops": [],
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "campaigns.role",
+   "side": "recruiter",
+   "file": "q/skills/campaigns.ts",
+   "ops": [],
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "campaigns.keep",
+   "side": "recruiter",
+   "file": "q/skills/campaigns.ts",
+   "ops": [],
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "campaigns.summary",
+   "side": "recruiter",
+   "file": "q/skills/campaigns.ts",
+   "ops": [],
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "campaigns.needs",
+   "side": "recruiter",
+   "file": "q/skills/campaigns.ts",
+   "ops": [],
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "campaigns.open",
+   "side": "recruiter",
+   "file": "q/skills/campaigns.ts",
+   "ops": [],
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "campaigns.archive",
+   "side": "recruiter",
+   "file": "q/skills/campaigns.ts",
+   "ops": [],
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "campaigns.rename",
+   "side": "recruiter",
+   "file": "q/skills/campaigns.ts",
+   "ops": [],
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "campaigns.explain",
+   "side": "recruiter",
+   "file": "q/skills/campaigns.ts",
+   "ops": [],
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.open",
+   "side": "both",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.back",
+   "side": "both",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.undo",
+   "side": "both",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.explain",
+   "side": "both",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.honest",
+   "side": "both",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.capabilities",
+   "side": "both",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.prefs",
+   "side": "both",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.fairness",
+   "side": "recruiter",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.fairness.why",
+   "side": "recruiter",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.forget",
+   "side": "both",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.thanks",
+   "side": "both",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.keep",
+   "side": "both",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "core.lost",
+   "side": "both",
+   "file": "q/skills/core.ts",
+   "ops": [
+    "memory.forget",
+    "undo"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "email.compose",
+   "side": "recruiter",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "email.batch",
+   "side": "recruiter",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "email.evidenceRequest",
+   "side": "recruiter",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "email.identity",
+   "side": "recruiter",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "email.retry",
+   "side": "recruiter",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "email.route",
+   "side": "recruiter",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "email.book",
+   "side": "recruiter",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "email.audit",
+   "side": "recruiter",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "email.readscope",
+   "side": "recruiter",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "email.client",
+   "side": "recruiter",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "email.settings",
+   "side": "both",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "contact.briefing",
+   "side": "candidate",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "contact.ask",
+   "side": "candidate",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "contact.emailReply",
+   "side": "candidate",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "email.access",
+   "side": "both",
+   "file": "q/skills/email.ts",
+   "ops": [
+    "contact.emailReply",
+    "contact.seek",
+    "contact.send",
+    "email.automation",
+    "email.batchApprove",
+    "email.book",
+    "email.match",
+    "email.ownerDraft",
+    "email.sendNow",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "tb.apply.start",
+    "undo"
+   ],
+   "slices": [
+    "agency",
+    "campaigns",
+    "hire-c",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "evc.cv",
+   "side": "candidate",
+   "file": "q/skills/evidence-candidate.ts",
+   "ops": [
+    "evc.cv.discard",
+    "tb.revoke",
+    "tb.upload"
+   ],
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "evc.cv.add",
+   "side": "candidate",
+   "file": "q/skills/evidence-candidate.ts",
+   "ops": [
+    "evc.cv.discard",
+    "tb.revoke",
+    "tb.upload"
+   ],
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "evc.cv.doubt",
+   "side": "candidate",
+   "file": "q/skills/evidence-candidate.ts",
+   "ops": [
+    "evc.cv.discard",
+    "tb.revoke",
+    "tb.upload"
+   ],
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "evc.meaning",
+   "side": "candidate",
+   "file": "q/skills/evidence-candidate.ts",
+   "ops": [
+    "evc.cv.discard",
+    "tb.revoke",
+    "tb.upload"
+   ],
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "evc.request",
+   "side": "candidate",
+   "file": "q/skills/evidence-candidate.ts",
+   "ops": [
+    "evc.cv.discard",
+    "tb.revoke",
+    "tb.upload"
+   ],
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "evc.decline",
+   "side": "candidate",
+   "file": "q/skills/evidence-candidate.ts",
+   "ops": [
+    "evc.cv.discard",
+    "tb.revoke",
+    "tb.upload"
+   ],
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "evc.interest",
+   "side": "candidate",
+   "file": "q/skills/evidence-candidate.ts",
+   "ops": [
+    "evc.cv.discard",
+    "tb.revoke",
+    "tb.upload"
+   ],
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "evc.commit",
+   "side": "candidate",
+   "file": "q/skills/evidence-candidate.ts",
+   "ops": [
+    "evc.cv.discard",
+    "tb.revoke",
+    "tb.upload"
+   ],
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "evc.revoke",
+   "side": "candidate",
+   "file": "q/skills/evidence-candidate.ts",
+   "ops": [
+    "evc.cv.discard",
+    "tb.revoke",
+    "tb.upload"
+   ],
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "ev.find",
+   "side": "recruiter",
+   "file": "q/skills/evidence.ts",
+   "ops": [
+    "evr.accept",
+    "evr.cmp.proof",
+    "evr.interest.draft"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "ev.why",
+   "side": "recruiter",
+   "file": "q/skills/evidence.ts",
+   "ops": [
+    "evr.accept",
+    "evr.cmp.proof",
+    "evr.interest.draft"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "ev.accept",
+   "side": "recruiter",
+   "file": "q/skills/evidence.ts",
+   "ops": [
+    "evr.accept",
+    "evr.cmp.proof",
+    "evr.interest.draft"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "ev.sample",
+   "side": "recruiter",
+   "file": "q/skills/evidence.ts",
+   "ops": [
+    "evr.accept",
+    "evr.cmp.proof",
+    "evr.interest.draft"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "ev.verify",
+   "side": "recruiter",
+   "file": "q/skills/evidence.ts",
+   "ops": [
+    "evr.accept",
+    "evr.cmp.proof",
+    "evr.interest.draft"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "ev.review",
+   "side": "recruiter",
+   "file": "q/skills/evidence.ts",
+   "ops": [
+    "evr.accept",
+    "evr.cmp.proof",
+    "evr.interest.draft"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "ev.move",
+   "side": "recruiter",
+   "file": "q/skills/evidence.ts",
+   "ops": [
+    "evr.accept",
+    "evr.cmp.proof",
+    "evr.interest.draft"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "ev.interest",
+   "side": "recruiter",
+   "file": "q/skills/evidence.ts",
+   "ops": [
+    "evr.accept",
+    "evr.cmp.proof",
+    "evr.interest.draft"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.approve",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.discard",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.explain",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.where",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.verify",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.why-verify",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.post",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.search",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.shortlist",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.propose",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.perm",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.fair.proxy",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.fair.redirect",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.conflict",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.audit.who",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.audit.did",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.kora.search",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-a.open",
+   "side": "recruiter",
+   "file": "q/skills/hire-a.ts",
+   "ops": [],
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.compare",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.challenge",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.correct",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.cv",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.github",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.assess",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.questions",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.iv.start",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.iv.live",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.feedback",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.dispute",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.role",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.confidential",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-b.project",
+   "side": "recruiter",
+   "file": "q/skills/hire-b.ts",
+   "ops": [
+    "hb.iv.rate",
+    "hb.iv.submit",
+    "hb.plan.keep",
+    "hb.review.open",
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.draft",
+   "side": "recruiter",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.edit",
+   "side": "recruiter",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.send",
+   "side": "recruiter",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.discard",
+   "side": "recruiter",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.findtime",
+   "side": "recruiter",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.move",
+   "side": "recruiter",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.panel",
+   "side": "recruiter",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.team",
+   "side": "recruiter",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.guide",
+   "side": "recruiter",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.inbox",
+   "side": "recruiter",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.c.reschedule",
+   "side": "candidate",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.c.confirm",
+   "side": "candidate",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hire-c.c.reply",
+   "side": "candidate",
+   "file": "q/skills/hire-c.ts",
+   "ops": [
+    "hire-c.approve",
+    "hire-c.c.send",
+    "hire-c.check",
+    "hire-c.openMsg",
+    "hire-c.useSlot",
+    "undo"
+   ],
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "hiring.jump",
+   "side": "recruiter",
+   "file": "q/skills/hiring-basic.ts",
+   "ops": [],
+   "slices": []
+  },
+  {
+   "id": "media.noinference",
+   "side": "both",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "media.add",
+   "side": "candidate",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "media.share",
+   "side": "candidate",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "media.viewas",
+   "side": "candidate",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "media.fix",
+   "side": "candidate",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "media.revoke",
+   "side": "candidate",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "media.delete",
+   "side": "candidate",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "media.keep",
+   "side": "candidate",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "media.summary",
+   "side": "recruiter",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "media.where",
+   "side": "recruiter",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "media.play",
+   "side": "recruiter",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "media.reviewed",
+   "side": "recruiter",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "media.override",
+   "side": "recruiter",
+   "file": "q/skills/media.ts",
+   "ops": [
+    "media.alternative",
+    "media.delete",
+    "media.edit",
+    "media.revoke",
+    "media.share",
+    "media.unreview",
+    "undo"
+   ],
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.refuse",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.propose",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.weight",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.add",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.remove",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.approve",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.decide",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.why",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.scorecard",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.override",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.review",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.rate",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.validity",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "rubric.open",
+   "side": "recruiter",
+   "file": "q/skills/rubric.ts",
+   "ops": [
+    "undo"
+   ],
+   "slices": [
+    "hire-b",
+    "hire-c",
+    "media",
+    "proof",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.conf",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.redact",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.share",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.revoke",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.viewas",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.upload",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.upload.retry",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.verify",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.summary",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.summary.challenge",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.discovery",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.prep",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.jobs",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.trust",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.match",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.match.challenge",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.save",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.apply",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.status",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.followup",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.withdraw",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.advice",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.advice.decline",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.notify",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.forget",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "tb.memory",
+   "side": "candidate",
+   "file": "q/skills/talent-b.ts",
+   "ops": [
+    "tb.app.withdraw",
+    "tb.apply.cancel",
+    "tb.apply.submitq",
+    "tb.attest",
+    "tb.discovery",
+    "tb.followup.moveon",
+    "tb.followup.send",
+    "tb.forget",
+    "tb.notify",
+    "tb.revoke",
+    "tb.share",
+    "tb.summary.undo",
+    "tb.verify",
+    "tb.verify.ack",
+    "tb.verify.review"
+   ],
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "id": "talent-c.explain",
+   "side": "candidate",
+   "file": "q/skills/talent-c.ts",
+   "ops": [
+    "talent-c.continue",
+    "talent-c.interview.submit"
+   ],
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "id": "talent-c.start",
+   "side": "candidate",
+   "file": "q/skills/talent-c.ts",
+   "ops": [
+    "talent-c.continue",
+    "talent-c.interview.submit"
+   ],
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "id": "talent-c.where",
+   "side": "candidate",
+   "file": "q/skills/talent-c.ts",
+   "ops": [
+    "talent-c.continue",
+    "talent-c.interview.submit"
+   ],
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "id": "talent-c.upload",
+   "side": "candidate",
+   "file": "q/skills/talent-c.ts",
+   "ops": [
+    "talent-c.continue",
+    "talent-c.interview.submit"
+   ],
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "id": "talent-c.voice",
+   "side": "candidate",
+   "file": "q/skills/talent-c.ts",
+   "ops": [
+    "talent-c.continue",
+    "talent-c.interview.submit"
+   ],
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "id": "talent-c.lite",
+   "side": "candidate",
+   "file": "q/skills/talent-c.ts",
+   "ops": [
+    "talent-c.continue",
+    "talent-c.interview.submit"
+   ],
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "id": "talent-c.interview.ctl",
+   "side": "candidate",
+   "file": "q/skills/talent-c.ts",
+   "ops": [
+    "talent-c.continue",
+    "talent-c.interview.submit"
+   ],
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "id": "talent-c.interview.go",
+   "side": "candidate",
+   "file": "q/skills/talent-c.ts",
+   "ops": [
+    "talent-c.continue",
+    "talent-c.interview.submit"
+   ],
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "id": "talent-c.interview.submit",
+   "side": "candidate",
+   "file": "q/skills/talent-c.ts",
+   "ops": [
+    "talent-c.continue",
+    "talent-c.interview.submit"
+   ],
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "id": "talent-c.step.explain",
+   "side": "candidate",
+   "file": "q/skills/talent-c.ts",
+   "ops": [
+    "talent-c.continue",
+    "talent-c.interview.submit"
+   ],
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  }
+ ],
+ "ops": [
+  {
+   "op": "evr.sample.draft",
+   "file": "journeys/evidence/recruiter/ops.ts",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evr.accept",
+   "file": "journeys/evidence/recruiter/ops.ts",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evr.reuse.undo",
+   "file": "journeys/evidence/recruiter/ops.ts",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evr.verify",
+   "file": "journeys/evidence/recruiter/ops.ts",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evr.review",
+   "file": "journeys/evidence/recruiter/ops.ts",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evr.move",
+   "file": "journeys/evidence/recruiter/ops.ts",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evr.stages.restore",
+   "file": "journeys/evidence/recruiter/ops.ts",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evr.interest.draft",
+   "file": "journeys/evidence/recruiter/ops.ts",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evr.cmp.proof",
+   "file": "journeys/evidence/recruiter/ops.ts",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "hire-c",
+    "mail",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.github.retry",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.github.outage",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.cmp.set",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.correct",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.correct.remove",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.iv.start",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.iv.note",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.iv.rate",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.iv.goto",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.iv.finish",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.iv.draft",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.iv.submit",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.plan.keep",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.pipeline.move",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.dispute.simulate",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.review.open",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hb.review.resolve",
+   "file": "journeys/hire-b/ops.ts",
+   "slices": [
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.start",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.cancel",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.consent",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.source",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.resume",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.dropAt",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.edit",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.part",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.share",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.revoke",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.delete",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.alternative",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.offerInterview",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.reviewed",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.override",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.dispute",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.resolve",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.rebuild",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.unreview",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.ensure",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "media.seen",
+   "file": "journeys/media/logic.ts",
+   "slices": [
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.propose",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.weight",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.minimum",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.patch",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.add",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.remove",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.reset",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.discard",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.approve",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.rating.override",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.rating.restore",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.review",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.rate",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.dispute",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "rb.dispute.resolve",
+   "file": "journeys/rubric/ops.ts",
+   "slices": [
+    "hire-c",
+    "media",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.share",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.revoke",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.redact",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.attest",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.upload",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.upload.retry",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.upload.cancel",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.verify",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.verify.review",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.verify.ack",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.discovery",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.summary.correct",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.match.tell",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.followup.send",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.followup.moveon",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.followup.undo",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.app.withdraw",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.save",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.apply.start",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.apply.set",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.apply.cancel",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.apply.submit",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.apply.submitq",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.advice.decline",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.notify",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.forget",
+   "file": "journeys/talent-b/logic.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "undo",
+   "file": "q/core/engine.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "suggestion.dismiss",
+   "file": "q/core/proactive.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "suggestion.snooze",
+   "file": "q/core/proactive.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "suggestion.done",
+   "file": "q/core/proactive.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "prefs.proactive",
+   "file": "q/core/proactive.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.focus",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.run.pause",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.run.resume",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.runs.resume",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.run.cancel",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.run.retry",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.run.skip",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.run.priority",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.submittal.sendLatest",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.submittal.send",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.submittal.discard",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.submittal.toggle",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.submittal.nudge",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.submittal.reply",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.campaign.launch",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.pool.add",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.search.rerun",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.note.delete",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.note.read",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.consent.withdraw",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.access.request",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.access.decide",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.report.save",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.report.share",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.report.draft",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.doc.upload",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "agency.actor",
+   "file": "q/skills/agency.ts",
+   "slices": [
+    "agency",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "campaigns.role.add",
+   "file": "q/skills/campaigns.ts",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "campaigns.role.remove",
+   "file": "q/skills/campaigns.ts",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "campaigns.role.remove.quiet",
+   "file": "q/skills/campaigns.ts",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "campaigns.role.undo-add",
+   "file": "q/skills/campaigns.ts",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "campaigns.status",
+   "file": "q/skills/campaigns.ts",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "campaigns.archive",
+   "file": "q/skills/campaigns.ts",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "campaigns.reopen",
+   "file": "q/skills/campaigns.ts",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "campaigns.rename",
+   "file": "q/skills/campaigns.ts",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "campaigns.delete",
+   "file": "q/skills/campaigns.ts",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "campaigns.filter.save",
+   "file": "q/skills/campaigns.ts",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "campaigns.thread",
+   "file": "q/skills/campaigns.ts",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "memory.forget",
+   "file": "q/skills/core.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "nav.back",
+   "file": "q/skills/core.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evc.sample.decline",
+   "file": "q/skills/evidence-candidate.ts",
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evc.sample.offer",
+   "file": "q/skills/evidence-candidate.ts",
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evc.sample.answer",
+   "file": "q/skills/evidence-candidate.ts",
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evc.cv.draft",
+   "file": "q/skills/evidence-candidate.ts",
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evc.cv.link",
+   "file": "q/skills/evidence-candidate.ts",
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evc.cv.approve",
+   "file": "q/skills/evidence-candidate.ts",
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evc.cv.discard",
+   "file": "q/skills/evidence-candidate.ts",
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evc.prefs.set",
+   "file": "q/skills/evidence-candidate.ts",
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "evc.prefs.share",
+   "file": "q/skills/evidence-candidate.ts",
+   "slices": [
+    "evcand",
+    "hire-b",
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ev.reuse",
+   "file": "q/skills/evidence-ops.ts",
+   "slices": [
+    "proof"
+   ]
+  },
+  {
+   "op": "ev.reuse.sent",
+   "file": "q/skills/evidence-ops.ts",
+   "slices": [
+    "proof"
+   ]
+  },
+  {
+   "op": "ev.sample.start",
+   "file": "q/skills/evidence-ops.ts",
+   "slices": [
+    "proof"
+   ]
+  },
+  {
+   "op": "ev.sample.submit",
+   "file": "q/skills/evidence-ops.ts",
+   "slices": [
+    "proof"
+   ]
+  },
+  {
+   "op": "ev.sample.review",
+   "file": "q/skills/evidence-ops.ts",
+   "slices": [
+    "proof"
+   ]
+  },
+  {
+   "op": "ev.feedback.share",
+   "file": "q/skills/evidence-ops.ts",
+   "slices": [
+    "proof"
+   ]
+  },
+  {
+   "op": "ev.sample.decline",
+   "file": "q/skills/evidence-ops.ts",
+   "slices": [
+    "proof"
+   ]
+  },
+  {
+   "op": "ev.interest.request",
+   "file": "q/skills/evidence-ops.ts",
+   "slices": [
+    "proof"
+   ]
+  },
+  {
+   "op": "ev.interest.answer",
+   "file": "q/skills/evidence-ops.ts",
+   "slices": [
+    "proof"
+   ]
+  },
+  {
+   "op": "hire-a.mandate.approve",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.mandate.unapprove",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.mandate.revert",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.mandate.discard",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.mandate.restore",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.budget",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.post",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.unpost",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.search",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.shortlist",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.propose",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.unpropose",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.level",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.tradeoff",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.request",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.addreq",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.memory.correct",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.memory.forget",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.memory.uncorrect",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.conflict",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "hire-a.kora.approve",
+   "file": "q/skills/hire-a.ts",
+   "slices": [
+    "hire-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.cv.choose",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.cv.read",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.view",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.form.save",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.form.fix",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.apply.submit",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.apply.withdraw",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.cv.approve",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.j7.restore",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.j7.quiz.answer",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.time.skip",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.j7.reschedule",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.share.do",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.share.undo",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.j7.goal.set",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.j7.step.toggle",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.j7.step.move",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.j7.step.remove",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.j7.quiz.start",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "ta.j7.sample.submit",
+   "file": "q/skills/talent-a.ts",
+   "slices": [
+    "talent-a",
+    "talent-b"
+   ]
+  },
+  {
+   "op": "tb.summary.undo",
+   "file": "q/skills/talent-b.ts",
+   "slices": [
+    "talent-b"
+   ]
+  },
+  {
+   "op": "talent-c.continue",
+   "file": "q/skills/talent-c.ts",
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "op": "talent-c.upload.resume",
+   "file": "q/skills/talent-c.ts",
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "op": "talent-c.lite",
+   "file": "q/skills/talent-c.ts",
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "op": "talent-c.interview.submit",
+   "file": "q/skills/talent-c.ts",
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  }
+ ],
+ "routes": [
+  {
+   "path": "${R}/searches",
+   "side": "recruiter",
+   "file": "routes/agency.tsx",
+   "slices": [
+    "agency",
+    "campaigns",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "${R}/compare",
+   "side": "recruiter",
+   "file": "routes/agency.tsx",
+   "slices": [
+    "agency",
+    "campaigns",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "${R}/notes",
+   "side": "recruiter",
+   "file": "routes/agency.tsx",
+   "slices": [
+    "agency",
+    "campaigns",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "${R}/docs",
+   "side": "recruiter",
+   "file": "routes/agency.tsx",
+   "slices": [
+    "agency",
+    "campaigns",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "${R}/client/:id",
+   "side": "recruiter",
+   "file": "routes/agency.tsx",
+   "slices": [
+    "agency",
+    "campaigns",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "${R}/mandate/:id",
+   "side": "recruiter",
+   "file": "routes/agency.tsx",
+   "slices": [
+    "agency",
+    "campaigns",
+    "mail",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/r/campaigns",
+   "side": "recruiter",
+   "file": "routes/campaigns.tsx",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics"
+   ]
+  },
+  {
+   "path": "/r/campaigns/:id",
+   "side": "recruiter",
+   "file": "routes/campaigns.tsx",
+   "slices": [
+    "agency",
+    "campaigns",
+    "rubrics"
+   ]
+  },
+  {
+   "path": "/r/plan",
+   "side": "recruiter",
+   "file": "routes/core.tsx",
+   "slices": []
+  },
+  {
+   "path": "/r/home",
+   "side": "recruiter",
+   "file": "routes/entry.tsx",
+   "slices": [
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/c/home",
+   "side": "candidate",
+   "file": "routes/entry.tsx",
+   "slices": [
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/signup",
+   "side": "public",
+   "file": "routes/entry.tsx",
+   "slices": [
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/settings",
+   "side": "both",
+   "file": "routes/entry.tsx",
+   "slices": [
+    "proof",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/gallery/states",
+   "side": "public",
+   "file": "routes/gallery.tsx",
+   "slices": []
+  },
+  {
+   "path": "/r/mandate",
+   "side": "recruiter",
+   "file": "routes/hire-a.tsx",
+   "slices": [
+    "campaigns",
+    "hire-a",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/r/sourcing",
+   "side": "recruiter",
+   "file": "routes/hire-a.tsx",
+   "slices": [
+    "campaigns",
+    "hire-a",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/r/memory",
+   "side": "recruiter",
+   "file": "routes/hire-a.tsx",
+   "slices": [
+    "campaigns",
+    "hire-a",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/r/roles",
+   "side": "recruiter",
+   "file": "routes/hire-a.tsx",
+   "slices": [
+    "campaigns",
+    "hire-a",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/r/roles/:id",
+   "side": "recruiter",
+   "file": "routes/hire-a.tsx",
+   "slices": [
+    "campaigns",
+    "hire-a",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/r/audit",
+   "side": "recruiter",
+   "file": "routes/hire-a.tsx",
+   "slices": [
+    "campaigns",
+    "hire-a",
+    "rubrics",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/r/compare",
+   "side": "recruiter",
+   "file": "routes/hire-b.tsx",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "media",
+    "rubrics"
+   ]
+  },
+  {
+   "path": "/r/people/:id",
+   "side": "recruiter",
+   "file": "routes/hire-b.tsx",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "media",
+    "rubrics"
+   ]
+  },
+  {
+   "path": "/r/interviews",
+   "side": "recruiter",
+   "file": "routes/hire-b.tsx",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "media",
+    "rubrics"
+   ]
+  },
+  {
+   "path": "/r/interviews/:id",
+   "side": "recruiter",
+   "file": "routes/hire-b.tsx",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "media",
+    "rubrics"
+   ]
+  },
+  {
+   "path": "/r/roles/:id/rubric",
+   "side": "recruiter",
+   "file": "routes/hire-b.tsx",
+   "slices": [
+    "campaigns",
+    "hire-b",
+    "media",
+    "rubrics"
+   ]
+  },
+  {
+   "path": "/r/pipeline",
+   "side": "recruiter",
+   "file": "routes/hire-c.tsx",
+   "slices": [
+    "campaigns",
+    "hire-c",
+    "mail"
+   ]
+  },
+  {
+   "path": "/r/messages",
+   "side": "recruiter",
+   "file": "routes/hire-c.tsx",
+   "slices": [
+    "campaigns",
+    "hire-c",
+    "mail"
+   ]
+  },
+  {
+   "path": "/r/calendar",
+   "side": "recruiter",
+   "file": "routes/hire-c.tsx",
+   "slices": [
+    "campaigns",
+    "hire-c",
+    "mail"
+   ]
+  },
+  {
+   "path": "/r/calendar/connect",
+   "side": "recruiter",
+   "file": "routes/hire-c.tsx",
+   "slices": [
+    "campaigns",
+    "hire-c",
+    "mail"
+   ]
+  },
+  {
+   "path": "/r/team",
+   "side": "recruiter",
+   "file": "routes/hire-c.tsx",
+   "slices": [
+    "campaigns",
+    "hire-c",
+    "mail"
+   ]
+  },
+  {
+   "path": "/r/setup",
+   "side": "recruiter",
+   "file": "routes/hire-c.tsx",
+   "slices": [
+    "campaigns",
+    "hire-c",
+    "mail"
+   ]
+  },
+  {
+   "path": "/r/setup/handbook",
+   "side": "recruiter",
+   "file": "routes/hire-c.tsx",
+   "slices": [
+    "campaigns",
+    "hire-c",
+    "mail"
+   ]
+  },
+  {
+   "path": "/r/outreach",
+   "side": "recruiter",
+   "file": "routes/hire-c.tsx",
+   "slices": [
+    "campaigns",
+    "hire-c",
+    "mail"
+   ]
+  },
+  {
+   "path": "/c/messages",
+   "side": "candidate",
+   "file": "routes/hire-c.tsx",
+   "slices": [
+    "campaigns",
+    "hire-c",
+    "mail"
+   ]
+  },
+  {
+   "path": "/c/slots",
+   "side": "candidate",
+   "file": "routes/hire-c.tsx",
+   "slices": [
+    "campaigns",
+    "hire-c",
+    "mail"
+   ]
+  },
+  {
+   "path": "/settings/email",
+   "side": "both",
+   "file": "routes/hire-c.tsx",
+   "slices": [
+    "campaigns",
+    "hire-c",
+    "mail"
+   ]
+  },
+  {
+   "path": "/r/people/:id/video",
+   "side": "recruiter",
+   "file": "routes/media.tsx",
+   "slices": [
+    "media",
+    "rubrics"
+   ]
+  },
+  {
+   "path": "/c/welcome",
+   "side": "candidate",
+   "file": "routes/talent-a.tsx",
+   "slices": [
+    "talent-a"
+   ]
+  },
+  {
+   "path": "/c/career",
+   "side": "candidate",
+   "file": "routes/talent-a.tsx",
+   "slices": [
+    "talent-a"
+   ]
+  },
+  {
+   "path": "/c/growth",
+   "side": "candidate",
+   "file": "routes/talent-a.tsx",
+   "slices": [
+    "talent-a"
+   ]
+  },
+  {
+   "path": "/c/passport",
+   "side": "candidate",
+   "file": "routes/talent-b.tsx",
+   "slices": [
+    "media",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/c/memory",
+   "side": "candidate",
+   "file": "routes/talent-b.tsx",
+   "slices": [
+    "media",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/c/jobs",
+   "side": "candidate",
+   "file": "routes/talent-b.tsx",
+   "slices": [
+    "media",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/c/jobs/:id",
+   "side": "candidate",
+   "file": "routes/talent-b.tsx",
+   "slices": [
+    "media",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/c/applications",
+   "side": "candidate",
+   "file": "routes/talent-b.tsx",
+   "slices": [
+    "media",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/c/prep",
+   "side": "candidate",
+   "file": "routes/talent-b.tsx",
+   "slices": [
+    "media",
+    "talent-b"
+   ]
+  },
+  {
+   "path": "/c/interview",
+   "side": "candidate",
+   "file": "routes/talent-c.tsx",
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  },
+  {
+   "path": "/c/start",
+   "side": "candidate",
+   "file": "routes/talent-c.tsx",
+   "slices": [
+    "talent-b",
+    "talent-c"
+   ]
+  }
+ ]
+}
