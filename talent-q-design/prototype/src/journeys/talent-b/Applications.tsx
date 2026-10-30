@@ -7,6 +7,10 @@ import { runAction } from '../../q/core/engine';
 import { Link, navigate } from '../../ui/router';
 import { APP_K as K, APP_LABEL, appExplain, evById, fmtDate, tb } from './logic';
 import { CandidateRatings } from '../rubric/CandidateRatings'; // rubric builder: the person's own ratings (AD-E-14)
+// EVIDENCE-FIRST (J12 steps 6–10): employer requests, interest checks, process commitments and "What you want".
+import { InterestCard, RequestCard } from '../evidence/candidate/Requests';
+import { CommitmentLine, IntentLine, PrefsPanel } from '../evidence/candidate/Status';
+import { interestFor, requestsFor } from '../evidence/candidate/logic';
 
 const act = (op: string, args: Record<string, unknown> = {}) => void runAction({ label: op, act: { t: 'do', op, args } });
 const say = (text: string) => void runAction({ label: text, act: { t: 'say', text } });
@@ -16,10 +20,19 @@ export function ApplicationsPage() {
   const a = actorOf(w); const pid = a.personId!;
   const apps = w.applications.filter((x) => x.personId === pid);
   const moved = (id: string) => tb(w).followups.find((f) => f.appId === id)?.state === 'MOVED_ON';
+  const reqs = requestsFor(w, pid);
+  const asks = interestFor(w, pid);
   const sorted = [...apps].sort((x, y) => Number(moved(x.id)) - Number(moved(y.id)) || (y.timeline[0]?.at ?? '').localeCompare(x.timeline[0]?.at ?? ''));
   return (
     <Canvas title="Your applications" kicker={`${apps.length} ${apps.length === 1 ? 'application' : 'applications'}`} open onClose={() => navigate('/c/home')}>
       <p className="t14 muted" style={{ margin: 0, maxWidth: 720 }}>Every status here comes from something the employer did in Talent Q. Q never guesses a decision and can’t promise one.</p>
+      {(reqs.length > 0 || asks.length > 0) && (
+        <section className="evc-home" aria-labelledby="evc-asked-h">
+          <h2 id="evc-asked-h" className="lab" style={{ margin: 0 }}>Asked of you</h2>
+          {reqs.map((d) => <RequestCard key={d.id} d={d} />)}
+          {asks.map((i) => <InterestCard key={`${i.orgId}${i.mandateId}`} orgId={i.orgId} mandateId={i.mandateId} />)}
+        </section>
+      )}
       {apps.length === 0 ? (
         <section className="ds-sheet tb-empty"><h2 className="tb-h2">No applications yet</h2><p className="t14 muted" style={{ margin: 0 }}>When you apply, you’ll see each one here with exactly what the employer has done, including nothing.</p><Link className="ds-btn primary" style={{ justifySelf: 'start' }} to="/c/jobs">Find jobs</Link></section>
       ) : (
@@ -37,6 +50,8 @@ export function ApplicationsPage() {
                 </div>
                 <h2 className="tb-title tb-apptitle">{x.job ? <Link to={`/c/jobs/${x.job.id}`}>{x.job.title}</Link> : 'Job removed'}</h2>
                 <p style={{ margin: 0 }}>{x.plain}</p>
+                {live && <CommitmentLine appId={app.id} />}
+                {x.job && live && <IntentLine jobId={x.job.id} />}
                 {live && app.status !== 'INTERVIEW' && <p className="tb-days"><b className="num">{x.days}</b><span className="t14">{x.days === 1 ? 'day' : 'days'} since {app.lastEmployerActivity ? `${x.org} last did anything` : 'you applied'}</span></p>}
                 {x.waiting && (
                   <div className="ds-banner" data-k="warn"><span aria-hidden="true">◷</span><span>No reply in {x.days} days. That’s common and says nothing about you. A short, polite follow-up is fine, or you can move on.</span><span /></div>
@@ -60,6 +75,7 @@ export function ApplicationsPage() {
           })}
         </ul>
       )}
+      <PrefsPanel />
       <CandidateRatings />
       <details className="ds-sheet tb-details">
         <summary><b>What each status means</b></summary>

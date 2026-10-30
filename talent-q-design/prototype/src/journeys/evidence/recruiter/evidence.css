@@ -1,0 +1,148 @@
+/* Evidence-first hiring, recruiter surfaces (J12). Direction D tokens only: ink for data and proof marks, paper for
+   documents, gold only for Q (its margin rule and diamond). One elevation level: sheets float, everything inside is
+   flat with 1px rules. Proof classes are encoded by shape + word (ProofMark), never by shade alone. */
+
+/* ---------- Proof marks ---------- */
+.evr-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; }
+.evr-tag[data-small] { font-size: 12px; }
+.evr-tag[data-c='CLAIM'], .evr-tag[data-c='SELF_REPORTED'] { color: var(--ink-2); }
+.evr-tag[data-c='DISPUTED'] { color: var(--ink-3); }
+.evr-key { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.evr-badge { font-family: var(--data); font-size: 12px; letter-spacing: .04em; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--rule-2); color: var(--ink-2); }
+.evr-badge[data-shape='SHOWS_MORE_THAN_CV'] { border-color: var(--ink); color: var(--ink); }
+.evr-badge[data-shape='CLAIMS_AHEAD_OF_PROOF'] { border-style: dashed; border-color: var(--ink-3); }
+
+/* ---------- Q cards (inside the ink thread; the card itself is paper) ---------- */
+.evr-stages { list-style: none; margin: 0; padding: 0 0 8px; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: var(--ink-2); border-bottom: 1px solid var(--rule); }
+.evr-stages li { display: inline-flex; gap: 6px; align-items: baseline; }
+.evr-stages li::before { content: ''; width: 6px; height: 6px; background: var(--ink-3); border-radius: 50%; align-self: center; }
+.evr-stages li:last-child::before { background: var(--gold); transform: rotate(45deg); border-radius: 0; }
+.evr-gone { margin: 0; font-size: 13px; display: flex; gap: 6px; align-items: center; color: var(--ink); background: var(--wash); padding: 6px 8px; border-radius: 8px; }
+.evr-group { display: grid; gap: 4px; }
+.evr-group-h { margin: 4px 0 0; font-size: 13px; font-weight: 700; display: grid; gap: 1px; }
+.evr-group-h span { font-weight: 400; color: var(--ink-3); font-size: 12px; }
+.evr-rows { list-style: none; margin: 0; padding: 0; display: grid; }
+.evr-rows > li { display: grid; gap: 4px; padding: 8px 0; border-top: 1px solid var(--rule); min-width: 0; }
+.evr-rows > li:first-child { border-top: 0; }
+.evr-row-top { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; }
+.evr-row-top a { font-weight: 700; color: var(--ink); }
+.evr-shape { font-family: var(--voice); font-size: 14px; font-style: italic; color: var(--ink-2); }
+.evr-cvl { margin: 0; display: grid; gap: 2px; font-size: 12px; color: var(--ink-2); overflow-wrap: anywhere; }
+.evr-cvl .lab { font-size: 10px; margin-right: 4px; }
+.evr-items { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.evr-items li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: baseline; font-size: 13px; overflow-wrap: anywhere; }
+.evr-none { margin: 0; font-size: 12px; color: var(--ink-3); }
+.evr-foot { margin: 0; padding-top: 6px; border-top: 1px solid var(--rule); font-size: 12px; color: var(--ink-3); }
+.evr-why-list, .evr-open { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.evr-why-list li { display: grid; gap: 2px; font-size: 13px; padding-bottom: 8px; border-bottom: 1px solid var(--rule); overflow-wrap: anywhere; }
+.evr-limit { font-size: 12px; color: var(--ink-2); }
+.evr-limit .lab { font-size: 10px; margin-right: 4px; }
+.evr-cvsum { margin: 0; font-size: 13px; }
+.evr-open li { font-size: 13px; }
+
+/* ---------- Comparison: CV and proof view ---------- */
+.evr-cvp { display: grid; gap: 16px; min-width: 0; }
+.evr-cvp-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+.evr-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.evr-table th, .evr-table td { text-align: left; vertical-align: top; padding: 6px; border-top: 1px solid var(--rule); }
+.evr-table thead th { border-top: 0; padding-bottom: 12px; }
+.evr-th { display: table-cell; }
+.evr-th-name { display: block; font-weight: 700; color: var(--ink); font-size: 16px; }
+.evr-headline { display: block; margin: 2px 0 0; font-family: var(--voice); font-size: 19px; line-height: 1.25; font-weight: 380; color: var(--ink); letter-spacing: -.01em; }
+.evr-req { display: table-cell; font-weight: 600; font-size: 15px; padding-top: 12px !important; }
+.evr-req > span { display: block; }
+.evr-req .t14 { font-weight: 400; }
+.evr-cell { all: unset; box-sizing: border-box; cursor: pointer; display: grid; gap: 6px; width: 100%; min-height: 44px; padding: 8px 10px 8px 12px; border-radius: 10px; border: 1px solid transparent; position: relative; }
+/* The left rule says where the evidence stands: solid = shown, dashed = partly or only claimed, none = nothing. */
+.evr-cell::before { content: ''; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 2px; }
+.evr-cell[data-sup='1']::before { background: var(--ink); }
+.evr-cell[data-sup='part']::before { background: repeating-linear-gradient(to bottom, var(--ink-3) 0 4px, transparent 4px 7px); }
+.evr-cell:hover { border-color: var(--rule-2); }
+.evr-cell[aria-pressed='true'] { border-color: var(--gold-ink); background: var(--gold-wash); }
+.evr-cell:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; }
+.evr-cv, .evr-shows { display: grid; gap: 2px; font-size: 14px; min-width: 0; overflow-wrap: anywhere; }
+.evr-cv .lab, .evr-shows .lab { font-size: 10px; }
+.evr-cv q { quotes: '“' '”'; font-family: var(--voice); font-size: 15px; line-height: 1.35; color: var(--ink); }
+.evr-cv[data-says='NO'] > span:last-child, .evr-cv[data-says='NO_CV'] > span:last-child { color: var(--ink-3); }
+.evr-shows-v { display: grid; gap: 2px; }
+.evr-shows-none { display: flex; gap: 6px; align-items: baseline; }
+.evr-shows-n { font-size: 13px; color: var(--ink-2); line-height: 1.4; }
+.evr-flag { justify-self: start; font-family: var(--data); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--ink); color: var(--ink); }
+.evr-flag[data-f='AHEAD'] { border-style: dashed; border-color: var(--ink-3); color: var(--ink-2); }
+.evr-next td, .evr-next th { border-top: 2px solid var(--rule-2); }
+.evr-step { display: grid; gap: 6px; font-size: 14px; align-content: start; padding: 4px 6px; }
+.evr-step .lab { font-size: 10px; }
+.evr-step-btn { justify-self: start; min-height: 40px; padding: 0 14px; font-size: 14px; }
+.evr-cvp-list { display: none; gap: 14px; }
+.evr-cvp[data-list] .evr-cvp-table { display: none; }
+.evr-cvp[data-list] .evr-cvp-list { display: grid; }
+.evr-person { display: grid; gap: 8px; padding: 14px 0 6px; border-top: 1px solid var(--rule-2); }
+.evr-person:first-child { border-top: 0; padding-top: 0; }
+.evr-person header h3 { margin: 0; font-size: 17px; }
+.evr-person header h3 a { color: var(--ink); }
+.evr-person .evr-headline { font-size: 21px; }
+.evr-plist { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.evr-plist-req { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; font-size: 15px; }
+.evr-interest { display: grid; gap: 8px; padding-top: 12px; border-top: 1px dashed var(--rule-2); }
+.evr-interest h3 { margin: 0; }
+.evr-interest ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 24px; }
+.evr-interest li { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.evr-interest li span { display: inline-flex; gap: 5px; align-items: center; color: var(--ink-2); }
+.evr-cvp-notes { margin-top: 4px; }
+@media (max-width: 640px) {
+  .evr-cvp-table, .evr-cvp-switch { display: none !important; }
+  .evr-cvp-list { display: grid; }
+}
+
+/* ---------- Profile: the CV as a document ---------- */
+.evr-doc { margin: 0; display: grid; gap: 10px; container-type: inline-size; }
+.evr-doc-lines { list-style: none; margin: 0; padding: clamp(16px, 3vw, 28px) clamp(16px, 3vw, 32px); background: var(--paper); border: 1px solid var(--rule-2); border-radius: 4px; display: grid; gap: 10px; position: relative; }
+/* Q's margin: a thin gold rule, because the annotations are Q's reading of the claims. */
+.evr-doc-lines li { display: grid; gap: 4px 20px; grid-template-columns: minmax(0, 1fr); font-size: 15px; line-height: 1.5; color: var(--ink-2); }
+.evr-doc-lines li[data-first] .evr-doc-text { font-family: var(--voice); font-size: 22px; color: var(--ink); letter-spacing: -.01em; }
+.evr-doc-text mark { background: none; color: var(--ink); text-decoration: underline; text-decoration-style: wavy; text-decoration-color: var(--ink-3); text-decoration-thickness: 1px; text-underline-offset: 5px; }
+.evr-doc-margin { display: flex; flex-wrap: wrap; gap: 4px 14px; padding-left: 12px; border-left: 2px solid var(--gold); }
+.evr-doc-note { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; }
+.evr-doc-note .lab { font-size: 10px; }
+.evr-doc figcaption { font-size: 13px; color: var(--ink-3); }
+@container (min-width: 720px) {
+  .evr-doc-lines li { grid-template-columns: minmax(0, 1fr) minmax(200px, 34%); }
+  .evr-doc-margin { flex-direction: column; flex-wrap: nowrap; align-self: start; }
+}
+
+/* ---------- Profile: proof-class groups, reuse, review, mutual fit ---------- */
+.evr-pgroup { display: grid; gap: 4px; }
+.evr-ph { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-top: 8px; }
+.evr-ph-h { margin: 0; display: inline-flex; align-items: center; gap: 8px; font-size: 16px; }
+.evr-means-btn { all: unset; cursor: pointer; font-size: 13px; color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; min-height: 32px; display: inline-flex; align-items: center; }
+.evr-means-btn:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; border-radius: 4px; }
+.evr-means { flex-basis: 100%; margin: 0; font-size: 14px; color: var(--ink-2); background: var(--wash); padding: 8px 10px; border-radius: 8px; }
+.evr-reuse { list-style: none; margin: 0; padding: 0; display: grid; }
+.evr-reuse > li { display: grid; gap: 8px; padding: 12px 0; border-top: 1px solid var(--rule); }
+.evr-reuse > li:first-child { border-top: 0; }
+.evr-reuse-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
+.evr-reuse-acts { display: flex; flex-wrap: wrap; gap: 8px; }
+.evr-decision { margin: 0; font-size: 14px; display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; }
+.evr-decision .lab { color: var(--ink); }
+.evr-review { border-left: 3px solid var(--gold); }
+.evr-review[data-done] { border-left-color: var(--ink); }
+.evr-review-body { display: grid; gap: 6px; padding: 12px 14px; background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; }
+.evr-review-body .lab { margin-right: 6px; }
+.evr-outcomes { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+.evr-outcomes legend { margin-bottom: 8px; }
+.evr-opt { cursor: pointer; }
+.evr-opt input { margin: 4px 0 0; accent-color: var(--ink); width: 18px; height: 18px; flex: none; }
+.evr-opt > span { display: grid; gap: 2px; }
+.evr-opt[data-on] { border-color: var(--gold-ink); background: var(--gold-wash); }
+.evr-note { display: grid; gap: 6px; }
+.evr-err { margin: 0; color: var(--risk); font-size: 14px; font-weight: 600; }
+.evr-mutual th[scope='row'] { font-weight: 600; }
+.evr-fit { font-family: var(--data); font-size: 11px; text-transform: uppercase; letter-spacing: .04em; padding: 1px 6px; border: 1px solid var(--ink); border-radius: 999px; margin-left: 6px; white-space: nowrap; }
+.evr-fit[data-fit='Doesn’t fit'] { border-style: dashed; }
+.evr-unknown { display: inline-flex; gap: 5px; align-items: center; color: var(--ink-3); }
+.evr-int-line { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; padding-top: 10px; border-top: 1px dashed var(--rule-2); font-size: 15px; }
+.evr-inline { min-height: 40px; }
+
+/* ---------- Q Home ---------- */
+.evr-task { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; }
+.evr-task p { margin: 0; max-width: 60ch; }

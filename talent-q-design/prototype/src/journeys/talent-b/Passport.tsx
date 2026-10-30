@@ -14,11 +14,18 @@ import { arrive } from '../../ds/motion';
 import { runAction, useViewState } from '../../q/core/engine';
 import { prefillQ } from '../../q/QThread';
 import { useRoute, navigate } from '../../ui/router';
-import { CELL_LABEL, KIND, VER, cellOf, cellOn, discoveryOf, isCode, myEvidence, orgName, passportStats, reachOf, redactedOf, summaryFor, tb, verOf, viewerOrgs, checkRunning, type Cell } from './logic';
+import { CELL_LABEL, KIND, VER, cellOf, cellOn, discoveryOf, isCode, myEvidence, orgName, reachOf, redactedOf, summaryFor, tb, verOf, viewerOrgs, checkRunning, type Cell } from './logic';
 import { SeenBy, UploadRow, VerTag } from './ui';
 import type { UploadKind } from '../../state/areas/talent-b';
 // MEDIA (audit addendum §F): video and voice evidence lives in the Proof view, not on a second evidence page.
 import { MediaSection } from '../media/Candidate';
+// EVIDENCE-FIRST (build pack 30 Oct, item D): proof classes in the recruiter's words, source, freshness, reuse scope,
+// the CV shown as claims, and P6 CV help. Shared logic lives in journeys/evidence/candidate.
+import { CLASS_ORDER, PROOF_WORD, freshness, proofClass, reuseScope, requestsFor } from '../evidence/candidate/logic';
+import { ClassKey, ClassShape, ProofClassTag } from '../evidence/candidate/ProofClass';
+import { CvSection } from '../evidence/candidate/Cv';
+import type { ProofClass } from '../../state/domain';
+import type { World } from '../../mock/world';
 import { media as mediaArea } from '../../state/areas/media';
 
 type Tab = 'items' | 'sharing' | 'summary' | 'discovery';
@@ -36,7 +43,7 @@ export function PassportPage() {
   const q = query.toString();
   useEffect(() => {
     const t = query.get('tab') as Tab | null, v = query.get('as'), i = query.get('item');
-    if (v) { setAs(v); setTab('sharing'); } else if (i) { setItem(i); setTab('items'); } else if (query.get('media')) setTab('items'); else if (t) setTab(t);
+    if (v) { setAs(v); setTab('sharing'); } else if (i) { setItem(i); setTab('items'); } else if (query.get('media') || query.get('cv')) setTab('items'); else if (t) setTab(t);
   }, [q]); // eslint-disable-line react-hooks/exhaustive-deps
   const items = myEvidence(w, pid);
   const offline = w.network === 'offline';
@@ -54,23 +61,21 @@ export function PassportPage() {
 }
 
 // ---------------- Proof at a glance (part-to-whole strip, direct labels, legend always present) ----------------
-const SEG = [
-  { k: 'VERIFIED', label: 'Checked at the source' },
-  { k: 'WAITING', label: 'Waiting on a check' },
-  { k: 'FAILED', label: 'Check failed' },
-  { k: 'OWN', label: 'Your own uploads' },
-  { k: 'CONFIDENTIAL', label: 'Confidential' },
-] as const;
+// Segments are proof classes (the same words recruiters see), plus confidential originals, which have no class to show.
+type SegK = ProofClass | 'CONFIDENTIAL';
+const SEG: { k: SegK; label: string }[] = [...CLASS_ORDER.map((k) => ({ k: k as SegK, label: PROOF_WORD[k] })), { k: 'CONFIDENTIAL', label: 'Confidential' }];
+const segOf = (w: World, e: Evidence): SegK => (e.confidential ? 'CONFIDENTIAL' : proofClass(w, e));
 function ProofAtAGlance({ items, pid, first }: { items: Evidence[]; pid: string; first: string }) {
   const w = useWorld((x) => x);
   const person = w.people.find((p) => p.personId === pid);
-  const n = passportStats(items);
+  const n = Object.fromEntries(SEG.map((s) => [s.k, items.filter((e) => segOf(w, e) === s.k).length])) as Record<SegK, number>;
   const total = items.length;
+  const strong = n.ISSUER_VERIFIED + n.ASSESSED;
   const sharedWith = viewerOrgs(w, pid).filter((o) => items.some((e) => cellOn(cellOf(w, e, o)))).length;
   const pub = items.filter((e) => e.visibility === 'PUBLIC_PROFILE' && !e.confidential).length;
-  const lead = n.VERIFIED
-    ? `${first}, ${n.VERIFIED} of your ${total} items ${n.VERIFIED === 1 ? 'is' : 'are'} checked at the source. Employers give those the most weight.`
-    : `${first}, nothing is checked at the source yet. A certificate or a public repository is the quickest place to start.`;
+  const lead = strong
+    ? `${first}, ${strong} of your ${total} items ${strong === 1 ? 'is' : 'are'} assessed or confirmed by the issuer. Employers give those the most weight.`
+    : `${first}, nothing is assessed or confirmed by an issuer yet. That’s where everyone starts: one reviewed piece of work changes it.`;
   return (
     <section className="ds-sheet tb-hero" aria-labelledby="tb-hero-h">
       <div className="tb-hero-id">
@@ -85,7 +90,7 @@ function ProofAtAGlance({ items, pid, first }: { items: Evidence[]; pid: string;
           </div>
           <figcaption>
             <ul className="tb-strip-key">
-              {SEG.filter((s) => n[s.k]).map((s) => <li key={s.k}><i data-k={s.k} aria-hidden="true" /><b className="num">{n[s.k]}</b> {s.label.toLowerCase()}</li>)}
+              {SEG.filter((s) => n[s.k]).map((s) => <li key={s.k}><i data-k={s.k} aria-hidden="true" />{s.k !== 'CONFIDENTIAL' && <ClassShape k={s.k} />}<b className="num">{n[s.k]}</b> {s.label}</li>)}
             </ul>
           </figcaption>
         </figure>
@@ -93,6 +98,9 @@ function ProofAtAGlance({ items, pid, first }: { items: Evidence[]; pid: string;
       <p className="t14 muted" style={{ margin: 0 }}>{sharedWith ? `Shared with ${sharedWith} organisation${sharedWith === 1 ? '' : 's'}` : 'Not shared with anyone yet'}{pub ? ` · ${pub} public on your profile` : ''}</p>
       <details className="tb-details t14">
         <summary>What the labels mean</summary>
+        <p className="t14" style={{ margin: '8px 0' }}>How each item is known. Recruiters see exactly these words.</p>
+        <ClassKey />
+        <p className="t14" style={{ margin: '12px 0 4px' }}>Checks on an item:</p>
         <ul>{(['VERIFIED', 'PENDING', 'UNDER_REVIEW', 'FAILED', 'UNVERIFIED'] as const).map((v) => <li key={v}><b>{VER[v].label}</b>: {VER[v].plain}</li>)}</ul>
       </details>
     </section>
@@ -100,14 +108,18 @@ function ProofAtAGlance({ items, pid, first }: { items: Evidence[]; pid: string;
 }
 
 // ---------------- Items: uploads, grouped portfolio, inline previews ----------------
-const GROUPS: { id: string; title: string; note: string; test: (e: Evidence) => boolean }[] = [
-  { id: 'checked', title: 'Checked at the source', note: 'The issuer or the original repository confirmed these.', test: (e) => !e.confidential && verOf(e) === 'VERIFIED' },
-  { id: 'waiting', title: 'Waiting on a check', note: 'Pending isn’t failed. Nothing is wrong with these while they wait.', test: (e) => !e.confidential && ['PENDING', 'UNDER_REVIEW', 'FAILED'].includes(verOf(e)) },
-  { id: 'own', title: 'Your own uploads', note: 'Employers see these as your own work. Still useful; they just carry less weight.', test: (e) => !e.confidential && verOf(e) === 'UNVERIFIED' },
-  { id: 'conf', title: 'Confidential', note: 'Only you can open these. Share a redacted summary instead.', test: (e) => !!e.confidential },
+// Grouped by proof class, strongest first; confidential originals apart. "Not yet" reads as normal, never as failure.
+const GROUPS: { id: string; title: string; note: string; test: (w: World, e: Evidence) => boolean }[] = [
+  { id: 'issuer', title: 'Issuer-verified', note: 'Confirmed by whoever issued it: a registry, an employer or a referee.', test: (w, e) => !e.confidential && proofClass(w, e) === 'ISSUER_VERIFIED' },
+  { id: 'assessed', title: 'Assessed', note: 'A reviewer looked at the work, or an assessment recorded a result.', test: (w, e) => !e.confidential && proofClass(w, e) === 'ASSESSED' },
+  { id: 'self', title: 'Self-reported', note: 'Your own work, not yet checked or reviewed. Waiting isn’t failing; these still count as yours.', test: (w, e) => !e.confidential && proofClass(w, e) === 'SELF_REPORTED' },
+  { id: 'claim', title: 'Claims', note: 'Things you’ve said, for example in your CV. Employers read them as your account.', test: (w, e) => !e.confidential && proofClass(w, e) === 'CLAIM' },
+  { id: 'disputed', title: 'Disputed', note: 'Under review after a challenge. Left out of comparisons until it’s resolved.', test: (w, e) => !e.confidential && proofClass(w, e) === 'DISPUTED' },
+  { id: 'conf', title: 'Confidential', note: 'Only you can open these. Share a redacted summary instead.', test: (_w, e) => !!e.confidential },
 ];
 
 function Items({ items, pid, first, item, setItem }: { items: Evidence[]; pid: string; first: string; item: string | null; setItem: (v: string | null) => void }) {
+  const w = useWorld((x) => x);
   const ups = useWorld((w) => tb(w).uploads.filter((u) => u.personId === pid && u.state !== 'CANCELLED' && u.state !== 'DONE'));
   const [link, setLink] = useState('');
   const [linkErr, setLinkErr] = useState('');
@@ -117,6 +129,7 @@ function Items({ items, pid, first, item, setItem }: { items: Evidence[]; pid: s
   return (
     <>
       {items.length > 0 && <ProofAtAGlance items={items} pid={pid} first={first} />}
+      <CvSection pid={pid} />
       <section className="ds-sheet tb-stack" aria-labelledby="tb-up-h">
         <div className="tb-row-between"><h2 id="tb-up-h" className="tb-h2">Add proof</h2><span className="ds-sim">Simulated upload</span></div>
         <p className="t14 muted" style={{ margin: 0 }}>Everything you add stays private until you share it. You can also tell Q: “upload my AWS cert”.</p>
@@ -148,7 +161,7 @@ function Items({ items, pid, first, item, setItem }: { items: Evidence[]; pid: s
           <p style={{ margin: 0 }}>Add a CV, a certificate, a work sample or a link above, or just tell Q about something you’ve done. {first}, nothing here is shared until you choose.</p>
         </section>
       ) : GROUPS.map((g) => {
-        const list = items.filter(g.test);
+        const list = items.filter((e) => g.test(w, e));
         if (!list.length) return null;
         return (
           <section key={g.id} className="tb-group" aria-labelledby={`tb-g-${g.id}`}>
@@ -170,13 +183,24 @@ function ItemCard({ e, selected, onOpen }: { e: Evidence; selected: boolean; onO
   const w = useWorld((x) => x);
   const v = verOf(e); const running = checkRunning(w, e.evidenceId);
   const red = e.confidential ? redactedOf(w, e.evidenceId) : undefined;
+  const fresh = freshness(w, e);
+  const waiting = requestsFor(w, e.ownerId).find((d) => d.resultEvidenceId === e.evidenceId && d.state === 'SUBMITTED');
+  const live = e.visibility === 'SHARED_WITH' && !e.confidential ? e.sharedWith.filter((o) => !e.revokedFrom?.includes(o)) : [];
+  const ended = (e.revokedFrom ?? []).filter((o) => !live.includes(o));
   const checkable = (e.kind === 'CREDENTIAL' || /link|repository/i.test(e.source)) && !e.confidential && v !== 'VERIFIED' && v !== 'UNDER_REVIEW';
   return (
     <li className="ds-sheet tb-card" data-selected={selected || undefined} data-conf={e.confidential || undefined} data-v={v}>
       <div className="tb-row-between"><span className="lab">{KIND[e.kind]}{e.redactedOf ? ' · redacted' : ''} · {month(e.observedAt)}</span>{running ? <span className="ds-tag" data-k="busy" aria-live="polite">Checking…</span> : <VerTag e={e} />}</div>
+      {!e.confidential && <ProofClassTag id={e.evidenceId} k={proofClass(w, e)} extra={waiting ? 'waiting for review' : undefined} />}
       <h3 className="tb-title">{e.confidential && <span className="tb-lock" aria-label="Confidential">🔒</span>}{e.title}</h3>
       <p className="tb-shows">{e.shows}</p>
       <p className="t14 muted tb-limits"><span className="tb-limits-k">Limits</span> {e.limits}</p>
+      <dl className="evc-meta" aria-label="About this item">
+        <div><dt>Source</dt><dd>{e.source}</dd></div>
+        <div><dt>Age</dt><dd className={fresh.old ? 'evc-old' : undefined}>{fresh.text}{fresh.old && e.kind === 'CREDENTIAL' ? '. Employers may weigh recent work more' : ''}</dd></div>
+        <div><dt>Reuse</dt><dd>{reuseScope(w, e)}</dd></div>
+      </dl>
+      {waiting && <p className="evc-await">Submitted for {orgName(w, waiting.orgId)}’s review. Until a person reviews it, it counts as your own work.</p>}
       <div className="tb-card-foot">
         <SeenBy e={e} />
         <div className="tb-actions">
@@ -185,7 +209,9 @@ function ItemCard({ e, selected, onOpen }: { e: Evidence; selected: boolean; onO
           {v === 'FAILED' && <button type="button" className="ds-btn" onClick={() => act('tb.verify.review', { id: e.evidenceId })}>Ask for a manual review</button>}
           {e.confidential && e.kind !== 'REFERENCE' && !red && <button type="button" className="ds-btn primary" onClick={() => act('tb.redact', { id: e.evidenceId })}>Make a redacted summary</button>}
           {e.redactedOf && v === 'UNVERIFIED' && <button type="button" className="ds-btn" onClick={() => act('tb.attest', { id: e.evidenceId })}>Ask a reference to confirm</button>}
+          {live.map((o) => <button key={o} type="button" className="ds-btn quiet" onClick={() => act('tb.revoke', { ids: [e.evidenceId], org: o })}>Stop sharing with {orgName(w, o)}</button>)}
         </div>
+        {ended.length > 0 && <p className="t14 muted" style={{ margin: 0 }} role="status">{ended.map((o) => orgName(w, o)).join(', ')} can no longer see this. <button type="button" className="tb-linkbtn" onClick={() => navigate(`/c/passport?as=${ended[0]}`)}>See what {orgName(w, ended[0])} sees now</button></p>}
       </div>
     </li>
   );

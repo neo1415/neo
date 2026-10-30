@@ -1,0 +1,119 @@
+/* Candidate side of evidence-first hiring. Direction D: paper for evidence, gold only for Q and Q's words,
+   one elevation level (inner panels are flat with a 1px rule), states by shape and word, 44px targets. */
+.evc-row { display: flex; justify-content: space-between; align-items: center; gap: 8px 12px; flex-wrap: wrap; }
+.evc-acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.evc-home { display: grid; gap: 16px; }
+.evc-req, .evc-int, .evc-gap, .evc-prefs, .evc-cv { display: grid; gap: 14px; }
+.evc-req-h { margin: 0; font-size: clamp(19px, 1.6vw, 22px); line-height: 1.3; max-width: 40ch; }
+.evc-h3 { margin: 0; font-size: 16px; font-weight: 650; }
+.evc-q { display: inline-flex; align-items: center; gap: 6px; }
+
+/* Facts of a request: label column on desktop, stacked on phones. */
+.evc-facts { margin: 0; display: grid; gap: 8px; }
+.evc-facts > div { display: grid; grid-template-columns: 96px 1fr; gap: 12px; padding-top: 8px; border-top: 1px solid var(--rule); }
+.evc-facts dt { font-family: var(--data); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); padding-top: 2px; }
+.evc-facts dd { margin: 0; }
+@media (max-width: 560px) { .evc-facts > div { grid-template-columns: 1fr; gap: 2px; } }
+
+.evc-note { display: grid; gap: 10px; padding: 14px 16px; border: 1px solid var(--rule); border-radius: 12px; background: var(--wash); }
+.evc-note p { margin: 0; }
+.evc-note > .ds-btn { justify-self: start; }
+.evc-reviewed[data-tone='ok'], .evc-reviewed[data-tone='part'] { background: var(--sheet); }
+.evc-outcome b { font-family: var(--voice); font-size: 18px; font-weight: 500; }
+.evc-quote { margin: 0; padding: 4px 0 4px 14px; border-left: 3px solid var(--ink); display: grid; gap: 4px; }
+.evc-quote p { font-family: var(--voice); font-size: 17px; line-height: 1.45; }
+.evc-form { display: grid; gap: 12px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.evc-ta { min-height: 64px; resize: vertical; line-height: 1.45; }
+.evc-opts { display: grid; gap: 8px; }
+.evc-opts-row { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+.evc-optsub { display: flex !important; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+/* The simulated sample: a flat working panel, the task in mono. */
+.evc-sample { display: grid; gap: 12px; padding: 16px; border: 1px solid var(--rule-2); border-radius: 14px; background: var(--sheet); }
+.evc-task { margin: 0; padding: 12px 14px; border-radius: 10px; background: var(--wash); font-family: var(--data); font-size: 13px; line-height: 1.55; white-space: pre-wrap; overflow-wrap: anywhere; }
+.evc-answer { min-height: 160px; }
+
+/* Proof class label: shape + word; meaning on demand. */
+.evc-pc { display: inline-grid; gap: 6px; max-width: 100%; justify-items: start; }
+.evc-pc-btn { all: unset; box-sizing: border-box; display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 3px 10px; border: 1px solid var(--rule-2); border-radius: 999px; font-size: 13px; color: var(--ink); cursor: pointer; background: var(--sheet); position: relative; }
+.evc-pc-btn::after { content: ''; position: absolute; inset: -6px -2px; } /* 44px hit area without a bigger pill */
+.evc-pc-btn:hover { border-color: var(--ink); }
+.evc-pc-btn:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; }
+.evc-pc[data-c='DISPUTED'] .evc-pc-btn { border-color: var(--risk); color: var(--risk); }
+.evc-pc[data-c='CLAIM'] .evc-pc-btn { border-style: dashed; }
+.evc-pc-extra { color: var(--ink-2); }
+.evc-pc-q { font-family: var(--data); font-size: 11px; width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--rule-2); display: inline-grid; place-items: center; color: var(--ink-3); margin-left: 2px; }
+.evc-pc-means { font-size: 14px; line-height: 1.45; color: var(--ink-2); max-width: 46ch; padding: 8px 12px; border-left: 2px solid var(--ink); background: var(--wash); border-radius: 0 8px 8px 0; }
+.evc-key { margin: 0; display: grid; gap: 8px; }
+.evc-key > div { display: grid; grid-template-columns: 150px 1fr; gap: 10px; }
+.evc-key dt { display: inline-flex; align-items: center; gap: 6px; font-weight: 650; }
+.evc-key dd { margin: 0; color: var(--ink-2); }
+@media (max-width: 560px) { .evc-key > div { grid-template-columns: 1fr; gap: 2px; } }
+
+/* Passport item meta: source, freshness, scope. */
+.evc-meta { margin: 0; display: grid; gap: 4px; font-size: 14px; color: var(--ink-2); }
+.evc-meta > div { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.evc-meta dt { font-family: var(--data); font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); min-width: 56px; }
+.evc-meta dd { margin: 0; flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.evc-old { color: var(--warn); font-weight: 600; }
+.evc-await { font-size: 14px; margin: 0; padding: 8px 12px; border-radius: 10px; background: var(--wash); }
+
+/* CV document and Q's line. */
+.evc-qline { display: flex; gap: 10px; align-items: flex-start; }
+.evc-qline p { margin: 0; font-family: var(--voice); font-size: 17px; line-height: 1.45; max-width: 60ch; }
+.evc-cvdoc { margin: 0; padding: 14px 16px 14px 34px; border: 1px dashed var(--rule-2); border-radius: 12px; display: grid; gap: 6px; font-size: 15px; }
+.evc-cvdoc li::marker { font-family: var(--data); font-size: 11px; color: var(--ink-3); }
+.evc-draft { display: grid; gap: 12px; padding-top: 14px; border-top: 1px solid var(--rule); scroll-margin-top: 80px; }
+.evc-diff { margin: 0; padding: 0; list-style: none; display: grid; gap: 0; }
+.evc-diff > li { padding: 10px 0; border-top: 1px solid var(--rule); display: grid; gap: 4px; }
+.evc-diffline { margin: 0; font-size: 15px; line-height: 1.6; overflow-wrap: anywhere; }
+.evc-diffmeta { margin: 0; color: var(--ink-3); }
+.evc-del { text-decoration: line-through; text-decoration-thickness: 1.5px; color: var(--ink-3); }
+.evc-add { background: var(--gold-wash); color: var(--ink); border-bottom: 2px solid var(--gold-ink); border-radius: 2px; padding: 0 1px; }
+.evc-wont { display: grid; gap: 8px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--rule); }
+.evc-wont .lab, .evc-links .lab { margin: 0; }
+.evc-wont ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.evc-wont li { display: grid; grid-template-columns: 18px 1fr; gap: 6px; font-size: 14px; }
+.evc-wont li > span:first-child { color: var(--ink-3); }
+.evc-links { display: grid; gap: 8px; }
+
+/* Jobs: hiring confirmed vs not. Confirmed carries a check + bold words; the absence is plain, never a warning. */
+.evc-intent { margin: 0; display: grid; gap: 2px; }
+.evc-intent p { margin: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.evc-intent[data-on='yes'] > p:first-child { color: var(--ok); }
+.evc-intent[data-on='yes'] > p:first-child b { color: var(--ink); }
+.evc-intent[data-on='no'] { display: flex; gap: 6px; font-size: 14px; color: var(--ink-3); }
+
+/* Commitments. Late is stated by words and a left rule, on the employer. */
+.evc-commit { display: grid; gap: 4px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--rule); }
+.evc-commit p { margin: 0; }
+.evc-commit[data-k='late'] { border-left: 3px solid var(--warn); }
+.evc-commit[data-k='late'] b { color: var(--warn); }
+.evc-commit[data-k='done'] p { display: flex; gap: 6px; align-items: center; color: var(--ok); }
+
+/* "What you want". */
+.evc-dl { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.evc-dl > div { display: grid; gap: 2px; padding-top: 8px; border-top: 1px solid var(--rule); }
+.evc-dl dt { font-size: 13px; color: var(--ink-3); }
+.evc-dl dd { margin: 0; font-weight: 600; }
+.evc-blank { font-weight: 400; color: var(--ink-3); }
+.evc-blank::before { content: '— '; }
+.evc-payrow { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; }
+.evc-share { display: grid; gap: 4px; padding-top: 10px; border-top: 1px solid var(--rule); }
+
+/* J7 gap card: private, so it wears the dotted "practice" edge until something is reviewed. */
+.evc-gap { border: 1px dashed var(--rule-2); box-shadow: none; }
+.evc-steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 0; counter-reset: s; }
+.evc-steps li { counter-increment: s; display: grid; gap: 4px; padding: 12px 0 12px 40px; border-top: 1px solid var(--rule); position: relative; }
+.evc-steps li::before { content: counter(s); position: absolute; left: 0; top: 12px; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-family: var(--data); font-size: 12px; border: 1.5px solid var(--ink); }
+.evc-steps li[data-k='private']::before { border-style: dotted; }
+.evc-steps li > .ds-btn { justify-self: start; margin-top: 4px; }
+
+/* Passport "proof at a glance" by proof class: textures in the ink family (gold stays Q's), shapes in the key. */
+.tb-strip [data-k='ISSUER_VERIFIED'] { background: var(--ok); }
+.tb-strip [data-k='ASSESSED'] { background: var(--ink); }
+.tb-strip [data-k='SELF_REPORTED'] { background: repeating-linear-gradient(135deg, var(--ink-2) 0 2px, var(--sheet) 2px 5px); box-shadow: inset 0 0 0 1px var(--ink-2); }
+.tb-strip [data-k='CLAIM'] { background: var(--sheet); box-shadow: inset 0 0 0 1.5px var(--ink-3); background-image: radial-gradient(var(--ink-3) 1px, transparent 1.2px); background-size: 5px 5px; }
+.tb-strip [data-k='DISPUTED'] { background: repeating-linear-gradient(45deg, var(--risk) 0 2px, var(--sheet) 2px 6px); box-shadow: inset 0 0 0 1px var(--risk); }
+.tb-strip [data-k='CONFIDENTIAL'] { background: repeating-linear-gradient(90deg, var(--ink-3) 0 1px, var(--wash) 1px 4px); box-shadow: inset 0 0 0 1px var(--ink-3); }
+.tb-strip-key li svg { color: var(--ink); }

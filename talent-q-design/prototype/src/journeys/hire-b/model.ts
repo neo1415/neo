@@ -11,7 +11,13 @@ import { rubricWeights } from '../rubric/model';
 export const KORA_ROLE = 'm_backend';
 export const reqsOf = (w: World): Requirement[] => w.mandate.requirements;
 export const reqLabel = (w: World, id: string) => reqsOf(w).find((r) => r.reqId === id)?.label ?? id;
-export const firstName = (w: World, pid: string) => w.people.find((p) => p.personId === pid)?.name.split(' ')[0] ?? 'They';
+/** First name, or the full name when it would be ambiguous: Seyi Okoro (candidate) and Seyi Balogun (Kora's
+ *  engineering manager) are different people, so recruiter surfaces always show the surname (merge ledger CL-03). */
+export const firstName = (w: World, pid: string) => {
+  const n = w.people.find((p) => p.personId === pid)?.name; if (!n) return 'They';
+  const f = n.split(' ')[0];
+  return w.actors.some((a) => a.side === 'recruiter' && a.first === f) || w.people.some((p) => p.personId !== pid && p.name.split(' ')[0] === f) ? n : f;
+};
 export const nameOf = (w: World, pid: string) => w.people.find((p) => p.personId === pid)?.name ?? pid;
 export const viewerOrg = (w: World) => actorOf(w).orgId ?? 'org_kora';
 
@@ -116,7 +122,8 @@ export function cellFor(w: World, pid: string, reqId: string, o: Opts = {}): Cel
  *  equal must-haves (labelled as a placeholder). EQUAL: the recruiter turned the rubric weights off. ('Q' is the
  *  pre-rubric value some saved views still hold; it now means RUBRIC.) */
 export type Weighting = 'RUBRIC' | 'EQUAL' | 'Q';
-export interface CompareView { people: string[]; criteria: string[]; lastYear: boolean; weighting: Weighting; open?: { pid: string; reqId: string } | null; last?: Snapshot | null }
+/** lens: the evidence ledger (default) or the CV and proof view (J12 step 3); both read the same choices. */
+export interface CompareView { people: string[]; criteria: string[]; lastYear: boolean; weighting: Weighting; open?: { pid: string; reqId: string } | null; last?: Snapshot | null; lens?: 'ledger' | 'proof' }
 export const defaultView = (w: World): CompareView => ({ people: rolePeople(w), criteria: reqsOf(w).map((r) => r.reqId), lastYear: false, weighting: 'RUBRIC', open: null });
 export const roleRubric = (w: World) => rubricWeights(w, KORA_ROLE);
 /** True when the approved rubric's weights are being used. */

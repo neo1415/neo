@@ -13,12 +13,26 @@ import { Glyph } from '../../ds/Glyph';
 import { arrive } from '../../ds/motion';
 import { SwitchRow } from '../../ds/Switch';
 import { Link } from '../../ui/router';
-import { cellFor, changesSince, defaultView, firstName, headline, KORA_ROLE, LEVEL_WORD, nameOf, readingOf, reqsOf, roleRubric, rolePeople, shortLabel, usesRubric, weightOf, type CompareView } from './model';
+import { cellFor, changesSince, defaultView, firstName, headline, KORA_ROLE, LEVEL_WORD, nameOf, readingOf, reqsOf, roleRubric, rolePeople, shortLabel, usesRubric, weightingNote, weightOf, type CompareView } from './model';
+import { CvProofView } from '../evidence/recruiter/CvProof';
+import { proofReading, SHAPE_WORD } from '../evidence/model';
 import { Ledger } from './Ledger';
 import { LevelMark, VerTag, fmtDate, verOf } from './ui';
 import './ops';
 import { roleIndex } from '../../state/areas/rubrics';
 import { indexLine, studioPath } from '../rubric/model';
+
+/** Q's margin notes for the CV and proof view: the shape per person in words, then what that means. */
+function proofNotes(w: Parameters<typeof readingOf>[0], v: CompareView): string[] {
+  if (!v.people.length || !v.criteria.length) return ['Pick at least one person and one requirement and I’ll set the CV beside the evidence.'];
+  const lab = (ids: string[]) => ids.filter((r) => v.criteria.includes(r)).map((r) => shortLabel(w, r));
+  const join = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
+  const out = v.people.map((p) => { const r = proofReading(w, p); const b = lab(r.beyondCv), c = lab(r.claimedOnly);
+    return `${nameOf(w, p)}: ${SHAPE_WORD[r.shape].charAt(0).toLowerCase()}${SHAPE_WORD[r.shape].slice(1)}.${b.length ? ` Shown beyond the CV: ${join(b)}.` : ''}${c.length ? ` Claimed, not yet shown: ${join(c)}.` : ''}`; });
+  out.push('A CV’s wording isn’t evidence either way: a polished CV isn’t proof, and a thin one isn’t a point in anyone’s favour. Unknown isn’t zero; it’s a question to ask.');
+  out.push(weightingNote(w, v));
+  return out;
+}
 
 const toggle = (xs: string[], x: string) => (xs.includes(x) ? xs.filter((y) => y !== x) : [...xs, x]);
 
@@ -34,7 +48,8 @@ export function Compare() {
   const people = v.people.filter((p) => pool.includes(p));
   const crit = reqs.filter((r) => v.criteria.includes(r.reqId));
   const view: CompareView = { ...v, people, criteria: crit.map((r) => r.reqId) };
-  const notes = readingOf(w, view);
+  const lens = v.lens === 'proof' ? 'proof' : 'ledger';
+  const notes = lens === 'proof' ? proofNotes(w, view) : readingOf(w, view);
   const open = v.open && people.includes(v.open.pid) ? { ...v.open, cell: cellFor(w, v.open.pid, v.open.reqId, view) } : null;
   const change = v.last ? changesSince(w, view, v.last) : null;
   const openKey = open ? `${open.pid}:${open.reqId}` : '';
@@ -51,7 +66,8 @@ export function Compare() {
   const summary = `${people.length} ${people.length === 1 ? 'person' : 'people'} · ${crit.length} requirement${crit.length === 1 ? '' : 's'}${v.lastYear ? ' · last year only' : ''} · ${usesRubric(w, v.weighting) ? `rubric v${rub!.v} weights` : 'must-haves equal'}`;
 
   return (
-    <Canvas title={headline(w, view)} kicker="Senior Backend Engineer · comparison" open onClose={() => {}} qLine={notes[0]}
+    <Canvas title={lens === 'proof' ? 'What the CVs say, and what the evidence shows' : headline(w, view)} kicker="Senior Backend Engineer · comparison" open onClose={() => {}} qLine={notes[0]}
+      views={[{ id: 'ledger', label: 'Evidence ledger' }, { id: 'proof', label: 'CV and proof' }]} view={lens} setView={(x) => set({ lens: x, open: null })}
       aside={<div className="ds-actions"><button type="button" className="ds-btn quiet" onClick={() => set(defaultView(w))}>Reset choices</button></div>}>
 
       <section className="ds-sheet hire-b-filters" data-open={filtersOpen ? '1' : '0'} aria-label="What to compare">
@@ -86,7 +102,19 @@ export function Compare() {
         )}
       </AnimatePresence>
 
-      {!ready ? (
+      {ready && lens === 'proof' && (
+        <section className="ds-sheet hire-b-grid evr-cvp-sec" aria-labelledby="cmp-p">
+          <div className="hire-b-row"><h2 id="cmp-p" className="voice t24" style={{ margin: 0 }}>CV and proof, requirement by requirement</h2><span className="t14 muted">Not a ranking. Select a cell to see the evidence</span></div>
+          <CvProofView w={w} v={view} onCell={(pid, reqId) => set({ open: v.open?.pid === pid && v.open.reqId === reqId ? null : { pid, reqId } })} />
+          <aside className="hire-b-margin evr-cvp-notes" aria-labelledby="cmp-pq" aria-live="polite">
+            <h3 id="cmp-pq" className="lab hire-b-q" style={{ margin: 0 }}>Q’s notes</h3>
+            <ul className="hire-b-list t14">{notes.map((n) => <li key={n}><span className="hire-b-dia" aria-hidden="true" />{n}</li>)}</ul>
+            <p className="t14" style={{ margin: 0 }}><Link to={studioPath(KORA_ROLE)}>{rub ? `Open rubric v${rub.v}` : 'Set weights in a rubric'}</Link></p>
+          </aside>
+        </section>
+      )}
+
+      {lens === 'proof' && ready ? null : !ready ? (
         <section className="ds-sheet hire-b-empty"><Glyph k="unclear" /><div><b>{!people.length ? 'Pick at least one person.' : 'Pick at least one requirement.'}</b><p className="t14 muted" style={{ margin: 0 }}>Or tell Q, for example “compare Tobi and Zara on payments and Go”.</p></div></section>
       ) : (
         <section className="ds-sheet hire-b-grid hire-b-ledger-sec" aria-labelledby="cmp-l">
@@ -102,7 +130,7 @@ export function Compare() {
         </section>
       )}
 
-      {ready && rub && (
+      {ready && rub && lens === 'ledger' && (
         <section className="ds-sheet hire-b-grid" aria-labelledby="cmp-sc">
           <div className="hire-b-row"><h2 id="cmp-sc" className="voice t24" style={{ margin: 0 }}>Scorecards on rubric v{rub.v}</h2><span className="t14 muted">Index only with coverage</span></div>
           {people.some((p) => roleIndex(w, KORA_ROLE, p, rub.v).index !== null)
@@ -132,7 +160,7 @@ export function Compare() {
         </section>
       )}
 
-      {ready && (
+      {ready && lens === 'ledger' && (
         <section className="ds-sheet hire-b-grid" aria-labelledby="cmp-t">
           <h2 id="cmp-t" className="voice t24" style={{ margin: 0 }}>The evidence behind each block</h2>
           <div className="hire-b-table">

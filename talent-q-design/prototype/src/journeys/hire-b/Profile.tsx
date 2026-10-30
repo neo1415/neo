@@ -24,6 +24,8 @@ import { Scorecard } from '../rubric/Scorecard';
 import { roleIndex } from '../../state/areas/rubrics';
 import { studioPath } from '../rubric/model';
 import { media, visibleSegments } from '../../state/areas/media';
+import { CvDocument, groupByProof, MutualFit, ReusePanel, ReviewPanel } from '../evidence/recruiter/ProfileProof';
+import { ProofHeading } from '../evidence/recruiter/ui';
 
 const IN_WORDS: Record<string, string> = { r1: 'payments', r2: 'Go', r3: 'Postgres', r4: 'on-call leadership', r5: 'mentoring' };
 const list = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
@@ -89,8 +91,6 @@ export function Profile({ id }: { id: string }) {
   const weakVsClaim = claims.length > 0 && cells.filter((x) => x.c.level === 'verified' || x.c.level === 'evidenced').length <= 1;
   const qs = questionsFor(w, id).slice(0, 3);
   const lede = ledeFor(w, id, cells, claims.length);
-  const checked = items.filter((e) => !e.confidential && verOf(e) === 'VERIFIED');
-  const unchecked = items.filter((e) => !e.confidential && verOf(e) !== 'VERIFIED');
   const conf = items.filter((e) => e.confidential);
   const goTo = (eid: string) => document.getElementById(`ev-${eid}`)?.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   const preview = (eid: string) => { setViewSel(eid); requestAnimationFrame(() => document.getElementById('pv-h')?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })); };
@@ -130,17 +130,19 @@ export function Profile({ id }: { id: string }) {
       {/* Q's reading of the evidence leads the page; the person's name is the title (critique F4). */}
       <p className="voice hire-b-lede" style={{ margin: 0 }}><span className="hire-b-lede-q" aria-hidden="true" />{lede}</p>
       {/* AD-B-03: the profile is long on phones (about nine screens), so it gets a sticky in-page index. */}
-      <PageIndex items={[{ id: 'pf-fit', label: 'Fit' }, { id: 'pf-score', label: 'Scorecard' }, { id: 'pf-ev', label: 'Evidence' }, { id: 'pf-q', label: 'Interview' }, { id: 'pf-hist', label: 'History' }]} />
+      <PageIndex items={[{ id: 'pf-cv', label: 'CV' }, { id: 'pf-fit', label: 'Fit' }, { id: 'pf-reuse', label: 'Gaps' }, { id: 'pf-score', label: 'Scorecard' }, { id: 'pf-ev', label: 'Evidence' }, { id: 'pf-mutual', label: 'Mutual fit' }, { id: 'pf-q', label: 'Interview' }, { id: 'pf-hist', label: 'History' }]} />
       {w.network === 'offline' && <div className="ds-banner" data-k="warn" role="status"><Glyph k="unclear" /><span>You’re offline. This is what was loaded; new sharing changes will appear when you reconnect.</span><span /></div>}
       {fresh.length > 0 && (
         <div className="ds-banner" role="status"><Glyph k="verified" /><span><b>New since you last looked ({fmtDate(prev!.at)}):</b> {fresh.map(([eid, v]) => `${items.find((e) => e.evidenceId === eid)?.title ?? 'an item'} (${v === 'VERIFIED' ? 'verified' : v.toLowerCase().replace('_', ' ')})`).join('; ')}.</span><span /></div>
       )}
       {weakVsClaim && (
         <section className="ds-banner" data-k="warn" aria-label="Q’s honest read"><Glyph k="unclear" />
-          <span><b>Impressive CV, thin evidence.</b> Most of {first}’s CV is <i>unknown</i>, which isn’t the same as weak. What would prove it: a reference from one of the fintechs, a recent Go service they ran, or a short paid work sample.</span>
+          <span><b>Strong claims, limited supporting evidence.</b> Most of {first}’s CV is <i>unknown</i>, which isn’t the same as weak. What would settle it: one short piece of work, a reference, or a check of an item already shared.</span>
           <button type="button" className="ds-btn" onClick={() => void runAction({ label: 'Ask Q', act: { t: 'say', text: `is ${first}'s cv backed by evidence` } })}>Ask Q why</button>
         </section>
       )}
+
+      <ReviewPanel w={w} pid={id} />
 
       <section className="ds-sheet hire-b-facts" aria-label={`About ${first}`}>
         <div className="hire-b-grid" style={{ gap: 4 }}>
@@ -161,6 +163,8 @@ export function Profile({ id }: { id: string }) {
         </div>
       </section>
 
+      <CvDocument w={w} pid={id} />
+
       <section id="pf-fit" className="ds-sheet hire-b-grid" aria-labelledby="pf-fit-h">
         <div className="hire-b-row"><h2 id="pf-fit-h" className="voice t24" style={{ margin: 0 }}>Against the Senior Backend brief</h2><Link className="t14" to="/r/compare">Compare with others</Link></div>
         <Ledger w={w} v={{ people: [id], criteria: reqs.map((r) => r.reqId), lastYear: false, weighting: 'RUBRIC' }} ranked={false} bare noKey />
@@ -178,6 +182,8 @@ export function Profile({ id }: { id: string }) {
         </ul>
       </section>
 
+      <ReusePanel w={w} pid={id} />
+
       <section id="pf-score" className="ds-sheet hire-b-grid" aria-labelledby="pf-score-h">
         <div className="hire-b-row"><h2 id="pf-score-h" className="voice t24" style={{ margin: 0 }}>Scorecard</h2><span className="t14 muted">{rIdx.v ? `Rubric v${rIdx.v}` : 'No rubric yet'}</span></div>
         <p className="t14 muted" style={{ margin: 0 }}>The fit above says how strong the proof is. The scorecard rates the level that proof shows, against the rubric’s anchors. They’re separate signals.</p>
@@ -193,10 +199,12 @@ export function Profile({ id }: { id: string }) {
         ))}
         {revoked > 0 && <p className="t14" role="status" style={{ margin: 0 }}><Glyph k="none" size={14} /> {first} ended {orgName}’s access to {revoked === 1 ? 'an item' : `${revoked} items`} they’d shared. Q no longer uses {revoked === 1 ? 'it' : 'them'}.</p>}
         {items.length === 0 && <div className="hire-b-empty"><Glyph k="none" /><div><b>{first} hasn’t shared anything with you yet.</b><p className="t14 muted" style={{ margin: 0 }}>Ask about their work in conversation instead of assuming.</p></div></div>}
-        {checked.length > 0 && <><h3 className="hire-b-evh"><Glyph k="verified" size={16} />Checked at the source <span className="muted">{checked.length}</span></h3><ul className="hire-b-ev">{checked.map(evItem)}</ul></>}
-        {unchecked.length > 0 && <><h3 className="hire-b-evh"><Glyph k="none" size={16} />Not checked yet <span className="muted">{unchecked.length}</span></h3><ul className="hire-b-ev">{unchecked.map(evItem)}</ul></>}
+        {/* J12: grouped by how each item is known (the same five words the candidate sees), each with its meaning. */}
+        {groupByProof(w, items).map((g) => <div key={g.c} className="evr-pgroup" data-c={g.c}><ProofHeading c={g.c} n={g.items.length} /><ul className="hire-b-ev">{g.items.map(evItem)}</ul></div>)}
         {conf.length > 0 && <><h3 className="hire-b-evh"><Glyph k="unclear" size={16} />Confidential <span className="muted">{conf.length}</span></h3><ul className="hire-b-ev">{conf.map(evItem)}</ul></>}
       </section>
+
+      <MutualFit w={w} pid={id} />
 
       <ProjectViewer items={items} first={first} sel={viewSel} onSel={setViewSel} />
 

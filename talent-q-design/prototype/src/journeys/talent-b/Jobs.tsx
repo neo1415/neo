@@ -11,12 +11,15 @@ import { Link, navigate, useRoute } from '../../ui/router';
 import { APP_LABEL, NEED_GLYPH, NEED_LABEL, adviceFor, fitLine, matchFor, mutualFit, orgName, signalsOf, tb, verifiedEmployer, evById, KIND } from './logic';
 import { VerTag } from './ui';
 import { JobContact } from '../contact/JobContact';
+// EVIDENCE-FIRST (pack item E): hiring confirmed by a participating employer, shown apart from listings without it.
+import { IntentLine } from '../evidence/candidate/Status';
+import { intentFor } from '../evidence/candidate/logic';
 
 /** Location and work mode without repeating each other (“Remote · remote”). */
 const where = (loc: string, mode: string) => (loc.toLowerCase().includes(mode.toLowerCase()) ? loc : `${loc} · ${mode.toLowerCase()}`);
 
 const act = (op: string, args: Record<string, unknown> = {}) => void runAction({ label: op, act: { t: 'do', op, args } });
-type F = 'all' | 'verified' | 'saved' | 'remote';
+type F = 'all' | 'confirmed' | 'verified' | 'saved' | 'remote';
 
 function Signals({ job, compact }: { job: Job; compact?: boolean }) {
   const w = useWorld((x) => x);
@@ -57,7 +60,7 @@ export function JobsPage() {
   const share = (m: ReturnType<typeof matchFor>) => m.filter((n) => n.state !== 'NONE').length / Math.max(1, m.length);
   const score = (j: Job, m: ReturnType<typeof matchFor>) => share(m) + (verifiedEmployer(w, j) ? 0.01 : 0);
   const open = w.jobs.filter((j) => j.status === 'OPEN');
-  const shown = open.filter((j) => filter === 'all' || (filter === 'verified' && verifiedEmployer(w, j)) || (filter === 'saved' && saved.includes(j.id)) || (filter === 'remote' && j.workMode === 'REMOTE'))
+  const shown = open.filter((j) => filter === 'all' || (filter === 'confirmed' && !!intentFor(w, j.id)) || (filter === 'verified' && verifiedEmployer(w, j)) || (filter === 'saved' && saved.includes(j.id)) || (filter === 'remote' && j.workMode === 'REMOTE'))
     .map((j) => ({ j, m: matchFor(w, pid, j) })).sort((x, y) => score(y.j, y.m) - score(x.j, x.m));
   const close = shown.filter((x) => share(x.m) > 0); const rest = shown.filter((x) => share(x.m) === 0);
   const closedSaved = saved.map((id) => w.jobs.find((j) => j.id === id)).filter((j): j is Job => !!j && j.status === 'CLOSED');
@@ -66,6 +69,7 @@ export function JobsPage() {
       <div className="tb-row-between"><span className="lab">{orgName(w, j.orgId)}</span><Signals job={j} compact /></div>
       <h3 className="tb-title"><Link to={`/c/jobs/${j.id}`}>{j.title}</Link></h3>
       <p className="t14 tb-meta" style={{ margin: 0 }}>{where(j.location, j.workMode)} · <span className="num">{j.pay}</span></p>
+      <IntentLine jobId={j.id} />
       <FitLine m={m} />
       <div className="tb-card-foot">
         <p className="t14 muted" style={{ margin: 0 }}>{j.signals.replies}</p>
@@ -80,7 +84,7 @@ export function JobsPage() {
     <Canvas title="Jobs" kicker={`${open.length} open roles`} open onClose={() => navigate('/c/home')}>
       {closedSaved.map((j) => <div key={j.id} className="ds-banner" data-k="warn" role="status"><span aria-hidden="true">⚠</span><span><b>Closed:</b> {orgName(w, j.orgId)}’s {j.title}, which you saved. Closing a listing isn’t a decision about you.</span><button type="button" className="ds-btn" onClick={() => act('tb.save', { jobId: j.id })}>Remove</button></div>)}
       <div className="tb-filters" role="group" aria-label="Filter jobs">
-        {([['all', 'All'], ['verified', 'Verified employers'], ['saved', `Saved (${saved.filter((id) => open.some((j) => j.id === id)).length})`], ['remote', 'Remote']] as const).map(([v, l]) => <button key={v} type="button" className="ds-filter" aria-pressed={filter === v} onClick={() => { setF(v); if (query.get('f')) navigate('/c/jobs'); }}>{l}</button>)}
+        {([['all', 'All'], ['confirmed', 'Hiring confirmed'], ['verified', 'Verified employers'], ['saved', `Saved (${saved.filter((id) => open.some((j) => j.id === id)).length})`], ['remote', 'Remote']] as const).map(([v, l]) => <button key={v} type="button" className="ds-filter" aria-pressed={filter === v} onClick={() => { setF(v); if (query.get('f')) navigate('/c/jobs'); }}>{l}</button>)}
       </div>
       {shown.length === 0 ? (
         <section className="ds-sheet tb-empty">
@@ -101,6 +105,7 @@ export function JobsPage() {
           <li><b>Email domain checked</b>: the recruiter’s email is on the company’s own domain. It shows they work there; not that the job is good.</li>
           <li><b>Registered business</b>: confirmed with the business registry (simulated). It shows the company exists; nothing about pay, culture or fairness.</li>
           <li><b>Recruiter active</b>: someone from the employer used Talent Q in the last 14 days. Inactive employers may never read applications.</li>
+          <li><b>Hiring confirmed</b>: the employer, using Talent Q, confirmed this role is really hiring, and must re-confirm by a date or the label comes off. Listings without it may still be real; nobody has confirmed them.</li>
           <li><b>Not verified</b> doesn’t mean a scam. It means unchecked: share less, and never pay to apply.</li>
           <li><b>Needs shown</b>: how many of the job’s stated needs your Passport shows. It isn’t a prediction of the employer’s decision.</li>
         </ul>
@@ -129,6 +134,8 @@ export function JobDetailPage({ id }: { id: string }) {
       <ul className="tb-facts" aria-label="About this job">
         <li>{where(job.location, job.workMode)}</li><li className="num">{job.pay}</li><li>Posted {new Date(job.posted).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</li><li><Signals job={job} compact /></li>
       </ul>
+
+      <IntentLine jobId={job.id} full />
 
       {/* Role briefing and contact card (audit addendum §C, owned by journeys/contact). */}
       <JobContact job={job} />

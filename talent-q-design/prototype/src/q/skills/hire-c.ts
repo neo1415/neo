@@ -10,6 +10,7 @@ import { anyOf, entities, normalise } from '../core/nlu';
 import { protectedCriterion } from '../core/policy';
 import type { QCtx, QReply } from '../core/types';
 import { hc, hcw, type DraftKind, type Guide, type Tone } from '../../state/areas/hire-c';
+import { meansColleague } from '../../journeys/evidence/recruiter/model';
 import {
   approveAndSend, busyAt, CAN_MOVE, CAN_SEND, changePanel, checkDraft, city, colleaguesIn, createDraft, currentDraft, dateIn, defaultPanel, entryFor, findMsg, findSlots, firstOf,
   flushQueued, guide, guideChip, problemOf, guidesOf, IS_ADMIN, KIND_LABEL, LAGOS, latestV, listNames, mandateTitle, nameOf, nextWeek, orgMembers, parseTime, partOf, payBand, resolveDays,
@@ -28,7 +29,9 @@ export function peopleIn(c: QCtx) {
   const colleagues = new Set(orgMembers(c.w, c.actor.orgId).map((a) => a.first.toLowerCase()));
   const first = (pid: string) => personOf(c.w, pid)?.name.split(' ')[0].toLowerCase() ?? '';
   // Drop people matched only by a surname that is also a colleague's first name ("Musa" is Kora's engineer, not Halima Musa).
-  const out = c.ents.people.filter((pid) => ws.includes(first(pid)) || !personOf(c.w, pid)!.name.toLowerCase().split(' ').slice(1).some((l) => colleagues.has(l)));
+  const out = c.ents.people.filter((pid) => ws.includes(first(pid)) || !personOf(c.w, pid)!.name.toLowerCase().split(' ').slice(1).some((l) => colleagues.has(l)))
+    // "with Seyi and Musa" in a panel context means Seyi Balogun (colleague), not Seyi Okoro (candidate).
+    .filter((pid) => !meansColleague(c.w, c.norm, pid, c.actor.orgId));
   for (const x of ws) {
     if (colleagues.has(x) || x.length < 3) continue;
     const exact = c.w.people.filter((pp) => first(pp.personId) === x);

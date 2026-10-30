@@ -11,6 +11,7 @@ import { QHome } from '../screens/QHome';
 import { appendQ } from '../q/core/engine';
 import { SwitchRow } from '../ds/Switch';
 import { arrive } from '../ds/motion';
+import { EvidenceHomeCards, evidenceHomeLine } from '../journeys/evidence/candidate/Requests';
 import '../styles/home.css';
 import '../ds/ds.css';
 
@@ -67,7 +68,9 @@ function CandidateHome() {
   const days = next ? Math.round((new Date(next.start).setHours(0, 0, 0, 0) - new Date(now).setHours(0, 0, 0, 0)) / 864e5) : 0;
   const when = next ? new Date(next.start) : null;
   const tz = { timeZone: a.timezone } as const;
-  const qLine = next && days <= 2
+  // Evidence-first (J12): an employer's request or interest check waiting on the person is today's line.
+  const asked = evidenceHomeLine(w, pid);
+  const qLine = asked ? asked : next && days <= 2
     ? `Your interview with ${org ?? 'the employer'} is ${days === 0 ? 'today' : days === 1 ? 'tomorrow' : 'in two days'}. A short practice could help, and only you will see it.`
     : !prof?.done ? (answered ? `Welcome back. You’re ${answered} of 6 parts into your profile; we can carry on whenever you like.` : `Let’s start with you: a few small questions in your own words, and you can skip anything.`)
     : !checked ? 'Your profile is set up. One piece of proof, like a certificate or a project, would make it much stronger.'
@@ -83,6 +86,7 @@ function CandidateHome() {
     <Canvas title={`${hello}, ${a.first}`} kicker={now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', ...tz })} open onClose={() => {}}>
       <div className="ch">
         <motion.div className="ch-q" {...arrive}><QMark mood="idle" size={28} /><p className="voice">{qLine}</p></motion.div>
+        <EvidenceHomeCards />
         {next && when && (
           <section className="ds-sheet ch-next" aria-labelledby="ch-next-h">
             <div className="ch-when" aria-hidden="true"><span className="d">{when.toLocaleDateString('en-GB', { weekday: 'short', ...tz })}</span><span className="t">{when.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', ...tz })}</span></div>
@@ -93,6 +97,7 @@ function CandidateHome() {
             </div>
           </section>
         )}
+        <EvidenceHomeCards part="grow" />
         <section aria-labelledby="ch-path-h" className="ch-pathwrap">
           <h2 id="ch-path-h" className="lab">Where you are</h2>
           <ol className="ch-path">

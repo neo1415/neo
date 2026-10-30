@@ -12,9 +12,10 @@ import { ASSESS, KORA_ROLE, LEVEL_WORD, assessFor, cellFor, criteriaIn, disputed
 import { addCorrection, cmpView, finishInterview, ghRetry, live, setCmp, startInterview } from '../../journeys/hire-b/ops';
 import { PROJECTS } from '../../journeys/hire-b/projects';
 import { viewId } from '../../journeys/hire-b/refs';
+import { meansColleague } from '../../journeys/evidence/recruiter/model';
 
 const kora = (c: QCtx) => c.actor.orgId === 'org_kora' && c.actor.side === 'recruiter';
-const who = (c: QCtx) => peopleIn(c.norm, c.ents.people).filter((p) => c.w.people.some((x) => x.personId === p));
+const who = (c: QCtx) => peopleIn(c.norm, c.ents.people).filter((p) => c.w.people.some((x) => x.personId === p) && !meansColleague(c.w, c.norm, p, c.actor.orgId));
 const fn = (w: World, p: string) => firstName(w, p);
 const list = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
 const orderText = (w: World, v: CompareView) => rank(w, v).map((r) => fn(w, r.pid)).join(', then ');

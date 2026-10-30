@@ -66,7 +66,8 @@ export function parseTime(t?: string) {
 // ---------------- People ----------------
 export const orgMembers = (w: World, orgId?: string) => w.actors.filter((a) => a.orgId && a.orgId === orgId && a.side === 'recruiter');
 export const nameOf = (w: World, id: string) => w.actors.find((a) => a.id === id)?.name ?? personOf(w, id)?.name ?? id;
-export const firstOf = (w: World, id: string) => nameOf(w, id).split(' ')[0];
+/** First name, or the full name when a candidate shares a first name with a colleague (Seyi Okoro vs Seyi Balogun). */
+export const firstOf = (w: World, id: string) => { const n = nameOf(w, id); const f = n.split(' ')[0]; return id.startsWith('p_') && w.people.some((p) => p.personId === id) && w.actors.some((a) => a.side === 'recruiter' && a.first === f) ? n : f; };
 export const tzOf = (w: World, id: string) => w.actors.find((a) => a.id === id && a.side === 'recruiter')?.timezone ?? personOf(w, id)?.timezone ?? LAGOS;
 export const listNames = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
 /** Colleagues named in a sentence ("with Seyi and Musa"). */
@@ -427,6 +428,11 @@ export function allowanceRefusal(w: World, orgId: string) {
   return `I haven’t sent it. ${org} isn’t verified yet, so it can send ${al.limit} messages to candidates a week, and all ${al.limit} are used: 0 left.${al.resetsAt ? ` The next one frees up on ${tDay(al.resetsAt, LAGOS)} at ${tTime(al.resetsAt, LAGOS)}.` : ''} Verifying ${org} (email domain and company registry) lifts the limit. The draft stays waiting; nothing was sent.`;
 }
 
+/** Areas that need to know when an approved message really went (simulated): e.g. a work-sample request becomes
+ *  SENT only after its message is approved and sent (journeys/evidence/recruiter). Runs inside the same update. */
+const SENT_HOOKS: ((w: World, msgId: string, approver: string) => void)[] = [];
+export const onMessageSent = (f: (w: World, msgId: string, approver: string) => void) => { if (!SENT_HOOKS.includes(f)) SENT_HOOKS.push(f); };
+
 export function finalizeSend(w: World, msgId: string, approver: string) {
   const f0 = findMsg(w, msgId); const d = hcw(w).drafts[msgId]; if (!f0) return;
   const { t, m } = f0;
@@ -453,6 +459,7 @@ export function finalizeSend(w: World, msgId: string, approver: string) {
   const app = w.applications.find((a) => a.personId === t.personId && w.jobs.find((j) => j.id === a.jobId)?.orgId === t.orgId);
   if (app) { app.timeline.push({ at: now().slice(0, 10), text: `${org.name} sent you a message: ${m.subject ?? 'message'}`, by: 'EMPLOYER' }); app.lastEmployerActivity = now().slice(0, 10); if (d?.kind === 'INVITE' && ['SUBMITTED', 'VIEWED'].includes(app.status)) app.status = 'INTERVIEW'; }
   emit(w, approver, 'message.sent', `SHARED:${t.orgId}:${t.personId}`, `${org.name} sent ${nameOf(w, t.personId)} a message (simulated): ${m.subject ?? ''}`, { msgId, receipt: m.receipt });
+  for (const f of SENT_HOOKS) f(w, msgId, approver);
 }
 
 /** Approve a checked version. Offline: queue it (nothing is claimed as sent). */
