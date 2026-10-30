@@ -26,8 +26,11 @@ export const CHAPTERS = {
   T3: ['T3 · Tobi, experienced specialist', 'Evidence Passport: uploads, verification, confidential work redacted, different visibility per recruiter, access revoked.'],
   T4: ['T4 · Grace, low-bandwidth phone', 'Plain words, voice or typing, uploads that resume, lite mode, and an interview that survives a lost connection.'],
   T5: ['T5 · Zara, sceptical job seeker', 'Employer signals, honest application status, follow-ups, rejected advice remembered, and asking Q to forget.'],
+  J11: ['J11 · One connected journey', 'Tobi asks Kora a question from the role briefing; Ada files it in a campaign, agrees a rubric, reviews his consented walkthrough and emails an invitation; he replies and it is booked. Six disruptions on the way.'],
+  J12: ['J12 · Evidence-first hiring', 'Tobi’s CV is thin but his reviewed work shows Postgres; Seyi Okoro’s CV is polished but mostly claims. Q finds both by what they have shown, asks only for what is missing, and both progress. Then Tobi stops sharing an item.'],
 };
-const FILMS = [['A', 'Film A · Hiring with Q', ['R1', 'R2', 'R3', 'R4', 'R5']], ['B', 'Film B · Careers with Q', ['T1', 'T2', 'T3', 'T4', 'T5']]];
+// Each film ends with the connected journey that crosses to the other side: J12 for hiring, J11 for careers.
+const FILMS = [['A', 'Film A · Hiring with Q', ['R1', 'R2', 'R3', 'R4', 'R5', 'J12']], ['B', 'Film B · Careers with Q', ['T1', 'T2', 'T3', 'T4', 'T5', 'J11']]];
 const FMT = { desktop: { W: 1920, H: 1080, UIH: 900, FS: 31 }, phone: { W: 1080, H: 1920, UIH: 1640, FS: 40 } };
 
 function nice(text) {
