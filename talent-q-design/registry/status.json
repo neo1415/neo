@@ -1041,6 +1041,60 @@
       "route": "/c/applications/:id/recovery",
       "evidence": "prototype/src/journeys/talent-d/Recovery.tsx; q/proactive/talent-d.ts; qa/scripts/features/talent-d.mjs steps 'SC-175 …'",
       "note": "After Tinda's 'not progressing': warm, never guesses a reason; a polite feedback request drafted, approved and sent (simulated; 'not read yet'); a reviewer control simulates Tinda's reply, which is quoted exactly and is the only basis for next steps (improve brief, lesson, roles, private practice). Writes to the shared thread and application timeline. (Cluster patch: talent-d.)"
+    },
+    "SC-095": {
+      "status": "INTEGRATED",
+      "route": "/r/questions",
+      "evidence": "prototype/src/journeys/assess/Bank.tsx, model.ts (uploadQuestions, screenQuestion, leadingOf, lockBank, setEditor, bankDiff), state/areas/assess.ts (banks); q/skills/assess.ts (as.bank); qa/scripts/features/assess.mjs steps 'SC-095 …', 'V14 …' (d+m)",
+      "note": "Kora's Senior Backend bank: locked v1 (5 questions, agreed follow-ups). Simulated upload of a CSV adds to a draft after a fairness screen (protected characteristics and leading questions refused with reasons and alternatives); loading, error (non-CSV) and permission-denied (read-only for non-editors) states. Locking freezes the version, keeps the old one as SUPERSEDED and is audited; the owner/admin decides who may edit. Locked versions feed interview plans, the live room and the avatar round (shared state). (Cluster patch: assess.)"
+    },
+    "SC-102": {
+      "status": "INTEGRATED",
+      "route": "/c/assess/avatar (candidate); /r/questions#qb-avatar (employer)",
+      "evidence": "prototype/src/journeys/assess/Avatar.tsx, Bank.tsx (avatar option), model.ts (avatarOp, AVATAR_COST, setAvatarEnabled); q/skills/assess.ts (as.c.format, as.avatar.rec); features/assess.mjs steps 'SC-102 …'",
+      "note": "A simulated, labelled avatar ('Simulated avatar · not a person') reads the employer's locked questions as captions. Never mandatory: avatar, text, voice or a person, all equal; switch to text any time; asking for a person is recorded and not held against anyone. Consent explains no camera and no face/voice judging. Device check (loading) with slow-connection fallback to a still image; interrupted/resume keeps answers and draft; submission is a simulated send with receipt. Employer toggle; cost shown as a hypothesis (sampled public pricing, not a quote). Option off → disabled with a reason. (Cluster patch: assess.)"
+    },
+    "SC-103": {
+      "status": "INTEGRATED",
+      "route": "/r/interviews/:id/live (interviewer); /c/assess/live/:id (candidate)",
+      "evidence": "prototype/src/journeys/assess/LiveRoom.tsx, model.ts (liveOp, scriptedAnswer); q/skills/assess.ts (as.live, as.c.live); features/assess.mjs steps 'SC-103 …', 'MO-023 …'",
+      "note": "Participants (panel, candidate, Q labelled as interviewer-only), consent and recording controls. The candidate is told Q is present before joining; recording starts only after their yes (a no carries on unrecorded). Q's follow-ups appear in a hideable, labelled interviewer-only panel and never on the candidate's page. Protected-characteristic questions are stopped; leading ones flagged privately. Interrupted/resume, end. No call, video or audio: candidate answers are scripted (labelled) or typed from the candidate side. Not on panel / other tenant: refused. (Cluster patch: assess.)"
+    },
+    "SC-106": {
+      "status": "INTEGRATED",
+      "route": "/r/interviews/:id/transcript; /c/assess/record/:id",
+      "evidence": "prototype/src/journeys/assess/Record.tsx, model.ts (transcriptFor, liveOp excerpt); features/assess.mjs steps 'SC-106 …'",
+      "note": "Consent-scoped: only turns recorded after consent are shown, gaps are stated; declined recording → no transcript, not held against them. Panel and the role's recruiter only (Ngozi refused, agency refused). Recorded answers can be marked as evidence per requirement (unrecorded refused); excerpts feed the score review. The candidate reads their own transcript and can request a correction (approval first, audited). (Cluster patch: assess.)"
+    },
+    "SC-107": {
+      "status": "INTEGRATED",
+      "route": "/r/interviews/:id/review (compose); /c/assess/record/:id (candidate)",
+      "evidence": "prototype/src/journeys/assess/Review.tsx (FeedbackComposer), Record.tsx (CandidateRecord), model.ts (draftCandidateFeedback, shareFeedback, feedbackForCandidate); q/proactive/assess.ts (as.feedback.shared); features/assess.mjs steps 'SC-107 …'",
+      "note": "Q drafts strengths and improvement routes from marked answers; the employer switches points on and adds a note, then shares (candidateNote pattern). Until SHARED nothing reaches the candidate; afterwards only the switched-on points and note, never the score. (Cluster patch: assess.)"
+    },
+    "SC-109": {
+      "status": "PROTOTYPED",
+      "route": "/r/coaching",
+      "evidence": "prototype/src/journeys/assess/Coaching.tsx, model.ts (coachingFor, coachedInterviews); q/skills/assess.ts (as.coaching); features/assess.mjs steps 'SC-109 …', 'V20 …'",
+      "note": "Private post-call coaching for the interviewer: talk-time share (bar + text), leading questions with open rewrites, must-haves not asked, general answers without a follow-up, off-bank questions, Q follow-ups used/set aside, what worked. Never about the candidate's face, voice, accent or nerves (Q refuses); never changes a score; a colleague's coaching is not visible. Seeded past interview for Musa (Kunle, unrecorded). (Cluster patch: assess.)"
+    },
+    "SC-111": {
+      "status": "INTEGRATED",
+      "route": "/c/assess/ex/ex_code_seyio; /r/exercises",
+      "evidence": "prototype/src/journeys/assess/Exercises.tsx, model.ts (runSql, exerciseOp, linkedReuse); features/assess.mjs steps 'SC-111 …'",
+      "note": "Postgres slow-query exercise with a fake test run (shape checks, simulated planner estimate; nothing executed). Submission is SELF_REPORTED; when Kora sent a J12 bounded-sample request for the same requirement it is answered through journeys/evidence/ops (startSample/submitSample/reviewSample), so the decision, comparison and Passport update. Review by a person → ASSESSED (partial) with a note; the note reaches the candidate only if shared. (Cluster patch: assess.)"
+    },
+    "SC-112": {
+      "status": "INTEGRATED",
+      "route": "/c/assess/ex/ex_cyber_tobi; /r/exercises",
+      "evidence": "prototype/src/journeys/assess/Exercises.tsx, model.ts (LOGS, checkCyber); features/assess.mjs steps 'SC-112 …'",
+      "note": "Synthetic SIEM-style log timeline (keyboard-operable checklist), cause and first action; reviewer checks shown. Produces SELF_REPORTED work-sample evidence shared only with Kora and a PROPOSED link to on-call; a reviewer's 'shows it' makes it ASSESSED and counts in the comparison. (Cluster patch: assess.)"
+    },
+    "SC-113": {
+      "status": "INTEGRATED",
+      "route": "/c/assess/ex/ex_sales_grace; /r/exercises",
+      "evidence": "prototype/src/journeys/assess/Exercises.tsx, model.ts (CUSTOMER, checkSales); features/assess.mjs steps 'SC-113 …'",
+      "note": "Scripted customer (labelled) on chat, turn by turn, with a four-point conversation rubric read from the words only (no tone or typing speed). Same evidence path as the other exercises; declining is recorded as declined, not failed, and creates no evidence. (Cluster patch: assess.)"
     }
   },
   "motions": {
@@ -1355,6 +1409,24 @@
       "route": "/c/work-permit",
       "evidence": "WorkPermit.tsx .td-view[data-access]; test 'MO-041 …'",
       "note": "Ending consent removes the employer's preview content and its controls at once; the receipt shows the end time; 'Access ended' settles in. Reduced motion: the access update text. (Cluster patch: talent-d.)"
+    },
+    "MO-018": {
+      "status": "PROTOTYPED",
+      "route": "/r/interviews/:id/live",
+      "evidence": "LiveRoom.tsx (plan cards, DUR/EASE stagger), model.ts (buildPlan); features/assess.mjs 'MO-018 …' incl. reducedMotion context",
+      "note": "Competency cards roll in (stagger, motion tokens) after 'Build the question plan', from the locked bank, must-haves first; reduced motion: the same list fully visible at once; during the interview the plan becomes a compact question list. (Cluster patch: assess.)"
+    },
+    "MO-023": {
+      "status": "PROTOTYPED",
+      "route": "/r/interviews/:id/live",
+      "evidence": "LiveRoom.tsx (as-qpanel, AnimatePresence), model.ts (liveOp answer → suggestions); features/assess.mjs 'MO-023 …'",
+      "note": "Follow-ups slide into a side panel beside the transcript (never over it) when an answer is general; user controlled (Ask it / Not now / Hide); reduced motion: static suggestion card. Also available by text ('suggest a follow-up'). (Cluster patch: assess.)"
+    },
+    "MO-026": {
+      "status": "INTEGRATED",
+      "route": "/r/interviews/:id/review",
+      "evidence": "Review.tsx, model.ts (fromInterview, proposeInterviewRatings, confirmRating) via state/areas/rubrics.ts (putRating, roleIndex); features/assess.mjs 'MO-026 …' incl. reducedMotion",
+      "note": "Uncertainty is highlighted first (unknown-not-zero, high uncertainty, simulated answers, one-sample caveat); ratings appear only after 'I've read this' and then stagger in; index always with coverage; never replaces ratings from shared evidence; confirm/override (reason required) audited. Reduced motion: static scorecard with uncertainty on top. (Cluster patch: assess.)"
     }
   },
   "vision": {
@@ -1591,6 +1663,18 @@
       "route": "/q/artifacts",
       "evidence": "SC-124, SC-126, SC-127 above; Library page (pages.tsx); q-tools.mjs",
       "note": "Agent-generated chart, map, diagram and narrated (storyboard) video, made by asking Q, rendered on the artifact canvas and as live cards in the thread, listed in ‘Q’s work’. Art beyond these (illustration) is not built. (Cluster patch: q-tools.)"
+    },
+    "V14": {
+      "status": "INTEGRATED",
+      "route": "/r/questions",
+      "evidence": "Bank.tsx, model.ts, q/skills/assess.ts (as.bank); features/assess.mjs 'V14 …'",
+      "note": "User-uploaded locked interview questions with versions, a fairness screen, explicit editors enforced in the ops, and use in plans, live room and the avatar round. (Cluster patch: assess.)"
+    },
+    "V20": {
+      "status": "PROTOTYPED",
+      "route": "/r/coaching",
+      "evidence": "Coaching.tsx, model.ts (coachingFor), q/skills/assess.ts (as.coaching); features/assess.mjs 'V20 …'",
+      "note": "Interviewer quality coaching (leading questions, talk-time, unasked must-haves), private, never about the candidate's face or voice. (Cluster patch: assess.)"
     }
   },
   "routes": {
