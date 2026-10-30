@@ -68,12 +68,12 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   step('home: Q’s first line names the request, with the effort and that no is fine', /Kora Pay would like to see one short piece of your work, about 40 minutes/.test(home) && /recorded as no, not as a fail/.test(home));
   const req = page.locator('.evc-req').first();
   const reqT = await req.innerText();
-  step('request card: what (from the bounded sample), why, effort in minutes', /Kora Pay would like to see one piece of your postgres at scale work/i.test(reqT) && /Find and fix one slow query/.test(reqT) && /Your CV already describes/.test(reqT) && /About 40 minutes/.test(reqT), reqT.replace(/\n/g, ' ').slice(0, 220));
+  step('request card: what (from the bounded sample), why, effort in minutes', /Kora Pay would like to see one piece of your work on Postgres at scale/.test(reqT) && /Find and fix one slow query/.test(reqT) && /Your CV already describes/.test(reqT) && /About 40 minutes/.test(reqT), reqT.replace(/\n/g, ' ').slice(0, 220));
   step('request card never calls the CV untrue', !JUDGE.test(reqT));
   step('three choices: do it now, share existing work, decline', await req.getByRole('button', { name: 'Do it now' }).isVisible() && await req.getByRole('button', { name: 'Share existing work instead' }).isVisible() && await req.getByRole('button', { name: 'Decline' }).isVisible());
   await overflow('home with request'); await shot('02-home-request', false);
   await go('/c/applications');
-  step('applications shows the same request under “Asked of you”', /Asked of you/.test(await text()) && await page.locator('.evc-req').count() === 1);
+  step('applications shows the same request under “Asked of you”', /asked of you/i.test(await text()) && await page.locator('.evc-req').count() === 1);
   await page.locator('.evc-req').getByRole('button', { name: 'Do it now' }).click(); await page.waitForTimeout(500);
   w = await W();
   step('“Do it now” starts the sample (ev.sample.start → IN_PROGRESS)', w.areas.proof.reuse.find((d) => d.id === 'rd_qa').state === 'IN_PROGRESS');
@@ -101,7 +101,12 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   await go('/c/applications');
   const rv = await page.locator('.evc-req').innerText();
   step('after Ada’s review: outcome shown, the class is now Assessed', /Shows part of it/.test(rv) && /Assessed/.test(rv), rv.replace(/\n/g, ' ').slice(0, 200));
-  step('the reviewer’s note appears labelled “shared by Kora Pay”', /didn’t check the plan under load/.test(rv) && /shared by Kora Pay/.test(rv));
+  step('the reviewer’s note stays with Kora until Kora shares it', !/didn’t check the plan under load/.test(rv) && /hasn’t shared the reviewer’s note/.test(rv), rv.replace(/\n/g, ' ').slice(0, 200));
+  // Kora shares the note (ev.feedback.share sets candidateNote on the decision).
+  await upd(`const d = w.areas.proof.reuse.find((x) => x.id === 'rd_qa'); d.candidateNote = 'Found the missing index quickly; didn’t check the plan under load.';`);
+  await go('/c/applications');
+  const rv2 = await page.locator('.evc-req').innerText();
+  step('once Kora shares it, the reviewer’s note appears labelled “shared by Kora Pay”', /didn’t check the plan under load/.test(rv2) && /shared by Kora Pay/.test(rv2));
   await overflow('reviewed'); await shot('06-reviewed');
 
   // ================= Decline is recorded as declined, not failed =================
@@ -141,11 +146,11 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   const draft = w.areas.evcand.drafts.p_seyio; const cvLines = w.areas.proof.cvs.p_seyio.lines.join(' ');
   const nums = draft.lines.flatMap((l) => l.after.join(' ').match(/\d[\d,.]*/g) ?? []);
   step('draft: nothing added (guard empty), and every number in it is already in his CV or Passport', draft.added.length === 0 && nums.every((n) => cvLines.includes(n.replace(/\.$/, '')) || n === '2019'), nums.join(','));
-  const dT = await page.locator('.evc-draft').innerText();
-  step('the draft shows the wording diff and marks what Q won’t add', await page.locator('.evc-draft .evc-del').count() > 0 && await page.locator('.evc-draft .evc-add').count() > 0 && /Q won’t add/.test(dT) && /An employer, job title or dates/.test(dT));
+  const dT = await page.locator('.evc-cv .evc-draft').innerText();
+  step('the draft shows the wording diff and marks what Q won’t add', await page.locator('.evc-draft .evc-del').count() > 0 && await page.locator('.evc-draft .evc-add').count() > 0 && /Q won’t add/i.test(dT) && /An employer, job title or dates/.test(dT));
   step('the draft never upgrades a claim (no “verified” / “assessed” wording added)', !/\b(verified|assessed)\b/i.test(draft.lines.flatMap((l) => l.after).join(' ')));
   await shot('10-cv-draft');
-  await page.locator('.evc-draft').getByRole('button', { name: 'Approve this version' }).click(); await page.waitForTimeout(400);
+  await page.locator('.evc-cv .evc-draft').getByRole('button', { name: 'Approve this version' }).click(); await page.waitForTimeout(400);
   w = await W();
   step('the candidate approves the final version (nothing sent)', w.areas.evcand.drafts.p_seyio.state === 'APPROVED' && w.events.some((e) => e.type === 'cv.version.approved' && /Not sent to anyone/.test(e.text)));
   r = await ask('add kubernetes and aws certified to my cv');

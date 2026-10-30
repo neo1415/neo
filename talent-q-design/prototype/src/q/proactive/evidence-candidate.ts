@@ -7,7 +7,7 @@ registerRule({
   id: 'evc.request', side: 'candidate', priority: 'high',
   evaluate: (w, a) => openRequests(w, a.personId ?? '').filter((d) => d.state === 'SENT').map((d) => ({
     subject: d.id,
-    text: `${orgNm(w, d.orgId)} would like one short ${reqLabel(w, d.reqId).toLowerCase()} sample, about ${d.effortMinutes ?? 40} minutes, instead of a full assessment. Doing it, offering existing work and declining are all fine.`,
+    text: `${orgNm(w, d.orgId)} would like one short ${reqLabel(w, d.reqId)} sample, about ${d.effortMinutes ?? 40} minutes, instead of a full assessment. Doing it, offering existing work and declining are all fine.`,
     why: `${orgNm(w, d.orgId)} sent this request through an approved message. Declining is recorded as declined, not as a fail.`,
     actions: [{ label: 'See the request', primary: true, act: { t: 'nav', to: `/c/applications?sample=${d.id}` } }, { label: 'Why are they asking?', act: { t: 'say', text: 'what does kora want from the sample' } }],
   })),
@@ -17,7 +17,7 @@ registerRule({
   id: 'evc.review.shared', side: 'candidate', priority: 'high',
   evaluate: (w, a) => requestsFor(w, a.personId ?? '').filter((d) => d.state === 'REVIEWED').map((d) => ({ d, r: reviewOf(w, d) })).filter((x) => x.r).map(({ d, r }) => ({
     subject: `rev:${d.id}`,
-    text: `${orgNm(w, d.orgId)} reviewed your ${reqLabel(w, d.reqId).toLowerCase()} sample: ${r!.word.toLowerCase()}. They shared the reviewer’s note with you.`,
+    text: `${orgNm(w, d.orgId)} reviewed your ${reqLabel(w, d.reqId)} sample: ${r!.word.toLowerCase()}. They shared the reviewer’s note with you.`,
     why: `${orgNm(w, d.orgId)} marked the sample reviewed and shared the outcome. It stays between you and them.`,
     actions: [{ label: 'Read the note', primary: true, act: { t: 'nav', to: '/c/applications' } }],
   })),

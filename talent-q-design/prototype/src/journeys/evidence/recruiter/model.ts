@@ -41,13 +41,22 @@ export function meansColleague(w: World, norm: string, pid: string, orgId?: stri
 export const PROOF_ORDER: ProofClass[] = ['ISSUER_VERIFIED', 'ASSESSED', 'SELF_REPORTED', 'CLAIM', 'DISPUTED'];
 export const CV_WORD: Record<'YES' | 'VAGUE' | 'NO' | 'NO_CV', string> = { YES: 'Names it', VAGUE: 'Vague about it', NO: 'Doesn’t name it', NO_CV: 'No CV shared' };
 
+/** CV lines as the viewer's organisation may read them. A line that repeats an item the candidate keeps private (or
+ *  stopped sharing) is withheld (null): the CV must not leak what the Passport keeps back. */
+export function visibleCvLines(w: World, pid: string): (string | null)[] {
+  const cv = proof(w).cvs[pid]; if (!cv) return [];
+  const seen = new Set(visibleEvidence(w, pid, viewerOrg(w)).map((e) => e.evidenceId));
+  const hidden = w.evidence.filter((e) => e.ownerId === pid && !seen.has(e.evidenceId) && e.title.length > 6).map((e) => e.title.toLowerCase());
+  return cv.lines.map((l) => (hidden.some((t) => l.toLowerCase().includes(t)) ? null : l));
+}
+
 /** The CV line that speaks to a requirement (only when the CV reading says it names it, or vaguely). */
 export function cvLineFor(w: World, pid: string, reqId: string): string | null {
   const cv = proof(w).cvs[pid]; if (!cv) return null;
   const m = cv.mentions[reqId] ?? 'NO'; if (m === 'NO') return null;
   // Quote the most specific phrase, not the whole headline: split lines into phrases and prefer one that speaks to
   // this requirement only (the longest such), else the longest phrase that mentions it.
-  const frags = cv.lines.slice(1).flatMap((l) => l.split(/\s*[·;]\s*|\.\s+/)).map((x) => x.replace(/\.$/, '').trim()).filter(Boolean);
+  const frags = (visibleCvLines(w, pid).slice(1).filter(Boolean) as string[]).flatMap((l) => l.split(/\s*[·;]\s*|\.\s+/)).map((x) => x.replace(/\.$/, '').trim()).filter(Boolean);
   const hits = frags.filter((x) => criteriaIn(x.toLowerCase()).includes(reqId));
   const only = hits.filter((x) => criteriaIn(x.toLowerCase()).length === 1 && x.length >= 10).sort((a, b) => b.length - a.length)[0];
   return only ?? hits.sort((a, b) => b.length - a.length)[0] ?? null;
@@ -149,7 +158,9 @@ export function nextStepFor(w: World, pid: string, name: string): NextStep {
   const firstClaim = r.claimedOnly.find((x) => must(x) && r.rows.find((y) => y.reqId === x)?.level === 'partial') ?? r.claimedOnly.find(must) ?? r.claimedOnly[0];
   if (r.shape === 'CLAIMS_AHEAD_OF_PROOF' && firstClaim && BOUNDED_SAMPLE[firstClaim]) return { text: `Ask for one ${BOUNDED_SAMPLE[firstClaim].minutes}-minute ${shortLabel(w, firstClaim)} sample instead of the full assessment.`, say: `ask ${name.toLowerCase()} for one short ${shortLabel(w, firstClaim).toLowerCase()} sample instead of the full assessment` };
   const accepted = new Set(ds.filter((d) => d.decision === 'ACCEPT_PRIOR').map((d) => d.reqId));
-  const reuse = r.rows.find((x) => (x.level === 'verified') && x.must && !accepted.has(x.reqId) && x.cv !== 'YES');
+  // Reuse first where the CV says nothing at all (the evidence a keyword search would miss), then where it's vague.
+  const can = (x: ProofReading['rows'][number]) => x.level === 'verified' && x.must && !accepted.has(x.reqId);
+  const reuse = r.rows.find((x) => can(x) && x.cv === 'NO') ?? r.rows.find((x) => can(x) && x.cv !== 'YES');
   const open = r.open[0] ?? r.rows.find((x) => x.level === 'partial' || x.level === 'none' || x.level === 'claim')?.reqId;
   if (reuse) return { text: `Accept the reviewed ${shortLabel(w, reuse.reqId)} evidence (no retest)${open ? `, then talk through ${shortLabel(w, open).toLowerCase()} in the interview` : ''}.`, say: `accept ${name.toLowerCase()}'s ${shortLabel(w, reuse.reqId).toLowerCase()} evidence, no retest` };
   if (open) return { text: `Ask about ${reqLabel(w, open).toLowerCase()} in the interview: nothing shared shows it yet.` };

@@ -51,7 +51,7 @@ export function ApplicationsPage() {
                 <h2 className="tb-title tb-apptitle">{x.job ? <Link to={`/c/jobs/${x.job.id}`}>{x.job.title}</Link> : 'Job removed'}</h2>
                 <p style={{ margin: 0 }}>{x.plain}</p>
                 {live && <CommitmentLine appId={app.id} />}
-                {x.job && live && <IntentLine jobId={x.job.id} />}
+                {x.job && live && <IntentLine jobId={x.job.id} onlyConfirmed />}
                 {live && app.status !== 'INTERVIEW' && <p className="tb-days"><b className="num">{x.days}</b><span className="t14">{x.days === 1 ? 'day' : 'days'} since {app.lastEmployerActivity ? `${x.org} last did anything` : 'you applied'}</span></p>}
                 {x.waiting && (
                   <div className="ds-banner" data-k="warn"><span aria-hidden="true">◷</span><span>No reply in {x.days} days. That’s common and says nothing about you. A short, polite follow-up is fine, or you can move on.</span><span /></div>

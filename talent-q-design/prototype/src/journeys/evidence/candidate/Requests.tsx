@@ -33,7 +33,7 @@ export function RequestCard({ d, compact }: { d: EvidenceReuseDecision; compact?
   return (
     <motion.section {...arrive} className="ds-sheet evc-req" data-state={d.state} aria-labelledby={hid}>
       <div className="evc-row"><span className="lab">{org} · {roleTitle(w, d.mandateId)}</span><span className="ds-tag" data-k={STATE_K[d.state]}>{STATE_WORD[d.state]}</span></div>
-      <h2 id={hid} className="voice evc-req-h">{d.state === 'SENT' || d.state === 'IN_PROGRESS' ? `${org} would like to ${verb} one piece of your ${req.toLowerCase()} work` : `Your ${req.toLowerCase()} sample for ${org}`}</h2>
+      <h2 id={hid} className="voice evc-req-h">{d.state === 'SENT' || d.state === 'IN_PROGRESS' ? `${org} would like to ${verb} one piece of your work on ${req}` : `Your ${req} sample for ${org}`}</h2>
       {(d.state === 'SENT' || (d.state === 'IN_PROGRESS' && !compact)) && (
         <dl className="evc-facts">
           <div><dt>What</dt><dd>{BOUNDED_SAMPLE[d.reqId]?.task ?? req}.</dd></div>
@@ -75,14 +75,16 @@ export function RequestCard({ d, compact }: { d: EvidenceReuseDecision; compact?
         <div className="evc-note evc-reviewed" data-tone={review.tone} role="status">
           {result && <ProofClassTag id={`${d.id}-r`} k={proofClass(w, result)} extra={review.tone === 'part' ? 'partial' : undefined} />}
           <p className="evc-outcome"><b>{review.word}.</b> {review.tone === 'not' ? 'That’s about this one sample, not about you. Your application continues on everything else you’ve shared.' : 'It now counts as reviewed work for this role.'}</p>
-          <blockquote className="evc-quote"><p>“{review.note}”</p><footer className="t14 muted">Reviewer’s note, shared by {org}</footer></blockquote>
-          {!compact && <p className="t14 muted">{org} chose to share this note with you. It stays between you and {org}; Q won’t pass it to another employer.</p>}
+          {review.note ? <>
+            <blockquote className="evc-quote"><p>“{review.note}”</p><footer className="t14 muted">Reviewer’s note, shared by {org}</footer></blockquote>
+            {!compact && <p className="t14 muted">{org} chose to share this note with you. It stays between you and {org}; Q won’t pass it to another employer.</p>}
+          </> : <p className="t14 muted">{org} hasn’t shared the reviewer’s note with you.</p>}
         </div>
       )}
       {d.state === 'DECLINED' && (
         <div className="evc-note" role="status">
           <p><b>You declined this sample.</b> It’s recorded as declined, not as a failed result. {org} can still review your application on what you’ve already shared.</p>
-          {evcRead(w).declined[d.id] && <p className="t14 muted">Your reason, as {org} sees it: “{evcRead(w).declined[d.id]}”</p>}
+          {(d.whyDeclined ?? evcRead(w).declined[d.id]) && <p className="t14 muted">Your reason, as {org} sees it: “{d.whyDeclined ?? evcRead(w).declined[d.id]}”</p>}
         </div>
       )}
     </motion.section>
@@ -180,7 +182,7 @@ export function evidenceHomeLine(w: World, pid: string): string | null {
   if (d) {
     const org = orgNm(w, d.orgId);
     return d.state === 'IN_PROGRESS'
-      ? `Your ${reqLabel(w, d.reqId).toLowerCase()} sample for ${org} is saved. Pick it up whenever you’re ready.`
+      ? `Your ${reqLabel(w, d.reqId)} sample for ${org} is saved. Pick it up whenever you’re ready.`
       : `${org} would like to see one short piece of your work, about ${d.effortMinutes ?? 40} minutes. It’s your choice, and saying no is recorded as no, not as a fail.`;
   }
   const i = interestFor(w, pid).find((x) => x.state === 'REQUESTED');

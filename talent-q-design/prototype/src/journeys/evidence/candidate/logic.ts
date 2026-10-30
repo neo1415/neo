@@ -78,11 +78,11 @@ export function briefFor(w: World, d: EvidenceReuseDecision): SampleBrief {
 /** Why the employer asks, in respectful terms: never "your CV may be untrue". */
 export function whyAsked(w: World, d: EvidenceReuseDecision): string {
   const cv = proof(w).cvs[d.personId]?.mentions[d.reqId];
-  const what = reqLabel(w, d.reqId).toLowerCase();
+  const what = reqLabel(w, d.reqId);
   const org = orgNm(w, d.orgId);
   return cv === 'YES'
-    ? `Your CV already describes ${what} work. A short sample lets ${org} see it directly, instead of a full take-home assessment.`
-    : `${org} hasn’t seen ${what} work from you yet. One short sample is the smallest thing that would show it, instead of a full assessment.`;
+    ? `Your CV already describes work on ${what}. A short sample lets ${org} see it directly, instead of a full take-home assessment.`
+    : `${org} hasn’t seen work on ${what} from you yet. One short sample is the smallest thing that would show it, instead of a full assessment.`;
 }
 export type ReviewOutcome = { word: string; tone: 'ok' | 'part' | 'not'; note: string };
 /** The review outcome as the candidate sees it, only once the employer marks it reviewed (shared with the candidate). */
@@ -90,8 +90,10 @@ export function reviewOf(w: World, d: EvidenceReuseDecision): ReviewOutcome | nu
   if (d.state !== 'REVIEWED' || !d.resultEvidenceId) return null;
   const l = proof(w).links.find((x) => x.evidenceId === d.resultEvidenceId && x.reqId === d.reqId);
   if (!l) return null;
-  if (l.state === 'DISPUTED') return { word: 'The reviewer didn’t see it in this sample', tone: 'not', note: l.note };
-  return l.partial ? { word: 'Shows part of it', tone: 'part', note: l.note } : { word: 'Shows it', tone: 'ok', note: l.note };
+  // The outcome is the candidate's own status; the reviewer's words reach them only if the employer shared them (CQ-11).
+  const note = d.candidateNote ?? '';
+  if (l.state === 'DISPUTED') return { word: 'The reviewer didn’t see it in this sample', tone: 'not', note };
+  return l.partial ? { word: 'Shows part of it', tone: 'part', note } : { word: 'Shows it', tone: 'ok', note };
 }
 
 // ---------------- Interest, intents, commitments ----------------

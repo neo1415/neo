@@ -22,7 +22,7 @@ import { MediaSection } from '../media/Candidate';
 // EVIDENCE-FIRST (build pack 30 Oct, item D): proof classes in the recruiter's words, source, freshness, reuse scope,
 // the CV shown as claims, and P6 CV help. Shared logic lives in journeys/evidence/candidate.
 import { CLASS_ORDER, PROOF_WORD, freshness, proofClass, reuseScope, requestsFor } from '../evidence/candidate/logic';
-import { ClassKey, ClassShape, ProofClassTag } from '../evidence/candidate/ProofClass';
+import { ClassKey, ProofClassTag } from '../evidence/candidate/ProofClass';
 import { CvSection } from '../evidence/candidate/Cv';
 import type { ProofClass } from '../../state/domain';
 import type { World } from '../../mock/world';
@@ -90,7 +90,7 @@ function ProofAtAGlance({ items, pid, first }: { items: Evidence[]; pid: string;
           </div>
           <figcaption>
             <ul className="tb-strip-key">
-              {SEG.filter((s) => n[s.k]).map((s) => <li key={s.k}><i data-k={s.k} aria-hidden="true" />{s.k !== 'CONFIDENTIAL' && <ClassShape k={s.k} />}<b className="num">{n[s.k]}</b> {s.label}</li>)}
+              {SEG.filter((s) => n[s.k]).map((s) => <li key={s.k}><i data-k={s.k} aria-hidden="true" /><b className="num">{n[s.k]}</b> {s.label}</li>)}
             </ul>
           </figcaption>
         </figure>
@@ -190,8 +190,10 @@ function ItemCard({ e, selected, onOpen }: { e: Evidence; selected: boolean; onO
   const checkable = (e.kind === 'CREDENTIAL' || /link|repository/i.test(e.source)) && !e.confidential && v !== 'VERIFIED' && v !== 'UNDER_REVIEW';
   return (
     <li className="ds-sheet tb-card" data-selected={selected || undefined} data-conf={e.confidential || undefined} data-v={v}>
-      <div className="tb-row-between"><span className="lab">{KIND[e.kind]}{e.redactedOf ? ' · redacted' : ''} · {month(e.observedAt)}</span>{running ? <span className="ds-tag" data-k="busy" aria-live="polite">Checking…</span> : <VerTag e={e} />}</div>
-      {!e.confidential && <ProofClassTag id={e.evidenceId} k={proofClass(w, e)} extra={waiting ? 'waiting for review' : undefined} />}
+      {/* The proof class leads (the recruiter's word); a check tag shows only while a check is in flight or failed,
+          since "Verified" / "Not checked" would repeat what the class already says. */}
+      <div className="tb-row-between">{e.confidential ? <span className="lab">{KIND[e.kind]} · {month(e.observedAt)}</span> : <ProofClassTag id={e.evidenceId} k={proofClass(w, e)} extra={waiting ? 'waiting for review' : undefined} />}{running ? <span className="ds-tag" data-k="busy" aria-live="polite">Checking…</span> : (e.confidential || (['PENDING', 'FAILED', 'UNDER_REVIEW'].includes(v) && !waiting)) ? <VerTag e={e} /> : null}</div>
+      {!e.confidential && <span className="lab">{KIND[e.kind]}{e.redactedOf ? ' · redacted' : ''} · {month(e.observedAt)}</span>}
       <h3 className="tb-title">{e.confidential && <span className="tb-lock" aria-label="Confidential">🔒</span>}{e.title}</h3>
       <p className="tb-shows">{e.shows}</p>
       <p className="t14 muted tb-limits"><span className="tb-limits-k">Limits</span> {e.limits}</p>

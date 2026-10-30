@@ -15,9 +15,10 @@ const Check = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" 
 
 /** "Hiring confirmed by Kora Pay on 27 Oct": only from a participating employer's confirmation, never for a listing
  *  without one (and never "verified" for a discovered post). */
-export function IntentLine({ jobId, full }: { jobId: string; full?: boolean }) {
+export function IntentLine({ jobId, full, onlyConfirmed }: { jobId: string; full?: boolean; onlyConfirmed?: boolean }) {
   const w = useWorld((x) => x);
   const i = intentFor(w, jobId);
+  if (!i && onlyConfirmed) return null;
   if (!i) return <p className="evc-intent" data-on="no"><span aria-hidden="true">–</span>No hiring confirmation from this employer</p>;
   const org = orgNm(w, i.orgId);
   return (

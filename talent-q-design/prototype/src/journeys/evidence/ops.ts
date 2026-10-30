@@ -33,21 +33,29 @@ export function submitSample(w: World, a: Actor, id: string, summary: string) {
 }
 
 /** A person reviews the sample. Only then does it count, as ASSESSED (or partial), with the reviewer's own note. */
-export function reviewSample(w: World, a: Actor, id: string, outcome: 'SHOWS_IT' | 'PARTLY' | 'NOT_SHOWN', note: string) {
+export function reviewSample(w: World, a: Actor, id: string, outcome: 'SHOWS_IT' | 'PARTLY' | 'NOT_SHOWN', note: string, shareWithCandidate = false) {
   const d = proof(w).reuse.find((x) => x.id === id); if (!d || d.orgId !== a.orgId || d.state !== 'SUBMITTED' || !d.resultEvidenceId) return;
   const e = w.evidence.find((x) => x.evidenceId === d.resultEvidenceId)!;
   e.verified = outcome !== 'NOT_SHOWN'; e.verification = outcome === 'NOT_SHOWN' ? 'UNVERIFIED' : 'VERIFIED'; e.origin = 'REVIEW';
   e.source = `${e.source.replace(' (simulated)', '')}, reviewed by ${a.name} (simulated)`; e.limits = `${e.limits.replace(' Waiting for a reviewer.', '')} Reviewer’s note: ${note}`;
   const link = proof(w).links.find((x) => x.evidenceId === e.evidenceId && x.reqId === d.reqId)!;
   link.state = outcome === 'NOT_SHOWN' ? 'DISPUTED' : 'REVIEWED'; link.partial = outcome === 'PARTLY'; link.note = note;
-  d.state = 'REVIEWED';
+  d.state = 'REVIEWED'; if (shareWithCandidate && note) d.candidateNote = note;
   emit(w, a.id, 'evidence.sample.reviewed', `SHARED:${d.orgId}:${d.personId}`, `${a.first} reviewed ${first(w, d.personId)}’s ${reqLabel(w, d.reqId)} sample: ${outcome === 'SHOWS_IT' ? 'shows it' : outcome === 'PARTLY' ? 'shows part of it' : 'didn’t show it'}. ${note}`, { decisionId: id, outcome });
 }
 
 export function declineSample(w: World, a: Actor, id: string, why: string) {
   const d = proof(w).reuse.find((x) => x.id === id); if (!d || d.personId !== a.personId) return;
-  d.state = 'DECLINED';
+  d.state = 'DECLINED'; if (why) d.whyDeclined = why;
   emit(w, a.id, 'evidence.sample.declined', `SHARED:${d.orgId}:${d.personId}`, `${a.first} declined the ${reqLabel(w, d.reqId)} sample${why ? `: ${why}` : ''}. Declining is recorded as declined, not as a failed result.`, { decisionId: id });
+}
+
+/** Share the reviewer's note with the candidate after the review (feedback reaches the candidate only by the employer's choice). */
+export function shareFeedback(w: World, a: Actor, id: string, note?: string) {
+  const d = proof(w).reuse.find((x) => x.id === id); if (!d || d.orgId !== a.orgId || d.state !== 'REVIEWED') return;
+  const l = proof(w).links.find((x) => x.evidenceId === d.resultEvidenceId && x.reqId === d.reqId);
+  d.candidateNote = note || l?.note || ''; if (!d.candidateNote) return;
+  emit(w, a.id, 'evidence.feedback.shared', `SHARED:${d.orgId}:${d.personId}`, `${a.first} shared the reviewer’s note on the ${reqLabel(w, d.reqId)} sample with ${first(w, d.personId)}.`, { decisionId: id });
 }
 
 /** Interest: the employer asks (after an approved message), the candidate answers. Pending is not a no. */

@@ -104,6 +104,7 @@
 .evr-doc-margin { display: flex; flex-wrap: wrap; gap: 4px 14px; padding-left: 12px; border-left: 2px solid var(--gold); }
 .evr-doc-note { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; }
 .evr-doc-note .lab { font-size: 10px; }
+.evr-doc-withheld .evr-doc-text { font-size: 13px; font-style: italic; color: var(--ink-3); }
 .evr-doc figcaption { font-size: 13px; color: var(--ink-3); }
 @container (min-width: 720px) {
   .evr-doc-lines li { grid-template-columns: minmax(0, 1fr) minmax(200px, 34%); }

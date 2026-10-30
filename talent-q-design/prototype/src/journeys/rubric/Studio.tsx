@@ -3,6 +3,7 @@
 // version (stacked with a "Q proposed / Your version" switch on phones) → approve, which freezes a version →
 // revisions as a diff. A material change after people were rated raises a change notice with two principled
 // choices. Q refuses protected characteristics and proxies with a reason and an alternative.
+import { BOUNDED_SAMPLE } from '../evidence/model';
 import { PageIndex } from '../../ds/PageIndex';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -281,6 +282,8 @@ function Column({ w, label, c, other, editable, mandateId, gone, compact }: { w:
           <div><span className="lab">Method</span><p className="t14" style={{ margin: 0 }}>{c.method}</p></div>
         </div>
       </details>
+      {/* Build pack item B (J12): what proof the role accepts, and the most a candidate is asked to spend on new proof. */}
+      {c.requirementId && BOUNDED_SAMPLE[c.requirementId] && <p className="t14 rb-accept" style={{ margin: 0 }}><span className="lab">Evidence we accept</span> reviewed or checked work they already have, first; then {c.evidenceToInspect[0]?.toLowerCase() ?? 'shared work'}. <span className="lab">Effort budget</span> up to {BOUNDED_SAMPLE[c.requirementId].minutes} minutes of the candidate’s time, as one bounded sample, and only if nothing they shared shows it.</p>}
       <p className="t14 rb-why"><span className="rb-q">Why it’s job-related</span> {c.why}</p>
       <p className="t14 muted" style={{ margin: 0 }}>{req ? `Source: brief requirement “${req.label}”` : c.kind === 'ELIGIBILITY' || c.kind === 'COMPATIBILITY' ? 'Source: the role’s conditions' : 'Source: added by the recruiter (not on the brief)'}{c.escoRef ? ` · ${c.escoRef}` : ''}</p>
       {editable && <div><button type="button" className="ds-btn quiet rb-remove" onClick={() => set('rb.remove', {})}>Remove {c.label.toLowerCase()}</button></div>}

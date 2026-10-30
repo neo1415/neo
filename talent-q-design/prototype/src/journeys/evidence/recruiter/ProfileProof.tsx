@@ -13,7 +13,7 @@ import { proof } from '../../../state/areas/proof';
 import { cellFor, criteriaIn, firstName, reqsOf, shortLabel, viewerOrg } from '../../hire-b/model';
 import { fmtDate } from '../../hire-b/ui';
 import { BOUNDED_SAMPLE, proofClass, proofReading, SHAPE_WORD } from '../model';
-import { decisionsFor, interestFor, PROOF_ORDER, proofItems } from './model';
+import { decisionsFor, interestFor, PROOF_ORDER, proofItems, visibleCvLines } from './model';
 import { OUTCOME_WORD } from './ops';
 import { ProofTag } from './ui';
 
@@ -38,7 +38,7 @@ export function CvDocument({ w, pid }: { w: World; pid: string }) {
       <div className="hire-b-row"><h2 id="pf-cv-h" className="voice t24" style={{ margin: 0 }}>CV and proof</h2><span className="evr-badge" data-shape={r.shape}>{SHAPE_WORD[r.shape]}</span></div>
       <figure className="evr-doc" aria-label={`${f}’s CV, with each claim marked by what the evidence shows`}>
         <ol className="evr-doc-lines">
-          {cv.lines.map((line, k) => { const qs = marked(line); return (
+          {visibleCvLines(w, pid).map((line, k) => { if (line === null) return <li key={k} className="evr-doc-withheld"><span className="evr-doc-text">One line withheld: it names something {f} hasn’t shared with you.</span></li>; const qs = marked(line); return (
             <li key={k} data-first={k === 0 ? '1' : undefined} data-claim={qs.length ? '1' : undefined}>
               <span className="evr-doc-text">{qs.length ? <mark>{line}</mark> : line}</span>
               {qs.length > 0 && <span className="evr-doc-margin">{qs.map((q) => { const b = best(w, pid, q); const lvl = cellFor(w, pid, q).level; return (
@@ -48,7 +48,7 @@ export function CvDocument({ w, pid }: { w: World; pid: string }) {
         <figcaption>Uploaded {fmtDate(cv.uploadedAt)}. A CV line is a claim: not evidence of the work, and not a sign it isn’t true. How polished it reads doesn’t count either way.</figcaption>
       </figure>
       {beyond.length > 0 && <p className="t14" style={{ margin: 0 }}><b>Shown, but not in the CV:</b> {beyond.map((x) => { const b = best(w, pid, x.reqId); return `${shortLabel(w, x.reqId)} (${b ? b.cls === 'ASSESSED' ? 'assessed' : b.cls === 'ISSUER_VERIFIED' ? 'issuer-verified' : 'self-reported' : 'shown'})`; }).join(', ')}.</p>}
-      {r.claimedOnly.length > 0 && <p className="t14" style={{ margin: 0 }}><b>Claimed, not yet shown:</b> {r.claimedOnly.map((q) => shortLabel(w, q)).join(', ')}. Unknown, not weak: one bounded piece of work would settle it.</p>}
+      {r.claimedOnly.length > 0 && <p className="t14" style={{ margin: 0 }}><b>Claimed, without reviewed or checked support yet:</b> {r.claimedOnly.map((q) => shortLabel(w, q)).join(', ')}. Unknown, not weak: one bounded piece of work would settle it.</p>}
     </section>
   );
 }
@@ -135,7 +135,7 @@ export function ReviewPanel({ w, pid }: { w: World; pid: string }) {
           </label>
         ))}
       </fieldset>
-      <label className="evr-note"><span className="lab">Your note (goes on the record with your name)</span>
+      <label className="evr-note"><span className="lab">Your note</span><span className="t14 muted">It goes on the record with your name, so the decision can be explained later.</span>
         <textarea className="ds-input" rows={3} value={note} onChange={(x) => setNote(x.target.value)} aria-invalid={err && !note.trim() ? true : undefined} aria-describedby={err ? `rv-err-${d.id}` : undefined} placeholder="What the work showed, in a sentence or two" />
       </label>
       {err && <p id={`rv-err-${d.id}`} className="evr-err" role="alert">{!outcome ? 'Choose what the sample shows.' : 'Add a short note so the decision can be explained later.'}</p>}

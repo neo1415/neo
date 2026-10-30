@@ -56,9 +56,9 @@ export function QHome() {
       // A colleague who shares a first name with a candidate (Seyi Balogun / Seyi Okoro) is shown with the surname.
       const who = m.from === a.id ? 'Your' : `${col ? (w.people.some((p) => p.name.split(' ')[0] === col.first) ? col.name : col.first) : 'A colleague'}’s`;
       const kind = /interview/i.test(m.subject ?? '') ? 'interview invitation' : 'message';
-      return { k: `d-${m.id}`, text: `${who} ${kind} to ${first(w, t.personId)} is waiting for approval. Nothing is sent until someone says yes.`, to: '/r/messages', cta: 'Review' };
+      return { k: `d-${m.id}`, text: `${who} ${kind} to ${candName(w, t.personId)} is waiting for approval. Nothing is sent until someone says yes.`, to: '/r/messages', cta: 'Review' };
     }),
-    ...waiting.map((t) => ({ k: `w-${t.id}`, text: `${first(w, t.personId)} replied and is waiting on Kora.`, to: '/r/messages', cta: 'Reply' })),
+    ...waiting.map((t) => ({ k: `w-${t.id}`, text: `${candName(w, t.personId)} replied and is waiting on Kora.`, to: '/r/messages', cta: 'Reply' })),
     ...resched.map((e) => ({ k: `r-${e.id}`, text: `${e.personId ? first(w, e.personId) : 'A candidate'} asked to move their interview.`, to: '/r/calendar', cta: 'Find a time' })),
     ...disputes.map((i) => ({ k: `x-${i.id}`, text: `${first(w, i.personId)} disputed an assessment. It’s left out of comparisons until it’s reviewed.`, to: `/r/interviews/${i.id}`, cta: 'Open' })),
     // Evidence-first (J12): from the authoritative reuse decisions and interest checks, for people still visible.

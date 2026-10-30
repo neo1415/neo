@@ -214,14 +214,14 @@ export interface CvDoc { personId: string; uploadedAt: string; polish: 'THIN' | 
 
 /** The employer's decision about evidence for one requirement: accept what the candidate already has, ask for it to
  *  be verified, or ask for one bounded work sample (with its effort). Avoids repeat assessment (pack §Work A.3). */
+/** candidateNote: the reviewer's note the employer chose to share with the candidate (unset = not shared, CQ-11). whyDeclined: the candidate's optional reason. */
 export interface EvidenceReuseDecision {
   id: string; orgId: string; personId: string; mandateId: string; reqId: string;
   decision: 'ACCEPT_PRIOR' | 'REQUEST_VERIFICATION' | 'BOUNDED_SAMPLE';
   evidenceIds: string[]; reason: string; effortMinutes?: number; by: string; at: string;
   state: 'PROPOSED' | 'SENT' | 'IN_PROGRESS' | 'SUBMITTED' | 'REVIEWED' | 'DECLINED';
   /** The evidence the bounded sample produced, once reviewed. */
-  resultEvidenceId?: string;
-}
+  resultEvidenceId?: string; candidateNote?: string; whyDeclined?: string }
 
 /** A participating employer's confirmation that a role is really hiring (never set for discovered external posts). */
 export interface HiringIntentConfirmation { jobId: string; orgId: string; state: 'ACTIVE' | 'PAUSED' | 'CLOSED'; owner: string; confirmedAt: string; freshUntil: string; replyWithinDays: number }

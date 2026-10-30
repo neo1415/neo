@@ -28,7 +28,7 @@ function proofNotes(w: Parameters<typeof readingOf>[0], v: CompareView): string[
   const lab = (ids: string[]) => ids.filter((r) => v.criteria.includes(r)).map((r) => shortLabel(w, r));
   const join = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
   const out = v.people.map((p) => { const r = proofReading(w, p); const b = lab(r.beyondCv), c = lab(r.claimedOnly);
-    return `${nameOf(w, p)}: ${SHAPE_WORD[r.shape].charAt(0).toLowerCase()}${SHAPE_WORD[r.shape].slice(1)}.${b.length ? ` Shown beyond the CV: ${join(b)}.` : ''}${c.length ? ` Claimed, not yet shown: ${join(c)}.` : ''}`; });
+    return `${nameOf(w, p)}: ${SHAPE_WORD[r.shape].charAt(0).toLowerCase()}${SHAPE_WORD[r.shape].slice(1)}.${b.length ? ` Shown beyond the CV: ${join(b)}.` : ''}${c.length ? ` Claimed, without reviewed support yet: ${join(c)}.` : ''}`; });
   out.push('A CV’s wording isn’t evidence either way: a polished CV isn’t proof, and a thin one isn’t a point in anyone’s favour. Unknown isn’t zero; it’s a question to ask.');
   out.push(weightingNote(w, v));
   return out;

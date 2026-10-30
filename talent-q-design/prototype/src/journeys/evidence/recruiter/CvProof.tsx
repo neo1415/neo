@@ -111,9 +111,9 @@ export function CvProofView({ w, v, onCell }: { w: World; v: CompareView; onCell
       </div>
 
       <section className="evr-interest" aria-labelledby="evr-int-h">
-        <h3 id="evr-int-h" className="lab">Interest · asked separately, never scored</h3>
+        <h3 id="evr-int-h" className="lab">Interest</h3>
         <ul>{people.map((p) => { const i = interestFor(w, p); return <li key={p}><b>{nameOf(w, p)}</b><span data-s={i?.state ?? 'NONE'}>{i?.state === 'REQUESTED' ? <><Glyph k="unclear" size={13} /> Pending check: asked {new Date(i.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</> : i?.state === 'CONFIRMED' ? <><Glyph k="verified" size={13} /> Interested</> : i?.state === 'DECLINED' ? 'Said no, thanks' : <><Glyph k="none" size={13} /> Not asked yet</>}</span></li>; })}</ul>
-        <p className="t14 muted" style={{ margin: 0 }}>Whether someone wants the role says nothing about whether they can do it, so it sits apart from the evidence.</p>
+        <p className="t14 muted" style={{ margin: 0 }}>Asked separately and never scored. Whether someone wants the role says nothing about whether they can do it, so it sits apart from the evidence.</p>
       </section>
     </div>
   );

@@ -130,7 +130,8 @@ export function Profile({ id }: { id: string }) {
       {/* Q's reading of the evidence leads the page; the person's name is the title (critique F4). */}
       <p className="voice hire-b-lede" style={{ margin: 0 }}><span className="hire-b-lede-q" aria-hidden="true" />{lede}</p>
       {/* AD-B-03: the profile is long on phones (about nine screens), so it gets a sticky in-page index. */}
-      <PageIndex items={[{ id: 'pf-cv', label: 'CV' }, { id: 'pf-fit', label: 'Fit' }, { id: 'pf-reuse', label: 'Gaps' }, { id: 'pf-score', label: 'Scorecard' }, { id: 'pf-ev', label: 'Evidence' }, { id: 'pf-mutual', label: 'Mutual fit' }, { id: 'pf-q', label: 'Interview' }, { id: 'pf-hist', label: 'History' }]} />
+      {/* The CV, gaps and mutual-fit panels (J12) sit beside Fit, Evidence and Interview; the index keeps its five stops. */}
+      <PageIndex items={[{ id: 'pf-fit', label: 'Fit' }, { id: 'pf-score', label: 'Scorecard' }, { id: 'pf-ev', label: 'Evidence' }, { id: 'pf-q', label: 'Interview' }, { id: 'pf-hist', label: 'History' }]} />
       {w.network === 'offline' && <div className="ds-banner" data-k="warn" role="status"><Glyph k="unclear" /><span>You’re offline. This is what was loaded; new sharing changes will appear when you reconnect.</span><span /></div>}
       {fresh.length > 0 && (
         <div className="ds-banner" role="status"><Glyph k="verified" /><span><b>New since you last looked ({fmtDate(prev!.at)}):</b> {fresh.map(([eid, v]) => `${items.find((e) => e.evidenceId === eid)?.title ?? 'an item'} (${v === 'VERIFIED' ? 'verified' : v.toLowerCase().replace('_', ' ')})`).join('; ')}.</span><span /></div>

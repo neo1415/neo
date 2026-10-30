@@ -42,7 +42,7 @@ registerOp('evc.sample.offer', (w, a, actor) => {
   }
   const s = evc(w); s.offers = s.offers.filter((o) => o.decisionId !== d.id).concat({ decisionId: d.id, evidenceIds: ids, note, at: now() });
   emit(w, actor.id, 'evidence.sample.offered_existing', scope(d.orgId, d.personId), `${actor.first} offered existing work instead of the ${reqLabel(w, d.reqId)} sample${ids.length ? ` (${ids.length} item${ids.length === 1 ? '' : 's'})` : ''}${note ? `: ${note}` : ''}.`, { decisionId: d.id, evidenceIds: ids });
-  return { say: `Sent to ${orgNm(w, d.orgId)} as your alternative. They decide whether it covers ${reqLabel(w, d.reqId).toLowerCase()}; until then the request stays open, and you can still do the sample.` };
+  return { say: `Sent to ${orgNm(w, d.orgId)} as your alternative. They decide whether it covers ${reqLabel(w, d.reqId)}; until then the request stays open, and you can still do the sample.` };
 });
 registerOp('evc.sample.answer', (w, a, actor) => {
   const d = proof(w).reuse.find((x) => x.id === String(a.id)); if (!d || d.personId !== actor.personId) return;
@@ -165,7 +165,7 @@ registerSkill({
     const d = openRequests(c.w, pidOf(c))[0]; const org = orgNm(c.w, d.orgId);
     const why = c.text.match(/\b(?:because|as|since)\b\s+(.+)$/i)?.[1]?.trim() ?? '';
     return {
-      msgs: [reply(`Done. I told ${org} you declined the ${reqLabel(c.w, d.reqId).toLowerCase()} sample${why ? `, with your reason: “${why}”` : ''}. It’s recorded as declined, not as a failed result, and your application carries on with what you’ve already shared.`)],
+      msgs: [reply(`Done. I told ${org} you declined the ${reqLabel(c.w, d.reqId)} sample${why ? `, with your reason: “${why}”` : ''}. It’s recorded as declined, not as a failed result, and your application carries on with what you’ve already shared.`)],
       effects: (w, a) => { declineSample(w, a, d.id, why); if (why) evc(w).declined[d.id] = why; },
       frame: null,
     };

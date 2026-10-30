@@ -25,7 +25,7 @@ export function ProofClassTag({ k, extra, id }: { k: ProofClass; extra?: string;
   return (
     <span className="evc-pc" data-c={k}>
       <button type="button" className="evc-pc-btn" aria-expanded={open} aria-controls={nid} onClick={() => setOpen(!open)} title="What this means">
-        <ClassShape k={k} /><b>{PROOF_WORD[k]}</b>{extra ? <span className="evc-pc-extra">, {extra}</span> : null}<span className="evc-pc-q" aria-hidden="true">?</span>
+        <ClassShape k={k} /><b>{PROOF_WORD[k]}{extra ? <span className="evc-pc-extra">, {extra}</span> : null}</b><span className="evc-pc-q" aria-hidden="true">?</span>
         <span className="sr"> · what this means</span>
       </button>
       {open && <span id={nid} className="evc-pc-means" role="note">{PROOF_MEANS[k]}</span>}
