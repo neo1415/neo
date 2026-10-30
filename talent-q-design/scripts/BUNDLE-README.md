@@ -8,8 +8,8 @@ Talent Q is evidence-first hiring with Q doing the work. Q is one conversational
 
 ## Start here
 
-1. **Watch** `films/master/film-A-desktop.mp4` (Hiring with Q, about 20 minutes) and `film-B-desktop.mp4` (Careers with Q, about 13 minutes). Phone versions sit beside them. Every caption is a step the tests verified on that recording, and chapters let you jump to each journey.
-2. **Browse** `review-gallery/index.html` in a browser; it works offline. It has the master films by chapter, the J11 and J12 films, 100+ before/after pairs, the motion clips, every screen on desktop and phone, and the prototype itself.
+1. **Browse** `review-gallery/index.html` in a browser; it works offline. It has the master films by chapter (Film A, Hiring with Q, about 20 minutes; Film B, Careers with Q, about 13 minutes; desktop and phone), the J11 and J12 films, 139 before/after pairs, the motion clips, every screen on desktop and phone, and the prototype itself (`review-gallery/app/index.html`). Every film caption is a step the tests verified on that recording.
+2. **Full-quality films** are in the separate download `Talent-Q-Films.zip`: `master/` (Films A and B with chapter markers, plus 112 short clips of interruptions and outcomes), `J12/` and `J11/`.
 3. **Read** `ALL-SPECS.md`, every specification in one file, starting with the package index.
 
 ## What's in each folder
@@ -17,8 +17,7 @@ Talent Q is evidence-first hiring with Q doing the work. Q is one conversational
 | Folder or file | What it is |
 |---|---|
 | `ALL-SPECS.md` | Every specification joined into one file, in reading order. Start here if you can read only one file. |
-| `films/` | Full-quality films: `master/` (Films A and B, desktop and phone, with chapters, plus 112 short clips of interruptions and outcomes), `J12/` (evidence-first hiring), `J11/` (the connected journey). |
-| `review-gallery/` | The visual review, offline. `app/index.html` inside it is the navigable prototype. |
+| `review-gallery/` | The visual review, offline, including the films by chapter. `app/index.html` inside it is the navigable prototype. |
 | `founder-sources/` | The founder's documents: vision, the 183-screen atlas, the 57 motions, directives, addenda and the 30 October Consolidated Build Pack (`batch-6/`). |
 | `product-definition/` | The working folder: prototype source, registers, handoff, journeys, tests and tools. Its own `PRODUCT-DEFINITION-PACKAGE.md` is the index. |
 

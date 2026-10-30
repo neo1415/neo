@@ -3,17 +3,18 @@
 # review gallery. Usage: scripts/build-bundle.sh <gallery dir> <out dir>
 # Contents: README-FIRST.md, ALL-SPECS.md (every specification joined in reading order), COMMIT.txt,
 # founder-sources/ (docs/sources), product-definition/ (this folder without packages, builds or raw captures),
-# review-gallery/ (offline gallery with the prototype), films/ (full-quality J11, J12 and master films with clips).
+# review-gallery/ (offline gallery with the prototype and the films by chapter, web quality).
+# The full-quality films go in a second archive, Talent-Q-Films.zip, so the main one stays small.
 set -euo pipefail
 GAL="$1"; OUT="$2"; ROOT=$(cd "$(dirname "$0")/.." && pwd); REPO=$(cd "$ROOT/.." && pwd)
-B="$OUT/Talent-Q-Complete"; rm -rf "$B" "$OUT/Talent-Q-Complete.zip"; mkdir -p "$B/films"
+B="$OUT/Talent-Q-Complete"; F="$OUT/Talent-Q-Films"; rm -rf "$B" "$F" "$OUT"/Talent-Q-*.zip; mkdir -p "$B" "$F"
 git -C "$REPO" log -1 --format='%H %ci %s' > "$B/COMMIT.txt"
 cp -r "$REPO/docs/sources" "$B/founder-sources"
-# The working folder, minus installed packages, builds, raw test captures and the films (they go in films/).
-tar -C "$ROOT" --exclude='prototype/node_modules' --exclude='prototype/dist' --exclude='captures/cx' --exclude='captures/features' \
-  --exclude='captures/films' --exclude='*.webm' -cf - . | (mkdir -p "$B/product-definition" && tar -C "$B/product-definition" -xf -)
+# The working folder, minus installed packages, builds, and raw captures (the gallery holds the images; the films go in Talent-Q-Films).
+tar -C "$ROOT" --exclude='prototype/node_modules' --exclude='prototype/dist' --exclude='captures' --exclude='*.webm' -cf - . | (mkdir -p "$B/product-definition" && tar -C "$B/product-definition" -xf -)
 cp -r "$GAL" "$B/review-gallery"
-cp -r "$ROOT/captures/films/J11" "$ROOT/captures/films/J12" "$ROOT/captures/films/master" "$B/films/"
+cp -r "$ROOT/captures/films/J11" "$ROOT/captures/films/J12" "$ROOT/captures/films/master" "$F/"
+cp "$ROOT/scripts/BUNDLE-README.md" "$F/README-FIRST.md"; cp "$B/COMMIT.txt" "$F/"
 # ALL-SPECS.md: the package index first, then status, handoff, journeys and per-area design notes.
 {
   echo "# Talent Q: all specifications in one file"; echo; echo "Generated from the repository at $(cut -c1-12 "$B/COMMIT.txt"). Each section is one file; its path is in the heading."; echo
@@ -27,5 +28,5 @@ cp -r "$ROOT/captures/films/J11" "$ROOT/captures/films/J12" "$ROOT/captures/film
   done
 } > "$B/ALL-SPECS.md"
 cp "$ROOT/scripts/BUNDLE-README.md" "$B/README-FIRST.md"
-(cd "$OUT" && zip -qr Talent-Q-Complete.zip Talent-Q-Complete)
-du -sh "$OUT/Talent-Q-Complete.zip"
+(cd "$OUT" && zip -qr Talent-Q-Complete.zip Talent-Q-Complete && zip -qr -0 Talent-Q-Films.zip Talent-Q-Films)
+du -sh "$OUT"/Talent-Q-*.zip

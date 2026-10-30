@@ -121,3 +121,18 @@ Invocation evidence comes from the Skill-tool calls in each builder's session tr
 | Lead | none invoked in this phase | Reviewed the rendered desktop and phone captures by hand. Fixed two things: compare and profile used "Verified" while the rest used the proof-class words (now one vocabulary), and "moved up from 5th to 2nd" appeared on the view labelled "Not a ranking". | This file; commit `11dd133` |
 
 `creative` stayed inside Direction D: the builders report adding no new tokens, typefaces or colours, and gold remains reserved for Q.
+
+## Coverage clusters (30 Oct): the last 49 screens, 19 motions and 10 vision groups
+
+The list below is the Skill-tool calls found in each builder's session transcript, not the builders' own claims.
+
+| Cluster | Skills invoked through the Skill tool | Note |
+|---|---|---|
+| Public site | interaction-design, ux-writing, design-elevation, creative, design-critique | `journeys/design/public.md` |
+| Organisation and admin | interaction-design, ux-writing, design-elevation, creative, dataviz, design-critique | It also ran an axe scan (WCAG 2.1 AA) and fixed one contrast failure. `journeys/design/org-admin.md` |
+| Discovery and pipeline | interaction-design, ux-writing, design-elevation, creative, dataviz | **design-critique was not invoked as a skill.** The builder critiqued its rendered desktop and phone screens by hand and recorded that in `journeys/design/hire-d.md`. Its report described this as "applied"; the transcript shows no Skill call. |
+| Interviews and assessments | interaction-design, ux-writing, design-elevation, creative, dataviz, accessibility-audit, design-critique | `journeys/design/assess.md` |
+| Q artifacts and tools | interaction-design, ux-writing, design-elevation, creative, dataviz, accessibility-audit, design-critique | It ran axe on all 8 pages; the only finding is in the shared shell. `journeys/design/q-tools.md` |
+| Candidate tools | interaction-design, ux-writing, design-elevation, creative, accessibility-audit, design-critique | `journeys/design/talent-d.md` |
+
+All six clusters stayed inside Direction D. There are no new colours, typefaces or tokens, and gold is still reserved for Q.
