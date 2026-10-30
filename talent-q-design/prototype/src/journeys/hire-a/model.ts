@@ -302,7 +302,7 @@ export function startSourcingWithQ() {
 const SEED_EVENTS = [
   { id: 'ev_ha_s1', at: '2026-10-26T10:00:00+01:00', actor: 'u_ngozi', type: 'policy.changed', text: 'Updated Kora Pay’s guideline: interviews run 10:00–16:00 Lagos time unless the candidate asks otherwise.' },
   { id: 'ev_ha_s2', at: '2026-10-27T15:10:00+01:00', actor: 'u_ada', type: 'mandate.created', text: 'Drafted the “Backend Engineer, Payouts” brief (v1) for Bayo’s approval.', data: { mandateId: 'm_payouts' } },
-  { id: 'ev_ha_s3', at: '2026-10-28T09:05:00+01:00', actor: 'q', type: 'q.search.ran', text: 'Q searched 2 of 3 sources for Senior Backend and read 24 profiles. PeopleGraph was unavailable (rate limited).' },
+  { id: 'ev_ha_s3', at: '2026-10-28T09:05:00+01:00', actor: 'q', type: 'q.search.ran', text: 'Q searched 2 of 3 sources for Senior Backend and read 24 profiles. The evidence-links check was unavailable (rate limited).' },
   { id: 'ev_ha_s4', at: '2026-10-28T11:20:00+01:00', actor: 'u_ngozi', type: 'interview.panel.changed', text: 'Changed the Senior Backend interview panel: Seyi Balogun replaces Musa Danladi for Tobi Adeyemi’s interview.', data: { mandateId: 'm_backend', removed: 'u_musa', added: 'u_seyi' } },
   { id: 'ev_ha_s5', at: '2026-10-28T14:02:00+01:00', actor: 'q', type: 'message.drafted', text: 'Q drafted outreach to Ifeoma Obi for Ada’s approval. Not sent.' },
   { id: 'ev_ha_s6', at: '2026-10-28T16:45:00+01:00', actor: 'q', type: 'memory.inferred', text: 'Q noted “Bayo is fine with remote candidates for Payouts” from Bayo’s comment on Kunle Bakare. Marked as Q’s inference, not confirmed.' },

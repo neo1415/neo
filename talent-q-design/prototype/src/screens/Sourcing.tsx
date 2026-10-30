@@ -35,7 +35,7 @@ export function Sourcing() {
         {notStarted && (
           <section className="ds-sheet hire-a-start" aria-labelledby="src-start">
             <h2 id="src-start" className="voice t24" style={{ margin: 0 }}>{w.mandate.status === 'DRAFT' ? 'Approve the brief and Q starts searching' : 'Ready when you are'}</h2>
-            <p style={{ margin: 0 }}>Q reads profiles from three sources, checks each person against the brief’s requirements, and shows people here as soon as it finds them. Nobody is contacted.</p>
+            <p style={{ margin: 0 }}>Q reads profiles from the sources your organisation allows (see <a href="#/r/sourcing/scope">Search sources</a>), checks each person against the brief’s requirements, and shows people here as soon as it finds them. Nobody is contacted.</p>
             <ol><li>Reads profiles shared with Kora Pay and open to offers</li><li>Checks each requirement, hardest first</li><li>Shows early results while it works</li></ol>
             {w.mandate.status === 'DRAFT' ? <Link to="/r/mandate" className="ds-btn primary">Review the brief</Link> : <button type="button" className="ds-btn primary" onClick={() => startSourcingWithQ()}>Start the search</button>}
           </section>
@@ -58,7 +58,7 @@ export function Sourcing() {
               </div></Arrive></li>); })}
           </ul>
         </section>}
-        {w.sourcing.failedSource && <div className="ds-banner" data-k="warn" role="status"><Glyph k="unclear" /><span><b>One source was unavailable.</b> PeopleGraph rate-limited the search. Results come from 2 of 3 sources. Q will retry it tonight and tell you if anyone new appears.</span></div>}
+        {w.sourcing.failedSource && <div className="ds-banner" data-k="warn" role="status"><Glyph k="unclear" /><span><b>One source was unavailable.</b> The check of evidence links candidates added timed out. Results come from 2 of 3 sources. Q will retry it tonight and tell you if anyone new appears.</span></div>}
         {done && <Link to="/r/compare" className="ds-btn primary" style={{ justifySelf: 'start' }}>Compare the {w.mandate.shortlist.length || w.sourcing.found.length} people</Link>}
         {view.failure && <p className="t14" role="alert" style={{ margin: 0, color: 'var(--risk)' }}>{view.failure.message}</p>}
       </div>

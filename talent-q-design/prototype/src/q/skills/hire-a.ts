@@ -1046,7 +1046,7 @@ registerSkill({
   handle: (c) => {
     const s = c.w.sourcing; const m = c.w.mandate;
     if (m.status === 'DRAFT') return { msgs: [{ kind: 'approval', text: 'The Senior Backend brief isn’t approved yet, so I haven’t searched. Approve it and I’ll start.', actions: [op('Approve and start searching', 'hire-a.kora.approve', {}, true)] }], nav: { to: '/r/mandate', label: 'the role brief' } };
-    if (s.done) return { msgs: [{ kind: 'reply', text: `The search finished: ${s.found.length} people to compare${s.failedSource ? '; one source (PeopleGraph) was unavailable and will be retried tonight' : ''}.`, actions: [nav('Compare them', '/r/compare', true)] }], nav: { to: '/r/sourcing', label: 'the search' } };
+    if (s.done) return { msgs: [{ kind: 'reply', text: `The search finished: ${s.found.length} people to compare${s.failedSource ? '; one source (the evidence links candidates added) was unavailable and will be retried tonight' : ''}.`, actions: [nav('Compare them', '/r/compare', true)] }], nav: { to: '/r/sourcing', label: 'the search' } };
     if (s.cursor > 0 && !/\b(how|status|going|progress)\b/.test(c.norm) || /\b(resume|continue|carry on|restart|start)\b/.test(c.norm)) { setTimeout(() => startSourcingWithQ(), 0); return { msgs: [{ kind: 'reply', text: s.cursor ? `Resuming from profile ${s.cursor + 1}; I won’t start again from the top.` : 'Starting the search.' }], nav: { to: '/r/sourcing', label: 'the search' } }; }
     return { msgs: [{ kind: 'reply', text: s.cursor ? `I’ve read ${s.cursor} profiles so far and found ${s.found.length}.` : 'The search hasn’t started yet.', actions: s.cursor ? [] : [ask('Start the search')] }], nav: { to: '/r/sourcing', label: 'the search' } };
   },

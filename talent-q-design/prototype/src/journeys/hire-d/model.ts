@@ -32,7 +32,7 @@ export const SOURCES: SourceDef[] = [
 export const NOT_USED = [
   { id: 'linkedin', label: 'LinkedIn profiles', why: 'Not used. Talent Q never extracts or scrapes LinkedIn. A candidate can add their own LinkedIn link to their Passport, and it’s read as a claim.' },
   { id: 'lists', label: 'Bought lists and scraped web profiles', why: 'Not used. People on them never agreed to be found here.' },
-  { id: 'peoplegraph', label: 'PeopleGraph (third-party directory)', why: 'Not used for new searches: a third-party directory isn’t a permitted source. Earlier search runs may still mention it.' },
+  { id: 'peoplegraph', label: 'PeopleGraph (third-party directory)', why: 'Not used for new searches: a third-party directory isn’t a permitted source. Talent Q has never searched it.' },
 ];
 export const sourcesFor = (w: World, orgId: string) => { const k = orgOf(w, orgId)?.kind; return SOURCES.filter((s) => !(s.agencyOnly && k !== 'AGENCY') && !(s.employerOnly && k !== 'EMPLOYER')); };
 export const scopeOn = (w: World, orgId: string): SourceId[] => (hd(w).scope[orgId]?.on as SourceId[] | undefined) ?? sourcesFor(w, orgId).map((s) => s.id);
