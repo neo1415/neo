@@ -495,10 +495,11 @@ const CONV_RUBRIC = [
   { name: 'Says what happens next, with a time', re: /\b(\d+\s?(am|pm|minutes?|hours?)|by (today|tomorrow|noon|\d)|within|this morning|before)\b/ },
   { name: 'Doesn’t promise what it can’t control', re: null as RegExp | null },
 ];
+const OVERPROMISE = /\b(guarantee|definitely|100%)|(?<!(can’t|cannot|can't|not|won’t|won't) )\bpromise\b/;
 export function checkSales(e: Exercise) {
   const mine = (e.chat ?? []).filter((m) => m.who === 'ME').map((m) => m.text.toLowerCase()); const all = mine.join(' \n ');
   return CONV_RUBRIC.map((r) => r.re ? { name: r.name, pass: r.re.test(all), detail: r.re.test(all) ? 'Found in your replies.' : 'Not in your replies yet.' }
-    : { name: r.name, pass: !/\b(guarantee|definitely|100%|promise)\b/.test(all), detail: /\b(guarantee|definitely|100%|promise)\b/.test(all) ? 'A reply promises an outcome the team can’t control.' : 'No promises beyond what you can do.' });
+    : { name: r.name, pass: !OVERPROMISE.test(all), detail: OVERPROMISE.test(all) ? 'A reply promises an outcome the team can’t control.' : 'No promises beyond what you can do.' });
 }
 export const resultsOf = (e: Exercise) => (e.kind === 'CODE' ? (e.runs.at(-1)?.results ?? []) : e.kind === 'CYBER' ? checkCyber(e) : checkSales(e));
 

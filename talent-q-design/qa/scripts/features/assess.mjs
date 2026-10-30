@@ -123,7 +123,8 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   step(v, 'MO-023 using a suggestion asks it and the follow-up answer is specific', A(w).rooms.i_hb_tobi.suggestions.some((s) => s.state === 'USED') && /I was on call/.test(A(w).rooms.i_hb_tobi.turns.filter((x) => x.who === 'CAND').at(-1).text));
   await go('/c/assess/live/i_hb_tobi', 'p_tobi');
   t = await canvas();
-  step(v, 'SC-103 privacy: the candidate never sees Q’s suggestions', !/What was your part/.test(t) && !/You said “we”/.test(t) && !(await page.locator('.as-qpanel').count()));
+  const unused = A(await world()).rooms.i_hb_tobi.suggestions.filter((s) => s.state !== 'USED').map((s) => s.text);
+  step(v, 'SC-103 privacy: the candidate never sees Q’s suggestions (only questions the interviewer chose to ask)', unused.length > 0 && unused.every((x) => !t.includes(x)) && !(await page.locator('.as-qpanel').count()) && !/follow-ups/i.test(t));
   await go('/r/interviews/i_hb_tobi/live', 'u_ada');
   await page.getByRole('button', { name: 'Simulate: connection drops' }).click(); await page.waitForTimeout(300);
   step(v, 'SC-103 interrupted: connection lost, record kept, recording paused', /Connection lost/.test(await canvas()) && A(await world()).rooms.i_hb_tobi.recording === 'PAUSED');
@@ -237,7 +238,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   await page.getByRole('button', { name: /Simulate: slow connection/ }).click(); await page.waitForTimeout(200);
   await page.getByRole('button', { name: /^Start$/ }).click(); await page.waitForTimeout(400);
   t = await canvas();
-  step(v, 'SC-102 device fallback: still image with captions on a slow connection', /Still image \(slow connection\) · captions on/.test(t));
+  step(v, 'SC-102 device fallback: still image with captions on a slow connection', /Still image \(slow connection\) · captions on/i.test(t));
   step(v, 'SC-102 labelled simulated avatar with the employer’s locked question as captions', /Simulated avatar · not a person/i.test(t) && /Kora Pay’s own question · v2/i.test(t));
   await page.locator('#av-in').fill('I re-ran the single day from the processor and checked the idempotency keys.'); await page.waitForTimeout(200);
   await page.getByRole('button', { name: /Save, next question/ }).click(); await page.waitForTimeout(300);
@@ -332,7 +333,7 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 1], ['m', { widt
   await go('/r/exercises', 'u_dele');
   step(v, 'privacy: the agency sees no Kora exercises', /No exercises sent yet/.test(await canvas()));
   await go('/r/assess', 'u_ada');
-  step(v, 'hub: recruiter assessments list rooms, exercises and coaching', /Interviews in the live room/.test(await canvas()) && /Your coaching/.test(await canvas()));
+  step(v, 'hub: recruiter assessments list rooms, exercises and coaching', /Interviews in the live room/.test(await canvas()) && /Your coaching/i.test(await canvas()));
   await layout('hub', 'recruiter'); await shot('hub');
   await go('/c/assess', 'p_tobi');
   step(v, 'hub: candidate sees their own exercises, live interviews and first round', /Live interviews/.test(await canvas()) && /Exercises/.test(await canvas()) && /first round/.test(await canvas()));

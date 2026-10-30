@@ -7,7 +7,7 @@ const ev = (e: Partial<Evidence> & Pick<Evidence, 'evidenceId' | 'ownerId' | 'ki
 
 export const seed: SeedPatch = {
   evidence: [
-    ev({ evidenceId: 'e_amaka_prices', ownerId: 'p_amaka', kind: 'WORK_SAMPLE', title: 'Mile 12 food prices write-up', source: 'Uploaded by Amaka Eze', observedAt: '2026-10-12', verification: 'UNVERIFIED',
+    ev({ evidenceId: 'e_amaka_prices', ownerId: 'p_amaka', kind: 'WORK_SAMPLE', title: 'Mile 12 food prices project', source: 'Uploaded by Amaka Eze', observedAt: '2026-10-12', verification: 'UNVERIFIED',
       shows: 'Weekly prices from 12 traders at Mile 12 market, January to June 2025, with her own summary.', limits: 'Her own project; not reviewed by anyone yet.', visibility: 'SHARED_WITH', sharedWith: ['org_medlink'] }),
   ],
 };
