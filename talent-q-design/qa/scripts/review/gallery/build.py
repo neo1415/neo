@@ -19,6 +19,22 @@ def webp(src, dst, width, max_h=None, crop_h=None):
     im.save(dst, 'WEBP', quality=76, method=6)
     return im.size
 
+
+def pairimg(b, a, dst, width, max_h):
+    """One file per pair (the publish limit is 511 files): before on the left half, after on the right, same size."""
+    ims = []
+    for src in (b, a):
+        im = Image.open(src).convert('RGB'); w, h = im.size
+        if w > width: im = im.resize((width, round(h * width / w)), Image.LANCZOS)
+        if im.size[1] > max_h: im = im.crop((0, 0, im.size[0], max_h))
+        ims.append(im)
+    W = max(i.size[0] for i in ims); H = max(i.size[1] for i in ims)
+    sheet = Image.new('RGB', (W * 2, H), (244, 239, 230))
+    sheet.paste(ims[0], (0, 0)); sheet.paste(ims[1], (W, 0))
+    os.makedirs(os.path.dirname(dst), exist_ok=True)
+    sheet.save(dst, 'WEBP', quality=74, method=6)
+    return (W, H)
+
 # ---- areas, journeys and the before/after captions from each area's design notes
 AREAS = [
     ('hire-a', 'R1 · R5', 'Founder hiring and the hiring manager', 'Funmi, a founder with no recruiting words, and Bayo, a head of engineering'),
@@ -34,6 +50,12 @@ AREAS = [
     ('media', 'J11 · §F', 'Video and voice evidence', 'Tobi’s consented walkthrough and Ada’s evidence report'),
     ('evidence-recruiter', 'J12', 'Evidence-first hiring: the recruiter', 'Ada finding people by what they have shown, not by CV wording'),
     ('evidence-candidate', 'J12', 'Evidence-first hiring: the candidate', 'Seyi Okoro’s bounded sample and Tobi’s way forward'),
+    ('public', 'Public', 'The public site and sample Q', 'Anyone deciding whether Talent Q is for them'),
+    ('hire-d', 'Discovery', 'Discovery, booking, offers and outcomes', 'Ada at Kora Pay'),
+    ('assess', 'Assessment', 'Interviews, exercises and coaching', 'Ada, Musa and the candidates they assess'),
+    ('org-admin', 'Admin', 'Organisation governance and admin', 'Ada as Kora’s admin, Bayo, and Dele at Talentbridge'),
+    ('q-tools', 'Q’s work', 'Q’s artifacts and tools', 'Anyone asking Q for a chart, map, video, page, file or source'),
+    ('talent-d', 'Candidates', 'Candidate tools: authorisation, critique, letters, learning, recovery', 'Amaka, Chidi, Grace, Tobi and Zara'),
 ]
 def captions(area):
     md = open(f'{ROOT}/journeys/design/{area}.md').read()
@@ -49,17 +71,14 @@ for key, jn, title, who in AREAS:
     for b in sorted(glob.glob(f'{ROOT}/captures/review/pairs/{key}/*-before.png')):
         n = os.path.basename(b)[:2]; a = b.replace('-before', '-after')
         phone = Image.open(b).size[0] < 1000
-        sizes = {}
-        for side, src in (('before', b), ('after', a)):
-            sizes[side] = webp(src, f'{out}/pairs/{key}/{n}-{side}.webp', 780 if phone else 1280, max_h=2600)
-        pairs.append({'n': n, 'phone': phone, 'text': cap_text.get(n, ''), 'size': sizes})
+        wh = pairimg(b, a, f'{out}/pairs/{key}/{n}.webp', 780 if phone else 1280, 2600)
+        pairs.append({'n': n, 'phone': phone, 'text': cap_text.get(n, ''), 'size': {'before': wh, 'after': wh}})
     # Second layout: pairs/<area>/before/<name>.png and after/<name>.png (same file names), captioned by name.
     for b in sorted(glob.glob(f'{ROOT}/captures/review/pairs/{key}/before/*.png')):
         name = os.path.basename(b)[:-4]; a = b.replace('/before/', '/after/')
         if not os.path.exists(a): continue
-        phone = Image.open(b).size[0] < 1000; sizes = {}
-        for side, src in (('before', b), ('after', a)):
-            sizes[side] = webp(src, f'{out}/pairs/{key}/{name}-{side}.webp', 780 if phone else 1280, max_h=2600)
+        phone = Image.open(b).size[0] < 1000
+        wh = pairimg(b, a, f'{out}/pairs/{key}/{name}.webp', 780 if phone else 1280, 2600); sizes = {'before': wh, 'after': wh}
         label = re.sub(r'^[dm]-\d+-', '', name).replace('-', ' ')
         pairs.append({'n': name, 'phone': phone, 'text': ('Phone · ' if phone else 'Desktop · ') + label[:1].upper() + label[1:], 'size': sizes})
     areas.append({'key': key, 'journeys': jn, 'title': title, 'who': who, 'pairs': pairs})
@@ -144,6 +163,10 @@ if os.path.exists(f'{MASTER}/index.json'):
                 for k in range(n):
                     a = start + k * (end - start) / n; b = start + (k + 1) * (end - start) / n
                     name = f'{key}-{i:02d}-{k + 1}'
+                    cache = os.environ.get('MASTER_CACHE')  # reuse chapters already cut from the same films
+                    if cache and os.path.exists(f'{cache}/{name}.mp4') and os.path.exists(f'{cache}/{name}.jpg'):
+                        shutil.copy(f'{cache}/{name}.mp4', f'{out}/master/'); shutil.copy(f'{cache}/{name}.jpg', f'{out}/master/')
+                        parts.append({'id': name, 'title': c['title'] + (f' (part {k + 1} of {n})' if n > 1 else ''), 'minutes': round((b - a) / 60, 1)}); continue
                     subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-ss', f'{a:.2f}', '-to', f'{b:.2f}', '-i', src, '-vf', 'scale=-2:720' if v == 'desktop' else 'scale=-2:960', '-c:v', 'libx264', '-crf', '32', '-preset', 'slow', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', f'{out}/master/{name}.mp4'], check=True)
                     subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-ss', f'{min(a + 8, b - 0.5):.2f}', '-i', src, '-frames:v', '1', '-vf', 'scale=480:-2', '-q:v', '6', f'{out}/master/{name}.jpg'], check=True)
                     parts.append({'id': name, 'title': c['title'] + (f' (part {k + 1} of {n})' if n > 1 else ''), 'minutes': round((b - a) / 60, 1)})

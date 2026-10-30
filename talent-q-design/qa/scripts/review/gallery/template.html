@@ -318,8 +318,9 @@ function showArea(i) {
   tabs.querySelectorAll('.tab').forEach((t, k) => t.setAttribute('aria-selected', String(k === i)));
   $('#area-panel').setAttribute('aria-labelledby', `t-${a.key}`);
   $('#area-panel').innerHTML = `<div class="area-intro"><h3>${esc(a.title)}</h3><p class="muted">${esc(a.who)}</p></div><div class="pairs">${a.pairs.map((p) => {
-    const shot = (side) => { const src = `pairs/${a.key}/${p.n}-${side}.webp`; const [w, h] = p.size[side];
-      return `<figure><figcaption><span class="tag ${side}">${side === 'before' ? 'Before' : 'After'}</span></figcaption><button type="button" class="frame ${side}" data-full="${src}" data-title="${esc(a.title)} · ${p.n} · ${side}" data-phone="${p.phone ? 1 : 0}" aria-label="${side === 'before' ? 'Before' : 'After'}: open full length"><img src="${src}" width="${w}" height="${h}" loading="lazy" decoding="async" alt="${side === 'before' ? 'Before' : 'After'}: ${esc(p.text)}"></button></figure>`; };
+    // One image per pair: before is the left half, after the right half. Each frame shows its half; full view shows both.
+    const shot = (side) => { const src = `pairs/${a.key}/${p.n}.webp`; const [w, h] = p.size[side];
+      return `<figure><figcaption><span class="tag ${side}">${side === 'before' ? 'Before' : 'After'}</span></figcaption><button type="button" class="frame ${side}" data-full="${src}" data-title="${esc(a.title)} · ${p.n} · before and after" data-phone="${p.phone ? 1 : 0}" aria-label="${side === 'before' ? 'Before' : 'After'}: open full length, before and after side by side"><span style="display:block;overflow:hidden;aspect-ratio:${w} / ${h}"><img src="${src}" width="${w * 2}" height="${h}" style="display:block;width:200%;max-width:none;height:auto;margin-left:${side === 'after' ? '-100%' : '0'}" loading="lazy" decoding="async" alt="${side === 'before' ? 'Before' : 'After'}: ${esc(p.text)}"></span></button></figure>`; };
     return `<article class="pair ${p.phone ? 'phone' : ''}"><div class="pair-cap"><span class="num">${p.n}</span><p>${esc(p.text)}</p></div><div class="shots">${shot('before')}${shot('after')}</div></article>`;
   }).join('')}</div>`;
   store.set('tq.review.area', String(i));
