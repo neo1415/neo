@@ -155,7 +155,7 @@ function Signup() {
                 <div className="ds-field"><label htmlFor="su-email">Email</label><input id="su-email" className="ds-input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} aria-invalid={!!err} aria-describedby={err ? 'su-err' : undefined} autoComplete="email" />{err && <span id="su-err" className="t14" style={{ color: 'var(--risk)' }}>{err}</span>}</div>
                 <button type="submit" className="ds-btn primary">Continue</button>
                 <button type="button" className="ds-btn" onClick={() => { setErr(''); setStep('mode'); }}>Continue with Google (simulated)</button>
-                <p className="t14 muted" style={{ margin: 0 }}>Already have an account? <Link to="/">Sign in</Link></p>
+                <p className="t14 muted" style={{ margin: 0 }}>Already have an account? <Link to="/sign-in">Sign in</Link></p>
               </form>
             )}
             {step === 'verify' && (

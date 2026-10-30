@@ -14,6 +14,10 @@ import { JobContact } from '../contact/JobContact';
 // EVIDENCE-FIRST (pack item E): hiring confirmed by a participating employer, shown apart from listings without it.
 import { IntentLine } from '../evidence/candidate/Status';
 import { intentFor } from '../evidence/candidate/logic';
+// TALENT-D (MO-014): the list reorders smoothly when a filter changes; reduced motion redraws directly.
+import { AnimatePresence } from 'motion/react';
+import { FilterMotion, MotionCard } from '../talent-d/motions';
+import { LetterLink } from '../talent-d/ui'; // TALENT-D: cover note builder (SC-087)
 
 /** Location and work mode without repeating each other (“Remote · remote”). */
 const where = (loc: string, mode: string) => (loc.toLowerCase().includes(mode.toLowerCase()) ? loc : `${loc} · ${mode.toLowerCase()}`);
@@ -65,7 +69,7 @@ export function JobsPage() {
   const close = shown.filter((x) => share(x.m) > 0); const rest = shown.filter((x) => share(x.m) === 0);
   const closedSaved = saved.map((id) => w.jobs.find((j) => j.id === id)).filter((j): j is Job => !!j && j.status === 'CLOSED');
   const card = ({ j, m }: { j: Job; m: ReturnType<typeof matchFor> }) => (
-    <li key={j.id} className="ds-sheet tb-card tb-jobcard">
+    <MotionCard key={j.id} className="ds-sheet tb-card tb-jobcard">
       <div className="tb-row-between"><span className="lab">{orgName(w, j.orgId)}</span><Signals job={j} compact /></div>
       <h3 className="tb-title"><Link to={`/c/jobs/${j.id}`}>{j.title}</Link></h3>
       <p className="t14 tb-meta" style={{ margin: 0 }}>{where(j.location, j.workMode)} · <span className="num">{j.pay}</span></p>
@@ -78,7 +82,7 @@ export function JobsPage() {
           <button type="button" className="ds-btn quiet tb-save" aria-pressed={saved.includes(j.id)} onClick={() => act('tb.save', { jobId: j.id })}>{saved.includes(j.id) ? <><span aria-hidden="true">★</span> Saved</> : <><span aria-hidden="true">☆</span> Save</>}</button>
         </div>
       </div>
-    </li>
+    </MotionCard>
   );
   return (
     <Canvas title="Jobs" kicker={`${open.length} open roles`} open onClose={() => navigate('/c/home')}>
@@ -95,8 +99,8 @@ export function JobsPage() {
       ) : (
         <div className="tb-jobs" aria-label="Open jobs">
           <FitKey />
-          {close.length > 0 && <section className="tb-group" aria-labelledby="tb-jg-close"><header className="tb-group-h"><h2 id="tb-jg-close" className="tb-h2">Closest to your proof <span className="tb-count num">{close.length}</span></h2></header><ul className="tb-grid">{close.map(card)}</ul></section>}
-          {rest.length > 0 && <section className="tb-group" aria-labelledby="tb-jg-rest"><header className="tb-group-h"><h2 id="tb-jg-rest" className="tb-h2">Other open roles <span className="tb-count num">{rest.length}</span></h2><p className="t14 muted">Your Passport doesn’t show these needs yet. That isn’t the same as not having them.</p></header><ul className="tb-grid">{rest.map(card)}</ul></section>}
+          {close.length > 0 && <section className="tb-group" aria-labelledby="tb-jg-close"><header className="tb-group-h"><h2 id="tb-jg-close" className="tb-h2">Closest to your proof <span className="tb-count num">{close.length}</span></h2></header><FilterMotion filter={filter}><ul className="tb-grid"><AnimatePresence initial={false} mode="popLayout">{close.map(card)}</AnimatePresence></ul></FilterMotion></section>}
+          {rest.length > 0 && <section className="tb-group" aria-labelledby="tb-jg-rest"><header className="tb-group-h"><h2 id="tb-jg-rest" className="tb-h2">Other open roles <span className="tb-count num">{rest.length}</span></h2><p className="t14 muted">Your Passport doesn’t show these needs yet. That isn’t the same as not having them.</p></header><FilterMotion filter={filter}><ul className="tb-grid"><AnimatePresence initial={false} mode="popLayout">{rest.map(card)}</AnimatePresence></ul></FilterMotion></section>}
         </div>
       )}
       <details className="ds-sheet tb-details">
@@ -139,6 +143,7 @@ export function JobDetailPage({ id }: { id: string }) {
 
       {/* Role briefing and contact card (audit addendum §C, owned by journeys/contact). */}
       <JobContact job={job} />
+      {!closed && !app && <LetterLink jobId={job.id} />}
 
       {applying && (
         <section className="ds-sheet tb-stack tb-apply" aria-labelledby="tb-ap-h">

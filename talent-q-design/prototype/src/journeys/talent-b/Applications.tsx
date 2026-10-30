@@ -5,12 +5,14 @@ import { actorOf, useWorld } from '../../mock/world';
 import { Canvas } from '../../ds/Workspace';
 import { runAction } from '../../q/core/engine';
 import { Link, navigate } from '../../ui/router';
-import { APP_K as K, APP_LABEL, appExplain, evById, fmtDate, tb } from './logic';
+import { appExplain, evById, fmtDate, tb } from './logic';
 import { CandidateRatings } from '../rubric/CandidateRatings'; // rubric builder: the person's own ratings (AD-E-14)
 // EVIDENCE-FIRST (J12 steps 6–10): employer requests, interest checks, process commitments and "What you want".
 import { InterestCard, RequestCard } from '../evidence/candidate/Requests';
 import { CommitmentLine, IntentLine, PrefsPanel } from '../evidence/candidate/Status';
 import { interestFor, requestsFor } from '../evidence/candidate/logic';
+// TALENT-D: MO-040 (the stage changes only after the employer's event) and the way into recovery coaching (SC-175).
+import { StageTag } from '../talent-d/ui';
 
 const act = (op: string, args: Record<string, unknown> = {}) => void runAction({ label: op, act: { t: 'do', op, args } });
 const say = (text: string) => void runAction({ label: text, act: { t: 'say', text } });
@@ -46,7 +48,7 @@ export function ApplicationsPage() {
               <li key={app.id} className="ds-sheet tb-stack tb-app" data-moved={moved(app.id) || undefined}>
                 <div className="tb-row-between">
                   <span className="lab">{x.org}{x.job?.status === 'CLOSED' ? ' · listing closed' : ''}</span>
-                  <span className="ds-tag" data-k={K[app.status]}>{APP_LABEL[app.status]}</span>
+                  <StageTag status={app.status} by={x.org} />
                 </div>
                 <h2 className="tb-title tb-apptitle">{x.job ? <Link to={`/c/jobs/${x.job.id}`}>{x.job.title}</Link> : 'Job removed'}</h2>
                 <p style={{ margin: 0 }}>{x.plain}</p>
@@ -56,6 +58,7 @@ export function ApplicationsPage() {
                 {x.waiting && (
                   <div className="ds-banner" data-k="warn"><span aria-hidden="true">◷</span><span>No reply in {x.days} days. That’s common and says nothing about you. A short, polite follow-up is fine, or you can move on.</span><span /></div>
                 )}
+                {app.status === 'NOT_PROGRESSING' && <div className="tb-actions"><Link className="ds-btn" to={`/c/applications/${app.id}/recovery`}>Talk it through with Q</Link><span className="t14 muted">Only what {x.org} tells you. No guesses.</span></div>}
                 {x.followup && <p className="t14 muted" style={{ margin: 0 }}>{x.followup.state === 'MOVED_ON' ? 'You moved on. It stays open on their side, so a reply would still reach you.' : `You followed up on ${fmtDate(x.followup.at)} (simulated).`}</p>}
                 {(x.waiting || thread) && (
                   <div className="tb-actions">

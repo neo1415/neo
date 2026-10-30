@@ -21,6 +21,8 @@ import { ClassTag, LevelMark, fmtDate } from './ui';
 import './ops';
 import { roleIndex } from '../../state/areas/rubrics';
 import { indexLine, studioPath } from '../rubric/model';
+// MO-013 (hire-d): the lens change morphs the main sheet; additive wrapper only.
+import { LensMorph } from '../hire-d/LensMorph';
 
 /** Q's margin notes for the CV and proof view: the shape per person in words, then what that means. */
 function proofNotes(w: Parameters<typeof readingOf>[0], v: CompareView): string[] {
@@ -102,7 +104,7 @@ export function Compare() {
         )}
       </AnimatePresence>
 
-      {ready && lens === 'proof' && (
+      {ready && lens === 'proof' && (<LensMorph lens="proof">
         <section className="ds-sheet hire-b-grid evr-cvp-sec" aria-labelledby="cmp-p">
           <div className="hire-b-row"><h2 id="cmp-p" className="voice t24" style={{ margin: 0 }}>CV and proof, requirement by requirement</h2><span className="t14 muted">Not a ranking. Select a cell to see the evidence</span></div>
           <CvProofView w={w} v={view} onCell={(pid, reqId) => set({ open: v.open?.pid === pid && v.open.reqId === reqId ? null : { pid, reqId } })} />
@@ -112,11 +114,11 @@ export function Compare() {
             <p className="t14" style={{ margin: 0 }}><Link to={studioPath(KORA_ROLE)}>{rub ? `Open rubric v${rub.v}` : 'Set weights in a rubric'}</Link></p>
           </aside>
         </section>
-      )}
+      </LensMorph>)}
 
       {lens === 'proof' && ready ? null : !ready ? (
         <section className="ds-sheet hire-b-empty"><Glyph k="unclear" /><div><b>{!people.length ? 'Pick at least one person.' : 'Pick at least one requirement.'}</b><p className="t14 muted" style={{ margin: 0 }}>Or tell Q, for example “compare Tobi and Zara on payments and Go”.</p></div></section>
-      ) : (
+      ) : (<LensMorph lens="ledger">
         <section className="ds-sheet hire-b-grid hire-b-ledger-sec" aria-labelledby="cmp-l">
           <div className="hire-b-row"><h2 id="cmp-l" className="voice t24" style={{ margin: 0 }}>Who to talk to first</h2><span className="t14 muted">Select a block to see the evidence</span></div>
           <div className="hire-b-ledger-wrap">
@@ -128,7 +130,7 @@ export function Compare() {
             </aside>
           </div>
         </section>
-      )}
+      </LensMorph>)}
 
       {ready && rub && lens === 'ledger' && (
         <section className="ds-sheet hire-b-grid" aria-labelledby="cmp-sc">

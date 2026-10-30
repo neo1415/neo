@@ -10,13 +10,14 @@
 //   blocked   the bowl breaks: an integration or step failed; the label names it
 //   done      the core settles once (the flow's single peak moment)
 //   offline   bowl outline only, core hollow
+//   speaking  core swells with the (simulated) amplitude of the word being spoken; captions carry the words (MO-004)
 import { motion, useReducedMotion } from 'motion/react';
 
-export type QMood = 'idle' | 'listening' | 'thinking' | 'working' | 'waiting' | 'blocked' | 'done' | 'offline';
+export type QMood = 'idle' | 'listening' | 'thinking' | 'working' | 'waiting' | 'blocked' | 'done' | 'offline' | 'speaking';
 export interface QAgent { label: string; done: number; total: number; failed?: boolean }
 
 export const MOOD_LABEL: Record<QMood, string> = {
-  idle: 'Ready', listening: 'Listening', thinking: 'Reading your request', working: 'Working', waiting: 'Waiting for you', blocked: 'Needs attention', done: 'Done', offline: 'Offline',
+  idle: 'Ready', listening: 'Listening', thinking: 'Reading your request', working: 'Working', waiting: 'Waiting for you', blocked: 'Needs attention', done: 'Done', offline: 'Offline', speaking: 'Speaking',
 };
 
 const R = 13;
@@ -26,7 +27,7 @@ const arc = (from: number, to: number) => { const a = pt(from), b = pt(to); cons
 export function QMark({ mood = 'idle', agents = [], size = 36, level = 0, title }: { mood?: QMood; agents?: QAgent[]; size?: number; level?: number; title?: string }) {
   const reduce = useReducedMotion();
   const live = mood === 'working' ? agents : [];
-  const core = mood === 'done' ? 6.5 : mood === 'listening' ? 5 + Math.min(1, level) * 2 : mood === 'working' ? 4 : mood === 'offline' ? 4.5 : 5;
+  const core = mood === 'done' ? 6.5 : mood === 'listening' || mood === 'speaking' ? 5 + Math.min(1, level) * 2 : mood === 'working' ? 4 : mood === 'offline' ? 4.5 : 5;
   const bowlDash = mood === 'thinking' ? '3 3.2' : mood === 'offline' ? '1 3' : undefined;
   // The bowl runs from the tail (45°) clockwise round to 0° — leaving the tail opening.
   const bowl = mood === 'blocked' ? `${arc(60, 175)} ${arc(195, 350)}` : 'M 29.2 29.2 A 13 13 0 1 1 33 20';
@@ -38,7 +39,7 @@ export function QMark({ mood = 'idle', agents = [], size = 36, level = 0, title 
         : <path d="M 27 27 L 34 34" stroke="var(--qmark, #e3c27d)" strokeWidth="2.4" strokeLinecap="round" opacity={mood === 'offline' ? 0.5 : 1} />}
       {mood === 'offline'
         ? <circle cx="20" cy="20" r={core} fill="none" stroke="var(--qmark, #e3c27d)" strokeWidth="1.5" />
-        : <motion.circle cx="20" cy="20" fill="var(--qmark, #e3c27d)" initial={false} animate={{ r: core }} transition={{ duration: reduce ? 0 : mood === 'done' ? 0.5 : 0.25, ease: 'easeOut' }} />}
+        : <motion.circle cx="20" cy="20" fill="var(--qmark, #e3c27d)" initial={false} animate={{ r: core }} transition={{ duration: reduce ? 0 : mood === 'done' ? 0.5 : mood === 'speaking' ? 0.12 : 0.25, ease: 'easeOut' }} />}
       {live.map((a, i) => {
         const start = -90 + i * 37;
         const end = start + (a.total ? a.done / a.total : 0) * 300;

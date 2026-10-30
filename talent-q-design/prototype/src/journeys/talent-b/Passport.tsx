@@ -27,6 +27,7 @@ import { CvSection } from '../evidence/candidate/Cv';
 import type { ProofClass } from '../../state/domain';
 import type { World } from '../../mock/world';
 import { media as mediaArea } from '../../state/areas/media';
+import { ShareReceiptLine } from '../talent-d/ui'; // TALENT-D (MO-052): shared only after a consent receipt
 
 type Tab = 'items' | 'sharing' | 'summary' | 'discovery';
 const act = (op: string, args: Record<string, unknown> = {}) => void runAction({ label: op, act: { t: 'do', op, args } });
@@ -202,6 +203,7 @@ function ItemCard({ e, selected, onOpen }: { e: Evidence; selected: boolean; onO
         <div><dt>Age</dt><dd className={fresh.old ? 'evc-old' : undefined}>{fresh.text}{fresh.old && e.kind === 'CREDENTIAL' ? '. Employers may weigh recent work more' : ''}</dd></div>
         <div><dt>Reuse</dt><dd>{reuseScope(w, e)}</dd></div>
       </dl>
+      <ShareReceiptLine evidenceId={e.evidenceId} ownerId={e.ownerId} sharedWith={live} />
       {waiting && <p className="evc-await">Submitted for {orgName(w, waiting.orgId)}’s review. Until a person reviews it, it counts as your own work.</p>}
       <div className="tb-card-foot">
         <SeenBy e={e} />

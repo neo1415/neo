@@ -14,6 +14,8 @@ import { proofReading } from '../model';
 import { PROOF_WORD, canDraftCv, cvOffer, dayMonth, evcRead, orgNm, proofClass, type CvDraft } from './logic';
 import { ClassShape, ProofClassTag } from './ProofClass';
 import './candidate.css';
+// TALENT-D (MO-030): a just-generated draft grows in line by line; reduced motion shows the loaded document.
+import { GrowLine, useFresh } from '../../talent-d/motions';
 
 const act = (op: string, args: Record<string, unknown> = {}) => void runAction({ label: op, act: { t: 'do', op, args } });
 
@@ -60,17 +62,18 @@ export function CvDraftView({ d, compact }: { d: CvDraft; compact?: boolean }) {
   useEffect(() => { if (!compact && location.hash.includes('cv=draft')) ref.current?.scrollIntoView({ block: 'start' }); }, [compact]);
   const offers = cvOffer(d.personId).map((id) => w.evidence.find((e) => e.evidenceId === id)).filter((e): e is NonNullable<typeof e> => !!e && e.ownerId === d.personId);
   const approved = d.state === 'APPROVED';
+  const fresh = useFresh(d.at) && !approved;
   return (
     <motion.div {...arrive} ref={ref} className="evc-draft" data-state={d.state} aria-labelledby={hid} role="region">
       <div className="evc-row"><h3 id={hid} className="evc-h3">{approved ? 'Your approved CV' : 'A clearer draft, for you to approve'}</h3><span className="ds-tag" data-k={approved ? 'ok' : 'busy'}>{approved ? `Approved ${dayMonth(d.approvedAt ?? d.at)}` : 'Draft · not saved'}</span></div>
       {!compact && <p className="t14 muted" style={{ margin: 0 }}>Each line shows the new wording, with <span className="evc-add">Q’s words marked</span>, and what it <span className="evc-del">was</span>. Facts, numbers and names are yours.</p>}
       <ol className="evc-diff">
         {d.lines.map((l, i) => (
-          <li key={i}>
+          <GrowLine key={i} i={i} fresh={fresh}>
             <div className="evc-now">{l.after.map((x, k) => <p key={k} className="evc-diffline">{marked(x, l.before, 'evc-add')}</p>)}</div>
             {!compact && l.before !== l.after.join(' ') && <p className="evc-was t14"><span className="evc-was-k">Was</span> {marked(l.before, l.after.join(' '), 'evc-del')}</p>}
             {!compact && <p className="evc-diffmeta t14"><b>{CHANGE[l.change]}</b>{l.after.length > 1 ? ` · ${l.after.length} lines` : ''}{l.from ? ` · from ${l.from.toLowerCase()}` : ''}{l.note ? ` · ${l.note}` : ''}</p>}
-          </li>
+          </GrowLine>
         ))}
       </ol>
       {!compact && (

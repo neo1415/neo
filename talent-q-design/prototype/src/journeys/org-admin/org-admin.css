@@ -1,0 +1,110 @@
+/* ORG-ADMIN on Direction D paper. No new colours or faces: ink for data marks, gold stays Q's (only the budget
+   threshold mark borrows --warn, a status colour, and always beside words). States read by words and shape. */
+.ds .oa-sheet { display: grid; gap: 14px; }
+.ds .oa-head { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; justify-content: space-between; }
+.ds .oa-head h2 { margin: 0; }
+.ds .oa-note { margin: 4px 0 0; max-width: 64ch; }
+.ds .oa-lede { margin: 0; max-width: 60ch; color: var(--ink-2); }
+.ds .oa-empty { display: grid; gap: 4px; padding: 18px; border: 1px dashed var(--rule-2); border-radius: 12px; }
+.ds .oa-denied { display: grid; gap: 12px; max-width: 640px; }
+.ds .oa-denied .ds-btn { justify-self: start; }
+.ds .oa-skel { display: grid; gap: 14px; }
+.ds .oa-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ds .oa-col { align-items: stretch; }
+.ds .oa-flag { margin: 0; padding: 8px 12px; border-left: 3px solid var(--warn); background: var(--wash); border-radius: 0 8px 8px 0; }
+.ds .oa-inline { min-width: 0; }
+.ds .oa-inline .ds-input { max-width: 260px; }
+
+/* Section switcher: a quiet link row on desktop, a select on phones (no sideways scroll). */
+.ds .oa-secnav { margin: -4px 0 0; }
+.ds .oa-seclinks { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.ds .oa-seclinks a { display: inline-flex; align-items: center; min-height: 36px; padding: 4px 12px; border-radius: 999px; font-size: 14px; color: var(--ink-2); text-decoration: none; border: 1px solid transparent; }
+.ds .oa-seclinks a:hover { border-color: var(--rule-2); }
+.ds .oa-seclinks a[aria-current='page'] { background: var(--ink); color: var(--paper); }
+.ds .oa-secselect { display: none; }
+
+/* Lists of records */
+.ds .oa-list { list-style: none; margin: 0; padding: 0; display: grid; }
+.ds .oa-list > li { display: flex; gap: 16px; justify-content: space-between; align-items: flex-start; padding: 14px 0; border-top: 1px solid var(--rule); }
+.ds .oa-list > li:first-child { border-top: 0; padding-top: 4px; }
+.ds .oa-list > li[data-off='1'] .oa-li-main > b { color: var(--ink-3); }
+.ds .oa-li-main { display: grid; gap: 6px; min-width: 0; flex: 1; }
+.ds .oa-li-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.ds .oa-list .oa-row { flex: none; justify-content: flex-end; max-width: 46%; }
+.ds .oa-plain { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.ds .oa-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.ds .oa-quote { margin: 0; padding: 10px 12px; border-left: 3px solid var(--rule-2); background: var(--wash); border-radius: 0 8px 8px 0; font-size: 14px; }
+.ds .oa-tplbody { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; }
+.ds .oa-tplbody li[data-flag='1'] { text-decoration: underline wavy var(--risk); text-underline-offset: 4px; }
+.ds .oa-form { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+.ds .oa-form .oa-wide { grid-column: 1 / -1; }
+.ds .oa-form .ds-field { display: grid; gap: 4px; min-width: 0; }
+.ds .oa-dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
+.ds .oa-dl dt { color: var(--ink-3); font-size: 14px; }
+.ds .oa-dl dd { margin: 0; }
+.ds .oa-dl-tight { font-size: 14px; gap: 2px 12px; }
+
+/* Checks, steps and provider ladders: a shape per state (✓ / ✕ / ○) and words, never colour alone. */
+.ds .oa-checks, .ds .oa-steps, .ds .oa-ladder, .ds .oa-route, .ds .oa-trace { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.ds .oa-checks li { display: grid; grid-template-columns: 20px 1fr; gap: 8px; }
+.ds .oa-checks li > span:first-child, .ds .oa-steps li > span:first-child, .ds .oa-ladder li > span:first-child { font-family: var(--data); font-weight: 600; }
+.ds .oa-checks li[data-ok='0'] > span:first-child { color: var(--risk); }
+.ds .oa-checks li[data-ok='1'] > span:first-child, .ds .oa-steps li[data-ok='1'], .ds .oa-ladder li[data-ok='1'] { color: var(--ok); }
+.ds .oa-steps, .ds .oa-ladder { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; }
+.ds .oa-steps li[data-ok='0'], .ds .oa-ladder li[data-ok='0'] { color: var(--ink-3); }
+.ds .oa-route { font-size: 14px; counter-reset: r; }
+.ds .oa-route li { padding-left: 14px; border-left: 2px solid var(--rule-2); }
+.ds .oa-trace { font-family: var(--data); font-size: 13px; padding: 10px 12px; background: var(--wash); border-radius: 8px; }
+.ds .oa-code { display: inline-flex; gap: 8px; align-items: end; flex-wrap: wrap; }
+.ds .oa-code .ds-input { width: 120px; }
+.ds .oa-callres { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.ds .oa-receipt { display: grid; gap: 4px; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 10px; }
+.ds .oa-receipt ul { margin: 0; padding-left: 18px; }
+.ds .oa-table td[data-k='YES'] { font-weight: 600; }
+.ds .oa-table td[data-k='NOT_ASKED'], .ds .oa-table td[data-k='ASKED'] { color: var(--ink-3); font-style: italic; }
+
+/* Meters and the MO-035 budget warning. The fill eases to its value (DUR.slow); reduced motion removes travel. */
+.ds .oa-meters { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.ds .oa-meters li { display: grid; gap: 6px; }
+.ds .oa-budget { display: grid; gap: 10px; padding: 14px 16px; border: 1px solid var(--rule-2); border-radius: 12px; background: var(--sheet); }
+.ds .oa-budget[data-over='1'] { border-color: var(--warn); border-left-width: 4px; }
+.ds .oa-budget-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: baseline; }
+.ds .oa-meter { position: relative; height: 10px; border-radius: 999px; background: var(--wash); overflow: visible; }
+.ds .oa-meter .fill { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--ink-2); transition: width .3s cubic-bezier(.2, 0, 0, 1); }
+.ds .oa-meter .fill[data-over='1'] { background: var(--ink); }
+.ds .oa-budget[data-over='1'] .oa-meter .fill { background: var(--ink); }
+.ds .oa-meter .mark { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--warn); }
+.ds .oa-budget-warn { display: grid; gap: 8px; }
+.ds .oa-refcard { display: grid; gap: 8px; color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .ds .oa-meter .fill { transition: none; } }
+
+/* Hub and tiles */
+.ds .oa-hub { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.ds .oa-hub a { display: grid; gap: 4px; padding: 14px; border: 1px solid var(--rule); border-radius: 12px; text-decoration: none; color: var(--ink); min-height: 44px; align-content: start; }
+.ds .oa-hub a:hover { border-color: var(--ink); }
+.ds .oa-hub .ds-tag { justify-self: start; }
+.ds .oa-quiet { font-size: 13px; }
+.ds .oa-tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.ds .oa-tile { display: grid; gap: 2px; padding: 14px 16px; border-radius: var(--r-surface); background: var(--sheet); box-shadow: var(--shadow); text-decoration: none; color: var(--ink); }
+.ds .oa-tile b { line-height: 1.1; }
+
+/* Report bars: one series, ink, direct value labels; table view is one click away. */
+.ds .oa-bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.ds .oa-bars li { display: grid; grid-template-columns: minmax(140px, 220px) 1fr; gap: 12px; align-items: center; }
+.ds .oa-bar-l { font-size: 14px; }
+.ds .oa-bar-w { display: flex; align-items: center; gap: 8px; }
+.ds .oa-bar { display: block; height: 14px; border-radius: 0 4px 4px 0; background: var(--ink-2); }
+
+@media (max-width: 860px) {
+  .ds .oa-seclinks { display: none; }
+  .ds .oa-secselect { display: grid; max-width: 100%; }
+  .ds .oa-list > li { flex-direction: column; }
+  .ds .oa-list .oa-row { max-width: none; justify-content: flex-start; }
+  .ds .oa-form { grid-template-columns: 1fr; }
+  .ds .oa-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ds .oa-bars li { grid-template-columns: 1fr; gap: 4px; }
+  .ds .oa-dl { grid-template-columns: 1fr; gap: 0 0; }
+  .ds .oa-dl dd { margin-bottom: 8px; }
+  .ds .oa-hub { grid-template-columns: 1fr; }
+  .ds .oa-head > .ds-views, .ds .oa-head > .ds-field { width: 100%; }
+}
