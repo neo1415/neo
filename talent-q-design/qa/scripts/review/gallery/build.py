@@ -124,10 +124,35 @@ for fid, title, text in [('J12-evidence-first', 'J12 · Evidence-first hiring', 
         subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-ss', '20', '-i', src, '-frames:v', '1', '-vf', 'scale=720:-2', '-q:v', '5', f'{out}/films/{fid}-{v}.jpg'], check=True)
         films.append({'id': f'{fid}-{v}', 'title': title, 'text': text, 'phone': v == 'phone'})
 
+# ---- master films (A: hiring, B: careers), cut into chapters for the web (15 MB per file); full films stay in the repo
+MASTER = os.environ.get('MASTER', f'{ROOT}/captures/films/master')
+masters = []
+if os.path.exists(f'{MASTER}/index.json'):
+    idx = json.load(open(f'{MASTER}/index.json'))
+    os.makedirs(f'{out}/master', exist_ok=True)
+    for fid, ftitle in (('A', 'Film A · Hiring with Q'), ('B', 'Film B · Careers with Q')):
+        for v in ('desktop', 'phone'):
+            key = f'film-{fid}-{v}'; src = f'{MASTER}/{key}.mp4'
+            if key not in idx or not os.path.exists(src): continue
+            total = float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', src], capture_output=True, text=True).stdout)
+            chs = idx[key]['chapters']; parts = []
+            for i, c in enumerate(chs):
+                start = c['at']; end = chs[i + 1]['at'] if i + 1 < len(chs) else total
+                if end - start < 3: continue
+                # Long chapters are cut into parts of at most 6 minutes so every web file stays under the limit.
+                n = max(1, int((end - start) // 360) + (1 if (end - start) % 360 > 20 else 0))
+                for k in range(n):
+                    a = start + k * (end - start) / n; b = start + (k + 1) * (end - start) / n
+                    name = f'{key}-{i:02d}-{k + 1}'
+                    subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-ss', f'{a:.2f}', '-to', f'{b:.2f}', '-i', src, '-vf', 'scale=-2:720' if v == 'desktop' else 'scale=-2:960', '-c:v', 'libx264', '-crf', '32', '-preset', 'slow', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an', f'{out}/master/{name}.mp4'], check=True)
+                    subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-ss', f'{min(a + 8, b - 0.5):.2f}', '-i', src, '-frames:v', '1', '-vf', 'scale=480:-2', '-q:v', '6', f'{out}/master/{name}.jpg'], check=True)
+                    parts.append({'id': name, 'title': c['title'] + (f' (part {k + 1} of {n})' if n > 1 else ''), 'minutes': round((b - a) / 60, 1)})
+            masters.append({'film': fid, 'title': ftitle, 'phone': v == 'phone', 'minutes': idx[key]['minutes'], 'parts': parts})
+
 # ---- the prototype itself, as a second page
 shutil.copytree(app, f'{out}/app')
 
-data = {'areas': areas, 'screens': screens, 'people': PEOPLE, 'motion': motion, 'films': films}
+data = {'areas': areas, 'screens': screens, 'people': PEOPLE, 'motion': motion, 'films': films, 'masters': masters}
 html = open(f'{here}/template.html').read().replace('/*__DATA__*/null', json.dumps(data, ensure_ascii=False))
 open(f'{out}/index.html', 'w').write(html)
 total = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(out) for f in fs)

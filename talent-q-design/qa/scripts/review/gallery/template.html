@@ -162,11 +162,18 @@ dialog::backdrop { background: #0d0c0be6; }
       <a class="btn primary" href="app/index.html#/" target="_blank" rel="noopener">Open the prototype</a>
       <a class="btn" href="#new">What’s new</a>
       <a class="btn" href="#pairs">Before and after</a>
+      <a class="btn" href="#master">Master films</a>
       <a class="btn" href="#motion">Motion</a>
     </div>
     <nav class="people" aria-label="Open the prototype as" id="people"></nav>
   </header>
 
+
+  <section id="master" aria-labelledby="h-master">
+    <div class="sec-head read"><span class="lab">The complete blueprint · 30 October</span><h2 id="h-master">Master films: hiring with Q and careers with Q</h2>
+      <p class="muted">Film A follows five recruiters and ends with evidence-first hiring (J12). Film B follows five candidates and ends with the connected journey (J11). Each is recorded from the build that passed every test, desktop and phone. Every caption is a step the test verified, and all data is simulated. Here they are cut into chapters; the full-length films are in the repository.</p></div>
+    <div id="masters"></div>
+  </section>
 
   <section id="new" aria-labelledby="h-new">
     <div class="sec-head read"><span class="lab">After your review · 29 October, evening</span><h2 id="h-new">One connected journey through everything you added</h2>
@@ -323,6 +330,7 @@ const savedArea = +(store.get('tq.review.area') ?? 0);
 showArea(savedArea >= 0 && savedArea < DATA.areas.length ? savedArea : 0);
 
 // films
+$('#masters').innerHTML = (DATA.masters || []).map((m) => `<div class="master"><h3 class="voice">${esc(m.title)} <span class="lab">${m.phone ? 'phone' : 'desktop'} · ${m.minutes} min</span></h3><div class="clips">${m.parts.map((p) => `<article class="clip ${m.phone ? 'phone' : ''}"><video src="master/${p.id}.mp4" poster="master/${p.id}.jpg" controls muted playsinline preload="none" aria-label="${esc(m.title)}: ${esc(p.title)}"></video><div class="meta"><h3>${esc(p.title)}</h3><span class="lab">${p.minutes} min</span></div></article>`).join('')}</div></div>`).join('') || '<p class="muted">The master films are being recorded.</p>';
 $('#films').innerHTML = (DATA.films || []).map((c) => `<article class="clip ${c.phone ? 'phone' : ''}"><video src="films/${c.id}.mp4" poster="films/${c.id}.jpg" controls muted playsinline preload="none" aria-label="${esc(c.title)}"></video><div class="meta"><h3>${esc(c.title)}</h3><span class="lab">${c.phone ? 'phone' : 'desktop'}</span></div><p>${esc(c.text)}</p></article>`).join('');
 
 // motion
