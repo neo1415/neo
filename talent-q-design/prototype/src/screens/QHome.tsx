@@ -52,7 +52,9 @@ export function QHome() {
   const disputes = w.interviews.filter((i) => i.orgId === org && i.disputed?.state === 'OPEN');
   const needs = [
     ...drafts.map(({ t, m }) => {
-      const who = m.from === a.id ? 'Your' : `${w.actors.find((x) => x.id === m.from)?.first ?? 'A colleague'}’s`;
+      const col = w.actors.find((x) => x.id === m.from);
+      // A colleague who shares a first name with a candidate (Seyi Balogun / Seyi Okoro) is shown with the surname.
+      const who = m.from === a.id ? 'Your' : `${col ? (w.people.some((p) => p.name.split(' ')[0] === col.first) ? col.name : col.first) : 'A colleague'}’s`;
       const kind = /interview/i.test(m.subject ?? '') ? 'interview invitation' : 'message';
       return { k: `d-${m.id}`, text: `${who} ${kind} to ${first(w, t.personId)} is waiting for approval. Nothing is sent until someone says yes.`, to: '/r/messages', cta: 'Review' };
     }),
