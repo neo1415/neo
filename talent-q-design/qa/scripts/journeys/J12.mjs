@@ -33,7 +33,7 @@ async function run(vp) {
   const closeQ = async () => { if (!phone) return; const x = page.getByRole('button', { name: 'Close Q' }); if (await x.isVisible().catch(() => false)) await x.click(); await sleep(250); };
   const ask = async (text, wait = 1000) => {
     await openQ();
-    if (PACE) await page.locator('#q-ask').pressSequentially(text, { delay: 16 }); else await page.locator('#q-ask').fill(text);
+    if (PACE) await page.locator('#q-ask').pressSequentially(text, { delay: 32 }); else await page.locator('#q-ask').fill(text);
     await page.locator('#q-ask').press('Enter'); await sleep(wait + PACE / 2);
     return lastQ();
   };

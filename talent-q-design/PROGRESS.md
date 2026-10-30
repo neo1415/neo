@@ -1,6 +1,20 @@
 # Progress and next tasks
 
-Updated 29 Oct 2026. Measured counts are in `COVERAGE-SUMMARY.md`; this file says what is done and what to do next, in order.
+Updated 30 Oct 2026. Measured counts are in `COVERAGE-SUMMARY.md`; this file says what is done and what to do next, in order.
+
+## Milestone: consolidation (30 Oct): evidence-first hiring, ready to start production
+
+Source: the Consolidated Build Pack (`docs/sources/batch-6/`). The pack adds and prioritises; it does not replace. Every change is recorded in `handoff/CONSOLIDATION-MERGE-LEDGER.md` (CL-01 to CL-41) and `registry/CONSOLIDATION-REQUIREMENTS.csv` (CQ-01 to CQ-22).
+
+| | Status |
+|---|---|
+| **The defining journey (J12)** | Tobi (thin CV, reviewed evidence) and Seyi Okoro (polished CV, mostly claims) go from Ada's question through evidence and a bounded sample to an approved next step, then to Tobi's own way forward and revocation. `qa/scripts/journeys/J12.mjs` passes 71 steps (desktop and phone). Films: `captures/films/J12/` (desktop 4:34, phone 3:02, simulated, chaptered). |
+| **One model, both sides** | Proof classes in the same words for both sides; CV vs evidence as states, not judgements; reuse decisions instead of repeat assessments; interest as a pending check; hiring intent; process commitments; candidate preferences; feedback only when the employer shares it (`journeys/evidence/*`, `state/areas/proof.ts`). |
+| **Quality gates** | `qa/scripts/gates/consolidation-gates.mjs`: agency visibility, revocation and caches, unknown ≠ 0, rubric version consistency, no outbound without approval. All pass. They found two privacy defects (CL-40, CL-41), now handled. |
+| **Regression** | On one build: R1–R5, T1–T5, J11, J12, privacy, gates, and seven feature tests (rubric, campaigns, email, contact, media, evidence-recruiter, evidence-candidate) all pass. |
+| **Registers** | Regenerated from `registry/status.json`: screens 134 of 183 represented (54 integrated, 80 prototyped), motions 38 of 57 (the 34-vs-38 gap is reconciled), vision 31 of 41. No rows removed. |
+| **Production** | `handoff/PRODUCTION-VERTICAL-SLICE.md`: interaction map, Q consumption decision (pinned contracts plus the q-api adapter, verified against Q `build/int-rc` `a513ebf`), entity sketch, events, migrations, branch plan, **first 10 tasks**, Q reuse risks. |
+| **Not done or not claimed** | The find is rule-based word matching, not semantic retrieval. Samples are not evaluated. No real provider, no customer or usability test, no validated scoring. Open decisions D20–D24. |
 
 ## Milestone: the founder's addenda (29 Oct, evening): four features, connected email, one connected journey
 

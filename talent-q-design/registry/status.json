@@ -837,6 +837,18 @@
       "route": "/r/messages",
       "evidence": "prototype/src/journeys/hire-c/Messages.tsx; captures/cx/R3/01-ada-diff-desktop, 02-ada-approval-desktop, 04-ngozi-offline-queued-desktop; qa/results/R3.log",
       "note": "Primary of /r/messages: threads per candidate, drafts with versions and diffs, checks Q ran, approve/edit/discard, queued offline, contact choices shown. Missing: delivered and failed states (sends are simulated). Keyboard review passed (qa/scripts/review/keyboard.mjs). axe clean desktop and phone (qa/results/axe-all.json); screen-reader pass outstanding, so not VERIFIED."
+    },
+    "SC-088": {
+      "status": "PROTOTYPED",
+      "route": "/c/passport",
+      "evidence": "prototype/src/journeys/evidence/candidate (CV draft: Now/Was per line, what Q won’t add, approve); qa/scripts/features/evidence-candidate.mjs",
+      "note": "J12 (Build Pack P6): wording and structure only; a guard refuses any new job, qualification or skill. State of /c/passport."
+    },
+    "SC-114": {
+      "status": "PROTOTYPED",
+      "route": "/r/people/:id",
+      "evidence": "prototype/src/journeys/evidence/recruiter/ProfileProof.tsx (ReviewPanel); qa/scripts/journeys/J12.mjs step 8",
+      "note": "J12: a named reviewer marks a bounded sample shows it / part / not, with a required note; sharing the note with the candidate is a separate choice. Section of the profile."
     }
   },
   "motions": {

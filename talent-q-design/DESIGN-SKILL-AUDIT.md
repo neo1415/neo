@@ -109,3 +109,15 @@ What the lead's J11 critique changed:
 | A "Motion" skill | Not installed. The Motion for React library is used directly, guided by `interaction-design`. |
 | Graphic or image generation | No image-generation tool exists in this session. Every graphic in the directions is hand-built SVG or CSS from data (routes, maps, orbits, charts). No raster art is presented as generated. |
 | Rive, Graphify | Not installed |
+
+## Consolidation (Build Pack, 30 Oct): J12 evidence-first
+
+Invocation evidence comes from the Skill-tool calls in each builder's session transcript, counted on 30 Oct. It does not rest on the builders' own claims.
+
+| Builder | Skills invoked through the Skill tool | Screens | Record |
+|---|---|---|---|
+| Recruiter (J12 steps 1–5, 8, 9, 13) | `design-skills:interaction-design`, `dataviz`, `design-skills:ux-writing`, `design-skills:design-elevation`, `design-superpowers:creative`, `design-skills:design-critique` (once each) | `/r/home`, Q find and why cards, `/r/compare` CV and proof, `/r/people/:id`, rubric studio line | `journeys/design/evidence-recruiter.md`; pairs in `captures/review/pairs/evidence-recruiter/` |
+| Candidate (J12 steps 6, 7, 10, 12, 13; P6) | the same six, once each | `/c/home`, `/c/passport`, `/c/applications`, `/c/jobs` | `journeys/design/evidence-candidate.md`; pairs in `captures/review/pairs/evidence-candidate/` |
+| Lead | none invoked in this phase | Reviewed the rendered desktop and phone captures by hand. Fixed two things: compare and profile used "Verified" while the rest used the proof-class words (now one vocabulary), and "moved up from 5th to 2nd" appeared on the view labelled "Not a ranking". | This file; commit `11dd133` |
+
+`creative` stayed inside Direction D: the builders report adding no new tokens, typefaces or colours, and gold remains reserved for Q.
