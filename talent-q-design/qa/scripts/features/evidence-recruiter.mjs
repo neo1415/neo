@@ -145,6 +145,10 @@ for (const [v, vp, dpr] of [['d', { width: 1440, height: 900 }, 2], ['m', { widt
   w = await world();
   const e2 = w.evidence.find((e) => e.evidenceId === `e_sample_${dec.id}`);
   step(v, 'review: ev.sample.review → Assessed (partial) with reviewer and note', w.areas.proof.reuse.find((d) => d.id === dec.id).state === 'REVIEWED' && e2?.verification === 'VERIFIED' && /reviewed by Ada Okafor/.test(e2.source) && w.areas.proof.links.some((l) => l.evidenceId === e2.evidenceId && l.partial && l.state === 'REVIEWED') && w.events.some((e) => e.type === 'evidence.sample.reviewed' && /shows part of it/.test(e.text)));
+  step(v, 'review: the note stays internal unless shared (checkbox off by default)', !w.areas.proof.reuse.find((d) => d.id === dec.id).candidateNote);
+  await closeQ(); await page.locator('#pf-review').getByRole('button', { name: /Share the note with Seyi Okoro/ }).click(); await page.waitForTimeout(500);
+  w = await world();
+  step(v, 'review: "Share the note" shares it with the candidate (ev.feedback.share)', /write load/.test(w.areas.proof.reuse.find((d) => d.id === dec.id).candidateNote ?? ''));
   await ask('move both to interview');
   w = await world();
   step(v, 'move both: both at Interview, audited', ['p_tobi', 'p_seyio'].every((p) => w.pipeline.find((x) => x.personId === p && x.mandateId === 'm_backend')?.stage === 'INTERVIEW') && w.events.filter((e) => e.type === 'pipeline.moved').length >= 2, await lastQ());

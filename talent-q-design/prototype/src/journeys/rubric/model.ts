@@ -143,7 +143,13 @@ export const UNC_WORD = { LOW: 'Low uncertainty', MEDIUM: 'Some uncertainty', HI
 export const fmtT = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
 export const fmtDay = (s: string) => new Date(s).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 export const actorName = (w: World, id: string) => w.actors.find((a) => a.id === id)?.name ?? (id === 'q' ? 'Q' : id);
-export const firstOf = (w: World, id: string) => w.actors.find((a) => a.id === id)?.first ?? w.people.find((p) => p.personId === id)?.name.split(' ')[0] ?? id;
+/** First name; a candidate who shares a first name with a colleague (Seyi Okoro vs Seyi Balogun) gets the full name. */
+export const firstOf = (w: World, id: string) => {
+  const a = w.actors.find((x) => x.id === id); if (a && a.side === 'recruiter') return a.first;
+  const name = w.people.find((p) => p.personId === id)?.name ?? a?.name; if (!name) return id;
+  const f = name.split(' ')[0];
+  return w.actors.some((x) => x.side === 'recruiter' && x.first === f) ? name : f;
+};
 
 /** A reference the viewing organisation may still see, with its title, age and reliability. */
 export interface RefView { title: string; when?: string; reliability: string; video?: { t: number; tEnd?: number }; quote?: string; visible: boolean }
